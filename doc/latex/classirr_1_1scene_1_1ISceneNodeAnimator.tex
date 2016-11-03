@@ -1,0 +1,104 @@
+\hypertarget{classirr_1_1scene_1_1ISceneNodeAnimator}{}\section{irr\+:\+:scene\+:\+:I\+Scene\+Node\+Animator Class Reference}
+\label{classirr_1_1scene_1_1ISceneNodeAnimator}\index{irr\+::scene\+::\+I\+Scene\+Node\+Animator@{irr\+::scene\+::\+I\+Scene\+Node\+Animator}}
+
+
+Animates a scene node. Can animate position, rotation, material, and so on.  
+
+
+
+
+{\ttfamily \#include $<$I\+Scene\+Node\+Animator.\+h$>$}
+
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Scene\+Node\+Animator\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classirr_1_1scene_1_1ISceneNodeAnimator}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator_ab7fe10093baa860ac6fbd0b805f85cd7}{animate\+Node} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$node, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} time\+Ms)=0
+\begin{DoxyCompactList}\small\item\em Animates a scene node. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator}{I\+Scene\+Node\+Animator} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator_a0f066f3764f0bc4c74c516fcc67ed1d5}{create\+Clone} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$node, \hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} $\ast$new\+Manager=0)=0
+\begin{DoxyCompactList}\small\item\em Creates a clone of this animator. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator_a75c9e4eb1fa1af868034678fdcdbe15b}{is\+Event\+Receiver\+Enabled} () const 
+\begin{DoxyCompactList}\small\item\em Returns true if this animator receives events. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator_aca20b841bb586cd9654464b001a7b6aa}{On\+Event} (const \hyperlink{structirr_1_1SEvent}{S\+Event} \&event)\hypertarget{classirr_1_1scene_1_1ISceneNodeAnimator_aca20b841bb586cd9654464b001a7b6aa}{}\label{classirr_1_1scene_1_1ISceneNodeAnimator_aca20b841bb586cd9654464b001a7b6aa}
+
+\begin{DoxyCompactList}\small\item\em Event receiver, override this function for camera controlling animators. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_1_1scene_a327a1e43872705cf8f3f3342fb307d19}{E\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+A\+N\+I\+M\+A\+T\+O\+R\+\_\+\+T\+Y\+PE} \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator_aeed52b1fb289dcf456867b3916076cac}{get\+Type} () const \hypertarget{classirr_1_1scene_1_1ISceneNodeAnimator_aeed52b1fb289dcf456867b3916076cac}{}\label{classirr_1_1scene_1_1ISceneNodeAnimator_aeed52b1fb289dcf456867b3916076cac}
+
+\begin{DoxyCompactList}\small\item\em Returns type of the scene node animator. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator_a2ea0caa26a5d377fa438dc7c836731fd}{has\+Finished} (void) const 
+\begin{DoxyCompactList}\small\item\em Returns if the animator has finished. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Animates a scene node. Can animate position, rotation, material, and so on. 
+
+A scene node animator is able to animate a scene node in a very simple way. It may change its position, rotation, scale and/or material. There are lots of animators to choose from. You can create scene node animators with the \hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} interface. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+Scene\+Node\+Animator@{irr\+::scene\+::\+I\+Scene\+Node\+Animator}!animate\+Node@{animate\+Node}}
+\index{animate\+Node@{animate\+Node}!irr\+::scene\+::\+I\+Scene\+Node\+Animator@{irr\+::scene\+::\+I\+Scene\+Node\+Animator}}
+\subsubsection[{\texorpdfstring{animate\+Node(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$node, u32 time\+Ms)=0}{animateNode(IDummyTransformationSceneNode *node, u32 timeMs)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Node\+Animator\+::animate\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{node, }
+\item[{{\bf u32}}]{time\+Ms}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNodeAnimator_ab7fe10093baa860ac6fbd0b805f85cd7}{}\label{classirr_1_1scene_1_1ISceneNodeAnimator_ab7fe10093baa860ac6fbd0b805f85cd7}
+
+
+Animates a scene node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em node} & Node to animate. \\
+\hline
+{\em time\+Ms} & Current time in milli seconds. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node\+Animator@{irr\+::scene\+::\+I\+Scene\+Node\+Animator}!create\+Clone@{create\+Clone}}
+\index{create\+Clone@{create\+Clone}!irr\+::scene\+::\+I\+Scene\+Node\+Animator@{irr\+::scene\+::\+I\+Scene\+Node\+Animator}}
+\subsubsection[{\texorpdfstring{create\+Clone(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$node, I\+Scene\+Manager $\ast$new\+Manager=0)=0}{createClone(IDummyTransformationSceneNode *node, ISceneManager *newManager=0)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Animator}$\ast$ irr\+::scene\+::\+I\+Scene\+Node\+Animator\+::create\+Clone (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{node, }
+\item[{{\bf I\+Scene\+Manager} $\ast$}]{new\+Manager = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNodeAnimator_a0f066f3764f0bc4c74c516fcc67ed1d5}{}\label{classirr_1_1scene_1_1ISceneNodeAnimator_a0f066f3764f0bc4c74c516fcc67ed1d5}
+
+
+Creates a clone of this animator. 
+
+Please note that you will have to drop (\hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()}) the returned pointer after calling this. \index{irr\+::scene\+::\+I\+Scene\+Node\+Animator@{irr\+::scene\+::\+I\+Scene\+Node\+Animator}!has\+Finished@{has\+Finished}}
+\index{has\+Finished@{has\+Finished}!irr\+::scene\+::\+I\+Scene\+Node\+Animator@{irr\+::scene\+::\+I\+Scene\+Node\+Animator}}
+\subsubsection[{\texorpdfstring{has\+Finished(void) const }{hasFinished(void) const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::scene\+::\+I\+Scene\+Node\+Animator\+::has\+Finished (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNodeAnimator_a2ea0caa26a5d377fa438dc7c836731fd}{}\label{classirr_1_1scene_1_1ISceneNodeAnimator_a2ea0caa26a5d377fa438dc7c836731fd}
+
+
+Returns if the animator has finished. 
+
+This is only valid for non-\/looping animators with a discrete end state. \begin{DoxyReturn}{Returns}
+true if the animator has finished, false if it is still running. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Node\+Animator@{irr\+::scene\+::\+I\+Scene\+Node\+Animator}!is\+Event\+Receiver\+Enabled@{is\+Event\+Receiver\+Enabled}}
+\index{is\+Event\+Receiver\+Enabled@{is\+Event\+Receiver\+Enabled}!irr\+::scene\+::\+I\+Scene\+Node\+Animator@{irr\+::scene\+::\+I\+Scene\+Node\+Animator}}
+\subsubsection[{\texorpdfstring{is\+Event\+Receiver\+Enabled() const }{isEventReceiverEnabled() const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::scene\+::\+I\+Scene\+Node\+Animator\+::is\+Event\+Receiver\+Enabled (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNodeAnimator_a75c9e4eb1fa1af868034678fdcdbe15b}{}\label{classirr_1_1scene_1_1ISceneNodeAnimator_a75c9e4eb1fa1af868034678fdcdbe15b}
+
+
+Returns true if this animator receives events. 
+
+When attached to an active camera, this animator will be able to respond to events such as mouse and keyboard events. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Scene\+Node\+Animator.\+h\end{DoxyCompactItemize}

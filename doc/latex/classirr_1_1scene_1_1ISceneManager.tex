@@ -1,0 +1,1208 @@
+\hypertarget{classirr_1_1scene_1_1ISceneManager}{}\section{irr\+:\+:scene\+:\+:I\+Scene\+Manager Class Reference}
+\label{classirr_1_1scene_1_1ISceneManager}\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+
+
+The Scene Manager manages scene nodes, mesh recources, cameras and all the other stuff.  
+
+
+
+
+{\ttfamily \#include $<$I\+Scene\+Manager.\+h$>$}
+
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Scene\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classirr_1_1scene_1_1ISceneManager}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+C\+P\+U\+Mesh} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{get\+Mesh} (const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&filename)=0
+\begin{DoxyCompactList}\small\item\em Get pointer to an animateable mesh. Loads the file if not loaded already. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+C\+P\+U\+Mesh} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a733c4e8040702ec9fe486ee15a5089a6}{get\+Mesh} (\hyperlink{classirr_1_1io_1_1IReadFile}{io\+::\+I\+Read\+File} $\ast$file)=0
+\begin{DoxyCompactList}\small\item\em Get pointer to an animateable mesh. Loads the file if not loaded already. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMeshCache}{I\+Mesh\+Cache}$<$ \hyperlink{classirr_1_1scene_1_1IMesh}{I\+C\+P\+U\+Mesh} $>$ $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_ac5ffbb676d3c68becfb565cf72e2afa0}{get\+Mesh\+Cache} ()=0
+\begin{DoxyCompactList}\small\item\em Get interface to the mesh cache which is shared beween all existing scene managers. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1video_1_1IVideoDriver}{video\+::\+I\+Video\+Driver} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_afde082160205a8faab44cd5b61e3745c}{get\+Video\+Driver} ()=0
+\begin{DoxyCompactList}\small\item\em Get the video driver. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1io_1_1IFileSystem}{io\+::\+I\+File\+System} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_adbd98fbeba199005cf795a5bae7ccbaf}{get\+File\+System} ()=0
+\begin{DoxyCompactList}\small\item\em Get the active File\+System. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMeshSceneNode}{I\+Mesh\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_afd4dcb2db5e5e03088ecf8be1b18224b}{add\+Cube\+Scene\+Node} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} size=10.\+0f, I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, s32 id=-\/1, const core\+::vector3df \&position=core\+::vector3df(0, 0, 0), const core\+::vector3df \&rotation=core\+::vector3df(0, 0, 0), const core\+::vector3df \&scale=core\+::vector3df(1.\+0f, 1.\+0f, 1.\+0f))=0
+\begin{DoxyCompactList}\small\item\em Adds a cube scene node. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMeshSceneNode}{I\+Mesh\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a12969449cd9a4365657702a69315d1db}{add\+Sphere\+Scene\+Node} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} radius=5.\+0f, s32 poly\+Count=16, I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, s32 id=-\/1, const core\+::vector3df \&position=core\+::vector3df(0, 0, 0), const core\+::vector3df \&rotation=core\+::vector3df(0, 0, 0), const core\+::vector3df \&scale=core\+::vector3df(1.\+0f, 1.\+0f, 1.\+0f))=0
+\begin{DoxyCompactList}\small\item\em Adds a sphere scene node of the given radius and detail. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode}{I\+Skinned\+Mesh\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a4951de213617dba472877a459d9e4402}{add\+Skinned\+Mesh\+Scene\+Node} (\hyperlink{classirr_1_1scene_1_1IGPUSkinnedMesh}{I\+G\+P\+U\+Skinned\+Mesh} $\ast$mesh, const \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_a78f9d8d280dc029b3637bd3a48c0c3c6}{I\+Skinning\+State\+Manager\+::\+E\+\_\+\+B\+O\+N\+E\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+\+M\+O\+DE} \&bone\+Control\+Mode=\hyperlink{classirr_1_1scene_1_1ISkinningStateManager_a78f9d8d280dc029b3637bd3a48c0c3c6af91613b0a4c9ac338de93ff48a28885c}{I\+Skinning\+State\+Manager\+::\+E\+B\+U\+M\+\_\+\+N\+O\+NE}, \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id=-\/1, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&position=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&rotation=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&scale=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(1.\+0f, 1.\+0f, 1.\+0f))=0\hypertarget{classirr_1_1scene_1_1ISceneManager_a4951de213617dba472877a459d9e4402}{}\label{classirr_1_1scene_1_1ISceneManager_a4951de213617dba472877a459d9e4402}
+
+\begin{DoxyCompactList}\small\item\em Adds a scene node for rendering an skinned mesh model. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMeshSceneNode}{I\+Mesh\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a38b254e43611c84a73c1302ced3816a8}{add\+Mesh\+Scene\+Node} (\hyperlink{classirr_1_1scene_1_1IMesh}{I\+G\+P\+U\+Mesh} $\ast$mesh, \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id=-\/1, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&position=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&rotation=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&scale=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(1.\+0f, 1.\+0f, 1.\+0f), bool also\+Add\+If\+Mesh\+Pointer\+Zero=false)=0
+\begin{DoxyCompactList}\small\item\em Adds a scene node for rendering a static mesh. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMeshSceneNodeInstanced}{I\+Mesh\+Scene\+Node\+Instanced} $\ast$ {\bfseries add\+Mesh\+Scene\+Node\+Instanced} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id=-\/1, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&position=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&rotation=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&scale=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(1.\+0f, 1.\+0f, 1.\+0f))=0\hypertarget{classirr_1_1scene_1_1ISceneManager_a8828efc58d2e2630ce14453978bfa710}{}\label{classirr_1_1scene_1_1ISceneManager_a8828efc58d2e2630ce14453978bfa710}
+
+\item 
+virtual \hyperlink{classirr_1_1scene_1_1ICameraSceneNode}{I\+Camera\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a6d8f9930cfbd4469ebfd798ba1e65db8}{add\+Camera\+Scene\+Node} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&position=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&lookat=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 100), \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id=-\/1, bool make\+Active=true)=0
+\begin{DoxyCompactList}\small\item\em Adds a camera scene node to the scene graph and sets it as active camera. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ICameraSceneNode}{I\+Camera\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_adc6cafb1f284dea325e9511917cb1f14}{add\+Camera\+Scene\+Node\+Maya} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} rotate\+Speed=-\/1500.f, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} zoom\+Speed=200.f, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} translation\+Speed=1500.f, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id=-\/1, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} distance=70.f, bool make\+Active=true)=0
+\begin{DoxyCompactList}\small\item\em Adds a maya style user controlled camera scene node to the scene graph. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ICameraSceneNode}{I\+Camera\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a0ad89f90e140ec8f26ec54c9b8f3d81c}{add\+Camera\+Scene\+Node\+F\+PS} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} rotate\+Speed=100.\+0f, f32 move\+Speed=0.\+5f, s32 id=-\/1, S\+Key\+Map $\ast$key\+Map\+Array=0, s32 key\+Map\+Size=0, bool no\+Vertical\+Movement=false, f32 jump\+Speed=0.\+f, bool invert\+Mouse=false, bool make\+Active=true)=0
+\begin{DoxyCompactList}\small\item\em Adds a camera scene node with an animator which provides mouse and keyboard control appropriate for first person shooters (F\+PS). \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ILightSceneNode}{I\+Light\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_ac832789009b7670a90eb0e3250397a83}{add\+Light\+Scene\+Node} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&position=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), \hyperlink{classirr_1_1video_1_1SColorf}{video\+::\+S\+Colorf} color=\hyperlink{classirr_1_1video_1_1SColorf}{video\+::\+S\+Colorf}(1.\+0f, 1.\+0f, 1.\+0f), f32 radius=100.\+0f, s32 id=-\/1)=0
+\begin{DoxyCompactList}\small\item\em Adds a dynamic light scene node to the scene graph. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IBillboardSceneNode}{I\+Billboard\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a580bb5e0db1043e9c57874b87a7d3b8a}{add\+Billboard\+Scene\+Node} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, const \hyperlink{classirr_1_1core_1_1dimension2d}{core\+::dimension2d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \&size=\hyperlink{classirr_1_1core_1_1dimension2d}{core\+::dimension2d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$(10.\+0f, 10.\+0f), const core\+::vector3df \&position=core\+::vector3df(0, 0, 0), s32 id=-\/1, video\+::\+S\+Color color\+Top=0x\+F\+F\+F\+F\+F\+F\+F\+F, video\+::\+S\+Color color\+Bottom=0x\+F\+F\+F\+F\+F\+F\+F\+F)=0
+\begin{DoxyCompactList}\small\item\em Adds a billboard scene node to the scene graph. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_acd697396eaef0d1d22e7bb32abbf7d55}{add\+Sky\+Box\+Scene\+Node} (\hyperlink{classirr_1_1video_1_1ITexture}{video\+::\+I\+Texture} $\ast$top, \hyperlink{classirr_1_1video_1_1ITexture}{video\+::\+I\+Texture} $\ast$bottom, \hyperlink{classirr_1_1video_1_1ITexture}{video\+::\+I\+Texture} $\ast$left, \hyperlink{classirr_1_1video_1_1ITexture}{video\+::\+I\+Texture} $\ast$right, \hyperlink{classirr_1_1video_1_1ITexture}{video\+::\+I\+Texture} $\ast$front, \hyperlink{classirr_1_1video_1_1ITexture}{video\+::\+I\+Texture} $\ast$back, \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id=-\/1)=0
+\begin{DoxyCompactList}\small\item\em Adds a skybox scene node to the scene graph. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a30ea6d8b624064781a6ffd6a1841b525}{add\+Sky\+Dome\+Scene\+Node} (\hyperlink{classirr_1_1video_1_1ITexture}{video\+::\+I\+Texture} $\ast$texture, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} hori\+Res=16, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} vert\+Res=8, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} texture\+Percentage=0.\+9, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} sphere\+Percentage=2.\+0, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} radius=1000.f, \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id=-\/1)=0
+\begin{DoxyCompactList}\small\item\em Adds a skydome scene node to the scene graph. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_aebb834a110b49b0306c9220dee900b66}{add\+Empty\+Scene\+Node} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id=-\/1)=0
+\begin{DoxyCompactList}\small\item\em Adds an empty scene node to the scene graph. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_ae411fd946f586aaed158364640cef58c}{add\+Dummy\+Transformation\+Scene\+Node} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id=-\/1)=0
+\begin{DoxyCompactList}\small\item\em Adds a dummy transformation scene node to the scene graph. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a4f7075320f1a3bf2838f29c23f78635f}{get\+Root\+Scene\+Node} ()=0
+\begin{DoxyCompactList}\small\item\em Gets the root scene node. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ICameraSceneNode}{I\+Camera\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a78585330c2c7ffae133abefd55f495b3}{get\+Active\+Camera} () const  =0
+\begin{DoxyCompactList}\small\item\em Get the current active camera. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneManager_a5d19b7a6803a0a021082fc2b86043b3d}{set\+Active\+Camera} (\hyperlink{classirr_1_1scene_1_1ICameraSceneNode}{I\+Camera\+Scene\+Node} $\ast$camera)=0
+\begin{DoxyCompactList}\small\item\em Sets the currently active camera. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1ISceneManager_aaf17bdde6d4e9ef61a76f3b43100ecb8}{register\+Node\+For\+Rendering} (\hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$node, \hyperlink{namespaceirr_1_1scene_a7862269bd1abc123929d4dbb8200d67f}{E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+SS} pass=\hyperlink{namespaceirr_1_1scene_a7862269bd1abc123929d4dbb8200d67fa5ceee6e4bc2fab42c663b32018e276e8}{E\+S\+N\+R\+P\+\_\+\+A\+U\+T\+O\+M\+A\+T\+IC})=0
+\begin{DoxyCompactList}\small\item\em Registers a node for rendering it at a specific time. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneManager_a04240262904667c821bd9de5e5fd9b02}{draw\+All} ()=0
+\begin{DoxyCompactList}\small\item\em Draws all the scene nodes. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator}{I\+Scene\+Node\+Animator} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a29efe9505de4e5dc2218283ef0c2a64d}{create\+Rotation\+Animator} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&rotation\+Speed)=0
+\begin{DoxyCompactList}\small\item\em Creates a rotation animator, which rotates the attached scene node around itself. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator}{I\+Scene\+Node\+Animator} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a2e49ff49bc9e88e8ecf3d681354e1ab6}{create\+Fly\+Circle\+Animator} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&center=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0.f, 0.f, 0.f), \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} radius=100.f, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} speed=0.\+001f, const core\+::vector3df \&direction=core\+::vector3df(0.\+f, 1.\+f, 0.\+f), f32 start\+Position=0.\+f, f32 radius\+Ellipsoid=0.\+f)=0
+\begin{DoxyCompactList}\small\item\em Creates a fly circle animator, which lets the attached scene node fly around a center. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator}{I\+Scene\+Node\+Animator} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a865c2da86486dcdb44847d5baa7aaa61}{create\+Fly\+Straight\+Animator} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&start\+Point, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&end\+Point, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} time\+For\+Way, bool loop=false, bool pingpong=false)=0
+\begin{DoxyCompactList}\small\item\em Creates a fly straight animator, which lets the attached scene node fly or move along a line between two points. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator}{I\+Scene\+Node\+Animator} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_ae212e01dffc4891d32e3d1735d22d04a}{create\+Texture\+Animator} (const \hyperlink{classirr_1_1core_1_1array}{core\+::array}$<$ \hyperlink{classirr_1_1video_1_1ITexture}{video\+::\+I\+Texture} $\ast$ $>$ \&textures, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} time\+Per\+Frame, bool loop=true)=0
+\begin{DoxyCompactList}\small\item\em Creates a texture animator, which switches the textures of the target scene node based on a list of textures. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator}{I\+Scene\+Node\+Animator} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a163cc04ff2cb03852ac891de56200fa3}{create\+Delete\+Animator} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} time\+Ms)=0
+\begin{DoxyCompactList}\small\item\em Creates a scene node animator, which deletes the scene node after some time automatically. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator}{I\+Scene\+Node\+Animator} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_ab0c9d4ab88bbe2ad71623b1054a0c3ba}{create\+Follow\+Spline\+Animator} (\hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} start\+Time, const \hyperlink{classirr_1_1core_1_1array}{core\+::array}$<$ \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} $>$ \&points, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} speed=1.\+0f, f32 tightness=0.\+5f, bool loop=true, bool pingpong=false)=0
+\begin{DoxyCompactList}\small\item\em Creates a follow spline animator. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneManager_a808972cc001db86c0576c38b3b3fbbf7}{add\+External\+Mesh\+Loader} (\hyperlink{classirr_1_1scene_1_1IMeshLoader}{I\+Mesh\+Loader} $\ast$external\+Loader)=0
+\begin{DoxyCompactList}\small\item\em Adds an external mesh loader for extending the engine with new file formats. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1ISceneManager_a78f1cb453aa87f3cbaa2fd9d1a2aa9a6}{get\+Mesh\+Loader\+Count} () const  =0\hypertarget{classirr_1_1scene_1_1ISceneManager_a78f1cb453aa87f3cbaa2fd9d1a2aa9a6}{}\label{classirr_1_1scene_1_1ISceneManager_a78f1cb453aa87f3cbaa2fd9d1a2aa9a6}
+
+\begin{DoxyCompactList}\small\item\em Returns the number of mesh loaders supported by Irrlicht at this time. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMeshLoader}{I\+Mesh\+Loader} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a9fd2e6e1f82298b9b95e96d2b36ddc33}{get\+Mesh\+Loader} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index) const  =0
+\begin{DoxyCompactList}\small\item\em Retrieve the given mesh loader. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMeshManipulator}{I\+Mesh\+Manipulator} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a05138d6b5f99fced0061794fb5c42318}{get\+Mesh\+Manipulator} ()=0
+\begin{DoxyCompactList}\small\item\em Get pointer to the mesh manipulator. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneManager_a4c29710a7802881200a26384313bd14c}{add\+To\+Deletion\+Queue} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$node)=0
+\begin{DoxyCompactList}\small\item\em Adds a scene node to the deletion queue. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1ISceneManager_ac68aa8d654884f19ad52fa28f11db424}{post\+Event\+From\+User} (const \hyperlink{structirr_1_1SEvent}{S\+Event} \&event)=0
+\begin{DoxyCompactList}\small\item\em Posts an input event to the environment. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneManager_abaa3d11a833b89f7579848e234881988}{clear} ()=0
+\begin{DoxyCompactList}\small\item\em Clears the whole scene. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_1_1scene_a7862269bd1abc123929d4dbb8200d67f}{E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+SS} \hyperlink{classirr_1_1scene_1_1ISceneManager_a7f92b38444d719c4d2314242884e4951}{get\+Scene\+Node\+Render\+Pass} () const  =0
+\begin{DoxyCompactList}\small\item\em Get current render pass. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeFactory}{I\+Scene\+Node\+Factory} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a1ea0ec7ec95a97819f1de5222b97e774}{get\+Default\+Scene\+Node\+Factory} ()=0
+\begin{DoxyCompactList}\small\item\em Get the default scene node factory which can create all built in scene nodes. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneManager_a75ac9315def74ae5e26a2d6a2f5a38e9}{register\+Scene\+Node\+Factory} (\hyperlink{classirr_1_1scene_1_1ISceneNodeFactory}{I\+Scene\+Node\+Factory} $\ast$factory\+To\+Add)=0
+\begin{DoxyCompactList}\small\item\em Adds a scene node factory to the scene manager. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1ISceneManager_a6297be8248b8bada0de1bf7f56753c63}{get\+Registered\+Scene\+Node\+Factory\+Count} () const  =0\hypertarget{classirr_1_1scene_1_1ISceneManager_a6297be8248b8bada0de1bf7f56753c63}{}\label{classirr_1_1scene_1_1ISceneManager_a6297be8248b8bada0de1bf7f56753c63}
+
+\begin{DoxyCompactList}\small\item\em Get amount of registered scene node factories. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeFactory}{I\+Scene\+Node\+Factory} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_ac912b9effd5ce46f5dc038e0568e614c}{get\+Scene\+Node\+Factory} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index)=0
+\begin{DoxyCompactList}\small\item\em Get a scene node factory by index. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimatorFactory}{I\+Scene\+Node\+Animator\+Factory} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_adeb3d24c8ffafd5e671f344931a0b3a5}{get\+Default\+Scene\+Node\+Animator\+Factory} ()=0
+\begin{DoxyCompactList}\small\item\em Get the default scene node animator factory which can create all built-\/in scene node animators. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneManager_af48c93cc41f986f08ed964cc575ee7a0}{register\+Scene\+Node\+Animator\+Factory} (\hyperlink{classirr_1_1scene_1_1ISceneNodeAnimatorFactory}{I\+Scene\+Node\+Animator\+Factory} $\ast$factory\+To\+Add)=0
+\begin{DoxyCompactList}\small\item\em Adds a scene node animator factory to the scene manager. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1ISceneManager_a8d694570ee1de7279727555a9ecd7bc2}{get\+Registered\+Scene\+Node\+Animator\+Factory\+Count} () const  =0\hypertarget{classirr_1_1scene_1_1ISceneManager_a8d694570ee1de7279727555a9ecd7bc2}{}\label{classirr_1_1scene_1_1ISceneManager_a8d694570ee1de7279727555a9ecd7bc2}
+
+\begin{DoxyCompactList}\small\item\em Get amount of registered scene node animator factories. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimatorFactory}{I\+Scene\+Node\+Animator\+Factory} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a96d8272b74bd0adc9138f17e832dc887}{get\+Scene\+Node\+Animator\+Factory} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index)=0
+\begin{DoxyCompactList}\small\item\em Get scene node animator factory by index. \end{DoxyCompactList}\item 
+virtual const \hyperlink{namespaceirr_a9395eaea339bcb546b319e9c96bf7410}{c8} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a9f8cc1f55b8e067528b7a9a21b7fdd50}{get\+Scene\+Node\+Type\+Name} (\hyperlink{namespaceirr_1_1scene_acad3d7ef92a9807d391ba29120f3b7bd}{E\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+T\+Y\+PE} type)=0\hypertarget{classirr_1_1scene_1_1ISceneManager_a9f8cc1f55b8e067528b7a9a21b7fdd50}{}\label{classirr_1_1scene_1_1ISceneManager_a9f8cc1f55b8e067528b7a9a21b7fdd50}
+
+\begin{DoxyCompactList}\small\item\em Get typename from a scene node type or null if not found. \end{DoxyCompactList}\item 
+virtual const \hyperlink{namespaceirr_a9395eaea339bcb546b319e9c96bf7410}{c8} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_aeedfa596280048e6ea6463ff69d23855}{get\+Animator\+Type\+Name} (\hyperlink{namespaceirr_1_1scene_a327a1e43872705cf8f3f3342fb307d19}{E\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+A\+N\+I\+M\+A\+T\+O\+R\+\_\+\+T\+Y\+PE} type)=0\hypertarget{classirr_1_1scene_1_1ISceneManager_aeedfa596280048e6ea6463ff69d23855}{}\label{classirr_1_1scene_1_1ISceneManager_aeedfa596280048e6ea6463ff69d23855}
+
+\begin{DoxyCompactList}\small\item\em Returns a typename from a scene node animator type or null if not found. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a8a3616e641e586b400a923b967ff32ab}{add\+Scene\+Node} (const char $\ast$scene\+Node\+Type\+Name, \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent=0)=0
+\begin{DoxyCompactList}\small\item\em Adds a scene node to the scene by name. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNodeAnimator}{I\+Scene\+Node\+Animator} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_ac63c38a05b8e7d0a11ddb1752da36835}{create\+Scene\+Node\+Animator} (const char $\ast$type\+Name, \hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$target=0)=0
+\begin{DoxyCompactList}\small\item\em creates a scene node animator based on its type name \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_a94805dd4eca41ccef9607aefe669aed9}{create\+New\+Scene\+Manager} (bool clone\+Content=false)=0
+\begin{DoxyCompactList}\small\item\em Creates a new scene manager. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMeshWriter}{I\+Mesh\+Writer} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_ae9a06fb68757381f99cfe11ecbd153e6}{create\+Mesh\+Writer} (\hyperlink{namespaceirr_1_1scene_a431fa15741518ba15f6d5f2608b6cb4e}{E\+M\+E\+S\+H\+\_\+\+W\+R\+I\+T\+E\+R\+\_\+\+T\+Y\+PE} type)=0
+\begin{DoxyCompactList}\small\item\em Get a mesh writer implementation if available. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneManager_a8a424accb615c4f60fde59f55033a816}{set\+Ambient\+Light} (const \hyperlink{classirr_1_1video_1_1SColorf}{video\+::\+S\+Colorf} \&ambient\+Color)=0\hypertarget{classirr_1_1scene_1_1ISceneManager_a8a424accb615c4f60fde59f55033a816}{}\label{classirr_1_1scene_1_1ISceneManager_a8a424accb615c4f60fde59f55033a816}
+
+\begin{DoxyCompactList}\small\item\em Sets ambient color of the scene. \end{DoxyCompactList}\item 
+virtual const \hyperlink{classirr_1_1video_1_1SColorf}{video\+::\+S\+Colorf} \& \hyperlink{classirr_1_1scene_1_1ISceneManager_adec06ba0cc248383153af9bc044cbd34}{get\+Ambient\+Light} () const  =0\hypertarget{classirr_1_1scene_1_1ISceneManager_adec06ba0cc248383153af9bc044cbd34}{}\label{classirr_1_1scene_1_1ISceneManager_adec06ba0cc248383153af9bc044cbd34}
+
+\begin{DoxyCompactList}\small\item\em Get ambient color of the scene. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneManager_a0065307bf3ff12fdc5b7bb624987a1c2}{set\+Light\+Manager} (\hyperlink{classirr_1_1scene_1_1ILightManager}{I\+Light\+Manager} $\ast$light\+Manager)=0
+\begin{DoxyCompactList}\small\item\em Register a custom callbacks manager which gets callbacks during scene rendering. \end{DoxyCompactList}\item 
+virtual const \hyperlink{classirr_1_1scene_1_1IGeometryCreator}{I\+Geometry\+Creator} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneManager_aa907bfdd82887a9855157fdfb41985e0}{get\+Geometry\+Creator} (void) const  =0
+\begin{DoxyCompactList}\small\item\em Get an instance of a geometry creator. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1ISceneManager_a819bea16578056eea049d4bfe0545575}{is\+Culled} (\hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$node) const  =0
+\begin{DoxyCompactList}\small\item\em Check if node is culled in current view frustum. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+The Scene Manager manages scene nodes, mesh recources, cameras and all the other stuff. 
+
+All Scene nodes can be created only here. There is a always growing list of scene nodes for lots of purposes\+: Indoor rendering scene nodes, different Camera scene nodes (\hyperlink{classirr_1_1scene_1_1ISceneManager_a6d8f9930cfbd4469ebfd798ba1e65db8}{add\+Camera\+Scene\+Node()}, \hyperlink{classirr_1_1scene_1_1ISceneManager_adc6cafb1f284dea325e9511917cb1f14}{add\+Camera\+Scene\+Node\+Maya()}), scene nodes for Light (\hyperlink{classirr_1_1scene_1_1ISceneManager_ac832789009b7670a90eb0e3250397a83}{add\+Light\+Scene\+Node()}), Billboards (\hyperlink{classirr_1_1scene_1_1ISceneManager_a580bb5e0db1043e9c57874b87a7d3b8a}{add\+Billboard\+Scene\+Node()}) and so on. A scene node is a node in the hierachical scene graph. Every scene node may have children, which are other scene nodes. Children move relative the their parents position. If the parent of a node is not visible, its children won\textquotesingle{}t be visible, too. In this way, it is for example easily possible to attach a light to a moving car or to place a walking character on a moving platform on a moving ship. The Scene\+Manager is also able to load 3d mesh files of different formats. Take a look at \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{get\+Mesh()} to find out what formats are supported. If these formats are not enough, use \hyperlink{classirr_1_1scene_1_1ISceneManager_a808972cc001db86c0576c38b3b3fbbf7}{add\+External\+Mesh\+Loader()} to add new formats to the engine. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Billboard\+Scene\+Node@{add\+Billboard\+Scene\+Node}}
+\index{add\+Billboard\+Scene\+Node@{add\+Billboard\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Billboard\+Scene\+Node(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, const core\+::dimension2d$<$ f32 $>$ \&size=core\+::dimension2d$<$ f32 $>$(10.\+0f, 10.\+0f), const core\+::vector3df \&position=core\+::vector3df(0, 0, 0), s32 id=-\/1, video\+::\+S\+Color color\+Top=0x\+F\+F\+F\+F\+F\+F\+F\+F, video\+::\+S\+Color color\+Bottom=0x\+F\+F\+F\+F\+F\+F\+F\+F)=0}{addBillboardSceneNode(IDummyTransformationSceneNode *parent=0, const core::dimension2d< f32 > \&size=core::dimension2d< f32 >(10.0f, 10.0f), const core::vector3df \&position=core::vector3df(0, 0, 0), s32 id=-1, video::SColor colorTop=0xFFFFFFFF, video::SColor colorBottom=0xFFFFFFFF)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Billboard\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Billboard\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{const {\bf core\+::dimension2d}$<$ {\bf f32} $>$ \&}]{size = {\ttfamily {\bf core\+::dimension2d}$<$~{\bf f32}~$>$(10.0f,~10.0f)}, }
+\item[{const {\bf core\+::vector3df} \&}]{position = {\ttfamily {\bf core\+::vector3df}(0,~0,~0)}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}, }
+\item[{{\bf video\+::\+S\+Color}}]{color\+Top = {\ttfamily 0xFFFFFFFF}, }
+\item[{{\bf video\+::\+S\+Color}}]{color\+Bottom = {\ttfamily 0xFFFFFFFF}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a580bb5e0db1043e9c57874b87a7d3b8a}{}\label{classirr_1_1scene_1_1ISceneManager_a580bb5e0db1043e9c57874b87a7d3b8a}
+
+
+Adds a billboard scene node to the scene graph. 
+
+A billboard is like a 3d sprite\+: A 2d element, which always looks to the camera. It is usually used for things like explosions, fire, lensflares and things like that. 
+\begin{DoxyParams}{Parameters}
+{\em parent} & Parent scene node of the billboard. Can be null. If the parent moves, the billboard will move too. \\
+\hline
+{\em size} & Size of the billboard. This size is 2 dimensional because a billboard only has width and height. \\
+\hline
+{\em position} & Position of the space relative to its parent where the billboard will be placed. \\
+\hline
+{\em id} & An id of the node. This id can be used to identify the node. \\
+\hline
+{\em color\+Top} & The color of the vertices at the top of the billboard (default\+: white). \\
+\hline
+{\em color\+Bottom} & The color of the vertices at the bottom of the billboard (default\+: white). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the billboard if successful, otherwise N\+U\+LL. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Camera\+Scene\+Node@{add\+Camera\+Scene\+Node}}
+\index{add\+Camera\+Scene\+Node@{add\+Camera\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Camera\+Scene\+Node(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, const core\+::vector3df \&position=core\+::vector3df(0, 0, 0), const core\+::vector3df \&lookat=core\+::vector3df(0, 0, 100), s32 id=-\/1, bool make\+Active=true)=0}{addCameraSceneNode(IDummyTransformationSceneNode *parent=0, const core::vector3df \&position=core::vector3df(0, 0, 0), const core::vector3df \&lookat=core::vector3df(0, 0, 100), s32 id=-1, bool makeActive=true)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Camera\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Camera\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{const {\bf core\+::vector3df} \&}]{position = {\ttfamily {\bf core\+::vector3df}(0,~0,~0)}, }
+\item[{const {\bf core\+::vector3df} \&}]{lookat = {\ttfamily {\bf core\+::vector3df}(0,~0,~100)}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}, }
+\item[{bool}]{make\+Active = {\ttfamily true}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a6d8f9930cfbd4469ebfd798ba1e65db8}{}\label{classirr_1_1scene_1_1ISceneManager_a6d8f9930cfbd4469ebfd798ba1e65db8}
+
+
+Adds a camera scene node to the scene graph and sets it as active camera. 
+
+This camera does not react on user input like for example the one created with \hyperlink{classirr_1_1scene_1_1ISceneManager_a0ad89f90e140ec8f26ec54c9b8f3d81c}{add\+Camera\+Scene\+Node\+F\+P\+S()}. If you want to move or animate it, use animators or the I\+Scene\+Node\+::set\+Position(), \hyperlink{classirr_1_1scene_1_1ICameraSceneNode_a7280b07fd7915c64350db5a132b4ba07}{I\+Camera\+Scene\+Node\+::set\+Target()} etc methods. By default, a camera\textquotesingle{}s look at position (set with set\+Target()) and its scene node rotation (set with set\+Rotation()) are independent. If you want to be able to control the direction that the camera looks by using set\+Rotation() then call I\+Camera\+Scene\+Node\+::bind\+Target\+And\+Rotation(true) on it. 
+\begin{DoxyParams}{Parameters}
+{\em position} & Position of the space relative to its parent where the camera will be placed. \\
+\hline
+{\em lookat} & Position where the camera will look at. Also known as target. \\
+\hline
+{\em parent} & Parent scene node of the camera. Can be null. If the parent moves, the camera will move too. \\
+\hline
+{\em id} & id of the camera. This id can be used to identify the camera. \\
+\hline
+{\em make\+Active} & Flag whether this camera should become the active one. Make sure you always have one active camera. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to interface to camera if successful, otherwise 0. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Camera\+Scene\+Node\+F\+PS@{add\+Camera\+Scene\+Node\+F\+PS}}
+\index{add\+Camera\+Scene\+Node\+F\+PS@{add\+Camera\+Scene\+Node\+F\+PS}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Camera\+Scene\+Node\+F\+P\+S(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, f32 rotate\+Speed=100.\+0f, f32 move\+Speed=0.\+5f, s32 id=-\/1, S\+Key\+Map $\ast$key\+Map\+Array=0, s32 key\+Map\+Size=0, bool no\+Vertical\+Movement=false, f32 jump\+Speed=0.\+f, bool invert\+Mouse=false, bool make\+Active=true)=0}{addCameraSceneNodeFPS(IDummyTransformationSceneNode *parent=0, f32 rotateSpeed=100.0f, f32 moveSpeed=0.5f, s32 id=-1, SKeyMap *keyMapArray=0, s32 keyMapSize=0, bool noVerticalMovement=false, f32 jumpSpeed=0.f, bool invertMouse=false, bool makeActive=true)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Camera\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Camera\+Scene\+Node\+F\+PS (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{{\bf f32}}]{rotate\+Speed = {\ttfamily 100.0f}, }
+\item[{{\bf f32}}]{move\+Speed = {\ttfamily 0.5f}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}, }
+\item[{{\bf S\+Key\+Map} $\ast$}]{key\+Map\+Array = {\ttfamily 0}, }
+\item[{{\bf s32}}]{key\+Map\+Size = {\ttfamily 0}, }
+\item[{bool}]{no\+Vertical\+Movement = {\ttfamily false}, }
+\item[{{\bf f32}}]{jump\+Speed = {\ttfamily 0.f}, }
+\item[{bool}]{invert\+Mouse = {\ttfamily false}, }
+\item[{bool}]{make\+Active = {\ttfamily true}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a0ad89f90e140ec8f26ec54c9b8f3d81c}{}\label{classirr_1_1scene_1_1ISceneManager_a0ad89f90e140ec8f26ec54c9b8f3d81c}
+
+
+Adds a camera scene node with an animator which provides mouse and keyboard control appropriate for first person shooters (F\+PS). 
+
+This F\+PS camera is intended to provide a demonstration of a camera that behaves like a typical First Person Shooter. It is useful for simple demos and prototyping but is not intended to provide a full solution for a production quality game. It binds the camera scene node rotation to the look-\/at target; \begin{DoxySeeAlso}{See also}
+\hyperlink{classirr_1_1scene_1_1ICameraSceneNode_ad8785d7b2f730933a8d4425ac54e7205}{I\+Camera\+Scene\+Node\+::bind\+Target\+And\+Rotation()}. With this camera, you look with the mouse, and move with cursor keys. If you want to change the key layout, you can specify your own keymap. For example to make the camera be controlled by the cursor keys A\+ND the keys W,A,S, and D, do something like this\+: 
+\begin{DoxyCode}
+ SKeyMap keyMap[8];
+ keyMap[0].Action = EKA\_MOVE\_FORWARD;
+ keyMap[0].KeyCode = KEY\_UP;
+ keyMap[1].Action = EKA\_MOVE\_FORWARD;
+ keyMap[1].KeyCode = KEY\_KEY\_W;
+
+ keyMap[2].Action = EKA\_MOVE\_BACKWARD;
+ keyMap[2].KeyCode = KEY\_DOWN;
+ keyMap[3].Action = EKA\_MOVE\_BACKWARD;
+ keyMap[3].KeyCode = KEY\_KEY\_S;
+
+ keyMap[4].Action = EKA\_STRAFE\_LEFT;
+ keyMap[4].KeyCode = KEY\_LEFT;
+ keyMap[5].Action = EKA\_STRAFE\_LEFT;
+ keyMap[5].KeyCode = KEY\_KEY\_A;
+
+ keyMap[6].Action = EKA\_STRAFE\_RIGHT;
+ keyMap[6].KeyCode = KEY\_RIGHT;
+ keyMap[7].Action = EKA\_STRAFE\_RIGHT;
+ keyMap[7].KeyCode = KEY\_KEY\_D;
+
+camera = sceneManager->addCameraSceneNodeFPS(0, 100, 500, -1, keyMap, 8);
+\end{DoxyCode}
+ 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & Parent scene node of the camera. Can be null. \\
+\hline
+{\em rotate\+Speed} & Speed in degress with which the camera is rotated. This can be done only with the mouse. \\
+\hline
+{\em move\+Speed} & Speed in units per millisecond with which the camera is moved. Movement is done with the cursor keys. \\
+\hline
+{\em id} & id of the camera. This id can be used to identify the camera. \\
+\hline
+{\em key\+Map\+Array} & Optional pointer to an array of a keymap, specifying what keys should be used to move the camera. If this is null, the default keymap is used. You can define actions more then one time in the array, to bind multiple keys to the same action. \\
+\hline
+{\em key\+Map\+Size} & Amount of items in the keymap array. \\
+\hline
+{\em no\+Vertical\+Movement} & Setting this to true makes the camera only move within a horizontal plane, and disables vertical movement as known from most ego shooters. Default is \textquotesingle{}false\textquotesingle{}, with which it is possible to fly around in space, if no gravity is there. \\
+\hline
+{\em jump\+Speed} & Speed with which the camera is moved when jumping. \\
+\hline
+{\em invert\+Mouse} & Setting this to true makes the camera look up when the mouse is moved down and down when the mouse is moved up, the default is \textquotesingle{}false\textquotesingle{} which means it will follow the movement of the mouse cursor. \\
+\hline
+{\em make\+Active} & Flag whether this camera should become the active one. Make sure you always have one active camera. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the interface of the camera if successful, otherwise 0. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Camera\+Scene\+Node\+Maya@{add\+Camera\+Scene\+Node\+Maya}}
+\index{add\+Camera\+Scene\+Node\+Maya@{add\+Camera\+Scene\+Node\+Maya}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Camera\+Scene\+Node\+Maya(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, f32 rotate\+Speed=-\/1500.\+f, f32 zoom\+Speed=200.\+f, f32 translation\+Speed=1500.\+f, s32 id=-\/1, f32 distance=70.\+f, bool make\+Active=true)=0}{addCameraSceneNodeMaya(IDummyTransformationSceneNode *parent=0, f32 rotateSpeed=-1500.f, f32 zoomSpeed=200.f, f32 translationSpeed=1500.f, s32 id=-1, f32 distance=70.f, bool makeActive=true)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Camera\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Camera\+Scene\+Node\+Maya (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{{\bf f32}}]{rotate\+Speed = {\ttfamily -\/1500.f}, }
+\item[{{\bf f32}}]{zoom\+Speed = {\ttfamily 200.f}, }
+\item[{{\bf f32}}]{translation\+Speed = {\ttfamily 1500.f}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}, }
+\item[{{\bf f32}}]{distance = {\ttfamily 70.f}, }
+\item[{bool}]{make\+Active = {\ttfamily true}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_adc6cafb1f284dea325e9511917cb1f14}{}\label{classirr_1_1scene_1_1ISceneManager_adc6cafb1f284dea325e9511917cb1f14}
+
+
+Adds a maya style user controlled camera scene node to the scene graph. 
+
+This is a standard camera with an animator that provides mouse control similar to camera in the 3D Software Maya by Alias Wavefront. The camera does not react on set\+Position anymore after applying this animator. Instead use set\+Target, to fix the target the camera the camera hovers around. And set\+Distance to set the current distance from that target, i.\+e. the radius of the orbit the camera hovers on. 
+\begin{DoxyParams}{Parameters}
+{\em parent} & Parent scene node of the camera. Can be null. \\
+\hline
+{\em rotate\+Speed} & Rotation speed of the camera. \\
+\hline
+{\em zoom\+Speed} & Zoom speed of the camera. \\
+\hline
+{\em translation\+Speed} & Translation\+Speed of the camera. \\
+\hline
+{\em id} & id of the camera. This id can be used to identify the camera. \\
+\hline
+{\em distance} & Initial distance of the camera from the object \\
+\hline
+{\em make\+Active} & Flag whether this camera should become the active one. Make sure you always have one active camera. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to the interface of the camera if successful, otherwise 0. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Cube\+Scene\+Node@{add\+Cube\+Scene\+Node}}
+\index{add\+Cube\+Scene\+Node@{add\+Cube\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Cube\+Scene\+Node(f32 size=10.\+0f, I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, s32 id=-\/1, const core\+::vector3df \&position=core\+::vector3df(0, 0, 0), const core\+::vector3df \&rotation=core\+::vector3df(0, 0, 0), const core\+::vector3df \&scale=core\+::vector3df(1.\+0f, 1.\+0f, 1.\+0f))=0}{addCubeSceneNode(f32 size=10.0f, IDummyTransformationSceneNode *parent=0, s32 id=-1, const core::vector3df \&position=core::vector3df(0, 0, 0), const core::vector3df \&rotation=core::vector3df(0, 0, 0), const core::vector3df \&scale=core::vector3df(1.0f, 1.0f, 1.0f))=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Mesh\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Cube\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf f32}}]{size = {\ttfamily 10.0f}, }
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}, }
+\item[{const {\bf core\+::vector3df} \&}]{position = {\ttfamily {\bf core\+::vector3df}(0,~0,~0)}, }
+\item[{const {\bf core\+::vector3df} \&}]{rotation = {\ttfamily {\bf core\+::vector3df}(0,~0,~0)}, }
+\item[{const {\bf core\+::vector3df} \&}]{scale = {\ttfamily {\bf core\+::vector3df}(1.0f,~1.0f,~1.0f)}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_afd4dcb2db5e5e03088ecf8be1b18224b}{}\label{classirr_1_1scene_1_1ISceneManager_afd4dcb2db5e5e03088ecf8be1b18224b}
+
+
+Adds a cube scene node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & Size of the cube, uniformly in each dimension. \\
+\hline
+{\em parent} & Parent of the scene node. Can be 0 if no parent. \\
+\hline
+{\em id} & Id of the node. This id can be used to identify the scene node. \\
+\hline
+{\em position} & Position of the space relative to its parent where the scene node will be placed. \\
+\hline
+{\em rotation} & Initital rotation of the scene node. \\
+\hline
+{\em scale} & Initial scale of the scene node. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the created test scene node. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Dummy\+Transformation\+Scene\+Node@{add\+Dummy\+Transformation\+Scene\+Node}}
+\index{add\+Dummy\+Transformation\+Scene\+Node@{add\+Dummy\+Transformation\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Dummy\+Transformation\+Scene\+Node(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, s32 id=-\/1)=0}{addDummyTransformationSceneNode(IDummyTransformationSceneNode *parent=0, s32 id=-1)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Dummy\+Transformation\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Dummy\+Transformation\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_ae411fd946f586aaed158364640cef58c}{}\label{classirr_1_1scene_1_1ISceneManager_ae411fd946f586aaed158364640cef58c}
+
+
+Adds a dummy transformation scene node to the scene graph. 
+
+This scene node does not render itself, and does not respond to set/get\+Position, set/get\+Rotation and set/get\+Scale. Its just a simple scene node that takes a matrix as relative transformation, making it possible to insert any transformation anywhere into the scene graph. \begin{DoxyReturn}{Returns}
+Pointer to the created scene node. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Empty\+Scene\+Node@{add\+Empty\+Scene\+Node}}
+\index{add\+Empty\+Scene\+Node@{add\+Empty\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Empty\+Scene\+Node(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, s32 id=-\/1)=0}{addEmptySceneNode(IDummyTransformationSceneNode *parent=0, s32 id=-1)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Empty\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_aebb834a110b49b0306c9220dee900b66}{}\label{classirr_1_1scene_1_1ISceneManager_aebb834a110b49b0306c9220dee900b66}
+
+
+Adds an empty scene node to the scene graph. 
+
+Can be used for doing advanced transformations or structuring the scene graph. \begin{DoxyReturn}{Returns}
+Pointer to the created scene node. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+External\+Mesh\+Loader@{add\+External\+Mesh\+Loader}}
+\index{add\+External\+Mesh\+Loader@{add\+External\+Mesh\+Loader}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+External\+Mesh\+Loader(\+I\+Mesh\+Loader $\ast$external\+Loader)=0}{addExternalMeshLoader(IMeshLoader *externalLoader)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Manager\+::add\+External\+Mesh\+Loader (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Mesh\+Loader} $\ast$}]{external\+Loader}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a808972cc001db86c0576c38b3b3fbbf7}{}\label{classirr_1_1scene_1_1ISceneManager_a808972cc001db86c0576c38b3b3fbbf7}
+
+
+Adds an external mesh loader for extending the engine with new file formats. 
+
+If you want the engine to be extended with file formats it currently is not able to load (e.\+g. .cob), just implement the \hyperlink{classirr_1_1scene_1_1IMeshLoader}{I\+Mesh\+Loader} interface in your loading class and add it with this method. Using this method it is also possible to override built-\/in mesh loaders with newer or updated versions without the need to recompile the engine. 
+\begin{DoxyParams}{Parameters}
+{\em external\+Loader} & Implementation of a new mesh loader. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Light\+Scene\+Node@{add\+Light\+Scene\+Node}}
+\index{add\+Light\+Scene\+Node@{add\+Light\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Light\+Scene\+Node(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, const core\+::vector3df \&position=core\+::vector3df(0, 0, 0), video\+::\+S\+Colorf color=video\+::\+S\+Colorf(1.\+0f, 1.\+0f, 1.\+0f), f32 radius=100.\+0f, s32 id=-\/1)=0}{addLightSceneNode(IDummyTransformationSceneNode *parent=0, const core::vector3df \&position=core::vector3df(0, 0, 0), video::SColorf color=video::SColorf(1.0f, 1.0f, 1.0f), f32 radius=100.0f, s32 id=-1)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Light\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Light\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{const {\bf core\+::vector3df} \&}]{position = {\ttfamily {\bf core\+::vector3df}(0,~0,~0)}, }
+\item[{{\bf video\+::\+S\+Colorf}}]{color = {\ttfamily {\bf video\+::\+S\+Colorf}(1.0f,~1.0f,~1.0f)}, }
+\item[{{\bf f32}}]{radius = {\ttfamily 100.0f}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_ac832789009b7670a90eb0e3250397a83}{}\label{classirr_1_1scene_1_1ISceneManager_ac832789009b7670a90eb0e3250397a83}
+
+
+Adds a dynamic light scene node to the scene graph. 
+
+The light will cast dynamic light on all other scene nodes in the scene, which have the material flag video\+::\+M\+T\+F\+\_\+\+L\+I\+G\+H\+T\+I\+NG turned on. (This is the default setting in most scene nodes). 
+\begin{DoxyParams}{Parameters}
+{\em parent} & Parent scene node of the light. Can be null. If the parent moves, the light will move too. \\
+\hline
+{\em position} & Position of the space relative to its parent where the light will be placed. \\
+\hline
+{\em color} & Diffuse color of the light. Ambient or Specular colors can be set manually with the \hyperlink{classirr_1_1scene_1_1ILightSceneNode_a20147e049be1a4790346fd72b150b30c}{I\+Light\+Scene\+Node\+::get\+Light\+Data()} method. \\
+\hline
+{\em radius} & Radius of the light. \\
+\hline
+{\em id} & id of the node. This id can be used to identify the node. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the interface of the light if successful, otherwise N\+U\+LL. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Mesh\+Scene\+Node@{add\+Mesh\+Scene\+Node}}
+\index{add\+Mesh\+Scene\+Node@{add\+Mesh\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Mesh\+Scene\+Node(\+I\+G\+P\+U\+Mesh $\ast$mesh, I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, s32 id=-\/1, const core\+::vector3df \&position=core\+::vector3df(0, 0, 0), const core\+::vector3df \&rotation=core\+::vector3df(0, 0, 0), const core\+::vector3df \&scale=core\+::vector3df(1.\+0f, 1.\+0f, 1.\+0f), bool also\+Add\+If\+Mesh\+Pointer\+Zero=false)=0}{addMeshSceneNode(IGPUMesh *mesh, IDummyTransformationSceneNode *parent=0, s32 id=-1, const core::vector3df \&position=core::vector3df(0, 0, 0), const core::vector3df \&rotation=core::vector3df(0, 0, 0), const core::vector3df \&scale=core::vector3df(1.0f, 1.0f, 1.0f), bool alsoAddIfMeshPointerZero=false)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Mesh\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Mesh\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+G\+P\+U\+Mesh} $\ast$}]{mesh, }
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}, }
+\item[{const {\bf core\+::vector3df} \&}]{position = {\ttfamily {\bf core\+::vector3df}(0,~0,~0)}, }
+\item[{const {\bf core\+::vector3df} \&}]{rotation = {\ttfamily {\bf core\+::vector3df}(0,~0,~0)}, }
+\item[{const {\bf core\+::vector3df} \&}]{scale = {\ttfamily {\bf core\+::vector3df}(1.0f,~1.0f,~1.0f)}, }
+\item[{bool}]{also\+Add\+If\+Mesh\+Pointer\+Zero = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a38b254e43611c84a73c1302ced3816a8}{}\label{classirr_1_1scene_1_1ISceneManager_a38b254e43611c84a73c1302ced3816a8}
+
+
+Adds a scene node for rendering a static mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mesh} & Pointer to the loaded static mesh to be displayed. \\
+\hline
+{\em parent} & Parent of the scene node. Can be N\+U\+LL if no parent. \\
+\hline
+{\em id} & Id of the node. This id can be used to identify the scene node. \\
+\hline
+{\em position} & Position of the space relative to its parent where the scene node will be placed. \\
+\hline
+{\em rotation} & Initital rotation of the scene node. \\
+\hline
+{\em scale} & Initial scale of the scene node. \\
+\hline
+{\em also\+Add\+If\+Mesh\+Pointer\+Zero} & Add the scene node even if a 0 pointer is passed. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the created scene node. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Scene\+Node@{add\+Scene\+Node}}
+\index{add\+Scene\+Node@{add\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Scene\+Node(const char $\ast$scene\+Node\+Type\+Name, I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0)=0}{addSceneNode(const char *sceneNodeTypeName, IDummyTransformationSceneNode *parent=0)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{scene\+Node\+Type\+Name, }
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a8a3616e641e586b400a923b967ff32ab}{}\label{classirr_1_1scene_1_1ISceneManager_a8a3616e641e586b400a923b967ff32ab}
+
+
+Adds a scene node to the scene by name. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the scene node added by a factory This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Sky\+Box\+Scene\+Node@{add\+Sky\+Box\+Scene\+Node}}
+\index{add\+Sky\+Box\+Scene\+Node@{add\+Sky\+Box\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Sky\+Box\+Scene\+Node(video\+::\+I\+Texture $\ast$top, video\+::\+I\+Texture $\ast$bottom, video\+::\+I\+Texture $\ast$left, video\+::\+I\+Texture $\ast$right, video\+::\+I\+Texture $\ast$front, video\+::\+I\+Texture $\ast$back, I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, s32 id=-\/1)=0}{addSkyBoxSceneNode(video::ITexture *top, video::ITexture *bottom, video::ITexture *left, video::ITexture *right, video::ITexture *front, video::ITexture *back, IDummyTransformationSceneNode *parent=0, s32 id=-1)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Sky\+Box\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+I\+Texture} $\ast$}]{top, }
+\item[{{\bf video\+::\+I\+Texture} $\ast$}]{bottom, }
+\item[{{\bf video\+::\+I\+Texture} $\ast$}]{left, }
+\item[{{\bf video\+::\+I\+Texture} $\ast$}]{right, }
+\item[{{\bf video\+::\+I\+Texture} $\ast$}]{front, }
+\item[{{\bf video\+::\+I\+Texture} $\ast$}]{back, }
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_acd697396eaef0d1d22e7bb32abbf7d55}{}\label{classirr_1_1scene_1_1ISceneManager_acd697396eaef0d1d22e7bb32abbf7d55}
+
+
+Adds a skybox scene node to the scene graph. 
+
+A skybox is a big cube with 6 textures on it and is drawn around the camera position. 
+\begin{DoxyParams}{Parameters}
+{\em top} & Texture for the top plane of the box. \\
+\hline
+{\em bottom} & Texture for the bottom plane of the box. \\
+\hline
+{\em left} & Texture for the left plane of the box. \\
+\hline
+{\em right} & Texture for the right plane of the box. \\
+\hline
+{\em front} & Texture for the front plane of the box. \\
+\hline
+{\em back} & Texture for the back plane of the box. \\
+\hline
+{\em parent} & Parent scene node of the skybox. A skybox usually has no parent, so this should be null. Note\+: If a parent is set to the skybox, the box will not change how it is drawn. \\
+\hline
+{\em id} & An id of the node. This id can be used to identify the node. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the sky box if successful, otherwise N\+U\+LL. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Sky\+Dome\+Scene\+Node@{add\+Sky\+Dome\+Scene\+Node}}
+\index{add\+Sky\+Dome\+Scene\+Node@{add\+Sky\+Dome\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Sky\+Dome\+Scene\+Node(video\+::\+I\+Texture $\ast$texture, u32 hori\+Res=16, u32 vert\+Res=8, f32 texture\+Percentage=0.\+9, f32 sphere\+Percentage=2.\+0, f32 radius=1000.\+f, I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, s32 id=-\/1)=0}{addSkyDomeSceneNode(video::ITexture *texture, u32 horiRes=16, u32 vertRes=8, f32 texturePercentage=0.9, f32 spherePercentage=2.0, f32 radius=1000.f, IDummyTransformationSceneNode *parent=0, s32 id=-1)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Sky\+Dome\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+I\+Texture} $\ast$}]{texture, }
+\item[{{\bf u32}}]{hori\+Res = {\ttfamily 16}, }
+\item[{{\bf u32}}]{vert\+Res = {\ttfamily 8}, }
+\item[{{\bf f32}}]{texture\+Percentage = {\ttfamily 0.9}, }
+\item[{{\bf f32}}]{sphere\+Percentage = {\ttfamily 2.0}, }
+\item[{{\bf f32}}]{radius = {\ttfamily 1000.f}, }
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a30ea6d8b624064781a6ffd6a1841b525}{}\label{classirr_1_1scene_1_1ISceneManager_a30ea6d8b624064781a6ffd6a1841b525}
+
+
+Adds a skydome scene node to the scene graph. 
+
+A skydome is a large (half-\/) sphere with a panoramic texture on the inside and is drawn around the camera position. 
+\begin{DoxyParams}{Parameters}
+{\em texture} & Texture for the dome. \\
+\hline
+{\em hori\+Res} & Number of vertices of a horizontal layer of the sphere. \\
+\hline
+{\em vert\+Res} & Number of vertices of a vertical layer of the sphere. \\
+\hline
+{\em texture\+Percentage} & How much of the height of the texture is used. Should be between 0 and 1. \\
+\hline
+{\em sphere\+Percentage} & How much of the sphere is drawn. Value should be between 0 and 2, where 1 is an exact half-\/sphere and 2 is a full sphere. \\
+\hline
+{\em radius} & The Radius of the sphere \\
+\hline
+{\em parent} & Parent scene node of the dome. A dome usually has no parent, so this should be null. Note\+: If a parent is set, the dome will not change how it is drawn. \\
+\hline
+{\em id} & An id of the node. This id can be used to identify the node. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the sky dome if successful, otherwise N\+U\+LL. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+Sphere\+Scene\+Node@{add\+Sphere\+Scene\+Node}}
+\index{add\+Sphere\+Scene\+Node@{add\+Sphere\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+Sphere\+Scene\+Node(f32 radius=5.\+0f, s32 poly\+Count=16, I\+Dummy\+Transformation\+Scene\+Node $\ast$parent=0, s32 id=-\/1, const core\+::vector3df \&position=core\+::vector3df(0, 0, 0), const core\+::vector3df \&rotation=core\+::vector3df(0, 0, 0), const core\+::vector3df \&scale=core\+::vector3df(1.\+0f, 1.\+0f, 1.\+0f))=0}{addSphereSceneNode(f32 radius=5.0f, s32 polyCount=16, IDummyTransformationSceneNode *parent=0, s32 id=-1, const core::vector3df \&position=core::vector3df(0, 0, 0), const core::vector3df \&rotation=core::vector3df(0, 0, 0), const core::vector3df \&scale=core::vector3df(1.0f, 1.0f, 1.0f))=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Mesh\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::add\+Sphere\+Scene\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf f32}}]{radius = {\ttfamily 5.0f}, }
+\item[{{\bf s32}}]{poly\+Count = {\ttfamily 16}, }
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{parent = {\ttfamily 0}, }
+\item[{{\bf s32}}]{id = {\ttfamily -\/1}, }
+\item[{const {\bf core\+::vector3df} \&}]{position = {\ttfamily {\bf core\+::vector3df}(0,~0,~0)}, }
+\item[{const {\bf core\+::vector3df} \&}]{rotation = {\ttfamily {\bf core\+::vector3df}(0,~0,~0)}, }
+\item[{const {\bf core\+::vector3df} \&}]{scale = {\ttfamily {\bf core\+::vector3df}(1.0f,~1.0f,~1.0f)}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a12969449cd9a4365657702a69315d1db}{}\label{classirr_1_1scene_1_1ISceneManager_a12969449cd9a4365657702a69315d1db}
+
+
+Adds a sphere scene node of the given radius and detail. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em radius} & Radius of the sphere. \\
+\hline
+{\em poly\+Count} & The number of vertices in horizontal and vertical direction. The total poly\+Count of the sphere is poly\+Count$\ast$poly\+Count. This parameter must be less than 256 to stay within the 16-\/bit limit of the indices of a meshbuffer. \\
+\hline
+{\em parent} & Parent of the scene node. Can be 0 if no parent. \\
+\hline
+{\em id} & Id of the node. This id can be used to identify the scene node. \\
+\hline
+{\em position} & Position of the space relative to its parent where the scene node will be placed. \\
+\hline
+{\em rotation} & Initital rotation of the scene node. \\
+\hline
+{\em scale} & Initial scale of the scene node. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the created test scene node. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!add\+To\+Deletion\+Queue@{add\+To\+Deletion\+Queue}}
+\index{add\+To\+Deletion\+Queue@{add\+To\+Deletion\+Queue}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{add\+To\+Deletion\+Queue(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$node)=0}{addToDeletionQueue(IDummyTransformationSceneNode *node)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Manager\+::add\+To\+Deletion\+Queue (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{node}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a4c29710a7802881200a26384313bd14c}{}\label{classirr_1_1scene_1_1ISceneManager_a4c29710a7802881200a26384313bd14c}
+
+
+Adds a scene node to the deletion queue. 
+
+The scene node is immediatly deleted when it\textquotesingle{}s secure. Which means when the scene node does not execute animators and things like that. This method is for example used for deleting scene nodes by their scene node animators. In most other cases, a \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode_a672cb748079172ee204bb389e1bde04d}{I\+Scene\+Node\+::remove()} call is enough, using this deletion queue is not necessary. See \hyperlink{classirr_1_1scene_1_1ISceneManager_a163cc04ff2cb03852ac891de56200fa3}{I\+Scene\+Manager\+::create\+Delete\+Animator()} for details. 
+\begin{DoxyParams}{Parameters}
+{\em node} & Node to detete. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!clear@{clear}}
+\index{clear@{clear}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{clear()=0}{clear()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Manager\+::clear (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_abaa3d11a833b89f7579848e234881988}{}\label{classirr_1_1scene_1_1ISceneManager_abaa3d11a833b89f7579848e234881988}
+
+
+Clears the whole scene. 
+
+All scene nodes are removed. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!create\+Delete\+Animator@{create\+Delete\+Animator}}
+\index{create\+Delete\+Animator@{create\+Delete\+Animator}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{create\+Delete\+Animator(u32 time\+Ms)=0}{createDeleteAnimator(u32 timeMs)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Animator}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::create\+Delete\+Animator (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{time\+Ms}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a163cc04ff2cb03852ac891de56200fa3}{}\label{classirr_1_1scene_1_1ISceneManager_a163cc04ff2cb03852ac891de56200fa3}
+
+
+Creates a scene node animator, which deletes the scene node after some time automatically. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em time\+Ms} & Time in milliseconds, after when the node will be deleted. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The animator. Attach it to a scene node with \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode_ace62fd3a3a33bccfbed6fa958786bf9b}{I\+Scene\+Node\+::add\+Animator()} and the animator will animate it. If you no longer need the animator, you should call \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Scene\+Node\+Animator\+::drop()}. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!create\+Fly\+Circle\+Animator@{create\+Fly\+Circle\+Animator}}
+\index{create\+Fly\+Circle\+Animator@{create\+Fly\+Circle\+Animator}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{create\+Fly\+Circle\+Animator(const core\+::vector3df \&center=core\+::vector3df(0.\+f, 0.\+f, 0.\+f), f32 radius=100.\+f, f32 speed=0.\+001f, const core\+::vector3df \&direction=core\+::vector3df(0.\+f, 1.\+f, 0.\+f), f32 start\+Position=0.\+f, f32 radius\+Ellipsoid=0.\+f)=0}{createFlyCircleAnimator(const core::vector3df \&center=core::vector3df(0.f, 0.f, 0.f), f32 radius=100.f, f32 speed=0.001f, const core::vector3df \&direction=core::vector3df(0.f, 1.f, 0.f), f32 startPosition=0.f, f32 radiusEllipsoid=0.f)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Animator}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::create\+Fly\+Circle\+Animator (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::vector3df} \&}]{center = {\ttfamily {\bf core\+::vector3df}(0.f,~0.f,~0.f)}, }
+\item[{{\bf f32}}]{radius = {\ttfamily 100.f}, }
+\item[{{\bf f32}}]{speed = {\ttfamily 0.001f}, }
+\item[{const {\bf core\+::vector3df} \&}]{direction = {\ttfamily {\bf core\+::vector3df}(0.f,~1.f,~0.f)}, }
+\item[{{\bf f32}}]{start\+Position = {\ttfamily 0.f}, }
+\item[{{\bf f32}}]{radius\+Ellipsoid = {\ttfamily 0.f}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a2e49ff49bc9e88e8ecf3d681354e1ab6}{}\label{classirr_1_1scene_1_1ISceneManager_a2e49ff49bc9e88e8ecf3d681354e1ab6}
+
+
+Creates a fly circle animator, which lets the attached scene node fly around a center. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em center} & Center of the circle. \\
+\hline
+{\em radius} & Radius of the circle. \\
+\hline
+{\em speed} & The orbital speed, in radians per millisecond. \\
+\hline
+{\em direction} & Specifies the upvector used for alignment of the mesh. \\
+\hline
+{\em start\+Position} & The position on the circle where the animator will begin. Value is in multiples of a circle, i.\+e. 0.\+5 is half way around. (phase) \\
+\hline
+{\em radius\+Ellipsoid} & if radius\+Ellipsoid != 0 then radius2 froms a ellipsoid begin. Value is in multiples of a circle, i.\+e. 0.\+5 is half way around. (phase) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The animator. Attach it to a scene node with \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode_ace62fd3a3a33bccfbed6fa958786bf9b}{I\+Scene\+Node\+::add\+Animator()} and the animator will animate it. If you no longer need the animator, you should call \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Scene\+Node\+Animator\+::drop()}. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!create\+Fly\+Straight\+Animator@{create\+Fly\+Straight\+Animator}}
+\index{create\+Fly\+Straight\+Animator@{create\+Fly\+Straight\+Animator}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{create\+Fly\+Straight\+Animator(const core\+::vector3df \&start\+Point, const core\+::vector3df \&end\+Point, u32 time\+For\+Way, bool loop=false, bool pingpong=false)=0}{createFlyStraightAnimator(const core::vector3df \&startPoint, const core::vector3df \&endPoint, u32 timeForWay, bool loop=false, bool pingpong=false)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Animator}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::create\+Fly\+Straight\+Animator (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::vector3df} \&}]{start\+Point, }
+\item[{const {\bf core\+::vector3df} \&}]{end\+Point, }
+\item[{{\bf u32}}]{time\+For\+Way, }
+\item[{bool}]{loop = {\ttfamily false}, }
+\item[{bool}]{pingpong = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a865c2da86486dcdb44847d5baa7aaa61}{}\label{classirr_1_1scene_1_1ISceneManager_a865c2da86486dcdb44847d5baa7aaa61}
+
+
+Creates a fly straight animator, which lets the attached scene node fly or move along a line between two points. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start\+Point} & Start point of the line. \\
+\hline
+{\em end\+Point} & End point of the line. \\
+\hline
+{\em time\+For\+Way} & Time in milli seconds how long the node should need to move from the start point to the end point. \\
+\hline
+{\em loop} & If set to false, the node stops when the end point is reached. If loop is true, the node begins again at the start. \\
+\hline
+{\em pingpong} & Flag to set whether the animator should fly back from end to start again. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The animator. Attach it to a scene node with \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode_ace62fd3a3a33bccfbed6fa958786bf9b}{I\+Scene\+Node\+::add\+Animator()} and the animator will animate it. If you no longer need the animator, you should call \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Scene\+Node\+Animator\+::drop()}. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!create\+Follow\+Spline\+Animator@{create\+Follow\+Spline\+Animator}}
+\index{create\+Follow\+Spline\+Animator@{create\+Follow\+Spline\+Animator}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{create\+Follow\+Spline\+Animator(s32 start\+Time, const core\+::array$<$ core\+::vector3df $>$ \&points, f32 speed=1.\+0f, f32 tightness=0.\+5f, bool loop=true, bool pingpong=false)=0}{createFollowSplineAnimator(s32 startTime, const core::array< core::vector3df > \&points, f32 speed=1.0f, f32 tightness=0.5f, bool loop=true, bool pingpong=false)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Animator}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::create\+Follow\+Spline\+Animator (
+\begin{DoxyParamCaption}
+\item[{{\bf s32}}]{start\+Time, }
+\item[{const {\bf core\+::array}$<$ {\bf core\+::vector3df} $>$ \&}]{points, }
+\item[{{\bf f32}}]{speed = {\ttfamily 1.0f}, }
+\item[{{\bf f32}}]{tightness = {\ttfamily 0.5f}, }
+\item[{bool}]{loop = {\ttfamily true}, }
+\item[{bool}]{pingpong = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_ab0c9d4ab88bbe2ad71623b1054a0c3ba}{}\label{classirr_1_1scene_1_1ISceneManager_ab0c9d4ab88bbe2ad71623b1054a0c3ba}
+
+
+Creates a follow spline animator. 
+
+The animator modifies the position of the attached scene node to make it follow a hermite spline. It uses a subset of hermite splines\+: either cardinal splines (tightness != 0.\+5) or catmull-\/rom-\/splines (tightness == 0.\+5). The animator moves from one control point to the next in 1/speed seconds. This code was sent in by Matthias Gall. If you no longer need the animator, you should call \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Scene\+Node\+Animator\+::drop()}. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!create\+Mesh\+Writer@{create\+Mesh\+Writer}}
+\index{create\+Mesh\+Writer@{create\+Mesh\+Writer}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{create\+Mesh\+Writer(\+E\+M\+E\+S\+H\+\_\+\+W\+R\+I\+T\+E\+R\+\_\+\+T\+Y\+P\+E type)=0}{createMeshWriter(EMESH\_WRITER\_TYPE type)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Mesh\+Writer}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::create\+Mesh\+Writer (
+\begin{DoxyParamCaption}
+\item[{{\bf E\+M\+E\+S\+H\+\_\+\+W\+R\+I\+T\+E\+R\+\_\+\+T\+Y\+PE}}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_ae9a06fb68757381f99cfe11ecbd153e6}{}\label{classirr_1_1scene_1_1ISceneManager_ae9a06fb68757381f99cfe11ecbd153e6}
+
+
+Get a mesh writer implementation if available. 
+
+Note\+: You need to \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{drop()} the pointer after use again, see \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for details. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!create\+New\+Scene\+Manager@{create\+New\+Scene\+Manager}}
+\index{create\+New\+Scene\+Manager@{create\+New\+Scene\+Manager}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{create\+New\+Scene\+Manager(bool clone\+Content=false)=0}{createNewSceneManager(bool cloneContent=false)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Manager}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::create\+New\+Scene\+Manager (
+\begin{DoxyParamCaption}
+\item[{bool}]{clone\+Content = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a94805dd4eca41ccef9607aefe669aed9}{}\label{classirr_1_1scene_1_1ISceneManager_a94805dd4eca41ccef9607aefe669aed9}
+
+
+Creates a new scene manager. 
+
+This can be used to easily draw and/or store two independent scenes at the same time. The mesh cache will be shared between all existing scene managers, which means if you load a mesh in the original scene manager using for example \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{get\+Mesh()}, the mesh will be available in all other scene managers too, without loading. The original/main scene manager will still be there and accessible via \hyperlink{classirr_1_1IrrlichtDevice_a891b503ff4d5041296d88f23f97d7b3d}{Irrlicht\+Device\+::get\+Scene\+Manager()}. If you need input event in this new scene manager, for example for F\+PS cameras, you\textquotesingle{}ll need to forward input to this manually\+: Just implement an \hyperlink{classirr_1_1IEventReceiver}{I\+Event\+Receiver} and call your\+New\+Scene\+Manager-\/$>$\hyperlink{classirr_1_1scene_1_1ISceneManager_ac68aa8d654884f19ad52fa28f11db424}{post\+Event\+From\+User()}, and return true so that the original scene manager doesn\textquotesingle{}t get the event. Otherwise, all input will go to the main scene manager automatically. If you no longer need the new scene manager, you should call \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Scene\+Manager\+::drop()}. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!create\+Rotation\+Animator@{create\+Rotation\+Animator}}
+\index{create\+Rotation\+Animator@{create\+Rotation\+Animator}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{create\+Rotation\+Animator(const core\+::vector3df \&rotation\+Speed)=0}{createRotationAnimator(const core::vector3df \&rotationSpeed)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Animator}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::create\+Rotation\+Animator (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::vector3df} \&}]{rotation\+Speed}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a29efe9505de4e5dc2218283ef0c2a64d}{}\label{classirr_1_1scene_1_1ISceneManager_a29efe9505de4e5dc2218283ef0c2a64d}
+
+
+Creates a rotation animator, which rotates the attached scene node around itself. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rotation\+Speed} & Specifies the speed of the animation in degree per 10 milliseconds. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The animator. Attach it to a scene node with \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode_ace62fd3a3a33bccfbed6fa958786bf9b}{I\+Scene\+Node\+::add\+Animator()} and the animator will animate it. If you no longer need the animator, you should call \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Scene\+Node\+Animator\+::drop()}. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!create\+Scene\+Node\+Animator@{create\+Scene\+Node\+Animator}}
+\index{create\+Scene\+Node\+Animator@{create\+Scene\+Node\+Animator}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{create\+Scene\+Node\+Animator(const char $\ast$type\+Name, I\+Scene\+Node $\ast$target=0)=0}{createSceneNodeAnimator(const char *typeName, ISceneNode *target=0)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Animator}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::create\+Scene\+Node\+Animator (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{type\+Name, }
+\item[{{\bf I\+Scene\+Node} $\ast$}]{target = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_ac63c38a05b8e7d0a11ddb1752da36835}{}\label{classirr_1_1scene_1_1ISceneManager_ac63c38a05b8e7d0a11ddb1752da36835}
+
+
+creates a scene node animator based on its type name 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type\+Name} & Type of the scene node animator to add. \\
+\hline
+{\em target} & Target scene node of the new animator. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns pointer to the new scene node animator or null if not successful. You need to drop this pointer after calling this, see \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for details. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!create\+Texture\+Animator@{create\+Texture\+Animator}}
+\index{create\+Texture\+Animator@{create\+Texture\+Animator}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{create\+Texture\+Animator(const core\+::array$<$ video\+::\+I\+Texture $\ast$ $>$ \&textures, s32 time\+Per\+Frame, bool loop=true)=0}{createTextureAnimator(const core::array< video::ITexture * > \&textures, s32 timePerFrame, bool loop=true)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Animator}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::create\+Texture\+Animator (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::array}$<$ {\bf video\+::\+I\+Texture} $\ast$ $>$ \&}]{textures, }
+\item[{{\bf s32}}]{time\+Per\+Frame, }
+\item[{bool}]{loop = {\ttfamily true}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_ae212e01dffc4891d32e3d1735d22d04a}{}\label{classirr_1_1scene_1_1ISceneManager_ae212e01dffc4891d32e3d1735d22d04a}
+
+
+Creates a texture animator, which switches the textures of the target scene node based on a list of textures. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em textures} & List of textures to use. \\
+\hline
+{\em time\+Per\+Frame} & Time in milliseconds, how long any texture in the list should be visible. \\
+\hline
+{\em loop} & If set to to false, the last texture remains set, and the animation stops. If set to true, the animation restarts with the first texture. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The animator. Attach it to a scene node with \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode_ace62fd3a3a33bccfbed6fa958786bf9b}{I\+Scene\+Node\+::add\+Animator()} and the animator will animate it. If you no longer need the animator, you should call \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Scene\+Node\+Animator\+::drop()}. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!draw\+All@{draw\+All}}
+\index{draw\+All@{draw\+All}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{draw\+All()=0}{drawAll()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Manager\+::draw\+All (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a04240262904667c821bd9de5e5fd9b02}{}\label{classirr_1_1scene_1_1ISceneManager_a04240262904667c821bd9de5e5fd9b02}
+
+
+Draws all the scene nodes. 
+
+This can only be invoked between I\+Video\+Driver\+::begin\+Scene() and I\+Video\+Driver\+::end\+Scene(). Please note that the scene is not only drawn when calling this, but also animated by existing scene node animators, culling of scene nodes is done, etc. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Active\+Camera@{get\+Active\+Camera}}
+\index{get\+Active\+Camera@{get\+Active\+Camera}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Active\+Camera() const  =0}{getActiveCamera() const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Camera\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Active\+Camera (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a78585330c2c7ffae133abefd55f495b3}{}\label{classirr_1_1scene_1_1ISceneManager_a78585330c2c7ffae133abefd55f495b3}
+
+
+Get the current active camera. 
+
+\begin{DoxyReturn}{Returns}
+The active camera is returned. Note that this can be N\+U\+LL, if there was no camera created yet. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Default\+Scene\+Node\+Animator\+Factory@{get\+Default\+Scene\+Node\+Animator\+Factory}}
+\index{get\+Default\+Scene\+Node\+Animator\+Factory@{get\+Default\+Scene\+Node\+Animator\+Factory}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Default\+Scene\+Node\+Animator\+Factory()=0}{getDefaultSceneNodeAnimatorFactory()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Animator\+Factory}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Default\+Scene\+Node\+Animator\+Factory (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_adeb3d24c8ffafd5e671f344931a0b3a5}{}\label{classirr_1_1scene_1_1ISceneManager_adeb3d24c8ffafd5e671f344931a0b3a5}
+
+
+Get the default scene node animator factory which can create all built-\/in scene node animators. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the default scene node animator factory This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Default\+Scene\+Node\+Factory@{get\+Default\+Scene\+Node\+Factory}}
+\index{get\+Default\+Scene\+Node\+Factory@{get\+Default\+Scene\+Node\+Factory}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Default\+Scene\+Node\+Factory()=0}{getDefaultSceneNodeFactory()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Factory}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Default\+Scene\+Node\+Factory (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a1ea0ec7ec95a97819f1de5222b97e774}{}\label{classirr_1_1scene_1_1ISceneManager_a1ea0ec7ec95a97819f1de5222b97e774}
+
+
+Get the default scene node factory which can create all built in scene nodes. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the default scene node factory This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+File\+System@{get\+File\+System}}
+\index{get\+File\+System@{get\+File\+System}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+File\+System()=0}{getFileSystem()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf io\+::\+I\+File\+System}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+File\+System (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_adbd98fbeba199005cf795a5bae7ccbaf}{}\label{classirr_1_1scene_1_1ISceneManager_adbd98fbeba199005cf795a5bae7ccbaf}
+
+
+Get the active File\+System. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the File\+System This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Geometry\+Creator@{get\+Geometry\+Creator}}
+\index{get\+Geometry\+Creator@{get\+Geometry\+Creator}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Geometry\+Creator(void) const  =0}{getGeometryCreator(void) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual const {\bf I\+Geometry\+Creator}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Geometry\+Creator (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_aa907bfdd82887a9855157fdfb41985e0}{}\label{classirr_1_1scene_1_1ISceneManager_aa907bfdd82887a9855157fdfb41985e0}
+
+
+Get an instance of a geometry creator. 
+
+The geometry creator provides some helper methods to create various types of basic geometry. This can be useful for custom scene nodes. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Mesh@{get\+Mesh}}
+\index{get\+Mesh@{get\+Mesh}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Mesh(const io\+::path \&filename)=0}{getMesh(const io::path \&filename)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+C\+P\+U\+Mesh}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Mesh (
+\begin{DoxyParamCaption}
+\item[{const {\bf io\+::path} \&}]{filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{}\label{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}
+
+
+Get pointer to an animateable mesh. Loads the file if not loaded already. 
+
+If you want to remove a loaded mesh from the cache again, use remove\+Mesh(). Currently there are the following mesh formats supported\+: \tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*2{|X[-1]}|}
+\hline
+Format &Description  \\\cline{1-2}
+3D Studio (.3ds) &Loader for 3\+D-\/\+Studio files which lots of 3D packages are able to export. Only static meshes are currently supported by this importer.  \\\cline{1-2}
+3D World Studio (.smf) &Loader for Leadwerks S\+MF mesh files, a simple mesh format containing static geometry for games. The proprietary .S\+TF texture format is not supported yet. This loader was originally written by Joseph Ellis.   \\\cline{1-2}
+Bliz Basic B3D (.b3d) &Loader for blitz basic files, developed by Mark Sibly. This is the ideal animated mesh format for game characters as it is both rigidly defined and widely supported by modeling and animation software. As this format supports skeletal animations, an I\+Skinned\+Mesh will be returned by this importer.  \\\cline{1-2}
+Cartography shop 4 (.csm) &Cartography Shop is a modeling program for creating architecture and calculating lighting. Irrlicht can directly import .csm files thanks to the Irr\+C\+SM library created by Saurav Mohapatra which is now integrated directly in Irrlicht. If you are using this loader, please note that you\textquotesingle{}ll have to set the path of the textures before loading .csm files. You can do this using Scene\+Manager-\/$>$get\+Parameters()-\/$>$set\+Attribute(\hyperlink{namespaceirr_1_1scene_aecf002b9e14bd101b455632e1c260a8d}{scene\+::\+C\+S\+M\+\_\+\+T\+E\+X\+T\+U\+R\+E\+\_\+\+P\+A\+TH}, "path/to/your/textures");  \\\cline{1-2}
+C\+O\+L\+L\+A\+DA (.dae, .xml) &C\+O\+L\+L\+A\+DA is an open Digital Asset Exchange Schema for the interactive 3D industry. There are exporters and importers for this format available for most of the big 3d packagesat \href{http://collada.org}{\tt http\+://collada.\+org}. Irrlicht can import C\+O\+L\+L\+A\+DA files by using the \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{I\+Scene\+Manager\+::get\+Mesh()} method. C\+O\+L\+L\+A\+DA files need not contain only one single mesh but multiple meshes and a whole scene setup with lights, cameras and mesh instances, this loader can set up a scene as described by the C\+O\+L\+L\+A\+DA file instead of loading and returning one single mesh. By default, this loader behaves like the other loaders and does not create instances, but it can be switched into this mode by using Scene\+Manager-\/$>$get\+Parameters()-\/$>$set\+Attribute(\+C\+O\+L\+L\+A\+D\+A\+\_\+\+C\+R\+E\+A\+T\+E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+I\+N\+S\+T\+A\+N\+C\+E\+S, true); Created scene nodes will be named as the names of the nodes in the C\+O\+L\+L\+A\+DA file. The returned mesh is just a dummy object in this mode. Meshes included in the scene will be added into the scene manager with the following naming scheme\+: \char`\"{}path/to/file/file.\+dea\#meshname\char`\"{}. The loading of such meshes is logged. Currently, this loader is able to
+
+\begin{DoxyVerb}   create meshes (made of only polygons), lights, and
+   cameras. Materials and animations are currently not
+   supported but this will change with future releases.
+\end{DoxyVerb}
+   \\\cline{1-2}
+Delgine DeleD (.dmf) &DeleD (delgine.\+com) is a 3D editor and level-\/editor combined into one and is specifically designed for 3D game-\/development. With this loader, it is possible to directly load all geometry is as well as textures and lightmaps from .dmf files. To set texture and material paths, see scene\+::\+D\+M\+F\+\_\+\+U\+S\+E\+\_\+\+M\+A\+T\+E\+R\+I\+A\+L\+S\+\_\+\+D\+I\+RS and \hyperlink{namespaceirr_1_1scene_a2a6e8bd33eaec1815e3e16a59c269fb5}{scene\+::\+D\+M\+F\+\_\+\+T\+E\+X\+T\+U\+R\+E\+\_\+\+P\+A\+TH}. It is also possible to flip the alpha texture by setting \hyperlink{namespaceirr_1_1scene_acdc1ddd0bfeb4118a5d8f3ea953717f6}{scene\+::\+D\+M\+F\+\_\+\+F\+L\+I\+P\+\_\+\+A\+L\+P\+H\+A\+\_\+\+T\+E\+X\+T\+U\+R\+ES} to true and to set the material transparent reference value by setting \hyperlink{namespaceirr_1_1scene_afd6e025453e80983de80371dc56718ef}{scene\+::\+D\+M\+F\+\_\+\+A\+L\+P\+H\+A\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+R\+EF} to a float between 0 and
+\begin{DoxyEnumerate}
+\item The loader is based on Salvatore Russo\textquotesingle{}s .dmf loader, I just changed some parts of it. Thanks to Salvatore for his work and for allowing me to use his code in Irrlicht and put it under Irrlicht\textquotesingle{}s license. For newer and more enchanced versions of the loader, take a look at delgine.\+com.   
+\end{DoxyEnumerate}\\\cline{1-2}
+DirectX (.x) &Platform independent importer (so not D3\+D-\/only) for .x files. Most 3D packages can export these natively and there are several tools for them available, e.\+g. the Maya exporter included in the DX S\+DK. .x files can include skeletal animations and Irrlicht is able to play and display them, users can manipulate the joints via the I\+Skinned\+Mesh interface. Currently, Irrlicht only supports uncompressed .x files.  \\\cline{1-2}
+Half-\/\+Life model (.mdl) &This loader opens Half-\/life 1 models, it was contributed by Fabio Concas and adapted by Thomas Alten.  \\\cline{1-2}
+Light\+Wave (.lwo) &Native to New\+Tek\textquotesingle{}s Light\+Wave 3D, the L\+WO format is well known and supported by many exporters. This loader will import L\+W\+O2 models including lightmaps, bumpmaps and reflection textures.  \\\cline{1-2}
+Maya (.obj) &Most 3D software can create .obj files which contain static geometry without material data. The material files .mtl are also supported. This importer for Irrlicht can load them directly.   \\\cline{1-2}
+Milkshape (.ms3d) &.M\+S3D files contain models and sometimes skeletal animations from the Milkshape 3D modeling and animation software. Like the other skeletal mesh loaders, oints are exposed via the I\+Skinned\+Mesh animated mesh type.  \\\cline{1-2}
+My3D (.my3d) &.my3D is a flexible 3D file format. The My3\+D\+Tools contains plug-\/ins to export .my3D files from several 3D packages. With this built-\/in importer, Irrlicht can read and display those files directly. This loader was written by Zhuck Dimitry who also created the whole My3\+D\+Tools package. If you are using this loader, please note that you can set the path of the textures before loading .my3d files. You can do this using Scene\+Manager-\/$>$get\+Parameters()-\/$>$set\+Attribute(\hyperlink{namespaceirr_1_1scene_a54eb9ea68ba13b4689444f8d34e338b9}{scene\+::\+M\+Y3\+D\+\_\+\+T\+E\+X\+T\+U\+R\+E\+\_\+\+P\+A\+TH}, "path/to/your/textures");   \\\cline{1-2}
+O\+CT (.oct) &The oct file format contains 3D geometry and lightmaps and can be loaded directly by Irrlicht. O\+CT files~\newline
+ can be created by F\+S\+Rad, Paul Nette\textquotesingle{}s radiosity processor or exported from Blender using O\+C\+T\+Tools which can be found in the exporters/\+O\+C\+T\+Tools directory of the S\+DK. Thanks to Murphy Mc\+Cauley for creating all this.  \\\cline{1-2}
+O\+G\+RE Meshes (.mesh) &Ogre .mesh files contain 3D data for the O\+G\+RE 3D engine. Irrlicht can read and display them directly with this importer. To define materials for the mesh, copy a .material file named like the corresponding .mesh file where the .mesh file is. (For example ogrehead.\+material for ogrehead.\+mesh). Thanks to Christian Stehno who wrote and contributed this loader.  \\\cline{1-2}
+Pulsar L\+M\+Tools (.lmts) &L\+M\+Tools is a set of tools (Windows \& Linux) for creating lightmaps. Irrlicht can directly read .lmts files thanks to~\newline
+ the importer created by Jonas Petersen. If you are using this loader, please note that you can set the path of the textures before loading .lmts files. You can do this using Scene\+Manager-\/$>$get\+Parameters()-\/$>$set\+Attribute(\hyperlink{namespaceirr_1_1scene_a1d81a2ac8866dfa4a0ff3bdece327f75}{scene\+::\+L\+M\+T\+S\+\_\+\+T\+E\+X\+T\+U\+R\+E\+\_\+\+P\+A\+TH}, "path/to/your/textures"); Notes for~\newline
+ this version of the loader\+:~\newline
+
+\begin{DoxyItemize}
+\item It does not recognise/support user data in the $\ast$.lmts files.~\newline
+
+\item The T\+G\+As generated by L\+M\+Tools don\textquotesingle{}t work in Irrlicht for some reason (the textures are upside down). Opening and resaving them in a graphics app will solve the problem.  
+\end{DoxyItemize}\\\cline{1-2}
+Stanford Triangle (.ply) &Invented by Stanford University and known as the native format of the infamous \char`\"{}\+Stanford Bunny\char`\"{} model, this is a popular static mesh format used by 3D scanning hardware and software. This loader supports extremely large models in both A\+S\+C\+II and binary format, but only has rudimentary material support in the form of vertex colors and texture coordinates.  \\\cline{1-2}
+Stereolithography (.stl) &The S\+TL format is used for rapid prototyping and computer-\/aided manufacturing, thus has no support for materials.  \\\cline{1-2}
+\end{longtabu}
+
+
+To load and display a mesh quickly, just do this\+: 
+\begin{DoxyCode}
+SceneManager->addAnimatedMeshSceneNode(
+   SceneManager->getMesh(\textcolor{stringliteral}{"yourmesh.3ds"}));
+\end{DoxyCode}
+ If you would like to implement and add your own file format loader to Irrlicht, see \hyperlink{classirr_1_1scene_1_1ISceneManager_a808972cc001db86c0576c38b3b3fbbf7}{add\+External\+Mesh\+Loader()}. 
+\begin{DoxyParams}{Parameters}
+{\em filename} & Filename of the mesh to load. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Null if failed, otherwise pointer to the mesh. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Mesh@{get\+Mesh}}
+\index{get\+Mesh@{get\+Mesh}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Mesh(io\+::\+I\+Read\+File $\ast$file)=0}{getMesh(io::IReadFile *file)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+C\+P\+U\+Mesh}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Mesh (
+\begin{DoxyParamCaption}
+\item[{{\bf io\+::\+I\+Read\+File} $\ast$}]{file}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a733c4e8040702ec9fe486ee15a5089a6}{}\label{classirr_1_1scene_1_1ISceneManager_a733c4e8040702ec9fe486ee15a5089a6}
+
+
+Get pointer to an animateable mesh. Loads the file if not loaded already. 
+
+Works just as get\+Mesh(const char$\ast$ filename). If you want to remove a loaded mesh from the cache again, use remove\+Mesh(). 
+\begin{DoxyParams}{Parameters}
+{\em file} & File handle of the mesh to load. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+N\+U\+LL if failed and pointer to the mesh if successful. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Mesh\+Cache@{get\+Mesh\+Cache}}
+\index{get\+Mesh\+Cache@{get\+Mesh\+Cache}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Mesh\+Cache()=0}{getMeshCache()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Mesh\+Cache}$<${\bf I\+C\+P\+U\+Mesh}$>$$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Mesh\+Cache (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_ac5ffbb676d3c68becfb565cf72e2afa0}{}\label{classirr_1_1scene_1_1ISceneManager_ac5ffbb676d3c68becfb565cf72e2afa0}
+
+
+Get interface to the mesh cache which is shared beween all existing scene managers. 
+
+With this interface, it is possible to manually add new loaded meshes (if \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{I\+Scene\+Manager\+::get\+Mesh()} is not sufficient), to remove them and to iterate through already loaded meshes. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Mesh\+Loader@{get\+Mesh\+Loader}}
+\index{get\+Mesh\+Loader@{get\+Mesh\+Loader}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Mesh\+Loader(u32 index) const  =0}{getMeshLoader(u32 index) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Mesh\+Loader}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Mesh\+Loader (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{index}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a9fd2e6e1f82298b9b95e96d2b36ddc33}{}\label{classirr_1_1scene_1_1ISceneManager_a9fd2e6e1f82298b9b95e96d2b36ddc33}
+
+
+Retrieve the given mesh loader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & The index of the loader to retrieve. This parameter is an 0-\/based array index. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to the specified loader, 0 if the index is incorrect. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Mesh\+Manipulator@{get\+Mesh\+Manipulator}}
+\index{get\+Mesh\+Manipulator@{get\+Mesh\+Manipulator}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Mesh\+Manipulator()=0}{getMeshManipulator()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Mesh\+Manipulator}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Mesh\+Manipulator (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a05138d6b5f99fced0061794fb5c42318}{}\label{classirr_1_1scene_1_1ISceneManager_a05138d6b5f99fced0061794fb5c42318}
+
+
+Get pointer to the mesh manipulator. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the mesh manipulator This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Root\+Scene\+Node@{get\+Root\+Scene\+Node}}
+\index{get\+Root\+Scene\+Node@{get\+Root\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Root\+Scene\+Node()=0}{getRootSceneNode()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Root\+Scene\+Node (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a4f7075320f1a3bf2838f29c23f78635f}{}\label{classirr_1_1scene_1_1ISceneManager_a4f7075320f1a3bf2838f29c23f78635f}
+
+
+Gets the root scene node. 
+
+This is the scene node which is parent of all scene nodes. The root scene node is a special scene node which only exists to manage all scene nodes. It will not be rendered and cannot be removed from the scene. \begin{DoxyReturn}{Returns}
+Pointer to the root scene node. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Scene\+Node\+Animator\+Factory@{get\+Scene\+Node\+Animator\+Factory}}
+\index{get\+Scene\+Node\+Animator\+Factory@{get\+Scene\+Node\+Animator\+Factory}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Scene\+Node\+Animator\+Factory(u32 index)=0}{getSceneNodeAnimatorFactory(u32 index)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Animator\+Factory}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Scene\+Node\+Animator\+Factory (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{index}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a96d8272b74bd0adc9138f17e832dc887}{}\label{classirr_1_1scene_1_1ISceneManager_a96d8272b74bd0adc9138f17e832dc887}
+
+
+Get scene node animator factory by index. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the requested scene node animator factory, or 0 if it does not exist. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Scene\+Node\+Factory@{get\+Scene\+Node\+Factory}}
+\index{get\+Scene\+Node\+Factory@{get\+Scene\+Node\+Factory}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Scene\+Node\+Factory(u32 index)=0}{getSceneNodeFactory(u32 index)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node\+Factory}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Scene\+Node\+Factory (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{index}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_ac912b9effd5ce46f5dc038e0568e614c}{}\label{classirr_1_1scene_1_1ISceneManager_ac912b9effd5ce46f5dc038e0568e614c}
+
+
+Get a scene node factory by index. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the requested scene node factory, or 0 if it does not exist. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Scene\+Node\+Render\+Pass@{get\+Scene\+Node\+Render\+Pass}}
+\index{get\+Scene\+Node\+Render\+Pass@{get\+Scene\+Node\+Render\+Pass}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Scene\+Node\+Render\+Pass() const  =0}{getSceneNodeRenderPass() const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+SS} irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Scene\+Node\+Render\+Pass (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a7f92b38444d719c4d2314242884e4951}{}\label{classirr_1_1scene_1_1ISceneManager_a7f92b38444d719c4d2314242884e4951}
+
+
+Get current render pass. 
+
+All scene nodes are being rendered in a specific order. First lights, cameras, sky boxes, solid geometry, and then transparent stuff. During the rendering process, scene nodes may want to know what the scene manager is rendering currently, because for example they registered for rendering twice, once for transparent geometry and once for solid. When knowing what rendering pass currently is active they can render the correct part of their geometry. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!get\+Video\+Driver@{get\+Video\+Driver}}
+\index{get\+Video\+Driver@{get\+Video\+Driver}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Video\+Driver()=0}{getVideoDriver()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf video\+::\+I\+Video\+Driver}$\ast$ irr\+::scene\+::\+I\+Scene\+Manager\+::get\+Video\+Driver (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_afde082160205a8faab44cd5b61e3745c}{}\label{classirr_1_1scene_1_1ISceneManager_afde082160205a8faab44cd5b61e3745c}
+
+
+Get the video driver. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the video Driver. This pointer should not be dropped. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!is\+Culled@{is\+Culled}}
+\index{is\+Culled@{is\+Culled}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{is\+Culled(\+I\+Scene\+Node $\ast$node) const  =0}{isCulled(ISceneNode *node) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::scene\+::\+I\+Scene\+Manager\+::is\+Culled (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Scene\+Node} $\ast$}]{node}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a819bea16578056eea049d4bfe0545575}{}\label{classirr_1_1scene_1_1ISceneManager_a819bea16578056eea049d4bfe0545575}
+
+
+Check if node is culled in current view frustum. 
+
+Please note that depending on the used culling method this check can be rather coarse, or slow. A positive result is correct, though, i.\+e. if this method returns true the node is positively not visible. The node might still be invisible even if this method returns false. 
+\begin{DoxyParams}{Parameters}
+{\em node} & The scene node which is checked for culling. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if node is not visible in the current scene, else false. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!post\+Event\+From\+User@{post\+Event\+From\+User}}
+\index{post\+Event\+From\+User@{post\+Event\+From\+User}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{post\+Event\+From\+User(const S\+Event \&event)=0}{postEventFromUser(const SEvent \&event)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::scene\+::\+I\+Scene\+Manager\+::post\+Event\+From\+User (
+\begin{DoxyParamCaption}
+\item[{const {\bf S\+Event} \&}]{event}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_ac68aa8d654884f19ad52fa28f11db424}{}\label{classirr_1_1scene_1_1ISceneManager_ac68aa8d654884f19ad52fa28f11db424}
+
+
+Posts an input event to the environment. 
+
+Usually you do not have to use this method, it is used by the internal engine. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!register\+Node\+For\+Rendering@{register\+Node\+For\+Rendering}}
+\index{register\+Node\+For\+Rendering@{register\+Node\+For\+Rendering}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{register\+Node\+For\+Rendering(\+I\+Scene\+Node $\ast$node, E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+S\+S pass=\+E\+S\+N\+R\+P\+\_\+\+A\+U\+T\+O\+M\+A\+T\+I\+C)=0}{registerNodeForRendering(ISceneNode *node, E\_SCENE\_NODE\_RENDER\_PASS pass=ESNRP\_AUTOMATIC)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf u32} irr\+::scene\+::\+I\+Scene\+Manager\+::register\+Node\+For\+Rendering (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Scene\+Node} $\ast$}]{node, }
+\item[{{\bf E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+SS}}]{pass = {\ttfamily {\bf E\+S\+N\+R\+P\+\_\+\+A\+U\+T\+O\+M\+A\+T\+IC}}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_aaf17bdde6d4e9ef61a76f3b43100ecb8}{}\label{classirr_1_1scene_1_1ISceneManager_aaf17bdde6d4e9ef61a76f3b43100ecb8}
+
+
+Registers a node for rendering it at a specific time. 
+
+This method should only be used by Scene\+Nodes when they get a \hyperlink{classirr_1_1scene_1_1ISceneNode_ac9795bfcb88dcaf8cba6ea3296e5d8d0}{I\+Scene\+Node\+::\+On\+Register\+Scene\+Node()} call. 
+\begin{DoxyParams}{Parameters}
+{\em node} & Node to register for drawing. Usually scene nodes would set \textquotesingle{}this\textquotesingle{} as parameter here because they want to be drawn. \\
+\hline
+{\em pass} & Specifies when the node wants to be drawn in relation to the other nodes. For example, if the node is a shadow, it usually wants to be drawn after all other nodes and will use E\+S\+N\+R\+P\+\_\+\+S\+H\+A\+D\+OW for this. See \hyperlink{namespaceirr_1_1scene_a7862269bd1abc123929d4dbb8200d67f}{scene\+::\+E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+SS} for details. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+scene will be rendered ( passed culling ) 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!register\+Scene\+Node\+Animator\+Factory@{register\+Scene\+Node\+Animator\+Factory}}
+\index{register\+Scene\+Node\+Animator\+Factory@{register\+Scene\+Node\+Animator\+Factory}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{register\+Scene\+Node\+Animator\+Factory(\+I\+Scene\+Node\+Animator\+Factory $\ast$factory\+To\+Add)=0}{registerSceneNodeAnimatorFactory(ISceneNodeAnimatorFactory *factoryToAdd)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Manager\+::register\+Scene\+Node\+Animator\+Factory (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Scene\+Node\+Animator\+Factory} $\ast$}]{factory\+To\+Add}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_af48c93cc41f986f08ed964cc575ee7a0}{}\label{classirr_1_1scene_1_1ISceneManager_af48c93cc41f986f08ed964cc575ee7a0}
+
+
+Adds a scene node animator factory to the scene manager. 
+
+Use this to extend the scene manager with new scene node animator types which it should be able to create automaticly, for example when loading data from xml files. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!register\+Scene\+Node\+Factory@{register\+Scene\+Node\+Factory}}
+\index{register\+Scene\+Node\+Factory@{register\+Scene\+Node\+Factory}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{register\+Scene\+Node\+Factory(\+I\+Scene\+Node\+Factory $\ast$factory\+To\+Add)=0}{registerSceneNodeFactory(ISceneNodeFactory *factoryToAdd)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Manager\+::register\+Scene\+Node\+Factory (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Scene\+Node\+Factory} $\ast$}]{factory\+To\+Add}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a75ac9315def74ae5e26a2d6a2f5a38e9}{}\label{classirr_1_1scene_1_1ISceneManager_a75ac9315def74ae5e26a2d6a2f5a38e9}
+
+
+Adds a scene node factory to the scene manager. 
+
+Use this to extend the scene manager with new scene node types which it should be able to create automaticly, for example when loading data from xml files. \index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!set\+Active\+Camera@{set\+Active\+Camera}}
+\index{set\+Active\+Camera@{set\+Active\+Camera}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{set\+Active\+Camera(\+I\+Camera\+Scene\+Node $\ast$camera)=0}{setActiveCamera(ICameraSceneNode *camera)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Manager\+::set\+Active\+Camera (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Camera\+Scene\+Node} $\ast$}]{camera}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a5d19b7a6803a0a021082fc2b86043b3d}{}\label{classirr_1_1scene_1_1ISceneManager_a5d19b7a6803a0a021082fc2b86043b3d}
+
+
+Sets the currently active camera. 
+
+The previous active camera will be deactivated. 
+\begin{DoxyParams}{Parameters}
+{\em camera} & The new camera which should be active. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}!set\+Light\+Manager@{set\+Light\+Manager}}
+\index{set\+Light\+Manager@{set\+Light\+Manager}!irr\+::scene\+::\+I\+Scene\+Manager@{irr\+::scene\+::\+I\+Scene\+Manager}}
+\subsubsection[{\texorpdfstring{set\+Light\+Manager(\+I\+Light\+Manager $\ast$light\+Manager)=0}{setLightManager(ILightManager *lightManager)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Manager\+::set\+Light\+Manager (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Light\+Manager} $\ast$}]{light\+Manager}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneManager_a0065307bf3ff12fdc5b7bb624987a1c2}{}\label{classirr_1_1scene_1_1ISceneManager_a0065307bf3ff12fdc5b7bb624987a1c2}
+
+
+Register a custom callbacks manager which gets callbacks during scene rendering. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em light\+Manager} & the new callbacks manager. You may pass 0 to remove the current callbacks manager and restore the default behavior. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Scene\+Manager.\+h\end{DoxyCompactItemize}

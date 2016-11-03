@@ -1,0 +1,409 @@
+\hypertarget{classirr_1_1core_1_1vectorSIMDf}{}\section{irr\+:\+:core\+:\+:vector\+S\+I\+M\+Df Class Reference}
+\label{classirr_1_1core_1_1vectorSIMDf}\index{irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}}
+Inheritance diagram for irr\+:\+:core\+:\+:vector\+S\+I\+M\+Df\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classirr_1_1core_1_1vectorSIMDf}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf_ad38f456dbd31a650fdd1ee1f22b5c842}{vector\+S\+I\+M\+Df} ()\hypertarget{classirr_1_1core_1_1vectorSIMDf_ad38f456dbd31a650fdd1ee1f22b5c842}{}\label{classirr_1_1core_1_1vectorSIMDf_ad38f456dbd31a650fdd1ee1f22b5c842}
+
+\begin{DoxyCompactList}\small\item\em Default constructor (null vector). \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf_af0148c9132ea76e8944251615c382719}{vector\+S\+I\+M\+Df} (const float \&nx, const float \&ny, const float \&nz, const float \&nw)\hypertarget{classirr_1_1core_1_1vectorSIMDf_af0148c9132ea76e8944251615c382719}{}\label{classirr_1_1core_1_1vectorSIMDf_af0148c9132ea76e8944251615c382719}
+
+\begin{DoxyCompactList}\small\item\em Constructor with four different values, F\+A\+S\+T\+E\+ST IF the values are constant literals. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf_a8dc3b6baa225e5057c4f7e24061b202c}{vector\+S\+I\+M\+Df} (const float \&nx, const float \&ny, const float \&nz)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a8dc3b6baa225e5057c4f7e24061b202c}{}\label{classirr_1_1core_1_1vectorSIMDf_a8dc3b6baa225e5057c4f7e24061b202c}
+
+\begin{DoxyCompactList}\small\item\em 3d constructor \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf_a1a6ac9b42422df259c5cbcdb676f114c}{vector\+S\+I\+M\+Df} (const float \&nx, const float \&ny)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a1a6ac9b42422df259c5cbcdb676f114c}{}\label{classirr_1_1core_1_1vectorSIMDf_a1a6ac9b42422df259c5cbcdb676f114c}
+
+\begin{DoxyCompactList}\small\item\em 2d constructor \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf_aee468c673c48c431f6b3ffb191be16cc}{vector\+S\+I\+M\+Df} (const float $\ast$const \&\hyperlink{classirr_1_1core_1_1array}{array})\hypertarget{classirr_1_1core_1_1vectorSIMDf_aee468c673c48c431f6b3ffb191be16cc}{}\label{classirr_1_1core_1_1vectorSIMDf_aee468c673c48c431f6b3ffb191be16cc}
+
+\begin{DoxyCompactList}\small\item\em Fast Constructor from floats, they come in normal order \mbox{[}0\mbox{]}=X,\mbox{[}1\mbox{]}=Y, etc. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf_a9e1a06b8bef12013ab7cf21ebb33992b}{vector\+S\+I\+M\+Df} (const float $\ast$const \&\hyperlink{classirr_1_1core_1_1array}{array}, bool A\+L\+I\+G\+N\+ED)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a9e1a06b8bef12013ab7cf21ebb33992b}{}\label{classirr_1_1core_1_1vectorSIMDf_a9e1a06b8bef12013ab7cf21ebb33992b}
+
+\begin{DoxyCompactList}\small\item\em Fastest Constructor from floats, they come in normal order \mbox{[}0\mbox{]}=X,\mbox{[}1\mbox{]}=Y, etc. Address has to be aligned to 16bytes OR W\+I\+LL C\+R\+A\+SH. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf_a7254c478748c4a9428c82149b8b984b1}{vector\+S\+I\+M\+Df} (const \+\_\+\+\_\+m128 \&reg)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a7254c478748c4a9428c82149b8b984b1}{}\label{classirr_1_1core_1_1vectorSIMDf_a7254c478748c4a9428c82149b8b984b1}
+
+\begin{DoxyCompactList}\small\item\em Fastest and most natural constructor. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf_a98932b293007659a7b1e35828b447f4d}{vector\+S\+I\+M\+Df} (const float \&n)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a98932b293007659a7b1e35828b447f4d}{}\label{classirr_1_1core_1_1vectorSIMDf_a98932b293007659a7b1e35828b447f4d}
+
+\begin{DoxyCompactList}\small\item\em Constructor with the same value for all elements. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf_afdbb7dcee43e7ebe98beee6d58b83422}{vector\+S\+I\+M\+Df} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other)\hypertarget{classirr_1_1core_1_1vectorSIMDf_afdbb7dcee43e7ebe98beee6d58b83422}{}\label{classirr_1_1core_1_1vectorSIMDf_afdbb7dcee43e7ebe98beee6d58b83422}
+
+\begin{DoxyCompactList}\small\item\em Copy constructor. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries operator=} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a351bff66d7665f25093dfa8591305e2c}{}\label{classirr_1_1core_1_1vectorSIMDf_a351bff66d7665f25093dfa8591305e2c}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \hyperlink{classirr_1_1core_1_1vectorSIMDf_af0116c350c997a28daf510f62ef4be65}{operator\&} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other)\hypertarget{classirr_1_1core_1_1vectorSIMDf_af0116c350c997a28daf510f62ef4be65}{}\label{classirr_1_1core_1_1vectorSIMDf_af0116c350c997a28daf510f62ef4be65}
+
+\begin{DoxyCompactList}\small\item\em bitwise ops \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator$\vert$} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other)\hypertarget{classirr_1_1core_1_1vectorSIMDf_aca0970eaae50dcad5dee6ce87b1c5728}{}\label{classirr_1_1core_1_1vectorSIMDf_aca0970eaae50dcad5dee6ce87b1c5728}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator$^\wedge$} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other)\hypertarget{classirr_1_1core_1_1vectorSIMDf_ad16184ea2e41c651df003ff757480380}{}\label{classirr_1_1core_1_1vectorSIMDf_ad16184ea2e41c651df003ff757480380}
+
+\item 
+\+\_\+\+\_\+m128 \hyperlink{classirr_1_1core_1_1vectorSIMDf_ae8eaf4bc69acea0950948c38c16498a8}{get\+As\+Register} () const \hypertarget{classirr_1_1core_1_1vectorSIMDf_ae8eaf4bc69acea0950948c38c16498a8}{}\label{classirr_1_1core_1_1vectorSIMDf_ae8eaf4bc69acea0950948c38c16498a8}
+
+\begin{DoxyCompactList}\small\item\em in case you want to do your own S\+SE \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator-\/} () const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a22f8deafd25ba8b4aa1d3d703e2702ae}{}\label{classirr_1_1core_1_1vectorSIMDf_a22f8deafd25ba8b4aa1d3d703e2702ae}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator+} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a9ab15d611a4eb2abd8c55bc9b85d454d}{}\label{classirr_1_1core_1_1vectorSIMDf_a9ab15d611a4eb2abd8c55bc9b85d454d}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries operator+=} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a2c361f0bd0f8da0a1ccd287973689b1d}{}\label{classirr_1_1core_1_1vectorSIMDf_a2c361f0bd0f8da0a1ccd287973689b1d}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator-\/} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_ae95c1949ad1f1ca723318a9f5fe8b039}{}\label{classirr_1_1core_1_1vectorSIMDf_ae95c1949ad1f1ca723318a9f5fe8b039}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries operator-\/=} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other)\hypertarget{classirr_1_1core_1_1vectorSIMDf_ad922a9ee96bc9994d0bde873765bdc85}{}\label{classirr_1_1core_1_1vectorSIMDf_ad922a9ee96bc9994d0bde873765bdc85}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator$\ast$} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_abcbe40c1d75730b8d6d56f8abf1dbcc6}{}\label{classirr_1_1core_1_1vectorSIMDf_abcbe40c1d75730b8d6d56f8abf1dbcc6}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries operator$\ast$=} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a478fd39211c0877801322bccbfc8dcef}{}\label{classirr_1_1core_1_1vectorSIMDf_a478fd39211c0877801322bccbfc8dcef}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator/} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a74b72a564ef6052a2c644f30354e5609}{}\label{classirr_1_1core_1_1vectorSIMDf_a74b72a564ef6052a2c644f30354e5609}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries operator/=} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other)\hypertarget{classirr_1_1core_1_1vectorSIMDf_adad62d05d5581a4c3260de1a742ace99}{}\label{classirr_1_1core_1_1vectorSIMDf_adad62d05d5581a4c3260de1a742ace99}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries precise\+Division} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a620264c59dede090fe783faf73979cde}{}\label{classirr_1_1core_1_1vectorSIMDf_a620264c59dede090fe783faf73979cde}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator+} (const float \&val) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_abad8949d125b064766d81d39e785f579}{}\label{classirr_1_1core_1_1vectorSIMDf_abad8949d125b064766d81d39e785f579}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries operator+=} (const float \&val)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a3b802bcf960328a2339838553b1f1be4}{}\label{classirr_1_1core_1_1vectorSIMDf_a3b802bcf960328a2339838553b1f1be4}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator-\/} (const float \&val) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_aedd3b5badb65236c84daf9f817821a8a}{}\label{classirr_1_1core_1_1vectorSIMDf_aedd3b5badb65236c84daf9f817821a8a}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries operator-\/=} (const float \&val)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a44089376f964249891b0c114a4c13892}{}\label{classirr_1_1core_1_1vectorSIMDf_a44089376f964249891b0c114a4c13892}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator$\ast$} (const float \&val) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a8aa1c09b74978c942ce14a0c25387c87}{}\label{classirr_1_1core_1_1vectorSIMDf_a8aa1c09b74978c942ce14a0c25387c87}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries operator$\ast$=} (const float \&val)\hypertarget{classirr_1_1core_1_1vectorSIMDf_ac755d3105ef029289119287ed17e46d0}{}\label{classirr_1_1core_1_1vectorSIMDf_ac755d3105ef029289119287ed17e46d0}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries operator/} (const float \&v) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_af31f9e1c4bdbfa05af6711356101d738}{}\label{classirr_1_1core_1_1vectorSIMDf_af31f9e1c4bdbfa05af6711356101d738}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries operator/=} (const float \&v)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a87daff6edaf1aaeecfe0837df0d0c215}{}\label{classirr_1_1core_1_1vectorSIMDf_a87daff6edaf1aaeecfe0837df0d0c215}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDBool}{vector4db\+\_\+\+S\+I\+MD} \hyperlink{classirr_1_1core_1_1vectorSIMDf_a7d16954ce36da679550043d8e127bd5b}{operator$<$=} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a7d16954ce36da679550043d8e127bd5b}{}\label{classirr_1_1core_1_1vectorSIMDf_a7d16954ce36da679550043d8e127bd5b}
+
+\begin{DoxyCompactList}\small\item\em I AM B\+R\+E\+A\+K\+I\+NG I\+R\+R\+L\+I\+C\+HT\textquotesingle{}S C\+O\+M\+P\+A\+R\+I\+S\+ON O\+P\+E\+R\+A\+T\+O\+RS. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDBool}{vector4db\+\_\+\+S\+I\+MD} {\bfseries operator$>$=} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a1a3c162962f111dbf7009258243edf0d}{}\label{classirr_1_1core_1_1vectorSIMDf_a1a3c162962f111dbf7009258243edf0d}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDBool}{vector4db\+\_\+\+S\+I\+MD} {\bfseries operator$<$} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_ab936ea0a5b095819bcc899d0b5805d91}{}\label{classirr_1_1core_1_1vectorSIMDf_ab936ea0a5b095819bcc899d0b5805d91}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDBool}{vector4db\+\_\+\+S\+I\+MD} {\bfseries operator$>$} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a0a0b64421af4b0719b59ccef81ecd781}{}\label{classirr_1_1core_1_1vectorSIMDf_a0a0b64421af4b0719b59ccef81ecd781}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDBool}{vector4db\+\_\+\+S\+I\+MD} \hyperlink{classirr_1_1core_1_1vectorSIMDf_ac9fb94dca9de195b0670b045cd8df896}{operator==} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_ac9fb94dca9de195b0670b045cd8df896}{}\label{classirr_1_1core_1_1vectorSIMDf_ac9fb94dca9de195b0670b045cd8df896}
+
+\begin{DoxyCompactList}\small\item\em only the method that returns bool confirms if two vectors are exactly the same \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDBool}{vector4db\+\_\+\+S\+I\+MD} {\bfseries operator!=} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_ab0a9a26c761dc292172803693b3fedb8}{}\label{classirr_1_1core_1_1vectorSIMDf_ab0a9a26c761dc292172803693b3fedb8}
+
+\item 
+void \hyperlink{classirr_1_1core_1_1vectorSIMDf_a49f886d7f73c7878c120d09eae9a9366}{make\+Safe2D} (void)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a49f886d7f73c7878c120d09eae9a9366}{}\label{classirr_1_1core_1_1vectorSIMDf_a49f886d7f73c7878c120d09eae9a9366}
+
+\begin{DoxyCompactList}\small\item\em zeroes out out of range components (useful before performing a dot product so it doesnt get polluted with random values) W\+A\+R\+N\+I\+NG IT D\+O\+ES C\+O\+ST C\+Y\+C\+L\+ES \end{DoxyCompactList}\item 
+void {\bfseries make\+Safe3D} (void)\hypertarget{classirr_1_1core_1_1vectorSIMDf_ac0bdac77cc253b645a3d26df62ca242c}{}\label{classirr_1_1core_1_1vectorSIMDf_ac0bdac77cc253b645a3d26df62ca242c}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& \hyperlink{classirr_1_1core_1_1vectorSIMDf_ab83cb199d2ce42b0baef98f030a6d066}{set} (float $\ast$const \&\hyperlink{classirr_1_1core_1_1array}{array})\hypertarget{classirr_1_1core_1_1vectorSIMDf_ab83cb199d2ce42b0baef98f030a6d066}{}\label{classirr_1_1core_1_1vectorSIMDf_ab83cb199d2ce42b0baef98f030a6d066}
+
+\begin{DoxyCompactList}\small\item\em slightly faster than memcpy\textquotesingle{}ing into the pointers \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& \hyperlink{classirr_1_1core_1_1vectorSIMDf_a1a581ff444487c90b32e1b7c830841cd}{set} (float $\ast$const \&\hyperlink{classirr_1_1core_1_1array}{array}, bool A\+L\+I\+G\+N\+ED)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a1a581ff444487c90b32e1b7c830841cd}{}\label{classirr_1_1core_1_1vectorSIMDf_a1a581ff444487c90b32e1b7c830841cd}
+
+\begin{DoxyCompactList}\small\item\em F\+A\+S\+T\+E\+ST W\+AY TO S\+ET V\+A\+L\+U\+ES, Address has to be aligned to 16bytes OR W\+I\+LL C\+R\+A\+SH. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& \hyperlink{classirr_1_1core_1_1vectorSIMDf_a0078656e5d396b309fe64290abcd11b7}{set} (const float \&nx, const float \&ny, const float \&nz, const float \&nw)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a0078656e5d396b309fe64290abcd11b7}{}\label{classirr_1_1core_1_1vectorSIMDf_a0078656e5d396b309fe64290abcd11b7}
+
+\begin{DoxyCompactList}\small\item\em normal \hyperlink{classirr_1_1core_1_1vectorSIMDf_ab83cb199d2ce42b0baef98f030a6d066}{set()} like vector3df\textquotesingle{}s, but for different dimensional vectors \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries set} (const float \&nx, const float \&ny, const float \&nz)\hypertarget{classirr_1_1core_1_1vectorSIMDf_af5e153b0607789df4e75ad2e42e7f996}{}\label{classirr_1_1core_1_1vectorSIMDf_af5e153b0607789df4e75ad2e42e7f996}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries set} (const float \&nx, const float \&ny)\hypertarget{classirr_1_1core_1_1vectorSIMDf_aabcbf6679db35d13286ac17a179dee93}{}\label{classirr_1_1core_1_1vectorSIMDf_aabcbf6679db35d13286ac17a179dee93}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries set} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&p)\hypertarget{classirr_1_1core_1_1vectorSIMDf_ac010effda14afca4f37620b21a57c1c1}{}\label{classirr_1_1core_1_1vectorSIMDf_ac010effda14afca4f37620b21a57c1c1}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& \hyperlink{classirr_1_1core_1_1vectorSIMDf_ae00cdb57cca255d4743faa27ff68c260}{set} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&p)\hypertarget{classirr_1_1core_1_1vectorSIMDf_ae00cdb57cca255d4743faa27ff68c260}{}\label{classirr_1_1core_1_1vectorSIMDf_ae00cdb57cca255d4743faa27ff68c260}
+
+\begin{DoxyCompactList}\small\item\em convert from vector\+Ndf types of irrlicht -\/ it will read a few values past the range of the allocated memory but \+\_\+mm\+\_\+loadu\+\_\+ps shouldnt have that kind of protection \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& {\bfseries set} (const \hyperlink{namespaceirr_1_1core_a2cf08556d77f6f5a792973a6e27ed11b}{vector2df} \&p)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a4a6b5b1edafb07d05054d66617243f45}{}\label{classirr_1_1core_1_1vectorSIMDf_a4a6b5b1edafb07d05054d66617243f45}
+
+\item 
+\hyperlink{namespaceirr_1_1core_a2cf08556d77f6f5a792973a6e27ed11b}{vector2df} \hyperlink{classirr_1_1core_1_1vectorSIMDf_a91036e3d48a765df0d27b10bea29d859}{get\+As\+Vector2df} (void) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a91036e3d48a765df0d27b10bea29d859}{}\label{classirr_1_1core_1_1vectorSIMDf_a91036e3d48a765df0d27b10bea29d859}
+
+\begin{DoxyCompactList}\small\item\em going directly from vector\+S\+I\+MD to irrlicht types is safe cause \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} is wider \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} {\bfseries get\+As\+Vector3df} (void) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a73d0987bcbabe94987a8b730ab5e244e}{}\label{classirr_1_1core_1_1vectorSIMDf_a73d0987bcbabe94987a8b730ab5e244e}
+
+\item 
+float \hyperlink{classirr_1_1core_1_1vectorSIMDf_a38b8ce5c27682aef634369b33114296f}{get\+Length\+As\+Float} () const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a38b8ce5c27682aef634369b33114296f}{}\label{classirr_1_1core_1_1vectorSIMDf_a38b8ce5c27682aef634369b33114296f}
+
+\begin{DoxyCompactList}\small\item\em Get length of the vector. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \hyperlink{classirr_1_1core_1_1vectorSIMDf_aa8e515b53a167e396364c61b45f36788}{get\+Length} () const \hypertarget{classirr_1_1core_1_1vectorSIMDf_aa8e515b53a167e396364c61b45f36788}{}\label{classirr_1_1core_1_1vectorSIMDf_aa8e515b53a167e396364c61b45f36788}
+
+\begin{DoxyCompactList}\small\item\em Useful when you have to divide a vector by another vector\textquotesingle{}s length (so you dont convert/store to a scalar) all components are filled with length if you need something else, you can get the register and shuffle. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries get\+Square\+Root} () const \hypertarget{classirr_1_1core_1_1vectorSIMDf_af569aed307c77b7161628b828ce2f155}{}\label{classirr_1_1core_1_1vectorSIMDf_af569aed307c77b7161628b828ce2f155}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries get\+Reciprocal\+S\+Q\+RT} () const \hypertarget{classirr_1_1core_1_1vectorSIMDf_ad18b8e85773b038a38d9359f173dd3c9}{}\label{classirr_1_1core_1_1vectorSIMDf_ad18b8e85773b038a38d9359f173dd3c9}
+
+\item 
+float \hyperlink{classirr_1_1core_1_1vectorSIMDf_a0f61bd94fd41aff8249bfacc3b400b9c}{dot\+Product\+As\+Float} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a0f61bd94fd41aff8249bfacc3b400b9c}{}\label{classirr_1_1core_1_1vectorSIMDf_a0f61bd94fd41aff8249bfacc3b400b9c}
+
+\begin{DoxyCompactList}\small\item\em Get the dot product with another vector. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries dot\+Product} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a55838f3871012d9032e24071a1f2b725}{}\label{classirr_1_1core_1_1vectorSIMDf_a55838f3871012d9032e24071a1f2b725}
+
+\item 
+float \hyperlink{classirr_1_1core_1_1vectorSIMDf_ade174de2b6537e4c8679aedaf40f23a5}{get\+Length\+S\+Q\+As\+Float} () const 
+\begin{DoxyCompactList}\small\item\em Get squared length of the vector. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \hyperlink{classirr_1_1core_1_1vectorSIMDf_a9204995d330747b22fa7e2f96b669e81}{get\+Length\+SQ} () const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a9204995d330747b22fa7e2f96b669e81}{}\label{classirr_1_1core_1_1vectorSIMDf_a9204995d330747b22fa7e2f96b669e81}
+
+\begin{DoxyCompactList}\small\item\em Useful when you have to divide a vector by another vector\textquotesingle{}s length (so you dont convert/store to a scalar) \end{DoxyCompactList}\item 
+float \hyperlink{classirr_1_1core_1_1vectorSIMDf_a1778db3c1e554c1015b658c85863cb9b}{get\+Distance\+From\+As\+Float} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const 
+\begin{DoxyCompactList}\small\item\em Get distance from another point. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries get\+Distance\+From} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a84b5f45a0690a3415c2f703dcb488f58}{}\label{classirr_1_1core_1_1vectorSIMDf_a84b5f45a0690a3415c2f703dcb488f58}
+
+\item 
+float \hyperlink{classirr_1_1core_1_1vectorSIMDf_af9f145fc9d0cddfaece712ff0ceecd0f}{get\+Distance\+From\+S\+Q\+As\+Float} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const 
+\begin{DoxyCompactList}\small\item\em Returns squared distance from another point. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} {\bfseries get\+Distance\+From\+SQ} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&other) const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a86eb11ca1f9cddeab90e2df054ceb86e}{}\label{classirr_1_1core_1_1vectorSIMDf_a86eb11ca1f9cddeab90e2df054ceb86e}
+
+\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \hyperlink{classirr_1_1core_1_1vectorSIMDf_ad0fb87579c874dbb91030453c34f491b}{cross\+Product} (const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&p) const 
+\begin{DoxyCompactList}\small\item\em Calculates the cross product with another vector. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& \hyperlink{classirr_1_1core_1_1vectorSIMDf_a6759e2eaaaf70f402eb4fd88206153b9}{set\+Length\+As\+Float} (float newlength)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a6759e2eaaaf70f402eb4fd88206153b9}{}\label{classirr_1_1core_1_1vectorSIMDf_a6759e2eaaaf70f402eb4fd88206153b9}
+
+\begin{DoxyCompactList}\small\item\em Sets the length of the vector to a new value. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \& \hyperlink{classirr_1_1core_1_1vectorSIMDf_ad8b248b451f76a8c51c1c92bbecb36a6}{invert} ()\hypertarget{classirr_1_1core_1_1vectorSIMDf_ad8b248b451f76a8c51c1c92bbecb36a6}{}\label{classirr_1_1core_1_1vectorSIMDf_ad8b248b451f76a8c51c1c92bbecb36a6}
+
+\begin{DoxyCompactList}\small\item\em Inverts the vector. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \hyperlink{classirr_1_1core_1_1vectorSIMDf_a02d4f1440a0a47367224342839c9b3e0}{get\+Absolute\+Value} () const \hypertarget{classirr_1_1core_1_1vectorSIMDf_a02d4f1440a0a47367224342839c9b3e0}{}\label{classirr_1_1core_1_1vectorSIMDf_a02d4f1440a0a47367224342839c9b3e0}
+
+\begin{DoxyCompactList}\small\item\em Returns component-\/wise absolute value of itself. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1vectorSIMDf_a09fa6616bea81293b371a125b0ff72c2}{rotate\+X\+Z\+By\+R\+AD} (const float \&radians, const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&center)
+\begin{DoxyCompactList}\small\item\em Rotates the vector by a specified number of R\+A\+D\+I\+A\+NS around the Y axis and the specified center. \end{DoxyCompactList}\item 
+void {\bfseries rotate\+X\+Z\+By\+R\+AD} (const float \&radians)\hypertarget{classirr_1_1core_1_1vectorSIMDf_afa673a5e70af5f6af60312e0a01d6c0e}{}\label{classirr_1_1core_1_1vectorSIMDf_afa673a5e70af5f6af60312e0a01d6c0e}
+
+\item 
+void \hyperlink{classirr_1_1core_1_1vectorSIMDf_aebb03507a44d912b262571d74ccf735e}{rotate\+X\+Y\+By\+R\+AD} (const float \&radians, const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&center)
+\begin{DoxyCompactList}\small\item\em Rotates the vector by a specified number of R\+A\+D\+I\+A\+NS around the Z axis and the specified center. \end{DoxyCompactList}\item 
+void {\bfseries rotate\+X\+Y\+By\+R\+AD} (const float \&radians)\hypertarget{classirr_1_1core_1_1vectorSIMDf_aecd35a05d41780b6f058120f8a2ea1fe}{}\label{classirr_1_1core_1_1vectorSIMDf_aecd35a05d41780b6f058120f8a2ea1fe}
+
+\item 
+void \hyperlink{classirr_1_1core_1_1vectorSIMDf_a8ab5b905241accbc598af956e1dd3921}{rotate\+Y\+Z\+By\+R\+AD} (const float \&radians, const \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \&center)
+\begin{DoxyCompactList}\small\item\em Rotates the vector by a specified number of degrees around the X axis and the specified center. \end{DoxyCompactList}\item 
+void {\bfseries rotate\+Y\+Z\+By\+R\+AD} (const float \&radians)\hypertarget{classirr_1_1core_1_1vectorSIMDf_ace671cb6474d577aec1b368327791ce9}{}\label{classirr_1_1core_1_1vectorSIMDf_ace671cb6474d577aec1b368327791ce9}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void $\ast$ {\bfseries operator new} (size\+\_\+t size)  throw (std\+::bad\+\_\+alloc)\hypertarget{classirr_1_1core_1_1vectorSIMDf_ab1e114c88cd439043cad8062748b7481}{}\label{classirr_1_1core_1_1vectorSIMDf_ab1e114c88cd439043cad8062748b7481}
+
+\item 
+static void {\bfseries operator delete} (void $\ast$ptr)\hypertarget{classirr_1_1core_1_1vectorSIMDf_ad17be5a7cb53debd2678a2bab91448fc}{}\label{classirr_1_1core_1_1vectorSIMDf_ad17be5a7cb53debd2678a2bab91448fc}
+
+\item 
+static void $\ast$ {\bfseries operator new\mbox{[}$\,$\mbox{]}} (size\+\_\+t size)  throw (std\+::bad\+\_\+alloc)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a02d924b9065ae59ade6b203a8f2c204e}{}\label{classirr_1_1core_1_1vectorSIMDf_a02d924b9065ae59ade6b203a8f2c204e}
+
+\item 
+static void {\bfseries operator delete\mbox{[}$\,$\mbox{]}} (void $\ast$ptr)  throw ()\hypertarget{classirr_1_1core_1_1vectorSIMDf_a222dc8cad9f91043b986aad1152e3eac}{}\label{classirr_1_1core_1_1vectorSIMDf_a222dc8cad9f91043b986aad1152e3eac}
+
+\item 
+static void $\ast$ {\bfseries operator new} (std\+::size\+\_\+t size, void $\ast$p)  throw (std\+::bad\+\_\+alloc)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a64738dac32129a85d9de95df357bc2ec}{}\label{classirr_1_1core_1_1vectorSIMDf_a64738dac32129a85d9de95df357bc2ec}
+
+\item 
+static void {\bfseries operator delete} (void $\ast$p, void $\ast$t)  throw ()\hypertarget{classirr_1_1core_1_1vectorSIMDf_ac74ff7e143d8dfbe025df1c399c17298}{}\label{classirr_1_1core_1_1vectorSIMDf_ac74ff7e143d8dfbe025df1c399c17298}
+
+\item 
+static void $\ast$ {\bfseries operator new\mbox{[}$\,$\mbox{]}} (std\+::size\+\_\+t size, void $\ast$p)  throw (std\+::bad\+\_\+alloc)\hypertarget{classirr_1_1core_1_1vectorSIMDf_a88fcbb7888eb7f9400093baf7e763e38}{}\label{classirr_1_1core_1_1vectorSIMDf_a88fcbb7888eb7f9400093baf7e763e38}
+
+\item 
+static void {\bfseries operator delete\mbox{[}$\,$\mbox{]}} (void $\ast$p, void $\ast$t)  throw ()\hypertarget{classirr_1_1core_1_1vectorSIMDf_a7bb9eb3909b14536fdd58c55db8f66e9}{}\label{classirr_1_1core_1_1vectorSIMDf_a7bb9eb3909b14536fdd58c55db8f66e9}
+
+\item 
+static \hyperlink{classirr_1_1core_1_1vectorSIMDf}{vector\+S\+I\+M\+Df} \hyperlink{classirr_1_1core_1_1vectorSIMDf_ae4f75658be1be29840c568031800d55d}{from\+S\+Color} (const \hyperlink{classirr_1_1video_1_1SColor}{irr\+::video\+::\+S\+Color} \&col)\hypertarget{classirr_1_1core_1_1vectorSIMDf_ae4f75658be1be29840c568031800d55d}{}\label{classirr_1_1core_1_1vectorSIMDf_ae4f75658be1be29840c568031800d55d}
+
+\begin{DoxyCompactList}\small\item\em Get the rotations that would make a (0,0,1) direction vector point in the same direction as this direction vector. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>struct \{\\
+\>\>float {\bfseries X}\\
+\>\>float {\bfseries Y}\\
+\>\>float {\bfseries Z}\\
+\>\>float {\bfseries W}\\
+\>\} \hypertarget{unionirr_1_1core_1_1vectorSIMDf_1_1_0D12_a2c9bf9ffb2c7c051db7525644a325c23}{}\label{unionirr_1_1core_1_1vectorSIMDf_1_1_0D12_a2c9bf9ffb2c7c051db7525644a325c23}
+\\
+\>struct \{\\
+\>\>float {\bfseries x}\\
+\>\>float {\bfseries y}\\
+\>\>float {\bfseries z}\\
+\>\>float {\bfseries w}\\
+\>\} \hypertarget{unionirr_1_1core_1_1vectorSIMDf_1_1_0D12_ab834f6a15bbf77a7cd2249f60f1db478}{}\label{unionirr_1_1core_1_1vectorSIMDf_1_1_0D12_ab834f6a15bbf77a7cd2249f60f1db478}
+\\
+\>struct \{\\
+\>\>float {\bfseries r}\\
+\>\>float {\bfseries g}\\
+\>\>float {\bfseries b}\\
+\>\>float {\bfseries a}\\
+\>\} \hypertarget{unionirr_1_1core_1_1vectorSIMDf_1_1_0D12_ad506a219c065c4c0cfd398501e0d517a}{}\label{unionirr_1_1core_1_1vectorSIMDf_1_1_0D12_ad506a219c065c4c0cfd398501e0d517a}
+\\
+\>struct \{\\
+\>\>float {\bfseries s}\\
+\>\>float {\bfseries t}\\
+\>\>float {\bfseries p}\\
+\>\>float {\bfseries q}\\
+\>\} \hypertarget{unionirr_1_1core_1_1vectorSIMDf_1_1_0D12_a24a176279e2f073e60a99c24d50b28d0}{}\label{unionirr_1_1core_1_1vectorSIMDf_1_1_0D12_a24a176279e2f073e60a99c24d50b28d0}
+\\
+\>float {\bfseries pointer} \mbox{[}4\mbox{]}\\
+\}; \hypertarget{classirr_1_1core_1_1vectorSIMDf_aaee5e4d21eb60c3e59253f69d15e91f7}{}\label{classirr_1_1core_1_1vectorSIMDf_aaee5e4d21eb60c3e59253f69d15e91f7}
+\\
+
+\end{tabbing}\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\index{irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}!cross\+Product@{cross\+Product}}
+\index{cross\+Product@{cross\+Product}!irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}}
+\subsubsection[{\texorpdfstring{cross\+Product(const vector\+S\+I\+M\+Df \&p) const }{crossProduct(const vectorSIMDf \&p) const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf vector\+S\+I\+M\+Df} irr\+::core\+::vector\+S\+I\+M\+Df\+::cross\+Product (
+\begin{DoxyParamCaption}
+\item[{const {\bf vector\+S\+I\+M\+Df} \&}]{p}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1vectorSIMDf_ad0fb87579c874dbb91030453c34f491b}{}\label{classirr_1_1core_1_1vectorSIMDf_ad0fb87579c874dbb91030453c34f491b}
+
+
+Calculates the cross product with another vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Vector to multiply with. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Crossproduct of this vector with p. 
+\end{DoxyReturn}
+\index{irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}!get\+Distance\+From\+As\+Float@{get\+Distance\+From\+As\+Float}}
+\index{get\+Distance\+From\+As\+Float@{get\+Distance\+From\+As\+Float}!irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}}
+\subsubsection[{\texorpdfstring{get\+Distance\+From\+As\+Float(const vector\+S\+I\+M\+Df \&other) const }{getDistanceFromAsFloat(const vectorSIMDf \&other) const }}]{\setlength{\rightskip}{0pt plus 5cm}float irr\+::core\+::vector\+S\+I\+M\+Df\+::get\+Distance\+From\+As\+Float (
+\begin{DoxyParamCaption}
+\item[{const {\bf vector\+S\+I\+M\+Df} \&}]{other}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1vectorSIMDf_a1778db3c1e554c1015b658c85863cb9b}{}\label{classirr_1_1core_1_1vectorSIMDf_a1778db3c1e554c1015b658c85863cb9b}
+
+
+Get distance from another point. 
+
+Here, the vector is interpreted as point in 3 dimensional space. \index{irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}!get\+Distance\+From\+S\+Q\+As\+Float@{get\+Distance\+From\+S\+Q\+As\+Float}}
+\index{get\+Distance\+From\+S\+Q\+As\+Float@{get\+Distance\+From\+S\+Q\+As\+Float}!irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}}
+\subsubsection[{\texorpdfstring{get\+Distance\+From\+S\+Q\+As\+Float(const vector\+S\+I\+M\+Df \&other) const }{getDistanceFromSQAsFloat(const vectorSIMDf \&other) const }}]{\setlength{\rightskip}{0pt plus 5cm}float irr\+::core\+::vector\+S\+I\+M\+Df\+::get\+Distance\+From\+S\+Q\+As\+Float (
+\begin{DoxyParamCaption}
+\item[{const {\bf vector\+S\+I\+M\+Df} \&}]{other}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1vectorSIMDf_af9f145fc9d0cddfaece712ff0ceecd0f}{}\label{classirr_1_1core_1_1vectorSIMDf_af9f145fc9d0cddfaece712ff0ceecd0f}
+
+
+Returns squared distance from another point. 
+
+Here, the vector is interpreted as point in 3 dimensional space. \index{irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}!get\+Length\+S\+Q\+As\+Float@{get\+Length\+S\+Q\+As\+Float}}
+\index{get\+Length\+S\+Q\+As\+Float@{get\+Length\+S\+Q\+As\+Float}!irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}}
+\subsubsection[{\texorpdfstring{get\+Length\+S\+Q\+As\+Float() const }{getLengthSQAsFloat() const }}]{\setlength{\rightskip}{0pt plus 5cm}float irr\+::core\+::vector\+S\+I\+M\+Df\+::get\+Length\+S\+Q\+As\+Float (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1vectorSIMDf_ade174de2b6537e4c8679aedaf40f23a5}{}\label{classirr_1_1core_1_1vectorSIMDf_ade174de2b6537e4c8679aedaf40f23a5}
+
+
+Get squared length of the vector. 
+
+This is useful because it is much faster than \hyperlink{classirr_1_1core_1_1vectorSIMDf_aa8e515b53a167e396364c61b45f36788}{get\+Length()}. \begin{DoxyReturn}{Returns}
+Squared length of the vector. 
+\end{DoxyReturn}
+\index{irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}!rotate\+X\+Y\+By\+R\+AD@{rotate\+X\+Y\+By\+R\+AD}}
+\index{rotate\+X\+Y\+By\+R\+AD@{rotate\+X\+Y\+By\+R\+AD}!irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}}
+\subsubsection[{\texorpdfstring{rotate\+X\+Y\+By\+R\+A\+D(const float \&radians, const vector\+S\+I\+M\+Df \&center)}{rotateXYByRAD(const float \&radians, const vectorSIMDf \&center)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::core\+::vector\+S\+I\+M\+Df\+::rotate\+X\+Y\+By\+R\+AD (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{radians, }
+\item[{const {\bf vector\+S\+I\+M\+Df} \&}]{center}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1vectorSIMDf_aebb03507a44d912b262571d74ccf735e}{}\label{classirr_1_1core_1_1vectorSIMDf_aebb03507a44d912b262571d74ccf735e}
+
+
+Rotates the vector by a specified number of R\+A\+D\+I\+A\+NS around the Z axis and the specified center. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em R\+A\+D\+I\+A\+NS} & Number of R\+A\+D\+I\+A\+NS to rotate around the Z axis. \\
+\hline
+{\em center} & The center of the rotation. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}!rotate\+X\+Z\+By\+R\+AD@{rotate\+X\+Z\+By\+R\+AD}}
+\index{rotate\+X\+Z\+By\+R\+AD@{rotate\+X\+Z\+By\+R\+AD}!irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}}
+\subsubsection[{\texorpdfstring{rotate\+X\+Z\+By\+R\+A\+D(const float \&radians, const vector\+S\+I\+M\+Df \&center)}{rotateXZByRAD(const float \&radians, const vectorSIMDf \&center)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::core\+::vector\+S\+I\+M\+Df\+::rotate\+X\+Z\+By\+R\+AD (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{radians, }
+\item[{const {\bf vector\+S\+I\+M\+Df} \&}]{center}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1vectorSIMDf_a09fa6616bea81293b371a125b0ff72c2}{}\label{classirr_1_1core_1_1vectorSIMDf_a09fa6616bea81293b371a125b0ff72c2}
+
+
+Rotates the vector by a specified number of R\+A\+D\+I\+A\+NS around the Y axis and the specified center. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em radians} & Number of R\+A\+D\+I\+A\+NS to rotate around the Y axis. \\
+\hline
+{\em center} & The center of the rotation. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}!rotate\+Y\+Z\+By\+R\+AD@{rotate\+Y\+Z\+By\+R\+AD}}
+\index{rotate\+Y\+Z\+By\+R\+AD@{rotate\+Y\+Z\+By\+R\+AD}!irr\+::core\+::vector\+S\+I\+M\+Df@{irr\+::core\+::vector\+S\+I\+M\+Df}}
+\subsubsection[{\texorpdfstring{rotate\+Y\+Z\+By\+R\+A\+D(const float \&radians, const vector\+S\+I\+M\+Df \&center)}{rotateYZByRAD(const float \&radians, const vectorSIMDf \&center)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::core\+::vector\+S\+I\+M\+Df\+::rotate\+Y\+Z\+By\+R\+AD (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{radians, }
+\item[{const {\bf vector\+S\+I\+M\+Df} \&}]{center}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1vectorSIMDf_a8ab5b905241accbc598af956e1dd3921}{}\label{classirr_1_1core_1_1vectorSIMDf_a8ab5b905241accbc598af956e1dd3921}
+
+
+Rotates the vector by a specified number of degrees around the X axis and the specified center. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em degrees} & Number of degrees to rotate around the X axis. \\
+\hline
+{\em center} & The center of the rotation. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/vector\+S\+I\+M\+D.\+h\end{DoxyCompactItemize}

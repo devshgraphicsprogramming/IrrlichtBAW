@@ -1,0 +1,436 @@
+\hypertarget{classirr_1_1video_1_1SColor}{}\section{irr\+:\+:video\+:\+:S\+Color Class Reference}
+\label{classirr_1_1video_1_1SColor}\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+
+
+Class representing a 32 bit A\+R\+GB color.  
+
+
+
+
+{\ttfamily \#include $<$S\+Color.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1video_1_1SColor_ab001c0c2515ff5f8a0b324d1345485f4}{S\+Color} ()
+\begin{DoxyCompactList}\small\item\em Constructor of the Color. Does nothing. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1video_1_1SColor_aa2ca1fcb9b11375282bb407b635b3dd6}{S\+Color} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} a, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} r, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} g, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} b)
+\begin{DoxyCompactList}\small\item\em Constructs the color from 4 values representing the alpha, red, green and blue component. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1video_1_1SColor_a56dd5677c3e36d3b33d5d796be2597da}{S\+Color} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} clr)\hypertarget{classirr_1_1video_1_1SColor_a56dd5677c3e36d3b33d5d796be2597da}{}\label{classirr_1_1video_1_1SColor_a56dd5677c3e36d3b33d5d796be2597da}
+
+\begin{DoxyCompactList}\small\item\em Constructs the color from a 32 bit value. Could be another color. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1video_1_1SColor_a9647d09a9d4b9c6fb48a8fa1f2da425c}{get\+Alpha} () const 
+\begin{DoxyCompactList}\small\item\em Returns the alpha component of the color. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1video_1_1SColor_af10d2deaccbde5c958032ed9ec81b59f}{get\+Red} () const 
+\begin{DoxyCompactList}\small\item\em Returns the red component of the color. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1video_1_1SColor_ad604ba81e061b0bfe2ccb5f16e29124d}{get\+Green} () const 
+\begin{DoxyCompactList}\small\item\em Returns the green component of the color. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1video_1_1SColor_a26fdbde73081b35a1686f8d21a549544}{get\+Blue} () const 
+\begin{DoxyCompactList}\small\item\em Returns the blue component of the color. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} \hyperlink{classirr_1_1video_1_1SColor_aa96bfc155c181104c61df9d58ad8be0f}{get\+Lightness} () const \hypertarget{classirr_1_1video_1_1SColor_aa96bfc155c181104c61df9d58ad8be0f}{}\label{classirr_1_1video_1_1SColor_aa96bfc155c181104c61df9d58ad8be0f}
+
+\begin{DoxyCompactList}\small\item\em Get lightness of the color in the range \mbox{[}0,255\mbox{]}. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} \hyperlink{classirr_1_1video_1_1SColor_ad0a78b90a97e8444a1d12e93e7e929ba}{get\+Luminance} () const \hypertarget{classirr_1_1video_1_1SColor_ad0a78b90a97e8444a1d12e93e7e929ba}{}\label{classirr_1_1video_1_1SColor_ad0a78b90a97e8444a1d12e93e7e929ba}
+
+\begin{DoxyCompactList}\small\item\em Get luminance of the color in the range \mbox{[}0,255\mbox{]}. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1video_1_1SColor_a29a672f4bae9805970b84c4aef81b9ab}{get\+Average} () const \hypertarget{classirr_1_1video_1_1SColor_a29a672f4bae9805970b84c4aef81b9ab}{}\label{classirr_1_1video_1_1SColor_a29a672f4bae9805970b84c4aef81b9ab}
+
+\begin{DoxyCompactList}\small\item\em Get average intensity of the color in the range \mbox{[}0,255\mbox{]}. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1video_1_1SColor_a7bfe4abc30d563668b947c8bdb055bab}{set\+Alpha} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} a)
+\begin{DoxyCompactList}\small\item\em Sets the alpha component of the Color. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1video_1_1SColor_a950c98714711ae9dd8c5219f83c07693}{set\+Red} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} r)
+\begin{DoxyCompactList}\small\item\em Sets the red component of the Color. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1video_1_1SColor_af80cfedd5e761216b8bed259963ac948}{set\+Green} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} g)
+\begin{DoxyCompactList}\small\item\em Sets the green component of the Color. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1video_1_1SColor_a13d82e6b52d32f7394f3cce041dc2965}{set\+Blue} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} b)
+\begin{DoxyCompactList}\small\item\em Sets the blue component of the Color. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_ae9f8ec82692ad3b83c21f555bfa70bcc}{u16} \hyperlink{classirr_1_1video_1_1SColor_a9a6ad04081a1b15c07746cf84a971565}{to\+A1\+R5\+G5\+B5} () const 
+\begin{DoxyCompactList}\small\item\em Calculates a 16 bit A1\+R5\+G5\+B5 value of this color. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1video_1_1SColor_a0196acc3dfded9f6161c41f0065267c1}{to\+Open\+G\+L\+Color} (\hyperlink{namespaceirr_a646874f69af8ff87fc10201b0254a761}{u8} $\ast$dest) const 
+\begin{DoxyCompactList}\small\item\em Converts color to Open\+GL color format. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1video_1_1SColor_a8cf295c05c7406cc249843acbb31ec5f}{set} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} a, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} r, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} g, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} b)
+\begin{DoxyCompactList}\small\item\em Sets all four components of the color at once. \end{DoxyCompactList}\item 
+void {\bfseries set} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} col)\hypertarget{classirr_1_1video_1_1SColor_a4966581260a89f10386bf9d06239c341}{}\label{classirr_1_1video_1_1SColor_a4966581260a89f10386bf9d06239c341}
+
+\item 
+bool \hyperlink{classirr_1_1video_1_1SColor_a68025038ef1c75c8b7ca64270216f79f}{operator==} (const \hyperlink{classirr_1_1video_1_1SColor}{S\+Color} \&other) const 
+\begin{DoxyCompactList}\small\item\em Compares the color to another color. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1video_1_1SColor_abcacfc84b1a87f148570efb176999104}{operator!=} (const \hyperlink{classirr_1_1video_1_1SColor}{S\+Color} \&other) const 
+\begin{DoxyCompactList}\small\item\em Compares the color to another color. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1video_1_1SColor_a8e7944ddc658076a2933861a1b99f1e7}{operator$<$} (const \hyperlink{classirr_1_1video_1_1SColor}{S\+Color} \&other) const 
+\begin{DoxyCompactList}\small\item\em comparison operator \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1video_1_1SColor}{S\+Color} \hyperlink{classirr_1_1video_1_1SColor_a1cd25e0e67050af13a15515b7d2c8782}{operator+} (const \hyperlink{classirr_1_1video_1_1SColor}{S\+Color} \&other) const 
+\begin{DoxyCompactList}\small\item\em Adds two colors, result is clamped to 0..255 values. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1video_1_1SColor}{S\+Color} \hyperlink{classirr_1_1video_1_1SColor_a880760bf37e7c2143cc0b1a0e90a85b1}{get\+Interpolated} (const \hyperlink{classirr_1_1video_1_1SColor}{S\+Color} \&other, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} d) const 
+\begin{DoxyCompactList}\small\item\em Interpolates the color with a f32 value to another color. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1video_1_1SColor}{S\+Color} \hyperlink{classirr_1_1video_1_1SColor_a9e3832dd71062d1d200f11b91cd3a104}{get\+Interpolated\+\_\+quadratic} (const \hyperlink{classirr_1_1video_1_1SColor}{S\+Color} \&c1, const \hyperlink{classirr_1_1video_1_1SColor}{S\+Color} \&c2, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} d) const 
+\begin{DoxyCompactList}\small\item\em Returns interpolated color. ( quadratic ) \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1video_1_1SColor_a381f2db0ed17c6b06ba5c8809dce3370}{set\+Data} (const void $\ast$data, \hyperlink{namespaceirr_1_1video_a1d5e487888c32b1674a8f75116d829ed}{E\+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+AT} format)
+\begin{DoxyCompactList}\small\item\em set the color by expecting data in the given format \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1video_1_1SColor_a7cba1b914230289de9c91ff28be96bc9}{get\+Data} (void $\ast$data, \hyperlink{namespaceirr_1_1video_a1d5e487888c32b1674a8f75116d829ed}{E\+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+AT} format)
+\begin{DoxyCompactList}\small\item\em Write the color to data in the defined format. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1video_1_1SColor_a11f2b41eeff9e7f688d322735ca2cfcf}{color}\hypertarget{classirr_1_1video_1_1SColor_a11f2b41eeff9e7f688d322735ca2cfcf}{}\label{classirr_1_1video_1_1SColor_a11f2b41eeff9e7f688d322735ca2cfcf}
+
+\begin{DoxyCompactList}\small\item\em color in A8\+R8\+G8\+B8 Format \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class representing a 32 bit A\+R\+GB color. 
+
+The color values for alpha, red, green, and blue are stored in a single u32. So all four values may be between 0 and 255. Alpha in Irrlicht is opacity, so 0 is fully transparent, 255 is fully opaque (solid). This class is used by most parts of the Irrlicht Engine to specify a color. Another way is using the class \hyperlink{classirr_1_1video_1_1SColorf}{S\+Colorf}, which stores the color values in 4 floats. This class must consist of only one u32 and must not use virtual functions. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!S\+Color@{S\+Color}}
+\index{S\+Color@{S\+Color}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{S\+Color()}{SColor()}}]{\setlength{\rightskip}{0pt plus 5cm}irr\+::video\+::\+S\+Color\+::\+S\+Color (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_ab001c0c2515ff5f8a0b324d1345485f4}{}\label{classirr_1_1video_1_1SColor_ab001c0c2515ff5f8a0b324d1345485f4}
+
+
+Constructor of the Color. Does nothing. 
+
+The color value is not initialized to save time. \index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!S\+Color@{S\+Color}}
+\index{S\+Color@{S\+Color}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{S\+Color(u32 a, u32 r, u32 g, u32 b)}{SColor(u32 a, u32 r, u32 g, u32 b)}}]{\setlength{\rightskip}{0pt plus 5cm}irr\+::video\+::\+S\+Color\+::\+S\+Color (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{a, }
+\item[{{\bf u32}}]{r, }
+\item[{{\bf u32}}]{g, }
+\item[{{\bf u32}}]{b}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_aa2ca1fcb9b11375282bb407b635b3dd6}{}\label{classirr_1_1video_1_1SColor_aa2ca1fcb9b11375282bb407b635b3dd6}
+
+
+Constructs the color from 4 values representing the alpha, red, green and blue component. 
+
+Must be values between 0 and 255. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!get\+Alpha@{get\+Alpha}}
+\index{get\+Alpha@{get\+Alpha}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{get\+Alpha() const }{getAlpha() const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf u32} irr\+::video\+::\+S\+Color\+::get\+Alpha (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a9647d09a9d4b9c6fb48a8fa1f2da425c}{}\label{classirr_1_1video_1_1SColor_a9647d09a9d4b9c6fb48a8fa1f2da425c}
+
+
+Returns the alpha component of the color. 
+
+The alpha component defines how opaque a color is. \begin{DoxyReturn}{Returns}
+The alpha value of the color. 0 is fully transparent, 255 is fully opaque. 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!get\+Blue@{get\+Blue}}
+\index{get\+Blue@{get\+Blue}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{get\+Blue() const }{getBlue() const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf u32} irr\+::video\+::\+S\+Color\+::get\+Blue (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a26fdbde73081b35a1686f8d21a549544}{}\label{classirr_1_1video_1_1SColor_a26fdbde73081b35a1686f8d21a549544}
+
+
+Returns the blue component of the color. 
+
+\begin{DoxyReturn}{Returns}
+Value between 0 and 255, specifying how blue the color is. 0 means no blue, 255 means full blue. 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!get\+Data@{get\+Data}}
+\index{get\+Data@{get\+Data}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{get\+Data(void $\ast$data, E\+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T format)}{getData(void *data, ECOLOR\_FORMAT format)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::video\+::\+S\+Color\+::get\+Data (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{data, }
+\item[{{\bf E\+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+AT}}]{format}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a7cba1b914230289de9c91ff28be96bc9}{}\label{classirr_1_1video_1_1SColor_a7cba1b914230289de9c91ff28be96bc9}
+
+
+Write the color to data in the defined format. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & target to write the color. Must contain sufficiently large memory to receive the number of bytes neede for format \\
+\hline
+{\em format} & tells the format used to write the color into data \\
+\hline
+\end{DoxyParams}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!get\+Green@{get\+Green}}
+\index{get\+Green@{get\+Green}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{get\+Green() const }{getGreen() const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf u32} irr\+::video\+::\+S\+Color\+::get\+Green (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_ad604ba81e061b0bfe2ccb5f16e29124d}{}\label{classirr_1_1video_1_1SColor_ad604ba81e061b0bfe2ccb5f16e29124d}
+
+
+Returns the green component of the color. 
+
+\begin{DoxyReturn}{Returns}
+Value between 0 and 255, specifying how green the color is. 0 means no green, 255 means full green. 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!get\+Interpolated@{get\+Interpolated}}
+\index{get\+Interpolated@{get\+Interpolated}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{get\+Interpolated(const S\+Color \&other, f32 d) const }{getInterpolated(const SColor \&other, f32 d) const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+Color} irr\+::video\+::\+S\+Color\+::get\+Interpolated (
+\begin{DoxyParamCaption}
+\item[{const {\bf S\+Color} \&}]{other, }
+\item[{{\bf f32}}]{d}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a880760bf37e7c2143cc0b1a0e90a85b1}{}\label{classirr_1_1video_1_1SColor_a880760bf37e7c2143cc0b1a0e90a85b1}
+
+
+Interpolates the color with a f32 value to another color. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Other color \\
+\hline
+{\em d} & value between 0.\+0f and 1.\+0f \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Interpolated color. 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!get\+Interpolated\+\_\+quadratic@{get\+Interpolated\+\_\+quadratic}}
+\index{get\+Interpolated\+\_\+quadratic@{get\+Interpolated\+\_\+quadratic}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{get\+Interpolated\+\_\+quadratic(const S\+Color \&c1, const S\+Color \&c2, f32 d) const }{getInterpolated\_quadratic(const SColor \&c1, const SColor \&c2, f32 d) const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+Color} irr\+::video\+::\+S\+Color\+::get\+Interpolated\+\_\+quadratic (
+\begin{DoxyParamCaption}
+\item[{const {\bf S\+Color} \&}]{c1, }
+\item[{const {\bf S\+Color} \&}]{c2, }
+\item[{{\bf f32}}]{d}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a9e3832dd71062d1d200f11b91cd3a104}{}\label{classirr_1_1video_1_1SColor_a9e3832dd71062d1d200f11b91cd3a104}
+
+
+Returns interpolated color. ( quadratic ) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c1} & first color to interpolate with \\
+\hline
+{\em c2} & second color to interpolate with \\
+\hline
+{\em d} & value between 0.\+0f and 1.\+0f. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!get\+Red@{get\+Red}}
+\index{get\+Red@{get\+Red}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{get\+Red() const }{getRed() const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf u32} irr\+::video\+::\+S\+Color\+::get\+Red (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_af10d2deaccbde5c958032ed9ec81b59f}{}\label{classirr_1_1video_1_1SColor_af10d2deaccbde5c958032ed9ec81b59f}
+
+
+Returns the red component of the color. 
+
+\begin{DoxyReturn}{Returns}
+Value between 0 and 255, specifying how red the color is. 0 means no red, 255 means full red. 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!operator"!=@{operator"!=}}
+\index{operator"!=@{operator"!=}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{operator"!=(const S\+Color \&other) const }{operator!=(const SColor \&other) const }}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::video\+::\+S\+Color\+::operator!= (
+\begin{DoxyParamCaption}
+\item[{const {\bf S\+Color} \&}]{other}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_abcacfc84b1a87f148570efb176999104}{}\label{classirr_1_1video_1_1SColor_abcacfc84b1a87f148570efb176999104}
+
+
+Compares the color to another color. 
+
+\begin{DoxyReturn}{Returns}
+True if the colors are different, and false if they are the same. 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!operator+@{operator+}}
+\index{operator+@{operator+}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{operator+(const S\+Color \&other) const }{operator+(const SColor \&other) const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+Color} irr\+::video\+::\+S\+Color\+::operator+ (
+\begin{DoxyParamCaption}
+\item[{const {\bf S\+Color} \&}]{other}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a1cd25e0e67050af13a15515b7d2c8782}{}\label{classirr_1_1video_1_1SColor_a1cd25e0e67050af13a15515b7d2c8782}
+
+
+Adds two colors, result is clamped to 0..255 values. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Color to add to this color \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Addition of the two colors, clamped to 0..255 values 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!operator$<$@{operator$<$}}
+\index{operator$<$@{operator$<$}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{operator$<$(const S\+Color \&other) const }{operator<(const SColor \&other) const }}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::video\+::\+S\+Color\+::operator$<$ (
+\begin{DoxyParamCaption}
+\item[{const {\bf S\+Color} \&}]{other}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a8e7944ddc658076a2933861a1b99f1e7}{}\label{classirr_1_1video_1_1SColor_a8e7944ddc658076a2933861a1b99f1e7}
+
+
+comparison operator 
+
+\begin{DoxyReturn}{Returns}
+True if this color is smaller than the other one 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!operator==@{operator==}}
+\index{operator==@{operator==}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{operator==(const S\+Color \&other) const }{operator==(const SColor \&other) const }}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::video\+::\+S\+Color\+::operator== (
+\begin{DoxyParamCaption}
+\item[{const {\bf S\+Color} \&}]{other}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a68025038ef1c75c8b7ca64270216f79f}{}\label{classirr_1_1video_1_1SColor_a68025038ef1c75c8b7ca64270216f79f}
+
+
+Compares the color to another color. 
+
+\begin{DoxyReturn}{Returns}
+True if the colors are the same, and false if not. 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!set@{set}}
+\index{set@{set}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{set(u32 a, u32 r, u32 g, u32 b)}{set(u32 a, u32 r, u32 g, u32 b)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::video\+::\+S\+Color\+::set (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{a, }
+\item[{{\bf u32}}]{r, }
+\item[{{\bf u32}}]{g, }
+\item[{{\bf u32}}]{b}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a8cf295c05c7406cc249843acbb31ec5f}{}\label{classirr_1_1video_1_1SColor_a8cf295c05c7406cc249843acbb31ec5f}
+
+
+Sets all four components of the color at once. 
+
+Constructs the color from 4 values representing the alpha, red, green and blue components of the color. Must be values between 0 and 255. 
+\begin{DoxyParams}{Parameters}
+{\em a} & Alpha component of the color. The alpha component defines how transparent a color should be. Has to be a value between 0 and 255. 255 means not transparent (opaque), 0 means fully transparent. \\
+\hline
+{\em r} & Sets the red component of the Color. Has to be a value between 0 and 255. 0 means no red, 255 means full red. \\
+\hline
+{\em g} & Sets the green component of the Color. Has to be a value between 0 and 255. 0 means no green, 255 means full green. \\
+\hline
+{\em b} & Sets the blue component of the Color. Has to be a value between 0 and 255. 0 means no blue, 255 means full blue. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!set\+Alpha@{set\+Alpha}}
+\index{set\+Alpha@{set\+Alpha}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{set\+Alpha(u32 a)}{setAlpha(u32 a)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::video\+::\+S\+Color\+::set\+Alpha (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{a}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a7bfe4abc30d563668b947c8bdb055bab}{}\label{classirr_1_1video_1_1SColor_a7bfe4abc30d563668b947c8bdb055bab}
+
+
+Sets the alpha component of the Color. 
+
+The alpha component defines how transparent a color should be. 
+\begin{DoxyParams}{Parameters}
+{\em a} & The alpha value of the color. 0 is fully transparent, 255 is fully opaque. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!set\+Blue@{set\+Blue}}
+\index{set\+Blue@{set\+Blue}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{set\+Blue(u32 b)}{setBlue(u32 b)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::video\+::\+S\+Color\+::set\+Blue (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{b}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a13d82e6b52d32f7394f3cce041dc2965}{}\label{classirr_1_1video_1_1SColor_a13d82e6b52d32f7394f3cce041dc2965}
+
+
+Sets the blue component of the Color. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em b} & Has to be a value between 0 and 255. 0 means no blue, 255 means full blue. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!set\+Data@{set\+Data}}
+\index{set\+Data@{set\+Data}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{set\+Data(const void $\ast$data, E\+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T format)}{setData(const void *data, ECOLOR\_FORMAT format)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::video\+::\+S\+Color\+::set\+Data (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{data, }
+\item[{{\bf E\+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+AT}}]{format}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a381f2db0ed17c6b06ba5c8809dce3370}{}\label{classirr_1_1video_1_1SColor_a381f2db0ed17c6b06ba5c8809dce3370}
+
+
+set the color by expecting data in the given format 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & must point to valid memory containing color information in the given format \\
+\hline
+{\em format} & tells the format in which data is available \\
+\hline
+\end{DoxyParams}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!set\+Green@{set\+Green}}
+\index{set\+Green@{set\+Green}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{set\+Green(u32 g)}{setGreen(u32 g)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::video\+::\+S\+Color\+::set\+Green (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{g}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_af80cfedd5e761216b8bed259963ac948}{}\label{classirr_1_1video_1_1SColor_af80cfedd5e761216b8bed259963ac948}
+
+
+Sets the green component of the Color. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em g} & Has to be a value between 0 and 255. 0 means no green, 255 means full green. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!set\+Red@{set\+Red}}
+\index{set\+Red@{set\+Red}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{set\+Red(u32 r)}{setRed(u32 r)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::video\+::\+S\+Color\+::set\+Red (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{r}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a950c98714711ae9dd8c5219f83c07693}{}\label{classirr_1_1video_1_1SColor_a950c98714711ae9dd8c5219f83c07693}
+
+
+Sets the red component of the Color. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em r} & Has to be a value between 0 and 255. 0 means no red, 255 means full red. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!to\+A1\+R5\+G5\+B5@{to\+A1\+R5\+G5\+B5}}
+\index{to\+A1\+R5\+G5\+B5@{to\+A1\+R5\+G5\+B5}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{to\+A1\+R5\+G5\+B5() const }{toA1R5G5B5() const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf u16} irr\+::video\+::\+S\+Color\+::to\+A1\+R5\+G5\+B5 (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a9a6ad04081a1b15c07746cf84a971565}{}\label{classirr_1_1video_1_1SColor_a9a6ad04081a1b15c07746cf84a971565}
+
+
+Calculates a 16 bit A1\+R5\+G5\+B5 value of this color. 
+
+\begin{DoxyReturn}{Returns}
+16 bit A1\+R5\+G5\+B5 value of this color. 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}!to\+Open\+G\+L\+Color@{to\+Open\+G\+L\+Color}}
+\index{to\+Open\+G\+L\+Color@{to\+Open\+G\+L\+Color}!irr\+::video\+::\+S\+Color@{irr\+::video\+::\+S\+Color}}
+\subsubsection[{\texorpdfstring{to\+Open\+G\+L\+Color(u8 $\ast$dest) const }{toOpenGLColor(u8 *dest) const }}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::video\+::\+S\+Color\+::to\+Open\+G\+L\+Color (
+\begin{DoxyParamCaption}
+\item[{{\bf u8} $\ast$}]{dest}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1video_1_1SColor_a0196acc3dfded9f6161c41f0065267c1}{}\label{classirr_1_1video_1_1SColor_a0196acc3dfded9f6161c41f0065267c1}
+
+
+Converts color to Open\+GL color format. 
+
+From A\+R\+GB to R\+G\+BA in 4 byte components for endian aware passing to Open\+GL 
+\begin{DoxyParams}{Parameters}
+{\em dest} & address where the 4x8 bit Open\+GL color is stored. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/S\+Color.\+h\end{DoxyCompactItemize}

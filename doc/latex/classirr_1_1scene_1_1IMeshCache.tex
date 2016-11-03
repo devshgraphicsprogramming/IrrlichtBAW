@@ -1,0 +1,295 @@
+\hypertarget{classirr_1_1scene_1_1IMeshCache}{}\section{irr\+:\+:scene\+:\+:I\+Mesh\+Cache$<$ T $>$ Class Template Reference}
+\label{classirr_1_1scene_1_1IMeshCache}\index{irr\+::scene\+::\+I\+Mesh\+Cache$<$ T $>$@{irr\+::scene\+::\+I\+Mesh\+Cache$<$ T $>$}}
+
+
+The mesh cache stores already loaded meshes and provides an interface to them.  
+
+
+
+
+{\ttfamily \#include $<$I\+Mesh\+Cache.\+h$>$}
+
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Mesh\+Cache$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classirr_1_1scene_1_1IMeshCache}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMeshCache_aac581c0d4c048446c282590447223435}{$\sim$\+I\+Mesh\+Cache} ()\hypertarget{classirr_1_1scene_1_1IMeshCache_aac581c0d4c048446c282590447223435}{}\label{classirr_1_1scene_1_1IMeshCache_aac581c0d4c048446c282590447223435}
+
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1IMeshCache_aaea60b117903d0f960d0e19df2bce39e}{add\+Mesh} (const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&name, T $\ast$mesh)=0
+\begin{DoxyCompactList}\small\item\em Adds a mesh to the internal list of loaded meshes. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1IMeshCache_ab90eb5eca6864c96078d65e700223f45}{remove\+Mesh} (const T $\ast$const mesh)=0
+\begin{DoxyCompactList}\small\item\em Removes the mesh from the cache. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1IMeshCache_a866c87d11246df2a3803d4689ee5ca4d}{get\+Mesh\+Count} () const  =0
+\begin{DoxyCompactList}\small\item\em Returns amount of loaded meshes in the cache. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \hyperlink{classirr_1_1scene_1_1IMeshCache_a162b4e8fd055fd1a7b472c4ceb8f0fd5}{get\+Mesh\+Index} (const T $\ast$const mesh) const  =0
+\begin{DoxyCompactList}\small\item\em Returns current index number of the mesh or -\/1 when not found. \end{DoxyCompactList}\item 
+virtual T $\ast$ \hyperlink{classirr_1_1scene_1_1IMeshCache_ac4ab47723ac9c9ee81ff553af105bd6e}{get\+Mesh\+By\+Index} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index)=0
+\begin{DoxyCompactList}\small\item\em Returns a mesh based on its index number. \end{DoxyCompactList}\item 
+virtual T $\ast$ \hyperlink{classirr_1_1scene_1_1IMeshCache_a6165e3f028c526af9ac094a99881598b}{get\+Mesh\+By\+Name} (const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&name)=0
+\begin{DoxyCompactList}\small\item\em Returns a mesh based on its name. \end{DoxyCompactList}\item 
+virtual const \hyperlink{structirr_1_1io_1_1SNamedPath}{io\+::\+S\+Named\+Path} \& \hyperlink{classirr_1_1scene_1_1IMeshCache_ac61e9ae1135743d90cc28266a6cfc236}{get\+Mesh\+Name} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index) const  =0
+\begin{DoxyCompactList}\small\item\em Get the name of a loaded mesh, based on its index. \end{DoxyCompactList}\item 
+virtual const \hyperlink{structirr_1_1io_1_1SNamedPath}{io\+::\+S\+Named\+Path} \& \hyperlink{classirr_1_1scene_1_1IMeshCache_a50a1fd8b5e27c14c729b69f8313bb1eb}{get\+Mesh\+Name} (const T $\ast$const mesh) const  =0
+\begin{DoxyCompactList}\small\item\em Get the name of the loaded mesh if there is any. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1IMeshCache_a694f606aa09dcdf75d32a2349be2ff3f}{rename\+Mesh} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index, const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&name)=0
+\begin{DoxyCompactList}\small\item\em Renames a loaded mesh. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1IMeshCache_a18169251ed55f2ea9f2e5341382ab49f}{rename\+Mesh} (const T $\ast$const mesh, const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&name)=0
+\begin{DoxyCompactList}\small\item\em Renames the loaded mesh. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1IMeshCache_a888be60cbdb155443108fb27908c0d51}{is\+Mesh\+Loaded} (const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&name)=0
+\begin{DoxyCompactList}\small\item\em Check if a mesh was already loaded. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1IMeshCache_a973742f191f37291e202f2eda51ab444}{clear} ()=0
+\begin{DoxyCompactList}\small\item\em Clears the whole mesh cache, removing all meshes. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1IMeshCache_aa79e0c6c82e5361b94167f99f7a958c8}{clear\+Unused\+Meshes} ()=0
+\begin{DoxyCompactList}\small\item\em Clears all meshes that are held in the mesh cache but not used anywhere else. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\\*
+class irr\+::scene\+::\+I\+Mesh\+Cache$<$ T $>$}
+
+The mesh cache stores already loaded meshes and provides an interface to them. 
+
+You can access it using \hyperlink{classirr_1_1scene_1_1ISceneManager_ac5ffbb676d3c68becfb565cf72e2afa0}{I\+Scene\+Manager\+::get\+Mesh\+Cache()}. All existing scene managers will return a pointer to the same mesh cache, because it is shared between them. With this interface, it is possible to manually add new loaded meshes (if \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{I\+Scene\+Manager\+::get\+Mesh()} is not sufficient), to remove them and to iterate through already loaded meshes. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!add\+Mesh@{add\+Mesh}}
+\index{add\+Mesh@{add\+Mesh}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{add\+Mesh(const io\+::path \&name, T $\ast$mesh)=0}{addMesh(const io::path \&name, T *mesh)=0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual void {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::add\+Mesh (
+\begin{DoxyParamCaption}
+\item[{const {\bf io\+::path} \&}]{name, }
+\item[{T $\ast$}]{mesh}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_aaea60b117903d0f960d0e19df2bce39e}{}\label{classirr_1_1scene_1_1IMeshCache_aaea60b117903d0f960d0e19df2bce39e}
+
+
+Adds a mesh to the internal list of loaded meshes. 
+
+Usually, \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{I\+Scene\+Manager\+::get\+Mesh()} is called to load a mesh from a file. That method searches the list of loaded meshes if a mesh has already been loaded and returns a pointer to if it is in that list and already in memory. Otherwise it loads the mesh. With \hyperlink{classirr_1_1scene_1_1IMeshCache_aaea60b117903d0f960d0e19df2bce39e}{I\+Mesh\+Cache\+::add\+Mesh()}, it is possible to pretend that a mesh already has been loaded. This method can be used for example by mesh loaders who need to load more than one mesh with one call. They can add additional meshes with this method to the scene manager. The C\+O\+L\+L\+A\+DA loader for example uses this method. 
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the mesh. When calling \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{I\+Scene\+Manager\+::get\+Mesh()} with this name it will return the mesh set by this method. \\
+\hline
+{\em mesh} & Pointer to a mesh which will now be referenced by this name. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!clear@{clear}}
+\index{clear@{clear}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{clear()=0}{clear()=0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual void {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::clear (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_a973742f191f37291e202f2eda51ab444}{}\label{classirr_1_1scene_1_1IMeshCache_a973742f191f37291e202f2eda51ab444}
+
+
+Clears the whole mesh cache, removing all meshes. 
+
+All meshes will be reloaded completely when using \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{I\+Scene\+Manager\+::get\+Mesh()} after calling this method. Warning\+: If you have pointers to meshes that were loaded with \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{I\+Scene\+Manager\+::get\+Mesh()} and you did not grab them, then they may become invalid. \index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!clear\+Unused\+Meshes@{clear\+Unused\+Meshes}}
+\index{clear\+Unused\+Meshes@{clear\+Unused\+Meshes}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{clear\+Unused\+Meshes()=0}{clearUnusedMeshes()=0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual void {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::clear\+Unused\+Meshes (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_aa79e0c6c82e5361b94167f99f7a958c8}{}\label{classirr_1_1scene_1_1IMeshCache_aa79e0c6c82e5361b94167f99f7a958c8}
+
+
+Clears all meshes that are held in the mesh cache but not used anywhere else. 
+
+Warning\+: If you have pointers to meshes that were loaded with \hyperlink{classirr_1_1scene_1_1ISceneManager_aca1b12117220849983243ee2f73a8f4d}{I\+Scene\+Manager\+::get\+Mesh()} and you did not grab them, then they may become invalid. \index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!get\+Mesh\+By\+Index@{get\+Mesh\+By\+Index}}
+\index{get\+Mesh\+By\+Index@{get\+Mesh\+By\+Index}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{get\+Mesh\+By\+Index(u32 index)=0}{getMeshByIndex(u32 index)=0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual T$\ast$ {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::get\+Mesh\+By\+Index (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{index}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_ac4ab47723ac9c9ee81ff553af105bd6e}{}\label{classirr_1_1scene_1_1IMeshCache_ac4ab47723ac9c9ee81ff553af105bd6e}
+
+
+Returns a mesh based on its index number. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the mesh, number between 0 and \hyperlink{classirr_1_1scene_1_1IMeshCache_a866c87d11246df2a3803d4689ee5ca4d}{get\+Mesh\+Count()}-\/1. Note that this number is only valid until a new mesh is loaded or removed. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the mesh or 0 if there is none with this number. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!get\+Mesh\+By\+Name@{get\+Mesh\+By\+Name}}
+\index{get\+Mesh\+By\+Name@{get\+Mesh\+By\+Name}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{get\+Mesh\+By\+Name(const io\+::path \&name)=0}{getMeshByName(const io::path \&name)=0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual T$\ast$ {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::get\+Mesh\+By\+Name (
+\begin{DoxyParamCaption}
+\item[{const {\bf io\+::path} \&}]{name}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_a6165e3f028c526af9ac094a99881598b}{}\label{classirr_1_1scene_1_1IMeshCache_a6165e3f028c526af9ac094a99881598b}
+
+
+Returns a mesh based on its name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the mesh. Usually a filename. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the mesh or 0 if there is none with this number. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!get\+Mesh\+Count@{get\+Mesh\+Count}}
+\index{get\+Mesh\+Count@{get\+Mesh\+Count}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{get\+Mesh\+Count() const  =0}{getMeshCount() const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual {\bf u32} {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::get\+Mesh\+Count (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_a866c87d11246df2a3803d4689ee5ca4d}{}\label{classirr_1_1scene_1_1IMeshCache_a866c87d11246df2a3803d4689ee5ca4d}
+
+
+Returns amount of loaded meshes in the cache. 
+
+You can load new meshes into the cache using get\+Mesh() and \hyperlink{classirr_1_1scene_1_1IMeshCache_aaea60b117903d0f960d0e19df2bce39e}{add\+Mesh()}. If you ever need to access the internal mesh cache, you can do this using \hyperlink{classirr_1_1scene_1_1IMeshCache_ab90eb5eca6864c96078d65e700223f45}{remove\+Mesh()}, get\+Mesh\+Number(), \hyperlink{classirr_1_1scene_1_1IMeshCache_ac4ab47723ac9c9ee81ff553af105bd6e}{get\+Mesh\+By\+Index()} and \hyperlink{classirr_1_1scene_1_1IMeshCache_ac61e9ae1135743d90cc28266a6cfc236}{get\+Mesh\+Name()}. \begin{DoxyReturn}{Returns}
+Number of meshes in cache. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!get\+Mesh\+Index@{get\+Mesh\+Index}}
+\index{get\+Mesh\+Index@{get\+Mesh\+Index}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{get\+Mesh\+Index(const T $\ast$const mesh) const  =0}{getMeshIndex(const T *const mesh) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual {\bf s32} {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::get\+Mesh\+Index (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$const}]{mesh}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_a162b4e8fd055fd1a7b472c4ceb8f0fd5}{}\label{classirr_1_1scene_1_1IMeshCache_a162b4e8fd055fd1a7b472c4ceb8f0fd5}
+
+
+Returns current index number of the mesh or -\/1 when not found. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mesh} & Pointer to the mesh to search for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Index of the mesh in the cache, or -\/1 if not found. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!get\+Mesh\+Name@{get\+Mesh\+Name}}
+\index{get\+Mesh\+Name@{get\+Mesh\+Name}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{get\+Mesh\+Name(u32 index) const  =0}{getMeshName(u32 index) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual const {\bf io\+::\+S\+Named\+Path}\& {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::get\+Mesh\+Name (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{index}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_ac61e9ae1135743d90cc28266a6cfc236}{}\label{classirr_1_1scene_1_1IMeshCache_ac61e9ae1135743d90cc28266a6cfc236}
+
+
+Get the name of a loaded mesh, based on its index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the mesh, number between 0 and \hyperlink{classirr_1_1scene_1_1IMeshCache_a866c87d11246df2a3803d4689ee5ca4d}{get\+Mesh\+Count()}-\/1. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The name if mesh was found and has a name, else the path is empty. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!get\+Mesh\+Name@{get\+Mesh\+Name}}
+\index{get\+Mesh\+Name@{get\+Mesh\+Name}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{get\+Mesh\+Name(const T $\ast$const mesh) const  =0}{getMeshName(const T *const mesh) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual const {\bf io\+::\+S\+Named\+Path}\& {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::get\+Mesh\+Name (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$const}]{mesh}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_a50a1fd8b5e27c14c729b69f8313bb1eb}{}\label{classirr_1_1scene_1_1IMeshCache_a50a1fd8b5e27c14c729b69f8313bb1eb}
+
+
+Get the name of the loaded mesh if there is any. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mesh} & Pointer to mesh to query. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The name if mesh was found and has a name, else the path is empty. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!is\+Mesh\+Loaded@{is\+Mesh\+Loaded}}
+\index{is\+Mesh\+Loaded@{is\+Mesh\+Loaded}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{is\+Mesh\+Loaded(const io\+::path \&name)=0}{isMeshLoaded(const io::path \&name)=0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual bool {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::is\+Mesh\+Loaded (
+\begin{DoxyParamCaption}
+\item[{const {\bf io\+::path} \&}]{name}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_a888be60cbdb155443108fb27908c0d51}{}\label{classirr_1_1scene_1_1IMeshCache_a888be60cbdb155443108fb27908c0d51}
+
+
+Check if a mesh was already loaded. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the mesh. Usually a filename. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the mesh has been loaded, else false. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!remove\+Mesh@{remove\+Mesh}}
+\index{remove\+Mesh@{remove\+Mesh}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{remove\+Mesh(const T $\ast$const mesh)=0}{removeMesh(const T *const mesh)=0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual void {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::remove\+Mesh (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$const}]{mesh}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_ab90eb5eca6864c96078d65e700223f45}{}\label{classirr_1_1scene_1_1IMeshCache_ab90eb5eca6864c96078d65e700223f45}
+
+
+Removes the mesh from the cache. 
+
+After loading a mesh with get\+Mesh(), the mesh can be removed from the cache using this method, freeing a lot of memory. 
+\begin{DoxyParams}{Parameters}
+{\em mesh} & Pointer to the mesh which shall be removed. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!rename\+Mesh@{rename\+Mesh}}
+\index{rename\+Mesh@{rename\+Mesh}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{rename\+Mesh(u32 index, const io\+::path \&name)=0}{renameMesh(u32 index, const io::path \&name)=0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual bool {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::rename\+Mesh (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{index, }
+\item[{const {\bf io\+::path} \&}]{name}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_a694f606aa09dcdf75d32a2349be2ff3f}{}\label{classirr_1_1scene_1_1IMeshCache_a694f606aa09dcdf75d32a2349be2ff3f}
+
+
+Renames a loaded mesh. 
+
+Note that renaming meshes might change the ordering of the meshes, and so the index of the meshes as returned by \hyperlink{classirr_1_1scene_1_1IMeshCache_a162b4e8fd055fd1a7b472c4ceb8f0fd5}{get\+Mesh\+Index()} or taken by some methods will change. 
+\begin{DoxyParams}{Parameters}
+{\em index} & The index of the mesh in the cache. \\
+\hline
+{\em name} & New name for the mesh. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if mesh was renamed. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}!rename\+Mesh@{rename\+Mesh}}
+\index{rename\+Mesh@{rename\+Mesh}!irr\+::scene\+::\+I\+Mesh\+Cache@{irr\+::scene\+::\+I\+Mesh\+Cache}}
+\subsubsection[{\texorpdfstring{rename\+Mesh(const T $\ast$const mesh, const io\+::path \&name)=0}{renameMesh(const T *const mesh, const io::path \&name)=0}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ virtual bool {\bf irr\+::scene\+::\+I\+Mesh\+Cache}$<$ T $>$\+::rename\+Mesh (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$const}]{mesh, }
+\item[{const {\bf io\+::path} \&}]{name}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshCache_a18169251ed55f2ea9f2e5341382ab49f}{}\label{classirr_1_1scene_1_1IMeshCache_a18169251ed55f2ea9f2e5341382ab49f}
+
+
+Renames the loaded mesh. 
+
+Note that renaming meshes might change the ordering of the meshes, and so the index of the meshes as returned by \hyperlink{classirr_1_1scene_1_1IMeshCache_a162b4e8fd055fd1a7b472c4ceb8f0fd5}{get\+Mesh\+Index()} or taken by some methods will change. 
+\begin{DoxyParams}{Parameters}
+{\em mesh} & Mesh to be renamed. \\
+\hline
+{\em name} & New name for the mesh. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if mesh was renamed. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Mesh\+Cache.\+h\end{DoxyCompactItemize}

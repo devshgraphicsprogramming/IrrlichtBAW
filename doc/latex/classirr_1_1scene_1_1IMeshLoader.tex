@@ -1,0 +1,61 @@
+\hypertarget{classirr_1_1scene_1_1IMeshLoader}{}\section{irr\+:\+:scene\+:\+:I\+Mesh\+Loader Class Reference}
+\label{classirr_1_1scene_1_1IMeshLoader}\index{irr\+::scene\+::\+I\+Mesh\+Loader@{irr\+::scene\+::\+I\+Mesh\+Loader}}
+
+
+Class which is able to load an animated mesh from a file.  
+
+
+
+
+{\ttfamily \#include $<$I\+Mesh\+Loader.\+h$>$}
+
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Mesh\+Loader\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classirr_1_1scene_1_1IMeshLoader}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMeshLoader_ad20920b323a9902d50e8d09211730d4d}{$\sim$\+I\+Mesh\+Loader} ()\hypertarget{classirr_1_1scene_1_1IMeshLoader_ad20920b323a9902d50e8d09211730d4d}{}\label{classirr_1_1scene_1_1IMeshLoader_ad20920b323a9902d50e8d09211730d4d}
+
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1IMeshLoader_aab617e979ee6bb774b87f30b8eeaf157}{is\+A\+Loadable\+File\+Extension} (const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&filename) const  =0
+\begin{DoxyCompactList}\small\item\em Returns true if the file might be loaded by this class. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+C\+P\+U\+Mesh} $\ast$ {\bfseries create\+Mesh} (\hyperlink{classirr_1_1io_1_1IReadFile}{io\+::\+I\+Read\+File} $\ast$file)=0\hypertarget{classirr_1_1scene_1_1IMeshLoader_aa94557000cc544d270da072fbe059af6}{}\label{classirr_1_1scene_1_1IMeshLoader_aa94557000cc544d270da072fbe059af6}
+
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Class which is able to load an animated mesh from a file. 
+
+If you want Irrlicht be able to load meshes of currently unsupported file formats (e.\+g. .cob), then implement this and add your new Meshloader with \hyperlink{classirr_1_1scene_1_1ISceneManager_a808972cc001db86c0576c38b3b3fbbf7}{I\+Scene\+Manager\+::add\+External\+Mesh\+Loader()} to the engine. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+Mesh\+Loader@{irr\+::scene\+::\+I\+Mesh\+Loader}!is\+A\+Loadable\+File\+Extension@{is\+A\+Loadable\+File\+Extension}}
+\index{is\+A\+Loadable\+File\+Extension@{is\+A\+Loadable\+File\+Extension}!irr\+::scene\+::\+I\+Mesh\+Loader@{irr\+::scene\+::\+I\+Mesh\+Loader}}
+\subsubsection[{\texorpdfstring{is\+A\+Loadable\+File\+Extension(const io\+::path \&filename) const  =0}{isALoadableFileExtension(const io::path \&filename) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::scene\+::\+I\+Mesh\+Loader\+::is\+A\+Loadable\+File\+Extension (
+\begin{DoxyParamCaption}
+\item[{const {\bf io\+::path} \&}]{filename}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshLoader_aab617e979ee6bb774b87f30b8eeaf157}{}\label{classirr_1_1scene_1_1IMeshLoader_aab617e979ee6bb774b87f30b8eeaf157}
+
+
+Returns true if the file might be loaded by this class. 
+
+This decision should be based on the file extension (e.\+g. \char`\"{}.\+cob\char`\"{}) only. 
+\begin{DoxyParams}{Parameters}
+{\em filename} & Name of the file to test. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the file might be loaded by this class. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Mesh\+Loader.\+h\end{DoxyCompactItemize}

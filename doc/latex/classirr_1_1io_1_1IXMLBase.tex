@@ -1,0 +1,21 @@
+\hypertarget{classirr_1_1io_1_1IXMLBase}{}\section{irr\+:\+:io\+:\+:I\+X\+M\+L\+Base Class Reference}
+\label{classirr_1_1io_1_1IXMLBase}\index{irr\+::io\+::\+I\+X\+M\+L\+Base@{irr\+::io\+::\+I\+X\+M\+L\+Base}}
+
+
+Empty class to be used as parent class for Irr\+X\+M\+L\+Reader.  
+
+
+
+
+{\ttfamily \#include $<$irr\+X\+M\+L.\+h$>$}
+
+
+
+\subsection{Detailed Description}
+Empty class to be used as parent class for Irr\+X\+M\+L\+Reader. 
+
+If you need another class as base class for the xml reader, you can do this by creating the reader using for example new C\+X\+M\+L\+Reader\+Impl$<$char, Your\+Base\+Class$>$(yourcallback); The Irrlicht Engine for example needs \hyperlink{classirr_1_1IReferenceCounted}{I\+Reference\+Counted} as base class for every object to let it automaticly reference countend, hence it replaces \hyperlink{classirr_1_1io_1_1IXMLBase}{I\+X\+M\+L\+Base} with \hyperlink{classirr_1_1IReferenceCounted}{I\+Reference\+Counted}. See irr\+X\+M\+L.\+cpp on how this can be done in detail. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\hyperlink{irrXML_8h}{irr\+X\+M\+L.\+h}\end{DoxyCompactItemize}

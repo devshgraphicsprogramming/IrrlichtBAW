@@ -1,0 +1,57 @@
+\hypertarget{classirr_1_1io_1_1IFileReadCallBack}{}\section{irr\+:\+:io\+:\+:I\+File\+Read\+Call\+Back Class Reference}
+\label{classirr_1_1io_1_1IFileReadCallBack}\index{irr\+::io\+::\+I\+File\+Read\+Call\+Back@{irr\+::io\+::\+I\+File\+Read\+Call\+Back}}
+
+
+Callback class for file read abstraction.  
+
+
+
+
+{\ttfamily \#include $<$irr\+X\+M\+L.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \hyperlink{classirr_1_1io_1_1IFileReadCallBack_a91ace84f0a3966d88d78da5342eb9619}{$\sim$\+I\+File\+Read\+Call\+Back} ()\hypertarget{classirr_1_1io_1_1IFileReadCallBack_a91ace84f0a3966d88d78da5342eb9619}{}\label{classirr_1_1io_1_1IFileReadCallBack_a91ace84f0a3966d88d78da5342eb9619}
+
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+virtual int \hyperlink{classirr_1_1io_1_1IFileReadCallBack_ae8c57b8454078aa2acd39772a6aa4439}{read} (void $\ast$buffer, int size\+To\+Read)=0
+\begin{DoxyCompactList}\small\item\em Reads an amount of bytes from the file. \end{DoxyCompactList}\item 
+virtual long \hyperlink{classirr_1_1io_1_1IFileReadCallBack_a31ee0fbc44db4568bffe0ce526478f5d}{get\+Size} () const  =0\hypertarget{classirr_1_1io_1_1IFileReadCallBack_a31ee0fbc44db4568bffe0ce526478f5d}{}\label{classirr_1_1io_1_1IFileReadCallBack_a31ee0fbc44db4568bffe0ce526478f5d}
+
+\begin{DoxyCompactList}\small\item\em Returns size of file in bytes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Callback class for file read abstraction. 
+
+With this, it is possible to make the xml parser read in other things than just files. The Irrlicht engine is using this for example to read xml from compressed .zip files. To make the parser read in any other data, derive a class from this interface, implement the two methods to read your data and give a pointer to an instance of your implementation when calling \hyperlink{namespaceirr_1_1io_a581f4d4648398759c61266d63d7106b1}{create\+Irr\+X\+M\+L\+Reader()}, \hyperlink{namespaceirr_1_1io_a86473ef152c15b685af181a4c5461a5d}{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16()} or \hyperlink{namespaceirr_1_1io_ae05bf7ee342431ea8c98fb98e75b974a}{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32()} 
+
+\subsection{Member Function Documentation}
+\index{irr\+::io\+::\+I\+File\+Read\+Call\+Back@{irr\+::io\+::\+I\+File\+Read\+Call\+Back}!read@{read}}
+\index{read@{read}!irr\+::io\+::\+I\+File\+Read\+Call\+Back@{irr\+::io\+::\+I\+File\+Read\+Call\+Back}}
+\subsubsection[{\texorpdfstring{read(void $\ast$buffer, int size\+To\+Read)=0}{read(void *buffer, int sizeToRead)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual int irr\+::io\+::\+I\+File\+Read\+Call\+Back\+::read (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{buffer, }
+\item[{int}]{size\+To\+Read}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1io_1_1IFileReadCallBack_ae8c57b8454078aa2acd39772a6aa4439}{}\label{classirr_1_1io_1_1IFileReadCallBack_ae8c57b8454078aa2acd39772a6aa4439}
+
+
+Reads an amount of bytes from the file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em buffer} & Pointer to buffer where to read bytes will be written to. \\
+\hline
+{\em size\+To\+Read} & Amount of bytes to read from the file. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns how much bytes were read. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\hyperlink{irrXML_8h}{irr\+X\+M\+L.\+h}\end{DoxyCompactItemize}

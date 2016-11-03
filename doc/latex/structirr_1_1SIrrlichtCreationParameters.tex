@@ -1,0 +1,242 @@
+\hypertarget{structirr_1_1SIrrlichtCreationParameters}{}\section{irr\+:\+:S\+Irrlicht\+Creation\+Parameters Struct Reference}
+\label{structirr_1_1SIrrlichtCreationParameters}\index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+
+
+Structure for holding Irrlicht Device creation parameters.  
+
+
+
+
+{\ttfamily \#include $<$S\+Irr\+Creation\+Parameters.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structirr_1_1SIrrlichtCreationParameters_a466e3b6d57ea40bdcacd6aae892845f1}{S\+Irrlicht\+Creation\+Parameters} ()\hypertarget{structirr_1_1SIrrlichtCreationParameters_a466e3b6d57ea40bdcacd6aae892845f1}{}\label{structirr_1_1SIrrlichtCreationParameters_a466e3b6d57ea40bdcacd6aae892845f1}
+
+\begin{DoxyCompactList}\small\item\em Constructs a \hyperlink{structirr_1_1SIrrlichtCreationParameters}{S\+Irrlicht\+Creation\+Parameters} structure with default values. \end{DoxyCompactList}\item 
+{\bfseries S\+Irrlicht\+Creation\+Parameters} (const \hyperlink{structirr_1_1SIrrlichtCreationParameters}{S\+Irrlicht\+Creation\+Parameters} \&other)\hypertarget{structirr_1_1SIrrlichtCreationParameters_a47655b6ce24945c17780f67915ff1338}{}\label{structirr_1_1SIrrlichtCreationParameters_a47655b6ce24945c17780f67915ff1338}
+
+\item 
+\hyperlink{structirr_1_1SIrrlichtCreationParameters}{S\+Irrlicht\+Creation\+Parameters} \& {\bfseries operator=} (const \hyperlink{structirr_1_1SIrrlichtCreationParameters}{S\+Irrlicht\+Creation\+Parameters} \&other)\hypertarget{structirr_1_1SIrrlichtCreationParameters_a224891bb4e94138d426611b48ca71750}{}\label{structirr_1_1SIrrlichtCreationParameters_a224891bb4e94138d426611b48ca71750}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505}{E\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE} \hyperlink{structirr_1_1SIrrlichtCreationParameters_a76520addbdf96ee3b3f00cb7f55076e5}{Device\+Type}
+\begin{DoxyCompactList}\small\item\em Type of the device. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0}{video\+::\+E\+\_\+\+D\+R\+I\+V\+E\+R\+\_\+\+T\+Y\+PE} \hyperlink{structirr_1_1SIrrlichtCreationParameters_a1ea2f50c3b3a8eed6602a1a86e1cdf82}{Driver\+Type}
+\begin{DoxyCompactList}\small\item\em Type of video driver used to render graphics. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1dimension2d}{core\+::dimension2d}$<$ \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} $>$ \hyperlink{structirr_1_1SIrrlichtCreationParameters_a1b596e201a6ebd63ca2841d46be10433}{Window\+Size}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a1b596e201a6ebd63ca2841d46be10433}{}\label{structirr_1_1SIrrlichtCreationParameters_a1b596e201a6ebd63ca2841d46be10433}
+
+\begin{DoxyCompactList}\small\item\em Size of the window or the video mode in fullscreen mode. Default\+: 800x600. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a646874f69af8ff87fc10201b0254a761}{u8} \hyperlink{structirr_1_1SIrrlichtCreationParameters_a0f7480557670df2d954ae217732a8773}{Bits}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a0f7480557670df2d954ae217732a8773}{}\label{structirr_1_1SIrrlichtCreationParameters_a0f7480557670df2d954ae217732a8773}
+
+\begin{DoxyCompactList}\small\item\em Minimum Bits per pixel of the color buffer in fullscreen mode. Ignored if windowed mode. Default\+: 16. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a646874f69af8ff87fc10201b0254a761}{u8} \hyperlink{structirr_1_1SIrrlichtCreationParameters_ad34136ed6cd1532ed4e112f7ad72cbcf}{Z\+Buffer\+Bits}\hypertarget{structirr_1_1SIrrlichtCreationParameters_ad34136ed6cd1532ed4e112f7ad72cbcf}{}\label{structirr_1_1SIrrlichtCreationParameters_ad34136ed6cd1532ed4e112f7ad72cbcf}
+
+\begin{DoxyCompactList}\small\item\em Minimum Bits per pixel of the depth buffer. Default\+: 16. \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1SIrrlichtCreationParameters_a40c03ef099d60cec514697baf0b64214}{Fullscreen}
+\begin{DoxyCompactList}\small\item\em Should be set to true if the device should run in fullscreen. \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1SIrrlichtCreationParameters_a8120cfeac3fbf8b12b1e5f6bd6a8ec2f}{Stencilbuffer}
+\begin{DoxyCompactList}\small\item\em Specifies if the stencil buffer should be enabled. \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1SIrrlichtCreationParameters_a33b07682f12db0d2c2c3a7bf74f64387}{Vsync}
+\begin{DoxyCompactList}\small\item\em Specifies vertical syncronisation. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a646874f69af8ff87fc10201b0254a761}{u8} \hyperlink{structirr_1_1SIrrlichtCreationParameters_a50602e6ae0cc3d79ca7df0aa8114e75a}{Anti\+Alias}
+\begin{DoxyCompactList}\small\item\em Specifies if the device should use fullscreen anti aliasing. \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1SIrrlichtCreationParameters_a4808090b31a2a0e004066bded7bfefc6}{Handle\+S\+R\+GB}
+\begin{DoxyCompactList}\small\item\em Flag to enable proper s\+R\+GB and linear color handling. \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1SIrrlichtCreationParameters_acae5b5e41cec776aa4d05a03f16c57f2}{With\+Alpha\+Channel}
+\begin{DoxyCompactList}\small\item\em Whether the main framebuffer uses an alpha channel. \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1SIrrlichtCreationParameters_a49f2c3ed6cc7a28f2fde6683ac0b3267}{Doublebuffer}
+\begin{DoxyCompactList}\small\item\em Whether the main framebuffer uses doublebuffering. \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1SIrrlichtCreationParameters_acf9aee48aa9193f025f5f855d5a147cb}{Ignore\+Input}
+\begin{DoxyCompactList}\small\item\em Specifies if the device should ignore input events. \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1SIrrlichtCreationParameters_ae5dd722bd6c5a7001b73ef92264220a5}{Stereobuffer}
+\begin{DoxyCompactList}\small\item\em Specifies if the device should use stereo buffers. \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1SIrrlichtCreationParameters_ac790f1359a357f705bc2a5b24a6cc55d}{High\+Precision\+F\+PU}
+\begin{DoxyCompactList}\small\item\em Specifies if the device should use high precision F\+PU setting. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1IEventReceiver}{I\+Event\+Receiver} $\ast$ \hyperlink{structirr_1_1SIrrlichtCreationParameters_a600183dad7a2f6836e585d7a0d4e3e89}{Event\+Receiver}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a600183dad7a2f6836e585d7a0d4e3e89}{}\label{structirr_1_1SIrrlichtCreationParameters_a600183dad7a2f6836e585d7a0d4e3e89}
+
+\begin{DoxyCompactList}\small\item\em A user created event receiver. \end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{structirr_1_1SIrrlichtCreationParameters_af287810d910a23f8f7db98cef87b6eae}{Window\+Id}
+\begin{DoxyCompactList}\small\item\em Window Id. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92}{E\+L\+O\+G\+\_\+\+L\+E\+V\+EL} \hyperlink{structirr_1_1SIrrlichtCreationParameters_a2aa305ffabdd842084ddef5014b3e411}{Logging\+Level}
+\begin{DoxyCompactList}\small\item\em Specifies the logging level used in the logging interface. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{structirr_1_1SIrrlichtCreationParameters_aa58e8699007135f9d950712f96fab730}{Display\+Adapter}
+\begin{DoxyCompactList}\small\item\em Allows to select which graphic card is used for rendering when more than one card is in the system. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a646874f69af8ff87fc10201b0254a761}{u8} {\bfseries Aux\+G\+L\+Contexts}\hypertarget{structirr_1_1SIrrlichtCreationParameters_acf8736b2823d990a889ea2b2240027c6}{}\label{structirr_1_1SIrrlichtCreationParameters_acf8736b2823d990a889ea2b2240027c6}
+
+\item 
+bool \hyperlink{structirr_1_1SIrrlichtCreationParameters_a5bb2ea5e72eb07a049b1b7c707f405ef}{Use\+Performance\+Timer}
+\begin{DoxyCompactList}\small\item\em Enables use of high performance timers on Windows platform. \end{DoxyCompactList}\item 
+const \hyperlink{namespaceirr_a9395eaea339bcb546b319e9c96bf7410}{c8} $\ast$const \hyperlink{structirr_1_1SIrrlichtCreationParameters_af30f104af135b97d3e19fecaf2c10e45}{S\+D\+K\+\_\+version\+\_\+do\+\_\+not\+\_\+use}
+\begin{DoxyCompactList}\small\item\em Don\textquotesingle{}t use or change this parameter. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Structure for holding Irrlicht Device creation parameters. 
+
+This structure is used in the \hyperlink{namespaceirr_ac83a30d674204dcb94d70f849e9b4a62}{create\+Device\+Ex()} function. 
+
+\subsection{Member Data Documentation}
+\index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Anti\+Alias@{Anti\+Alias}}
+\index{Anti\+Alias@{Anti\+Alias}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Anti\+Alias}{AntiAlias}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf u8} irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Anti\+Alias}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a50602e6ae0cc3d79ca7df0aa8114e75a}{}\label{structirr_1_1SIrrlichtCreationParameters_a50602e6ae0cc3d79ca7df0aa8114e75a}
+
+
+Specifies if the device should use fullscreen anti aliasing. 
+
+Makes sharp/pixelated edges softer, but requires more performance. Also, 2D elements might look blurred with this switched on. The resulting rendering quality also depends on the hardware and driver you are using, your program might look different on different hardware with this. So if you are writing a game/application with Anti\+Alias switched on, it would be a good idea to make it possible to switch this option off again by the user. The value is the maximal antialiasing factor requested for the device. The cretion method will automatically try smaller values if no window can be created with the given value. Value one is usually the same as 0 (disabled), but might be a special value on some platforms. On D3D devices it maps to N\+O\+N\+M\+A\+S\+K\+A\+B\+LE. Default value\+: 0 -\/ disabled \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Device\+Type@{Device\+Type}}
+\index{Device\+Type@{Device\+Type}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Device\+Type}{DeviceType}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf E\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE} irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Device\+Type}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a76520addbdf96ee3b3f00cb7f55076e5}{}\label{structirr_1_1SIrrlichtCreationParameters_a76520addbdf96ee3b3f00cb7f55076e5}
+
+
+Type of the device. 
+
+This setting decides the windowing system used by the device, most device types are native to a specific operating system and so may not be available. E\+I\+D\+T\+\_\+\+W\+I\+N32 is only available on Windows desktops, E\+I\+D\+T\+\_\+\+W\+I\+N\+CE is only available on Windows mobile devices, E\+I\+D\+T\+\_\+\+C\+O\+C\+OA is only available on Mac O\+SX, E\+I\+D\+T\+\_\+\+X11 is available on Linux, Solaris, B\+SD and other operating systems which use X11, E\+I\+D\+T\+\_\+\+S\+DL is available on most systems if compiled in, E\+I\+D\+T\+\_\+\+C\+O\+N\+S\+O\+LE is usually available but can only render to text, E\+I\+D\+T\+\_\+\+B\+E\+ST will select the best available device for your operating system. Default\+: E\+I\+D\+T\+\_\+\+B\+E\+ST. \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Display\+Adapter@{Display\+Adapter}}
+\index{Display\+Adapter@{Display\+Adapter}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Display\+Adapter}{DisplayAdapter}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf u32} irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Display\+Adapter}\hypertarget{structirr_1_1SIrrlichtCreationParameters_aa58e8699007135f9d950712f96fab730}{}\label{structirr_1_1SIrrlichtCreationParameters_aa58e8699007135f9d950712f96fab730}
+
+
+Allows to select which graphic card is used for rendering when more than one card is in the system. 
+
+So far only supported on D3D \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Doublebuffer@{Doublebuffer}}
+\index{Doublebuffer@{Doublebuffer}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Doublebuffer}{Doublebuffer}}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Doublebuffer}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a49f2c3ed6cc7a28f2fde6683ac0b3267}{}\label{structirr_1_1SIrrlichtCreationParameters_a49f2c3ed6cc7a28f2fde6683ac0b3267}
+
+
+Whether the main framebuffer uses doublebuffering. 
+
+This should be usually enabled, in order to avoid render artifacts on the visible framebuffer. However, it might be useful to use only one buffer on very small devices. If no doublebuffering is available, the drivers will fall back to single buffers. Default value\+: true \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Driver\+Type@{Driver\+Type}}
+\index{Driver\+Type@{Driver\+Type}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Driver\+Type}{DriverType}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf video\+::\+E\+\_\+\+D\+R\+I\+V\+E\+R\+\_\+\+T\+Y\+PE} irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Driver\+Type}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a1ea2f50c3b3a8eed6602a1a86e1cdf82}{}\label{structirr_1_1SIrrlichtCreationParameters_a1ea2f50c3b3a8eed6602a1a86e1cdf82}
+
+
+Type of video driver used to render graphics. 
+
+This can currently be \hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0acfdbd476cbfd4d05e72f9adffcc42210}{video\+::\+E\+D\+T\+\_\+\+N\+U\+LL}, \hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0a1598cd235a1a6bd052e2011b559e8995}{video\+::\+E\+D\+T\+\_\+\+S\+O\+F\+T\+W\+A\+RE}, \hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0ae85481da26159b967191ccc6de1e4a05}{video\+::\+E\+D\+T\+\_\+\+B\+U\+R\+N\+I\+N\+G\+S\+V\+I\+D\+EO}, video\+::\+E\+D\+T\+\_\+\+D\+I\+R\+E\+C\+T3\+D8, video\+::\+E\+D\+T\+\_\+\+D\+I\+R\+E\+C\+T3\+D9, and \hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0a2715182a79f1cb8e2826fd68a8150a53}{video\+::\+E\+D\+T\+\_\+\+O\+P\+E\+N\+GL}. Default\+: Software. \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Fullscreen@{Fullscreen}}
+\index{Fullscreen@{Fullscreen}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Fullscreen}{Fullscreen}}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Fullscreen}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a40c03ef099d60cec514697baf0b64214}{}\label{structirr_1_1SIrrlichtCreationParameters_a40c03ef099d60cec514697baf0b64214}
+
+
+Should be set to true if the device should run in fullscreen. 
+
+Otherwise the device runs in windowed mode. Default\+: false. \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Handle\+S\+R\+GB@{Handle\+S\+R\+GB}}
+\index{Handle\+S\+R\+GB@{Handle\+S\+R\+GB}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Handle\+S\+R\+GB}{HandleSRGB}}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Handle\+S\+R\+GB}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a4808090b31a2a0e004066bded7bfefc6}{}\label{structirr_1_1SIrrlichtCreationParameters_a4808090b31a2a0e004066bded7bfefc6}
+
+
+Flag to enable proper s\+R\+GB and linear color handling. 
+
+In most situations, it is desireable to have the color handling in non-\/linear s\+R\+GB color space, and only do the intermediate color calculations in linear R\+GB space. If this flag is enabled, the device and driver try to assure that all color input and output are color corrected and only the internal color representation is linear. This means, that the color output is properly gamma-\/adjusted to provide the brighter colors for monitor display. And that blending and lighting give a more natural look, due to proper conversion from non-\/linear colors into linear color space for blend operations. If this flag is enabled, all texture colors (which are usually in s\+R\+GB space) are correctly displayed. However vertex colors and other explicitly set values have to be manually encoded in linear color space. Default value\+: false. \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!High\+Precision\+F\+PU@{High\+Precision\+F\+PU}}
+\index{High\+Precision\+F\+PU@{High\+Precision\+F\+PU}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{High\+Precision\+F\+PU}{HighPrecisionFPU}}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+High\+Precision\+F\+PU}\hypertarget{structirr_1_1SIrrlichtCreationParameters_ac790f1359a357f705bc2a5b24a6cc55d}{}\label{structirr_1_1SIrrlichtCreationParameters_ac790f1359a357f705bc2a5b24a6cc55d}
+
+
+Specifies if the device should use high precision F\+PU setting. 
+
+This is only relevant for DirectX Devices, which switch to low F\+PU precision by default for performance reasons. However, this may lead to problems with the other computations of the application. In this case setting this flag to true should help
+\begin{DoxyItemize}
+\item on the expense of performance loss, though. Default value\+: false 
+\end{DoxyItemize}\index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Ignore\+Input@{Ignore\+Input}}
+\index{Ignore\+Input@{Ignore\+Input}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Ignore\+Input}{IgnoreInput}}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Ignore\+Input}\hypertarget{structirr_1_1SIrrlichtCreationParameters_acf9aee48aa9193f025f5f855d5a147cb}{}\label{structirr_1_1SIrrlichtCreationParameters_acf9aee48aa9193f025f5f855d5a147cb}
+
+
+Specifies if the device should ignore input events. 
+
+This is only relevant when using external I/O handlers. External windows need to take care of this themselves. Currently only supported by X11. Default value\+: false \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Logging\+Level@{Logging\+Level}}
+\index{Logging\+Level@{Logging\+Level}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Logging\+Level}{LoggingLevel}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf E\+L\+O\+G\+\_\+\+L\+E\+V\+EL} irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Logging\+Level}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a2aa305ffabdd842084ddef5014b3e411}{}\label{structirr_1_1SIrrlichtCreationParameters_a2aa305ffabdd842084ddef5014b3e411}
+
+
+Specifies the logging level used in the logging interface. 
+
+The default value is E\+L\+L\+\_\+\+I\+N\+F\+O\+R\+M\+A\+T\+I\+ON. You can access the \hyperlink{classirr_1_1ILogger}{I\+Logger} interface later on from the \hyperlink{classirr_1_1IrrlichtDevice}{Irrlicht\+Device} with get\+Logger() and set another level. But if you need more or less logging information already from device creation, then you have to change it here. \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!S\+D\+K\+\_\+version\+\_\+do\+\_\+not\+\_\+use@{S\+D\+K\+\_\+version\+\_\+do\+\_\+not\+\_\+use}}
+\index{S\+D\+K\+\_\+version\+\_\+do\+\_\+not\+\_\+use@{S\+D\+K\+\_\+version\+\_\+do\+\_\+not\+\_\+use}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{S\+D\+K\+\_\+version\+\_\+do\+\_\+not\+\_\+use}{SDK\_version\_do\_not\_use}}]{\setlength{\rightskip}{0pt plus 5cm}const {\bf c8}$\ast$ const irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+S\+D\+K\+\_\+version\+\_\+do\+\_\+not\+\_\+use}\hypertarget{structirr_1_1SIrrlichtCreationParameters_af30f104af135b97d3e19fecaf2c10e45}{}\label{structirr_1_1SIrrlichtCreationParameters_af30f104af135b97d3e19fecaf2c10e45}
+
+
+Don\textquotesingle{}t use or change this parameter. 
+
+Always set it to I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+S\+D\+K\+\_\+\+V\+E\+R\+S\+I\+ON, which is done by default. This is needed for sdk version checks. \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Stencilbuffer@{Stencilbuffer}}
+\index{Stencilbuffer@{Stencilbuffer}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Stencilbuffer}{Stencilbuffer}}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Stencilbuffer}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a8120cfeac3fbf8b12b1e5f6bd6a8ec2f}{}\label{structirr_1_1SIrrlichtCreationParameters_a8120cfeac3fbf8b12b1e5f6bd6a8ec2f}
+
+
+Specifies if the stencil buffer should be enabled. 
+
+Set this to true, if you want the engine be able to draw stencil buffer shadows. Note that not all drivers are able to use the stencil buffer, hence it can be ignored during device creation. Without the stencil buffer no shadows will be drawn. Default\+: false. \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Stereobuffer@{Stereobuffer}}
+\index{Stereobuffer@{Stereobuffer}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Stereobuffer}{Stereobuffer}}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Stereobuffer}\hypertarget{structirr_1_1SIrrlichtCreationParameters_ae5dd722bd6c5a7001b73ef92264220a5}{}\label{structirr_1_1SIrrlichtCreationParameters_ae5dd722bd6c5a7001b73ef92264220a5}
+
+
+Specifies if the device should use stereo buffers. 
+
+Some high-\/end gfx cards support two framebuffers for direct support of stereoscopic output devices. If this flag is set the device tries to create a stereo context. Currently only supported by Open\+GL. Default value\+: false \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Use\+Performance\+Timer@{Use\+Performance\+Timer}}
+\index{Use\+Performance\+Timer@{Use\+Performance\+Timer}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Use\+Performance\+Timer}{UsePerformanceTimer}}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Use\+Performance\+Timer}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a5bb2ea5e72eb07a049b1b7c707f405ef}{}\label{structirr_1_1SIrrlichtCreationParameters_a5bb2ea5e72eb07a049b1b7c707f405ef}
+
+
+Enables use of high performance timers on Windows platform. 
+
+When performance timers are not used, standard Get\+Tick\+Count() is used instead which usually has worse resolution, but also less problems with speed stepping and other techniques. \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Vsync@{Vsync}}
+\index{Vsync@{Vsync}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Vsync}{Vsync}}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Vsync}\hypertarget{structirr_1_1SIrrlichtCreationParameters_a33b07682f12db0d2c2c3a7bf74f64387}{}\label{structirr_1_1SIrrlichtCreationParameters_a33b07682f12db0d2c2c3a7bf74f64387}
+
+
+Specifies vertical syncronisation. 
+
+If set to true, the driver will wait for the vertical retrace period, otherwise not. May be silently ignored. Default\+: false \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!Window\+Id@{Window\+Id}}
+\index{Window\+Id@{Window\+Id}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{Window\+Id}{WindowId}}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+Window\+Id}\hypertarget{structirr_1_1SIrrlichtCreationParameters_af287810d910a23f8f7db98cef87b6eae}{}\label{structirr_1_1SIrrlichtCreationParameters_af287810d910a23f8f7db98cef87b6eae}
+
+
+Window Id. 
+
+If this is set to a value other than 0, the Irrlicht Engine will be created in an already existing window. For windows, set this to the H\+W\+ND of the window you want. The window\+Size and Full\+Screen options will be ignored when using the Window\+Id parameter. Default this is set to 0. To make Irrlicht run inside the custom window, you still will have to draw Irrlicht on your own. You can use this loop, as usual\+: 
+\begin{DoxyCode}
+\textcolor{keywordflow}{while} (device->run())
+\{
+    driver->beginScene(\textcolor{keyword}{true}, \textcolor{keyword}{true}, 0);
+    smgr->drawAll();
+    driver->endScene();
+\}
+\end{DoxyCode}
+ Instead of this, you can also simply use your own message loop using Get\+Message, Dispatch\+Message and whatever. Calling \hyperlink{classirr_1_1IrrlichtDevice_a0489f8151dc43f6f41503ffb5a160b35}{Irrlicht\+Device\+::run()} will cause Irrlicht to dispatch messages internally too. You need not call Device-\/$>$run() if you want to do your own message dispatching loop, but Irrlicht will not be able to fetch user input then and you have to do it on your own using the window messages, Direct\+Input, or whatever. Also, you\textquotesingle{}ll have to increment the Irrlicht timer. An alternative, own message dispatching loop without device-\/$>$run() would look like this\+: 
+\begin{DoxyCode}
+MSG msg;
+\textcolor{keywordflow}{while} (\textcolor{keyword}{true})
+\{
+    \textcolor{keywordflow}{if} (PeekMessage(&msg, NULL, 0, 0, PM\_REMOVE))
+    \{
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+
+        \textcolor{keywordflow}{if} (msg.message == WM\_QUIT)
+            \textcolor{keywordflow}{break};
+    \}
+
+    \textcolor{comment}{// increase virtual timer time}
+    device->getTimer()->tick();
+
+    \textcolor{comment}{// draw engine picture}
+    driver->beginScene(\textcolor{keyword}{true}, \textcolor{keyword}{true}, 0);
+    smgr->drawAll();
+    driver->endScene();
+\}
+\end{DoxyCode}
+ However, there is no need to draw the picture this often. Just do it how you like. \index{irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}!With\+Alpha\+Channel@{With\+Alpha\+Channel}}
+\index{With\+Alpha\+Channel@{With\+Alpha\+Channel}!irr\+::\+S\+Irrlicht\+Creation\+Parameters@{irr\+::\+S\+Irrlicht\+Creation\+Parameters}}
+\subsubsection[{\texorpdfstring{With\+Alpha\+Channel}{WithAlphaChannel}}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::\+S\+Irrlicht\+Creation\+Parameters\+::\+With\+Alpha\+Channel}\hypertarget{structirr_1_1SIrrlichtCreationParameters_acae5b5e41cec776aa4d05a03f16c57f2}{}\label{structirr_1_1SIrrlichtCreationParameters_acae5b5e41cec776aa4d05a03f16c57f2}
+
+
+Whether the main framebuffer uses an alpha channel. 
+
+In some situations it might be desireable to get a color buffer with an alpha channel, e.\+g. when rendering into a transparent window or overlay. If this flag is set the device tries to create a framebuffer with alpha channel. If this flag is set, only color buffers with alpha channel are considered. Otherwise, it depends on the actual hardware if the colorbuffer has an alpha channel or not. Default value\+: false 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/S\+Irr\+Creation\+Parameters.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,149 @@
+\hypertarget{classirr_1_1scene_1_1IMeshManipulator}{}\section{irr\+:\+:scene\+:\+:I\+Mesh\+Manipulator Class Reference}
+\label{classirr_1_1scene_1_1IMeshManipulator}\index{irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}}
+
+
+An interface for easy manipulation of meshes.  
+
+
+
+
+{\ttfamily \#include $<$I\+Mesh\+Manipulator.\+h$>$}
+
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Mesh\+Manipulator\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classirr_1_1scene_1_1IMeshManipulator}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{classirr_1_1scene_1_1IMeshManipulator_a96bb33f5d55951912cac9a5cfd4b8289}{flip\+Surfaces} (\hyperlink{classirr_1_1scene_1_1ICPUMeshBuffer}{I\+C\+P\+U\+Mesh\+Buffer} $\ast$inbuffer) const  =0
+\begin{DoxyCompactList}\small\item\em Flips the direction of surfaces. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ICPUMeshBuffer}{I\+C\+P\+U\+Mesh\+Buffer} $\ast$ \hyperlink{classirr_1_1scene_1_1IMeshManipulator_abd33bc1018923b33094e020ae05a0b4f}{create\+Mesh\+Buffer\+Unique\+Primitives} (\hyperlink{classirr_1_1scene_1_1ICPUMeshBuffer}{I\+C\+P\+U\+Mesh\+Buffer} $\ast$inbuffer) const  =0
+\begin{DoxyCompactList}\small\item\em Creates a copy of a mesh with all vertices unwelded. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ICPUMeshBuffer}{I\+C\+P\+U\+Mesh\+Buffer} $\ast$ \hyperlink{classirr_1_1scene_1_1IMeshManipulator_aeec0af71135b6ec27e139da2e0d5b070}{create\+Mesh\+Buffer\+Welded} (\hyperlink{classirr_1_1scene_1_1ICPUMeshBuffer}{I\+C\+P\+U\+Mesh\+Buffer} $\ast$inbuffer, const bool \&make\+New\+Mesh=false, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} tolerance=core\+::\+R\+O\+U\+N\+D\+I\+N\+G\+\_\+\+E\+R\+R\+O\+R\+\_\+f32) const  =0
+\begin{DoxyCompactList}\small\item\em Creates a copy of a mesh with vertices welded. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\static bool \hyperlink{classirr_1_1scene_1_1IMeshManipulator_a641ecc0aae0b0372071c2770cdcd9f2f}{get\+Poly\+Count} (uint32\+\_\+t \&out\+Count, \hyperlink{classirr_1_1scene_1_1IMeshBuffer}{I\+Mesh\+Buffer}$<$ T $>$ $\ast$meshbuffer)
+\begin{DoxyCompactList}\small\item\em Get amount of polygons in mesh buffer. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\static bool \hyperlink{classirr_1_1scene_1_1IMeshManipulator_acb922b739ebdf1b3bdb239c557e51cae}{get\+Poly\+Count} (uint32\+\_\+t \&out\+Count, \hyperlink{classirr_1_1scene_1_1IMesh}{I\+Mesh}$<$ T $>$ $\ast$mesh)
+\begin{DoxyCompactList}\small\item\em Get amount of polygons in mesh. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+An interface for easy manipulation of meshes. 
+
+Scale, set alpha value, flip surfaces, and so on. This exists for fixing problems with wrong imported or exported meshes quickly after loading. It is not intended for doing mesh modifications and/or animations during runtime. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}!create\+Mesh\+Buffer\+Unique\+Primitives@{create\+Mesh\+Buffer\+Unique\+Primitives}}
+\index{create\+Mesh\+Buffer\+Unique\+Primitives@{create\+Mesh\+Buffer\+Unique\+Primitives}!irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}}
+\subsubsection[{\texorpdfstring{create\+Mesh\+Buffer\+Unique\+Primitives(\+I\+C\+P\+U\+Mesh\+Buffer $\ast$inbuffer) const  =0}{createMeshBufferUniquePrimitives(ICPUMeshBuffer *inbuffer) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+C\+P\+U\+Mesh\+Buffer}$\ast$ irr\+::scene\+::\+I\+Mesh\+Manipulator\+::create\+Mesh\+Buffer\+Unique\+Primitives (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+C\+P\+U\+Mesh\+Buffer} $\ast$}]{inbuffer}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshManipulator_abd33bc1018923b33094e020ae05a0b4f}{}\label{classirr_1_1scene_1_1IMeshManipulator_abd33bc1018923b33094e020ae05a0b4f}
+
+
+Creates a copy of a mesh with all vertices unwelded. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mesh} & Input mesh \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Mesh consisting only of unique faces. All vertices which were previously shared are now duplicated. If you no longer need the cloned mesh, you should call \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Mesh\+::drop()}. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}!create\+Mesh\+Buffer\+Welded@{create\+Mesh\+Buffer\+Welded}}
+\index{create\+Mesh\+Buffer\+Welded@{create\+Mesh\+Buffer\+Welded}!irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}}
+\subsubsection[{\texorpdfstring{create\+Mesh\+Buffer\+Welded(\+I\+C\+P\+U\+Mesh\+Buffer $\ast$inbuffer, const bool \&make\+New\+Mesh=false, f32 tolerance=core\+::\+R\+O\+U\+N\+D\+I\+N\+G\+\_\+\+E\+R\+R\+O\+R\+\_\+f32) const  =0}{createMeshBufferWelded(ICPUMeshBuffer *inbuffer, const bool \&makeNewMesh=false, f32 tolerance=core::ROUNDING\_ERROR\_f32) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+C\+P\+U\+Mesh\+Buffer}$\ast$ irr\+::scene\+::\+I\+Mesh\+Manipulator\+::create\+Mesh\+Buffer\+Welded (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+C\+P\+U\+Mesh\+Buffer} $\ast$}]{inbuffer, }
+\item[{const bool \&}]{make\+New\+Mesh = {\ttfamily false}, }
+\item[{{\bf f32}}]{tolerance = {\ttfamily core\+:\+:ROUNDING\+\_\+ERROR\+\_\+f32}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshManipulator_aeec0af71135b6ec27e139da2e0d5b070}{}\label{classirr_1_1scene_1_1IMeshManipulator_aeec0af71135b6ec27e139da2e0d5b070}
+
+
+Creates a copy of a mesh with vertices welded. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mesh} & Input mesh \\
+\hline
+{\em tolerance} & The threshold for vertex comparisons. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Mesh without redundant vertices. If you no longer need the cloned mesh, you should call \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Mesh\+::drop()}. See \hyperlink{classirr_1_1IReferenceCounted_afb169a857e0d2cdb96b8821cb9bff17a}{I\+Reference\+Counted\+::drop()} for more information. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}!flip\+Surfaces@{flip\+Surfaces}}
+\index{flip\+Surfaces@{flip\+Surfaces}!irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}}
+\subsubsection[{\texorpdfstring{flip\+Surfaces(\+I\+C\+P\+U\+Mesh\+Buffer $\ast$inbuffer) const  =0}{flipSurfaces(ICPUMeshBuffer *inbuffer) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Mesh\+Manipulator\+::flip\+Surfaces (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+C\+P\+U\+Mesh\+Buffer} $\ast$}]{inbuffer}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IMeshManipulator_a96bb33f5d55951912cac9a5cfd4b8289}{}\label{classirr_1_1scene_1_1IMeshManipulator_a96bb33f5d55951912cac9a5cfd4b8289}
+
+
+Flips the direction of surfaces. 
+
+Changes backfacing triangles to frontfacing triangles and vice versa. 
+\begin{DoxyParams}{Parameters}
+{\em mesh} & Mesh on which the operation is performed. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}!get\+Poly\+Count@{get\+Poly\+Count}}
+\index{get\+Poly\+Count@{get\+Poly\+Count}!irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}}
+\subsubsection[{\texorpdfstring{get\+Poly\+Count(uint32\+\_\+t \&out\+Count, I\+Mesh\+Buffer$<$ T $>$ $\ast$meshbuffer)}{getPolyCount(uint32\_t \&outCount, IMeshBuffer< T > *meshbuffer)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ static bool irr\+::scene\+::\+I\+Mesh\+Manipulator\+::get\+Poly\+Count (
+\begin{DoxyParamCaption}
+\item[{uint32\+\_\+t \&}]{out\+Count, }
+\item[{{\bf I\+Mesh\+Buffer}$<$ T $>$ $\ast$}]{meshbuffer}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classirr_1_1scene_1_1IMeshManipulator_a641ecc0aae0b0372071c2770cdcd9f2f}{}\label{classirr_1_1scene_1_1IMeshManipulator_a641ecc0aae0b0372071c2770cdcd9f2f}
+
+
+Get amount of polygons in mesh buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em meshbuffer} & Input mesh buffer \\
+\hline
+{\em Outputted} & Number of polygons in mesh buffer, if successful. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If successfully can provide information, i.\+e. if X\+Form\+Feedback is providing Poly\+Count we dont know how many there are 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}!get\+Poly\+Count@{get\+Poly\+Count}}
+\index{get\+Poly\+Count@{get\+Poly\+Count}!irr\+::scene\+::\+I\+Mesh\+Manipulator@{irr\+::scene\+::\+I\+Mesh\+Manipulator}}
+\subsubsection[{\texorpdfstring{get\+Poly\+Count(uint32\+\_\+t \&out\+Count, I\+Mesh$<$ T $>$ $\ast$mesh)}{getPolyCount(uint32\_t \&outCount, IMesh< T > *mesh)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ static bool irr\+::scene\+::\+I\+Mesh\+Manipulator\+::get\+Poly\+Count (
+\begin{DoxyParamCaption}
+\item[{uint32\+\_\+t \&}]{out\+Count, }
+\item[{{\bf I\+Mesh}$<$ T $>$ $\ast$}]{mesh}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classirr_1_1scene_1_1IMeshManipulator_acb922b739ebdf1b3bdb239c557e51cae}{}\label{classirr_1_1scene_1_1IMeshManipulator_acb922b739ebdf1b3bdb239c557e51cae}
+
+
+Get amount of polygons in mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em meshbuffer} & Input mesh \\
+\hline
+{\em Outputted} & Number of polygons in mesh, if successful. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If successfully can provide information, i.\+e. if X\+Form\+Feedback is providing Poly\+Count we dont know how many there are 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Mesh\+Manipulator.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,308 @@
+\hypertarget{classirr_1_1core_1_1list}{}\section{irr\+:\+:core\+:\+:list$<$ T $>$ Class Template Reference}
+\label{classirr_1_1core_1_1list}\index{irr\+::core\+::list$<$ T $>$@{irr\+::core\+::list$<$ T $>$}}
+
+
+Doubly linked list template.  
+
+
+
+
+{\ttfamily \#include $<$irr\+List.\+h$>$}
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classirr_1_1core_1_1list_1_1ConstIterator}{Const\+Iterator}
+\begin{DoxyCompactList}\small\item\em List iterator for const access. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator}
+\begin{DoxyCompactList}\small\item\em List iterator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1core_1_1list_aa4de347b726e57c72270377e1a07d41a}{list} ()\hypertarget{classirr_1_1core_1_1list_aa4de347b726e57c72270377e1a07d41a}{}\label{classirr_1_1core_1_1list_aa4de347b726e57c72270377e1a07d41a}
+
+\begin{DoxyCompactList}\small\item\em Default constructor for empty list. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1list_a28c5e720eb16cee8bf8c26c233de3722}{list} (const \hyperlink{classirr_1_1core_1_1list}{list}$<$ T $>$ \&other)\hypertarget{classirr_1_1core_1_1list_a28c5e720eb16cee8bf8c26c233de3722}{}\label{classirr_1_1core_1_1list_a28c5e720eb16cee8bf8c26c233de3722}
+
+\begin{DoxyCompactList}\small\item\em Copy constructor. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1list_a5c760fcc63fb6446a33d91e950736a57}{$\sim$list} ()\hypertarget{classirr_1_1core_1_1list_a5c760fcc63fb6446a33d91e950736a57}{}\label{classirr_1_1core_1_1list_a5c760fcc63fb6446a33d91e950736a57}
+
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1list_a43d98ff46af6eb5f4b1f9f71e2f0601c}{operator=} (const \hyperlink{classirr_1_1core_1_1list}{list}$<$ T $>$ \&other)\hypertarget{classirr_1_1core_1_1list_a43d98ff46af6eb5f4b1f9f71e2f0601c}{}\label{classirr_1_1core_1_1list_a43d98ff46af6eb5f4b1f9f71e2f0601c}
+
+\begin{DoxyCompactList}\small\item\em Assignment operator. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1core_1_1list_a64aee4e4c37522119f460c109b955767}{size} () const 
+\begin{DoxyCompactList}\small\item\em Returns amount of elements in list. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} {\bfseries get\+Size} () const \hypertarget{classirr_1_1core_1_1list_abbbf6ae6253ced60b259a35c34302af3}{}\label{classirr_1_1core_1_1list_abbbf6ae6253ced60b259a35c34302af3}
+
+\item 
+void \hyperlink{classirr_1_1core_1_1list_aad18996ed41454bf7bb8e1d3199f4e73}{clear} ()
+\begin{DoxyCompactList}\small\item\em Clears the list, deletes all elements in the list. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1list_a4a51f1a7101bc5e22b65e1c18cc6fb7d}{empty} () const 
+\begin{DoxyCompactList}\small\item\em Checks for empty list. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1list_a0f73ebd87279766f339cb1462c2a24d1}{push\+\_\+back} (const T \&element)
+\begin{DoxyCompactList}\small\item\em Adds an element at the end of the list. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1list_aec58963596cbc0435e706d1d00777b61}{push\+\_\+front} (const T \&element)
+\begin{DoxyCompactList}\small\item\em Adds an element at the begin of the list. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} \hyperlink{classirr_1_1core_1_1list_aebd05a0f5e5ead6e1d5b6e3973da8039}{begin} ()
+\begin{DoxyCompactList}\small\item\em Gets first node. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1list_1_1ConstIterator}{Const\+Iterator} \hyperlink{classirr_1_1core_1_1list_afd5e08fa782786d898aad30d8c09cf42}{begin} () const 
+\begin{DoxyCompactList}\small\item\em Gets first node. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} \hyperlink{classirr_1_1core_1_1list_aa80509dac5224fa57cc548e39480a115}{end} ()
+\begin{DoxyCompactList}\small\item\em Gets end node. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1list_1_1ConstIterator}{Const\+Iterator} \hyperlink{classirr_1_1core_1_1list_a68b3da8c4e3e283ac6fd73a71d7a49bf}{end} () const 
+\begin{DoxyCompactList}\small\item\em Gets end node. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} \hyperlink{classirr_1_1core_1_1list_a6ba09d4c7865a451e40b5bd5f4c2dd50}{get\+Last} ()
+\begin{DoxyCompactList}\small\item\em Gets last element. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1list_1_1ConstIterator}{Const\+Iterator} \hyperlink{classirr_1_1core_1_1list_a23497b9de2726df5ec64c457470d49a0}{get\+Last} () const 
+\begin{DoxyCompactList}\small\item\em Gets last element. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1list_aa4b91d7a9191fc98266425366b774c8a}{insert\+\_\+after} (const \hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} \&it, const T \&element)
+\begin{DoxyCompactList}\small\item\em Inserts an element after an element. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1list_a366070e0356029f0b355f5dd81710b29}{insert\+\_\+before} (const \hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} \&it, const T \&element)
+\begin{DoxyCompactList}\small\item\em Inserts an element before an element. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} \hyperlink{classirr_1_1core_1_1list_a407935fc79a35ce7caa19e4f6ce25c3f}{erase} (\hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} \&it)
+\begin{DoxyCompactList}\small\item\em Erases an element. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1list_a860e4dab70f2ac5f13b9385f7f63d5b9}{swap} (\hyperlink{classirr_1_1core_1_1list}{list}$<$ T $>$ \&other)
+\begin{DoxyCompactList}\small\item\em Swap the content of this list container with the content of another list. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\\*
+class irr\+::core\+::list$<$ T $>$}
+
+Doubly linked list template. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!begin@{begin}}
+\index{begin@{begin}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{begin()}{begin()}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf Iterator} {\bf irr\+::core\+::list}$<$ T $>$\+::begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_aebd05a0f5e5ead6e1d5b6e3973da8039}{}\label{classirr_1_1core_1_1list_aebd05a0f5e5ead6e1d5b6e3973da8039}
+
+
+Gets first node. 
+
+\begin{DoxyReturn}{Returns}
+A list iterator pointing to the beginning of the list. 
+\end{DoxyReturn}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!begin@{begin}}
+\index{begin@{begin}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{begin() const }{begin() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf Const\+Iterator} {\bf irr\+::core\+::list}$<$ T $>$\+::begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_afd5e08fa782786d898aad30d8c09cf42}{}\label{classirr_1_1core_1_1list_afd5e08fa782786d898aad30d8c09cf42}
+
+
+Gets first node. 
+
+\begin{DoxyReturn}{Returns}
+A const list iterator pointing to the beginning of the list. 
+\end{DoxyReturn}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!clear@{clear}}
+\index{clear@{clear}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{clear()}{clear()}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::list}$<$ T $>$\+::clear (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_aad18996ed41454bf7bb8e1d3199f4e73}{}\label{classirr_1_1core_1_1list_aad18996ed41454bf7bb8e1d3199f4e73}
+
+
+Clears the list, deletes all elements in the list. 
+
+All existing iterators of this list will be invalid. \index{irr\+::core\+::list@{irr\+::core\+::list}!empty@{empty}}
+\index{empty@{empty}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{empty() const }{empty() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ bool {\bf irr\+::core\+::list}$<$ T $>$\+::empty (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_a4a51f1a7101bc5e22b65e1c18cc6fb7d}{}\label{classirr_1_1core_1_1list_a4a51f1a7101bc5e22b65e1c18cc6fb7d}
+
+
+Checks for empty list. 
+
+\begin{DoxyReturn}{Returns}
+True if the list is empty and false if not. 
+\end{DoxyReturn}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!end@{end}}
+\index{end@{end}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{end()}{end()}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf Iterator} {\bf irr\+::core\+::list}$<$ T $>$\+::end (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_aa80509dac5224fa57cc548e39480a115}{}\label{classirr_1_1core_1_1list_aa80509dac5224fa57cc548e39480a115}
+
+
+Gets end node. 
+
+\begin{DoxyReturn}{Returns}
+List iterator pointing to null. 
+\end{DoxyReturn}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!end@{end}}
+\index{end@{end}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{end() const }{end() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf Const\+Iterator} {\bf irr\+::core\+::list}$<$ T $>$\+::end (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_a68b3da8c4e3e283ac6fd73a71d7a49bf}{}\label{classirr_1_1core_1_1list_a68b3da8c4e3e283ac6fd73a71d7a49bf}
+
+
+Gets end node. 
+
+\begin{DoxyReturn}{Returns}
+Const list iterator pointing to null. 
+\end{DoxyReturn}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!erase@{erase}}
+\index{erase@{erase}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{erase(\+Iterator \&it)}{erase(Iterator \&it)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf Iterator} {\bf irr\+::core\+::list}$<$ T $>$\+::erase (
+\begin{DoxyParamCaption}
+\item[{{\bf Iterator} \&}]{it}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_a407935fc79a35ce7caa19e4f6ce25c3f}{}\label{classirr_1_1core_1_1list_a407935fc79a35ce7caa19e4f6ce25c3f}
+
+
+Erases an element. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & \hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} pointing to the element which shall be erased. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} pointing to next element. 
+\end{DoxyReturn}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!get\+Last@{get\+Last}}
+\index{get\+Last@{get\+Last}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{get\+Last()}{getLast()}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf Iterator} {\bf irr\+::core\+::list}$<$ T $>$\+::get\+Last (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_a6ba09d4c7865a451e40b5bd5f4c2dd50}{}\label{classirr_1_1core_1_1list_a6ba09d4c7865a451e40b5bd5f4c2dd50}
+
+
+Gets last element. 
+
+\begin{DoxyReturn}{Returns}
+List iterator pointing to the last element of the list. 
+\end{DoxyReturn}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!get\+Last@{get\+Last}}
+\index{get\+Last@{get\+Last}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{get\+Last() const }{getLast() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf Const\+Iterator} {\bf irr\+::core\+::list}$<$ T $>$\+::get\+Last (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_a23497b9de2726df5ec64c457470d49a0}{}\label{classirr_1_1core_1_1list_a23497b9de2726df5ec64c457470d49a0}
+
+
+Gets last element. 
+
+\begin{DoxyReturn}{Returns}
+Const list iterator pointing to the last element of the list. 
+\end{DoxyReturn}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!insert\+\_\+after@{insert\+\_\+after}}
+\index{insert\+\_\+after@{insert\+\_\+after}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{insert\+\_\+after(const Iterator \&it, const T \&element)}{insert\_after(const Iterator \&it, const T \&element)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::list}$<$ T $>$\+::insert\+\_\+after (
+\begin{DoxyParamCaption}
+\item[{const {\bf Iterator} \&}]{it, }
+\item[{const T \&}]{element}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_aa4b91d7a9191fc98266425366b774c8a}{}\label{classirr_1_1core_1_1list_aa4b91d7a9191fc98266425366b774c8a}
+
+
+Inserts an element after an element. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & \hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} pointing to element after which the new element should be inserted. \\
+\hline
+{\em element} & The new element to be inserted into the list. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!insert\+\_\+before@{insert\+\_\+before}}
+\index{insert\+\_\+before@{insert\+\_\+before}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{insert\+\_\+before(const Iterator \&it, const T \&element)}{insert\_before(const Iterator \&it, const T \&element)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::list}$<$ T $>$\+::insert\+\_\+before (
+\begin{DoxyParamCaption}
+\item[{const {\bf Iterator} \&}]{it, }
+\item[{const T \&}]{element}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_a366070e0356029f0b355f5dd81710b29}{}\label{classirr_1_1core_1_1list_a366070e0356029f0b355f5dd81710b29}
+
+
+Inserts an element before an element. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & \hyperlink{classirr_1_1core_1_1list_1_1Iterator}{Iterator} pointing to element before which the new element should be inserted. \\
+\hline
+{\em element} & The new element to be inserted into the list. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!push\+\_\+back@{push\+\_\+back}}
+\index{push\+\_\+back@{push\+\_\+back}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{push\+\_\+back(const T \&element)}{push\_back(const T \&element)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::list}$<$ T $>$\+::push\+\_\+back (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_a0f73ebd87279766f339cb1462c2a24d1}{}\label{classirr_1_1core_1_1list_a0f73ebd87279766f339cb1462c2a24d1}
+
+
+Adds an element at the end of the list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to add to the list. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!push\+\_\+front@{push\+\_\+front}}
+\index{push\+\_\+front@{push\+\_\+front}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{push\+\_\+front(const T \&element)}{push\_front(const T \&element)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::list}$<$ T $>$\+::push\+\_\+front (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_aec58963596cbc0435e706d1d00777b61}{}\label{classirr_1_1core_1_1list_aec58963596cbc0435e706d1d00777b61}
+
+
+Adds an element at the begin of the list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to add to the list. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!size@{size}}
+\index{size@{size}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{size() const }{size() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf u32} {\bf irr\+::core\+::list}$<$ T $>$\+::size (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_a64aee4e4c37522119f460c109b955767}{}\label{classirr_1_1core_1_1list_a64aee4e4c37522119f460c109b955767}
+
+
+Returns amount of elements in list. 
+
+\begin{DoxyReturn}{Returns}
+Amount of elements in the list. 
+\end{DoxyReturn}
+\index{irr\+::core\+::list@{irr\+::core\+::list}!swap@{swap}}
+\index{swap@{swap}!irr\+::core\+::list@{irr\+::core\+::list}}
+\subsubsection[{\texorpdfstring{swap(list$<$ T $>$ \&other)}{swap(list< T > \&other)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::list}$<$ T $>$\+::swap (
+\begin{DoxyParamCaption}
+\item[{{\bf list}$<$ T $>$ \&}]{other}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1list_a860e4dab70f2ac5f13b9385f7f63d5b9}{}\label{classirr_1_1core_1_1list_a860e4dab70f2ac5f13b9385f7f63d5b9}
+
+
+Swap the content of this list container with the content of another list. 
+
+Afterwards this object will contain the content of the other object and the other object will contain the content of this object. Iterators will afterwards be valid for the swapped object. 
+\begin{DoxyParams}{Parameters}
+{\em other} & Swap content with this object \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/irr\+List.\+h\end{DoxyCompactItemize}

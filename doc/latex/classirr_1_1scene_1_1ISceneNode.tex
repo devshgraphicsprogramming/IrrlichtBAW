@@ -1,0 +1,664 @@
+\hypertarget{classirr_1_1scene_1_1ISceneNode}{}\section{irr\+:\+:scene\+:\+:I\+Scene\+Node Class Reference}
+\label{classirr_1_1scene_1_1ISceneNode}\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+
+
+Scene node interface.  
+
+
+
+
+{\ttfamily \#include $<$I\+Scene\+Node.\+h$>$}
+
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Scene\+Node\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.172161cm]{classirr_1_1scene_1_1ISceneNode}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1scene_1_1ISceneNode_a9e49a6113057f0e89cbdad6646a1fc14}{I\+Scene\+Node} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent, \hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} $\ast$mgr, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id=-\/1, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&position=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&rotation=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&scale=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(1.\+0f, 1.\+0f, 1.\+0f))\hypertarget{classirr_1_1scene_1_1ISceneNode_a9e49a6113057f0e89cbdad6646a1fc14}{}\label{classirr_1_1scene_1_1ISceneNode_a9e49a6113057f0e89cbdad6646a1fc14}
+
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNode_a3064ed436d731f072e55873577724fbc}{$\sim$\+I\+Scene\+Node} ()\hypertarget{classirr_1_1scene_1_1ISceneNode_a3064ed436d731f072e55873577724fbc}{}\label{classirr_1_1scene_1_1ISceneNode_a3064ed436d731f072e55873577724fbc}
+
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+virtual const bool {\bfseries is\+I\+Scene\+Node} () const \hypertarget{classirr_1_1scene_1_1ISceneNode_af1b1521916e7cd391e0571dd5da0d151}{}\label{classirr_1_1scene_1_1ISceneNode_af1b1521916e7cd391e0571dd5da0d151}
+
+\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNode_ac9795bfcb88dcaf8cba6ea3296e5d8d0}{On\+Register\+Scene\+Node} ()
+\begin{DoxyCompactList}\small\item\em This method is called just before the rendering process of the whole scene. \end{DoxyCompactList}\item 
+virtual void {\bfseries set\+Occlusion\+Query} (\hyperlink{classirr_1_1video_1_1IOcclusionQuery}{video\+::\+I\+Occlusion\+Query} $\ast$query\+\_\+in)\hypertarget{classirr_1_1scene_1_1ISceneNode_a9e6ad639973bd46fb563a0e9fa492e3e}{}\label{classirr_1_1scene_1_1ISceneNode_a9e6ad639973bd46fb563a0e9fa492e3e}
+
+\item 
+virtual \hyperlink{classirr_1_1video_1_1IOcclusionQuery}{video\+::\+I\+Occlusion\+Query} $\ast$ {\bfseries get\+Occlusion\+Query} ()\hypertarget{classirr_1_1scene_1_1ISceneNode_a793877c9a60e5c63b3a349557d51fb08}{}\label{classirr_1_1scene_1_1ISceneNode_a793877c9a60e5c63b3a349557d51fb08}
+
+\item 
+virtual \hyperlink{classirr_1_1video_1_1IOcclusionQuery}{video\+::\+I\+Occlusion\+Query} const $\ast$ {\bfseries get\+Occlusion\+Query} () const \hypertarget{classirr_1_1scene_1_1ISceneNode_a2da44d4d0bb420bbedfbf74da53f1f5f}{}\label{classirr_1_1scene_1_1ISceneNode_a2da44d4d0bb420bbedfbf74da53f1f5f}
+
+\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNode_acceef4fbb68f6cc7bb40035225350970}{add\+Child} (\hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$child)
+\begin{DoxyCompactList}\small\item\em Adds a child to this scene node. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNode_afc1dcb5cb19116d0c7aa3d4ebdf04cc5}{On\+Animate} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} time\+Ms)
+\begin{DoxyCompactList}\small\item\em \hyperlink{classirr_1_1scene_1_1ISceneNode_afc1dcb5cb19116d0c7aa3d4ebdf04cc5}{On\+Animate()} is called just before rendering the whole scene. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNode_aff530cc4856792101d0aedee51ce35fa}{render} ()=0\hypertarget{classirr_1_1scene_1_1ISceneNode_aff530cc4856792101d0aedee51ce35fa}{}\label{classirr_1_1scene_1_1ISceneNode_aff530cc4856792101d0aedee51ce35fa}
+
+\begin{DoxyCompactList}\small\item\em Renders the node. \end{DoxyCompactList}\item 
+virtual const \hyperlink{namespaceirr_a9395eaea339bcb546b319e9c96bf7410}{c8} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneNode_aabb3b657d0afb62994399181b952f3e3}{get\+Name} () const 
+\begin{DoxyCompactList}\small\item\em Returns the name of the node. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNode_a810a54a2fc178b9a0e731513865f67d0}{set\+Name} (const \hyperlink{namespaceirr_a9395eaea339bcb546b319e9c96bf7410}{c8} $\ast$name)
+\begin{DoxyCompactList}\small\item\em Sets the name of the node. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNode_a20a22d956974f4817a20663361f20042}{set\+Name} (const \hyperlink{namespaceirr_1_1core_ade1071a878633f2f6d8a75c5d11fec19}{core\+::stringc} \&name)
+\begin{DoxyCompactList}\small\item\em Sets the name of the node. \end{DoxyCompactList}\item 
+virtual const \hyperlink{classirr_1_1core_1_1aabbox3d}{core\+::aabbox3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \& \hyperlink{classirr_1_1scene_1_1ISceneNode_a327b73e3ae6faafa63e4767e338425f5}{get\+Bounding\+Box} ()=0
+\begin{DoxyCompactList}\small\item\em Get the axis aligned, not transformed bounding box of this node. \end{DoxyCompactList}\item 
+virtual const \hyperlink{classirr_1_1core_1_1aabbox3d}{core\+::aabbox3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \hyperlink{classirr_1_1scene_1_1ISceneNode_a23f1bf45efcca008816f3e05a52e4994}{get\+Transformed\+Bounding\+Box} ()
+\begin{DoxyCompactList}\small\item\em Get the axis aligned, transformed and animated absolute bounding box of this node. \end{DoxyCompactList}\item 
+const uint32\+\_\+t \& {\bfseries get\+Render\+Priority\+Score} () const \hypertarget{classirr_1_1scene_1_1ISceneNode_ae5eb0b83ed427f138f9e3a2c519b9adb}{}\label{classirr_1_1scene_1_1ISceneNode_ae5eb0b83ed427f138f9e3a2c519b9adb}
+
+\item 
+void {\bfseries set\+Render\+Priority\+Score} (const uint32\+\_\+t \&nice)\hypertarget{classirr_1_1scene_1_1ISceneNode_aa5d0004d14fd9a23af3f835a2c7c6111}{}\label{classirr_1_1scene_1_1ISceneNode_aa5d0004d14fd9a23af3f835a2c7c6111}
+
+\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1ISceneNode_a1aef4f0feccebcd0d38373beadbc1827}{is\+Visible} () const 
+\begin{DoxyCompactList}\small\item\em Returns whether the node should be visible (if all of its parents are visible). \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1ISceneNode_aa7065e757724f61d4a91d25db25c3a2b}{is\+Truly\+Visible} () const 
+\begin{DoxyCompactList}\small\item\em Check whether the node is truly visible, taking into accounts its parents\textquotesingle{} visibility. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNode_a7a5de878c7084088646f07afaac0a73f}{set\+Visible} (bool is\+Visible\+\_\+in)
+\begin{DoxyCompactList}\small\item\em Sets if the node should be visible or not. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \hyperlink{classirr_1_1scene_1_1ISceneNode_a8f695e36340a9bb32f7e655fe4c1ea97}{get\+ID} () const 
+\begin{DoxyCompactList}\small\item\em Get the id of the scene node. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNode_ade60c630c4768200b1d15debbd00fe0e}{set\+ID} (\hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id)
+\begin{DoxyCompactList}\small\item\em Sets the id of the scene node. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1video_1_1SMaterial}{video\+::\+S\+Material} \& \hyperlink{classirr_1_1scene_1_1ISceneNode_a1f44d8cf753b2e4c17c90d4fc2ed05b2}{get\+Material} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} num)
+\begin{DoxyCompactList}\small\item\em Returns the material based on the zero based index i. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1ISceneNode_afa904bf3742941087aaee56b0b4cdfe2}{get\+Material\+Count} () const 
+\begin{DoxyCompactList}\small\item\em Get amount of materials used by this scene node. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1scene_1_1ISceneNode_a2841d5077854b9981711a403f33762cd}{set\+Material\+Flag} (\hyperlink{namespaceirr_1_1video_a8a3bc00ae8137535b9fbc5f40add70d3}{video\+::\+E\+\_\+\+M\+A\+T\+E\+R\+I\+A\+L\+\_\+\+F\+L\+AG} flag, bool newvalue)
+\begin{DoxyCompactList}\small\item\em Sets all material flags at once to a new value. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1scene_1_1ISceneNode_a0d5d2e05ebe08e6a432fbb4fd1d28dd0}{set\+Material\+Texture} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} texture\+Layer, \hyperlink{classirr_1_1video_1_1ITexture}{video\+::\+I\+Texture} $\ast$texture)
+\begin{DoxyCompactList}\small\item\em Sets the texture of the specified layer in all materials of this scene node to the new texture. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1scene_1_1ISceneNode_a302c7dedd776b52111823df5ed8446de}{set\+Material\+Type} (\hyperlink{namespaceirr_1_1video_ac8e9b6c66f7cebabd1a6d30cbc5430f1}{video\+::\+E\+\_\+\+M\+A\+T\+E\+R\+I\+A\+L\+\_\+\+T\+Y\+PE} new\+Type)
+\begin{DoxyCompactList}\small\item\em Sets the material type of all materials in this scene node to a new material type. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1scene_1_1ISceneNode_a5fcd62dbf524b8d2d6daa61c7d6cf119}{set\+Automatic\+Culling} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} state)
+\begin{DoxyCompactList}\small\item\em Enables or disables automatic culling based on the bounding box. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1ISceneNode_a494c159287ab022d0f797642bf41476e}{get\+Automatic\+Culling} () const 
+\begin{DoxyCompactList}\small\item\em Gets the automatic culling state. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNode_ad83877ca84fa9cde95f099f961e80577}{set\+Debug\+Data\+Visible} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} state)
+\begin{DoxyCompactList}\small\item\em Sets if debug data like bounding boxes should be drawn. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1ISceneNode_a29224344555fef716b7c466b54349e65}{is\+Debug\+Data\+Visible} () const 
+\begin{DoxyCompactList}\small\item\em Returns if debug data like bounding boxes are drawn. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1scene_1_1ISceneNode_a7ceda3eb747a353ffeda02c26e697cbd}{set\+Is\+Debug\+Object} (bool debug\+Object)
+\begin{DoxyCompactList}\small\item\em Sets if this scene node is a debug object. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1scene_1_1ISceneNode_aaf7667d0fec6953461237e8e11c0ceb3}{is\+Debug\+Object} () const 
+\begin{DoxyCompactList}\small\item\em Returns if this scene node is a debug object. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_1_1scene_acad3d7ef92a9807d391ba29120f3b7bd}{E\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+T\+Y\+PE} \hyperlink{classirr_1_1scene_1_1ISceneNode_acb294abaf64a85e11744cce96f99926e}{get\+Type} () const 
+\begin{DoxyCompactList}\small\item\em Returns type of the scene node. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneNode_a551a6aaa89346393a0868f609b79c133}{clone} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$new\+Parent=0, \hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} $\ast$new\+Manager=0)
+\begin{DoxyCompactList}\small\item\em Creates a clone of this scene node and its children. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneNode_a58d2c91b48c9fe5c64a7de0c801ca511}{get\+Scene\+Manager} (void) const 
+\begin{DoxyCompactList}\small\item\em Retrieve the scene manager for this node. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int32\+\_\+t {\bfseries mobtype}\hypertarget{classirr_1_1scene_1_1ISceneNode_ac37e433535f36baf25691d8514905e13}{}\label{classirr_1_1scene_1_1ISceneNode_ac37e433535f36baf25691d8514905e13}
+
+\item 
+int32\+\_\+t {\bfseries mobid}\hypertarget{classirr_1_1scene_1_1ISceneNode_a9325c47fbd742b9299af222c6f0ba6e4}{}\label{classirr_1_1scene_1_1ISceneNode_a9325c47fbd742b9299af222c6f0ba6e4}
+
+\item 
+int32\+\_\+t {\bfseries staticmeshid}\hypertarget{classirr_1_1scene_1_1ISceneNode_ae2eca2dae7f8c1537f4c8c5226c56bd3}{}\label{classirr_1_1scene_1_1ISceneNode_ae2eca2dae7f8c1537f4c8c5226c56bd3}
+
+\item 
+int32\+\_\+t {\bfseries blockposX}\hypertarget{classirr_1_1scene_1_1ISceneNode_a6aee09c83c8156c2dae2b748c2630122}{}\label{classirr_1_1scene_1_1ISceneNode_a6aee09c83c8156c2dae2b748c2630122}
+
+\item 
+int32\+\_\+t {\bfseries blockposY}\hypertarget{classirr_1_1scene_1_1ISceneNode_ac4316b6ef4b10820bb8ed31a43464a25}{}\label{classirr_1_1scene_1_1ISceneNode_ac4316b6ef4b10820bb8ed31a43464a25}
+
+\item 
+int32\+\_\+t {\bfseries blockposZ}\hypertarget{classirr_1_1scene_1_1ISceneNode_ae4a9b59ac2b59b621b4e4684e81cdda1}{}\label{classirr_1_1scene_1_1ISceneNode_ae4a9b59ac2b59b621b4e4684e81cdda1}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISceneNode_a366e4c223481f5af089c1f0ecce3394f}{clone\+Members} (\hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$to\+Copy\+From, \hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} $\ast$new\+Manager)
+\begin{DoxyCompactList}\small\item\em A clone function for the \hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} members. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1scene_1_1ISceneNode_a513d09ae37f71391d7c4838e29164a3e}{set\+Scene\+Manager} (\hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} $\ast$new\+Manager)
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void {\bfseries On\+Animate\+\_\+static} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$node, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} time\+Ms)\hypertarget{classirr_1_1scene_1_1ISceneNode_a669f88c8a0e325786f8a8f7f929e41d9}{}\label{classirr_1_1scene_1_1ISceneNode_a669f88c8a0e325786f8a8f7f929e41d9}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespaceirr_1_1core_ade1071a878633f2f6d8a75c5d11fec19}{core\+::stringc} \hyperlink{classirr_1_1scene_1_1ISceneNode_a2527ec038f7e400fc141efa7fdc6327b}{Name}\hypertarget{classirr_1_1scene_1_1ISceneNode_a2527ec038f7e400fc141efa7fdc6327b}{}\label{classirr_1_1scene_1_1ISceneNode_a2527ec038f7e400fc141efa7fdc6327b}
+
+\begin{DoxyCompactList}\small\item\em Name of the scene node. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneNode_a062a201ee9b870398fe5aa8f36ce54a5}{Scene\+Manager}\hypertarget{classirr_1_1scene_1_1ISceneNode_a062a201ee9b870398fe5aa8f36ce54a5}{}\label{classirr_1_1scene_1_1ISceneNode_a062a201ee9b870398fe5aa8f36ce54a5}
+
+\begin{DoxyCompactList}\small\item\em Pointer to the scene manager. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1video_1_1IOcclusionQuery}{video\+::\+I\+Occlusion\+Query} $\ast$ \hyperlink{classirr_1_1scene_1_1ISceneNode_a2e0c610829eeaa9d5b9093c8e549644d}{query}\hypertarget{classirr_1_1scene_1_1ISceneNode_a2e0c610829eeaa9d5b9093c8e549644d}{}\label{classirr_1_1scene_1_1ISceneNode_a2e0c610829eeaa9d5b9093c8e549644d}
+
+\begin{DoxyCompactList}\small\item\em Pointer to the attached occlusion query. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \hyperlink{classirr_1_1scene_1_1ISceneNode_a001b5cf9866fae4092b9b2cc89f3ebef}{ID}\hypertarget{classirr_1_1scene_1_1ISceneNode_a001b5cf9866fae4092b9b2cc89f3ebef}{}\label{classirr_1_1scene_1_1ISceneNode_a001b5cf9866fae4092b9b2cc89f3ebef}
+
+\begin{DoxyCompactList}\small\item\em ID of the node. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1ISceneNode_a0906d6df682ef3b1cbbe117907c0b995}{Automatic\+Culling\+State}\hypertarget{classirr_1_1scene_1_1ISceneNode_a0906d6df682ef3b1cbbe117907c0b995}{}\label{classirr_1_1scene_1_1ISceneNode_a0906d6df682ef3b1cbbe117907c0b995}
+
+\begin{DoxyCompactList}\small\item\em Automatic culling state. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1ISceneNode_a223a66d82d1c56e5f3730aeb9f83589c}{Debug\+Data\+Visible}\hypertarget{classirr_1_1scene_1_1ISceneNode_a223a66d82d1c56e5f3730aeb9f83589c}{}\label{classirr_1_1scene_1_1ISceneNode_a223a66d82d1c56e5f3730aeb9f83589c}
+
+\begin{DoxyCompactList}\small\item\em Flag if debug data should be drawn, such as Bounding Boxes. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1scene_1_1ISceneNode_aa834128c57215457914ef46d9b18cc5e}{Is\+Visible}\hypertarget{classirr_1_1scene_1_1ISceneNode_aa834128c57215457914ef46d9b18cc5e}{}\label{classirr_1_1scene_1_1ISceneNode_aa834128c57215457914ef46d9b18cc5e}
+
+\begin{DoxyCompactList}\small\item\em Is the node visible? \end{DoxyCompactList}\item 
+uint32\+\_\+t {\bfseries render\+Priority}\hypertarget{classirr_1_1scene_1_1ISceneNode_ac04f784982056b494884f50782a70342}{}\label{classirr_1_1scene_1_1ISceneNode_ac04f784982056b494884f50782a70342}
+
+\item 
+bool \hyperlink{classirr_1_1scene_1_1ISceneNode_a8f1ba7c5e77eecc2adc6d12df0d27dd6}{Is\+Debug\+Object}\hypertarget{classirr_1_1scene_1_1ISceneNode_a8f1ba7c5e77eecc2adc6d12df0d27dd6}{}\label{classirr_1_1scene_1_1ISceneNode_a8f1ba7c5e77eecc2adc6d12df0d27dd6}
+
+\begin{DoxyCompactList}\small\item\em Is debug object? \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Scene node interface. 
+
+A scene node is a node in the hierarchical scene graph. Every scene node may have children, which are also scene nodes. Children move relative to their parent\textquotesingle{}s position. If the parent of a node is not visible, its children won\textquotesingle{}t be visible either. In this way, it is for example easily possible to attach a light to a moving car, or to place a walking character on a moving platform on a moving ship. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!add\+Child@{add\+Child}}
+\index{add\+Child@{add\+Child}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{add\+Child(\+I\+Scene\+Node $\ast$child)}{addChild(ISceneNode *child)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Node\+::add\+Child (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Scene\+Node} $\ast$}]{child}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_acceef4fbb68f6cc7bb40035225350970}{}\label{classirr_1_1scene_1_1ISceneNode_acceef4fbb68f6cc7bb40035225350970}
+
+
+Adds a child to this scene node. 
+
+If the scene node already has a parent it is first removed from the other parent. 
+\begin{DoxyParams}{Parameters}
+{\em child} & A pointer to the new child. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!clone@{clone}}
+\index{clone@{clone}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{clone(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$new\+Parent=0, I\+Scene\+Manager $\ast$new\+Manager=0)}{clone(IDummyTransformationSceneNode *newParent=0, ISceneManager *newManager=0)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Dummy\+Transformation\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Scene\+Node\+::clone (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{new\+Parent = {\ttfamily 0}, }
+\item[{{\bf I\+Scene\+Manager} $\ast$}]{new\+Manager = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a551a6aaa89346393a0868f609b79c133}{}\label{classirr_1_1scene_1_1ISceneNode_a551a6aaa89346393a0868f609b79c133}
+
+
+Creates a clone of this scene node and its children. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Parent} & An optional new parent. \\
+\hline
+{\em new\+Manager} & An optional new scene manager. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The newly created clone of this node. 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode_a3fb98da7defed119bd565f5e7fefb5f3}{irr\+::scene\+::\+I\+Dummy\+Transformation\+Scene\+Node}.
+
+
+
+Reimplemented in \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ad77d0172fd48b2f531acc734bc6a2d16}{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}.
+
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!clone\+Members@{clone\+Members}}
+\index{clone\+Members@{clone\+Members}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{clone\+Members(\+I\+Scene\+Node $\ast$to\+Copy\+From, I\+Scene\+Manager $\ast$new\+Manager)}{cloneMembers(ISceneNode *toCopyFrom, ISceneManager *newManager)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Node\+::clone\+Members (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Scene\+Node} $\ast$}]{to\+Copy\+From, }
+\item[{{\bf I\+Scene\+Manager} $\ast$}]{new\+Manager}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a366e4c223481f5af089c1f0ecce3394f}{}\label{classirr_1_1scene_1_1ISceneNode_a366e4c223481f5af089c1f0ecce3394f}
+
+
+A clone function for the \hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} members. 
+
+This method can be used by \hyperlink{classirr_1_1scene_1_1ISceneNode_a551a6aaa89346393a0868f609b79c133}{clone()} implementations of derived classes 
+\begin{DoxyParams}{Parameters}
+{\em to\+Copy\+From} & The node from which the values are copied \\
+\hline
+{\em new\+Manager} & The new scene manager. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!get\+Automatic\+Culling@{get\+Automatic\+Culling}}
+\index{get\+Automatic\+Culling@{get\+Automatic\+Culling}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Automatic\+Culling() const }{getAutomaticCulling() const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf u32} irr\+::scene\+::\+I\+Scene\+Node\+::get\+Automatic\+Culling (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a494c159287ab022d0f797642bf41476e}{}\label{classirr_1_1scene_1_1ISceneNode_a494c159287ab022d0f797642bf41476e}
+
+
+Gets the automatic culling state. 
+
+\begin{DoxyReturn}{Returns}
+The automatic culling state. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!get\+Bounding\+Box@{get\+Bounding\+Box}}
+\index{get\+Bounding\+Box@{get\+Bounding\+Box}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Bounding\+Box()=0}{getBoundingBox()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual const {\bf core\+::aabbox3d}$<${\bf f32}$>$\& irr\+::scene\+::\+I\+Scene\+Node\+::get\+Bounding\+Box (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a327b73e3ae6faafa63e4767e338425f5}{}\label{classirr_1_1scene_1_1ISceneNode_a327b73e3ae6faafa63e4767e338425f5}
+
+
+Get the axis aligned, not transformed bounding box of this node. 
+
+This means that if this node is an animated 3d character, moving in a room, the bounding box will always be around the origin. To get the box in real world coordinates, just transform it with the matrix you receive with get\+Absolute\+Transformation() or simply use \hyperlink{classirr_1_1scene_1_1ISceneNode_a23f1bf45efcca008816f3e05a52e4994}{get\+Transformed\+Bounding\+Box()}, which does the same. \begin{DoxyReturn}{Returns}
+The non-\/transformed bounding box. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a5a5613c75cc0ed13151f73cdea0a241d}{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}.
+
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!get\+ID@{get\+ID}}
+\index{get\+ID@{get\+ID}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+I\+D() const }{getID() const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf s32} irr\+::scene\+::\+I\+Scene\+Node\+::get\+ID (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a8f695e36340a9bb32f7e655fe4c1ea97}{}\label{classirr_1_1scene_1_1ISceneNode_a8f695e36340a9bb32f7e655fe4c1ea97}
+
+
+Get the id of the scene node. 
+
+This id can be used to identify the node. \begin{DoxyReturn}{Returns}
+The id. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!get\+Material@{get\+Material}}
+\index{get\+Material@{get\+Material}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Material(u32 num)}{getMaterial(u32 num)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf video\+::\+S\+Material}\& irr\+::scene\+::\+I\+Scene\+Node\+::get\+Material (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{num}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a1f44d8cf753b2e4c17c90d4fc2ed05b2}{}\label{classirr_1_1scene_1_1ISceneNode_a1f44d8cf753b2e4c17c90d4fc2ed05b2}
+
+
+Returns the material based on the zero based index i. 
+
+To get the amount of materials used by this scene node, use \hyperlink{classirr_1_1scene_1_1ISceneNode_afa904bf3742941087aaee56b0b4cdfe2}{get\+Material\+Count()}. This function is needed for inserting the node into the scene hierarchy at an optimal position for minimizing renderstate changes, but can also be used to directly modify the material of a scene node. 
+\begin{DoxyParams}{Parameters}
+{\em num} & Zero based index. The maximal value is \hyperlink{classirr_1_1scene_1_1ISceneNode_afa904bf3742941087aaee56b0b4cdfe2}{get\+Material\+Count()} -\/ 1. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The material at that index. 
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a38bb136fca8d4860b474c076447eba32}{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}.
+
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!get\+Material\+Count@{get\+Material\+Count}}
+\index{get\+Material\+Count@{get\+Material\+Count}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Material\+Count() const }{getMaterialCount() const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf u32} irr\+::scene\+::\+I\+Scene\+Node\+::get\+Material\+Count (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_afa904bf3742941087aaee56b0b4cdfe2}{}\label{classirr_1_1scene_1_1ISceneNode_afa904bf3742941087aaee56b0b4cdfe2}
+
+
+Get amount of materials used by this scene node. 
+
+\begin{DoxyReturn}{Returns}
+Current amount of materials of this scene node. 
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a55a2001d34463a4d84a206d4e5c74629}{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}.
+
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!get\+Name@{get\+Name}}
+\index{get\+Name@{get\+Name}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Name() const }{getName() const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual const {\bf c8}$\ast$ irr\+::scene\+::\+I\+Scene\+Node\+::get\+Name (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_aabb3b657d0afb62994399181b952f3e3}{}\label{classirr_1_1scene_1_1ISceneNode_aabb3b657d0afb62994399181b952f3e3}
+
+
+Returns the name of the node. 
+
+\begin{DoxyReturn}{Returns}
+Name as character string. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!get\+Scene\+Manager@{get\+Scene\+Manager}}
+\index{get\+Scene\+Manager@{get\+Scene\+Manager}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Scene\+Manager(void) const }{getSceneManager(void) const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Manager}$\ast$ irr\+::scene\+::\+I\+Scene\+Node\+::get\+Scene\+Manager (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a58d2c91b48c9fe5c64a7de0c801ca511}{}\label{classirr_1_1scene_1_1ISceneNode_a58d2c91b48c9fe5c64a7de0c801ca511}
+
+
+Retrieve the scene manager for this node. 
+
+\begin{DoxyReturn}{Returns}
+The node\textquotesingle{}s scene manager. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!get\+Transformed\+Bounding\+Box@{get\+Transformed\+Bounding\+Box}}
+\index{get\+Transformed\+Bounding\+Box@{get\+Transformed\+Bounding\+Box}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Transformed\+Bounding\+Box()}{getTransformedBoundingBox()}}]{\setlength{\rightskip}{0pt plus 5cm}virtual const {\bf core\+::aabbox3d}$<${\bf f32}$>$ irr\+::scene\+::\+I\+Scene\+Node\+::get\+Transformed\+Bounding\+Box (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a23f1bf45efcca008816f3e05a52e4994}{}\label{classirr_1_1scene_1_1ISceneNode_a23f1bf45efcca008816f3e05a52e4994}
+
+
+Get the axis aligned, transformed and animated absolute bounding box of this node. 
+
+\begin{DoxyReturn}{Returns}
+The transformed bounding box. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!get\+Type@{get\+Type}}
+\index{get\+Type@{get\+Type}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Type() const }{getType() const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf E\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+T\+Y\+PE} irr\+::scene\+::\+I\+Scene\+Node\+::get\+Type (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_acb294abaf64a85e11744cce96f99926e}{}\label{classirr_1_1scene_1_1ISceneNode_acb294abaf64a85e11744cce96f99926e}
+
+
+Returns type of the scene node. 
+
+\begin{DoxyReturn}{Returns}
+The type of this node. 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode_a4ac844750b866a1c05e72c3288b3d6cd}{irr\+::scene\+::\+I\+Dummy\+Transformation\+Scene\+Node}.
+
+
+
+Reimplemented in \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a9624f557ef2236424cc26ce9a6d1a9c1}{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}, and \hyperlink{classirr_1_1scene_1_1IVolumeLightSceneNode_aaeb00bc1d00bdef60d1c3619e4b78325}{irr\+::scene\+::\+I\+Volume\+Light\+Scene\+Node}.
+
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!is\+Debug\+Data\+Visible@{is\+Debug\+Data\+Visible}}
+\index{is\+Debug\+Data\+Visible@{is\+Debug\+Data\+Visible}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{is\+Debug\+Data\+Visible() const }{isDebugDataVisible() const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf u32} irr\+::scene\+::\+I\+Scene\+Node\+::is\+Debug\+Data\+Visible (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a29224344555fef716b7c466b54349e65}{}\label{classirr_1_1scene_1_1ISceneNode_a29224344555fef716b7c466b54349e65}
+
+
+Returns if debug data like bounding boxes are drawn. 
+
+\begin{DoxyReturn}{Returns}
+A bitwise OR of the debug data values from \hyperlink{namespaceirr_1_1scene_a52b664c4c988113735042b168fc32dbe}{irr\+::scene\+::\+E\+\_\+\+D\+E\+B\+U\+G\+\_\+\+S\+C\+E\+N\+E\+\_\+\+T\+Y\+PE} that are currently visible. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!is\+Debug\+Object@{is\+Debug\+Object}}
+\index{is\+Debug\+Object@{is\+Debug\+Object}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{is\+Debug\+Object() const }{isDebugObject() const }}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::scene\+::\+I\+Scene\+Node\+::is\+Debug\+Object (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_aaf7667d0fec6953461237e8e11c0ceb3}{}\label{classirr_1_1scene_1_1ISceneNode_aaf7667d0fec6953461237e8e11c0ceb3}
+
+
+Returns if this scene node is a debug object. 
+
+Debug objects have some special properties, for example they can be easily excluded from collision detection or from serialization, etc. \begin{DoxyReturn}{Returns}
+If this node is a debug object, true is returned. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!is\+Truly\+Visible@{is\+Truly\+Visible}}
+\index{is\+Truly\+Visible@{is\+Truly\+Visible}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{is\+Truly\+Visible() const }{isTrulyVisible() const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::scene\+::\+I\+Scene\+Node\+::is\+Truly\+Visible (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_aa7065e757724f61d4a91d25db25c3a2b}{}\label{classirr_1_1scene_1_1ISceneNode_aa7065e757724f61d4a91d25db25c3a2b}
+
+
+Check whether the node is truly visible, taking into accounts its parents\textquotesingle{} visibility. 
+
+\begin{DoxyReturn}{Returns}
+true if the node and all its parents are visible, false if this or any parent node is invisible. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!is\+Visible@{is\+Visible}}
+\index{is\+Visible@{is\+Visible}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{is\+Visible() const }{isVisible() const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::scene\+::\+I\+Scene\+Node\+::is\+Visible (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a1aef4f0feccebcd0d38373beadbc1827}{}\label{classirr_1_1scene_1_1ISceneNode_a1aef4f0feccebcd0d38373beadbc1827}
+
+
+Returns whether the node should be visible (if all of its parents are visible). 
+
+This is only an option set by the user, but has nothing to do with geometry culling \begin{DoxyReturn}{Returns}
+The requested visibility of the node, true means visible (if all parents are also visible). 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!On\+Animate@{On\+Animate}}
+\index{On\+Animate@{On\+Animate}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{On\+Animate(u32 time\+Ms)}{OnAnimate(u32 timeMs)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Node\+::\+On\+Animate (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{time\+Ms}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_afc1dcb5cb19116d0c7aa3d4ebdf04cc5}{}\label{classirr_1_1scene_1_1ISceneNode_afc1dcb5cb19116d0c7aa3d4ebdf04cc5}
+
+
+\hyperlink{classirr_1_1scene_1_1ISceneNode_afc1dcb5cb19116d0c7aa3d4ebdf04cc5}{On\+Animate()} is called just before rendering the whole scene. 
+
+Nodes may calculate or store animations here, and may do other useful things, depending on what they are. Also, \hyperlink{classirr_1_1scene_1_1ISceneNode_afc1dcb5cb19116d0c7aa3d4ebdf04cc5}{On\+Animate()} should be called for all child scene nodes here. This method will be called once per frame, independent of whether the scene node is visible or not. 
+\begin{DoxyParams}{Parameters}
+{\em time\+Ms} & Current time in milliseconds. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aa3ebdfb8b061492bdfb33198ee6f5f8c}{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}.
+
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!On\+Register\+Scene\+Node@{On\+Register\+Scene\+Node}}
+\index{On\+Register\+Scene\+Node@{On\+Register\+Scene\+Node}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{On\+Register\+Scene\+Node()}{OnRegisterSceneNode()}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Node\+::\+On\+Register\+Scene\+Node (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_ac9795bfcb88dcaf8cba6ea3296e5d8d0}{}\label{classirr_1_1scene_1_1ISceneNode_ac9795bfcb88dcaf8cba6ea3296e5d8d0}
+
+
+This method is called just before the rendering process of the whole scene. 
+
+Nodes may register themselves in the render pipeline during this call, precalculate the geometry which should be renderered, and prevent their children from being able to register themselves if they are clipped by simply not calling their On\+Register\+Scene\+Node method. If you are implementing your own scene node, you should overwrite this method with an implementation code looking like this\+: 
+\begin{DoxyCode}
+\textcolor{keywordflow}{if} (\hyperlink{classirr_1_1scene_1_1ISceneNode_aa834128c57215457914ef46d9b18cc5e}{IsVisible})
+    \hyperlink{classirr_1_1scene_1_1ISceneNode_a062a201ee9b870398fe5aa8f36ce54a5}{SceneManager}->\hyperlink{classirr_1_1scene_1_1ISceneManager_aaf17bdde6d4e9ef61a76f3b43100ecb8}{registerNodeForRendering}(\textcolor{keyword}{this});
+
+\hyperlink{classirr_1_1scene_1_1ISceneNode_ac9795bfcb88dcaf8cba6ea3296e5d8d0}{ISceneNode::OnRegisterSceneNode}();
+\end{DoxyCode}
+ 
+
+Reimplemented in \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a08480c06181d4c855b6858251b956524}{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}.
+
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+Automatic\+Culling@{set\+Automatic\+Culling}}
+\index{set\+Automatic\+Culling@{set\+Automatic\+Culling}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Automatic\+Culling(u32 state)}{setAutomaticCulling(u32 state)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::scene\+::\+I\+Scene\+Node\+::set\+Automatic\+Culling (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{state}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a5fcd62dbf524b8d2d6daa61c7d6cf119}{}\label{classirr_1_1scene_1_1ISceneNode_a5fcd62dbf524b8d2d6daa61c7d6cf119}
+
+
+Enables or disables automatic culling based on the bounding box. 
+
+Automatic culling is enabled by default. Note that not all Scene\+Nodes support culling and that some nodes always cull their geometry because it is their only reason for existence. 
+\begin{DoxyParams}{Parameters}
+{\em state} & The culling state to be used. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+Debug\+Data\+Visible@{set\+Debug\+Data\+Visible}}
+\index{set\+Debug\+Data\+Visible@{set\+Debug\+Data\+Visible}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Debug\+Data\+Visible(u32 state)}{setDebugDataVisible(u32 state)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Node\+::set\+Debug\+Data\+Visible (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{state}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_ad83877ca84fa9cde95f099f961e80577}{}\label{classirr_1_1scene_1_1ISceneNode_ad83877ca84fa9cde95f099f961e80577}
+
+
+Sets if debug data like bounding boxes should be drawn. 
+
+A bitwise OR of the types from \hyperlink{namespaceirr_1_1scene_a52b664c4c988113735042b168fc32dbe}{irr\+::scene\+::\+E\+\_\+\+D\+E\+B\+U\+G\+\_\+\+S\+C\+E\+N\+E\+\_\+\+T\+Y\+PE}. Please note that not all scene nodes support all debug data types. 
+\begin{DoxyParams}{Parameters}
+{\em state} & The debug data visibility state to be used. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+ID@{set\+ID}}
+\index{set\+ID@{set\+ID}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+I\+D(s32 id)}{setID(s32 id)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Node\+::set\+ID (
+\begin{DoxyParamCaption}
+\item[{{\bf s32}}]{id}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_ade60c630c4768200b1d15debbd00fe0e}{}\label{classirr_1_1scene_1_1ISceneNode_ade60c630c4768200b1d15debbd00fe0e}
+
+
+Sets the id of the scene node. 
+
+This id can be used to identify the node. 
+\begin{DoxyParams}{Parameters}
+{\em id} & The new id. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+Is\+Debug\+Object@{set\+Is\+Debug\+Object}}
+\index{set\+Is\+Debug\+Object@{set\+Is\+Debug\+Object}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Is\+Debug\+Object(bool debug\+Object)}{setIsDebugObject(bool debugObject)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::scene\+::\+I\+Scene\+Node\+::set\+Is\+Debug\+Object (
+\begin{DoxyParamCaption}
+\item[{bool}]{debug\+Object}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a7ceda3eb747a353ffeda02c26e697cbd}{}\label{classirr_1_1scene_1_1ISceneNode_a7ceda3eb747a353ffeda02c26e697cbd}
+
+
+Sets if this scene node is a debug object. 
+
+Debug objects have some special properties, for example they can be easily excluded from collision detection or from serialization, etc. \index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+Material\+Flag@{set\+Material\+Flag}}
+\index{set\+Material\+Flag@{set\+Material\+Flag}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Material\+Flag(video\+::\+E\+\_\+\+M\+A\+T\+E\+R\+I\+A\+L\+\_\+\+F\+L\+A\+G flag, bool newvalue)}{setMaterialFlag(video::E\_MATERIAL\_FLAG flag, bool newvalue)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::scene\+::\+I\+Scene\+Node\+::set\+Material\+Flag (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+E\+\_\+\+M\+A\+T\+E\+R\+I\+A\+L\+\_\+\+F\+L\+AG}}]{flag, }
+\item[{bool}]{newvalue}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a2841d5077854b9981711a403f33762cd}{}\label{classirr_1_1scene_1_1ISceneNode_a2841d5077854b9981711a403f33762cd}
+
+
+Sets all material flags at once to a new value. 
+
+Useful, for example, if you want the whole mesh to be affected by light. 
+\begin{DoxyParams}{Parameters}
+{\em flag} & Which flag of all materials to be set. \\
+\hline
+{\em newvalue} & New value of that flag. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+Material\+Texture@{set\+Material\+Texture}}
+\index{set\+Material\+Texture@{set\+Material\+Texture}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Material\+Texture(u32 texture\+Layer, video\+::\+I\+Texture $\ast$texture)}{setMaterialTexture(u32 textureLayer, video::ITexture *texture)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::scene\+::\+I\+Scene\+Node\+::set\+Material\+Texture (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{texture\+Layer, }
+\item[{{\bf video\+::\+I\+Texture} $\ast$}]{texture}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a0d5d2e05ebe08e6a432fbb4fd1d28dd0}{}\label{classirr_1_1scene_1_1ISceneNode_a0d5d2e05ebe08e6a432fbb4fd1d28dd0}
+
+
+Sets the texture of the specified layer in all materials of this scene node to the new texture. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em texture\+Layer} & Layer of texture to be set. Must be a value smaller than M\+A\+T\+E\+R\+I\+A\+L\+\_\+\+M\+A\+X\+\_\+\+T\+E\+X\+T\+U\+R\+ES. \\
+\hline
+{\em texture} & New texture to be used. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+Material\+Type@{set\+Material\+Type}}
+\index{set\+Material\+Type@{set\+Material\+Type}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Material\+Type(video\+::\+E\+\_\+\+M\+A\+T\+E\+R\+I\+A\+L\+\_\+\+T\+Y\+P\+E new\+Type)}{setMaterialType(video::E\_MATERIAL\_TYPE newType)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::scene\+::\+I\+Scene\+Node\+::set\+Material\+Type (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+E\+\_\+\+M\+A\+T\+E\+R\+I\+A\+L\+\_\+\+T\+Y\+PE}}]{new\+Type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a302c7dedd776b52111823df5ed8446de}{}\label{classirr_1_1scene_1_1ISceneNode_a302c7dedd776b52111823df5ed8446de}
+
+
+Sets the material type of all materials in this scene node to a new material type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Type} & New type of material to be set. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+Name@{set\+Name}}
+\index{set\+Name@{set\+Name}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Name(const c8 $\ast$name)}{setName(const c8 *name)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Node\+::set\+Name (
+\begin{DoxyParamCaption}
+\item[{const {\bf c8} $\ast$}]{name}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a810a54a2fc178b9a0e731513865f67d0}{}\label{classirr_1_1scene_1_1ISceneNode_a810a54a2fc178b9a0e731513865f67d0}
+
+
+Sets the name of the node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & New name of the scene node. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+Name@{set\+Name}}
+\index{set\+Name@{set\+Name}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Name(const core\+::stringc \&name)}{setName(const core::stringc \&name)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Node\+::set\+Name (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::stringc} \&}]{name}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a20a22d956974f4817a20663361f20042}{}\label{classirr_1_1scene_1_1ISceneNode_a20a22d956974f4817a20663361f20042}
+
+
+Sets the name of the node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & New name of the scene node. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+Scene\+Manager@{set\+Scene\+Manager}}
+\index{set\+Scene\+Manager@{set\+Scene\+Manager}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Scene\+Manager(\+I\+Scene\+Manager $\ast$new\+Manager)}{setSceneManager(ISceneManager *newManager)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::scene\+::\+I\+Scene\+Node\+::set\+Scene\+Manager (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Scene\+Manager} $\ast$}]{new\+Manager}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a513d09ae37f71391d7c4838e29164a3e}{}\label{classirr_1_1scene_1_1ISceneNode_a513d09ae37f71391d7c4838e29164a3e}
+Sets the new scene manager for this node and all children. Called by add\+Child when moving nodes between scene managers \index{irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}!set\+Visible@{set\+Visible}}
+\index{set\+Visible@{set\+Visible}!irr\+::scene\+::\+I\+Scene\+Node@{irr\+::scene\+::\+I\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Visible(bool is\+Visible\+\_\+in)}{setVisible(bool isVisible\_in)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Scene\+Node\+::set\+Visible (
+\begin{DoxyParamCaption}
+\item[{bool}]{is\+Visible\+\_\+in}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISceneNode_a7a5de878c7084088646f07afaac0a73f}{}\label{classirr_1_1scene_1_1ISceneNode_a7a5de878c7084088646f07afaac0a73f}
+
+
+Sets if the node should be visible or not. 
+
+All children of this node won\textquotesingle{}t be visible either, when set to false. Invisible nodes are not valid candidates for selection by collision manager bounding box methods. 
+\begin{DoxyParams}{Parameters}
+{\em is\+Visible} & If the node shall be visible. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{classirr_1_1scene_1_1ILightSceneNode_a3a6a6681a665ec4c214cda8a84a29337}{irr\+::scene\+::\+I\+Light\+Scene\+Node}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Scene\+Node.\+h\end{DoxyCompactItemize}

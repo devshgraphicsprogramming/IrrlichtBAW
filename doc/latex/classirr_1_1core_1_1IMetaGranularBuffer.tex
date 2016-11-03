@@ -1,0 +1,92 @@
+\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer}{}\section{irr\+:\+:core\+:\+:I\+Meta\+Granular\+Buffer$<$ T $>$ Class Template Reference}
+\label{classirr_1_1core_1_1IMetaGranularBuffer}\index{irr\+::core\+::\+I\+Meta\+Granular\+Buffer$<$ T $>$@{irr\+::core\+::\+I\+Meta\+Granular\+Buffer$<$ T $>$}}
+Inheritance diagram for irr\+:\+:core\+:\+:I\+Meta\+Granular\+Buffer$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classirr_1_1core_1_1IMetaGranularBuffer}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries I\+Meta\+Granular\+Buffer} (const size\+\_\+t \&granule\+Size, const size\+\_\+t \&granule\+Count, const size\+\_\+t \&buffer\+Grow\+Step=512, const size\+\_\+t \&buffer\+Shrink\+Step=2048)\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a97aea503eee9c815d3e38d684188108c}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a97aea503eee9c815d3e38d684188108c}
+
+\item 
+virtual T $\ast$ {\bfseries get\+Front\+Buffer} ()=0\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_ac1c88ef8dfece9e74ee2c872aa09d77b}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_ac1c88ef8dfece9e74ee2c872aa09d77b}
+
+\item 
+void $\ast$ {\bfseries get\+Back\+Buffer\+Pointer} ()\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a163b18f0f1b95312bfb3c898bae695bb}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a163b18f0f1b95312bfb3c898bae695bb}
+
+\item 
+virtual void {\bfseries Swap\+Buffers} (void($\ast$Stuff\+To\+Do\+To\+New\+Buffer)(T $\ast$, void $\ast$)=N\+U\+LL, void $\ast$user\+Data=N\+U\+LL)=0\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_af4f5b75a9efba16838e5abc99f6201bc}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_af4f5b75a9efba16838e5abc99f6201bc}
+
+\item 
+const size\+\_\+t \& {\bfseries get\+Allocated\+Count} () const \hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_aeba8de5e23886c0087b8a69533393e19}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_aeba8de5e23886c0087b8a69533393e19}
+
+\item 
+const size\+\_\+t \& {\bfseries get\+Capacity} ()\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a5086dbd701e9fe944b6b3cc53dba3715}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a5086dbd701e9fe944b6b3cc53dba3715}
+
+\item 
+virtual bool \hyperlink{classirr_1_1core_1_1IMetaGranularBuffer_a643ec9c885022593d6e4b653bed6f97f}{Alloc} (uint32\+\_\+t $\ast$granule\+I\+Ds, const size\+\_\+t \&count)
+\item 
+const uint32\+\_\+t \& {\bfseries get\+Redirect\+From\+ID} (const size\+\_\+t \&ix) const \hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_aadc2dbdd80003f830bc62bbc7aa8dd82}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_aadc2dbdd80003f830bc62bbc7aa8dd82}
+
+\item 
+virtual void {\bfseries Free} (const uint32\+\_\+t $\ast$granule\+I\+Ds, const size\+\_\+t \&count)\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_aebed18f1992fb10890115ec68f1c52de}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_aebed18f1992fb10890115ec68f1c52de}
+
+\item 
+const size\+\_\+t {\bfseries get\+Granule\+Byte\+Size} () const \hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a3d0a821f552e65b7c9ea7b3dc3de8702}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a3d0a821f552e65b7c9ea7b3dc3de8702}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries Grow\+Back\+Buffer} (const size\+\_\+t \&new\+Granule\+Count)\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a6b167f07ffc2aaf61c13c2aeca9fee04}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a6b167f07ffc2aaf61c13c2aeca9fee04}
+
+\item 
+void {\bfseries Shrink\+Back\+Buffer} ()\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_acbbdca59a6c48bfc8e32e29aab8ebfe6}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_acbbdca59a6c48bfc8e32e29aab8ebfe6}
+
+\item 
+void {\bfseries Validate\+Hash\+Map} (const uint32\+\_\+t \&max\+Alloc)\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a8570b25dfec2219c63e9c2782f61e3b1}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a8570b25dfec2219c63e9c2782f61e3b1}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+size\+\_\+t {\bfseries Allocated}\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a442d6eca3b37b144613f5dd00c460c54}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a442d6eca3b37b144613f5dd00c460c54}
+
+\item 
+size\+\_\+t {\bfseries Granules}\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a11b06d843a11bca67e291476c4a157e9}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a11b06d843a11bca67e291476c4a157e9}
+
+\item 
+uint32\+\_\+t $\ast$ {\bfseries residency\+Redirect\+To}\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_aebf9a9512a50f8c8685788f6bab0dec1}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_aebf9a9512a50f8c8685788f6bab0dec1}
+
+\item 
+const size\+\_\+t {\bfseries Granule\+Byte\+Size}\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a8f9abf4ce149ef18375b067c1e1139c6}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a8f9abf4ce149ef18375b067c1e1139c6}
+
+\item 
+const size\+\_\+t {\bfseries Back\+Buffer\+Grow\+Step}\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a3f64f1fbe9751c256b6b393077e7de8a}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a3f64f1fbe9751c256b6b393077e7de8a}
+
+\item 
+const size\+\_\+t {\bfseries Back\+Buffer\+Shrink\+Step}\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a8dc4bc7da4525315648f1170b78afae6}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a8dc4bc7da4525315648f1170b78afae6}
+
+\item 
+\hyperlink{classirr_1_1core_1_1ICPUBuffer}{core\+::\+I\+C\+P\+U\+Buffer} $\ast$ {\bfseries B}\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_af9bdbf0de5af5cbce948285e3cbb2e33}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_af9bdbf0de5af5cbce948285e3cbb2e33}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\index{irr\+::core\+::\+I\+Meta\+Granular\+Buffer@{irr\+::core\+::\+I\+Meta\+Granular\+Buffer}!Alloc@{Alloc}}
+\index{Alloc@{Alloc}!irr\+::core\+::\+I\+Meta\+Granular\+Buffer@{irr\+::core\+::\+I\+Meta\+Granular\+Buffer}}
+\subsubsection[{\texorpdfstring{Alloc(uint32\+\_\+t $\ast$granule\+I\+Ds, const size\+\_\+t \&count)}{Alloc(uint32\_t *granuleIDs, const size\_t \&count)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ virtual bool {\bf irr\+::core\+::\+I\+Meta\+Granular\+Buffer}$<$ T $>$\+::Alloc (
+\begin{DoxyParamCaption}
+\item[{uint32\+\_\+t $\ast$}]{granule\+I\+Ds, }
+\item[{const size\+\_\+t \&}]{count}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1core_1_1IMetaGranularBuffer_a643ec9c885022593d6e4b653bed6f97f}{}\label{classirr_1_1core_1_1IMetaGranularBuffer_a643ec9c885022593d6e4b653bed6f97f}
+Preconditions\+: 1) no holes in allocation 2) can have holes in redirects 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Meta\+Granular\+Buffer.\+h\end{DoxyCompactItemize}

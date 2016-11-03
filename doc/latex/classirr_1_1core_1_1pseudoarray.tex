@@ -1,0 +1,375 @@
+\hypertarget{classirr_1_1core_1_1pseudoarray}{}\section{irr\+:\+:core\+:\+:pseudoarray$<$ T $>$ Class Template Reference}
+\label{classirr_1_1core_1_1pseudoarray}\index{irr\+::core\+::pseudoarray$<$ T $>$@{irr\+::core\+::pseudoarray$<$ T $>$}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1core_1_1pseudoarray_a1c1e832bac5efcf695e7fb140c167062}{pseudoarray} (T $\ast$mapped\+Range, const size\+\_\+t \&max\+Size, const size\+\_\+t \&current\+Size=0)\hypertarget{classirr_1_1core_1_1pseudoarray_a1c1e832bac5efcf695e7fb140c167062}{}\label{classirr_1_1core_1_1pseudoarray_a1c1e832bac5efcf695e7fb140c167062}
+
+\begin{DoxyCompactList}\small\item\em Default constructor for empty array. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1pseudoarray_af06422a66e1948e9d25a432b9b62d221}{pseudoarray} (const \hyperlink{classirr_1_1core_1_1pseudoarray}{pseudoarray}$<$ T $>$ \&other)\hypertarget{classirr_1_1core_1_1pseudoarray_af06422a66e1948e9d25a432b9b62d221}{}\label{classirr_1_1core_1_1pseudoarray_af06422a66e1948e9d25a432b9b62d221}
+
+\begin{DoxyCompactList}\small\item\em Copy constructor. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1pseudoarray_a64254a230836a5cf6ebc68917333613e}{push\+\_\+back} (const T \&element)
+\begin{DoxyCompactList}\small\item\em Adds an element at back of array. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1pseudoarray_a0971acf89d90a44dc0b668ba5a8fda80}{push\+\_\+front} (const T \&element)
+\begin{DoxyCompactList}\small\item\em Adds an element at the front of the array. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1pseudoarray_a170e5bbb017e369f2bc35312c36bcd5d}{insert} (const T \&element, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index=0)
+\begin{DoxyCompactList}\small\item\em Insert item into array at specified position. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1pseudoarray_ace4c1c83d532b76111e72d499fc10083}{set\+\_\+used} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} used\+Now)
+\begin{DoxyCompactList}\small\item\em Sets the size of the array and allocates new elements if necessary. \end{DoxyCompactList}\item 
+const \hyperlink{classirr_1_1core_1_1pseudoarray}{pseudoarray}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1pseudoarray_ad88ccc4ac554cf2e15f50a2b6ce342e3}{operator=} (const \hyperlink{classirr_1_1core_1_1pseudoarray}{pseudoarray}$<$ T $>$ \&other)\hypertarget{classirr_1_1core_1_1pseudoarray_ad88ccc4ac554cf2e15f50a2b6ce342e3}{}\label{classirr_1_1core_1_1pseudoarray_ad88ccc4ac554cf2e15f50a2b6ce342e3}
+
+\begin{DoxyCompactList}\small\item\em Assignment operator. \end{DoxyCompactList}\item 
+T \& \hyperlink{classirr_1_1core_1_1pseudoarray_acd345edb852a782d19905c6d016551db}{operator\mbox{[}$\,$\mbox{]}} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index)\hypertarget{classirr_1_1core_1_1pseudoarray_acd345edb852a782d19905c6d016551db}{}\label{classirr_1_1core_1_1pseudoarray_acd345edb852a782d19905c6d016551db}
+
+\begin{DoxyCompactList}\small\item\em Direct access operator. \end{DoxyCompactList}\item 
+const T \& \hyperlink{classirr_1_1core_1_1pseudoarray_af2b31efb6c9beda9d7ea610b1587bbb9}{operator\mbox{[}$\,$\mbox{]}} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index) const \hypertarget{classirr_1_1core_1_1pseudoarray_af2b31efb6c9beda9d7ea610b1587bbb9}{}\label{classirr_1_1core_1_1pseudoarray_af2b31efb6c9beda9d7ea610b1587bbb9}
+
+\begin{DoxyCompactList}\small\item\em Direct const access operator. \end{DoxyCompactList}\item 
+T \& \hyperlink{classirr_1_1core_1_1pseudoarray_acbcc83d4d8f7db9d129a3539be4b8ccf}{get\+Last} ()\hypertarget{classirr_1_1core_1_1pseudoarray_acbcc83d4d8f7db9d129a3539be4b8ccf}{}\label{classirr_1_1core_1_1pseudoarray_acbcc83d4d8f7db9d129a3539be4b8ccf}
+
+\begin{DoxyCompactList}\small\item\em Gets last element. \end{DoxyCompactList}\item 
+const T \& \hyperlink{classirr_1_1core_1_1pseudoarray_aa3b2faadd7b74e8d4d3bb74ee47ec005}{get\+Last} () const \hypertarget{classirr_1_1core_1_1pseudoarray_aa3b2faadd7b74e8d4d3bb74ee47ec005}{}\label{classirr_1_1core_1_1pseudoarray_aa3b2faadd7b74e8d4d3bb74ee47ec005}
+
+\begin{DoxyCompactList}\small\item\em Gets last element. \end{DoxyCompactList}\item 
+T $\ast$ \hyperlink{classirr_1_1core_1_1pseudoarray_afe861bbf5267706cf4e08e4da448a4ad}{pointer} ()
+\begin{DoxyCompactList}\small\item\em Gets a pointer to the array. \end{DoxyCompactList}\item 
+const T $\ast$ \hyperlink{classirr_1_1core_1_1pseudoarray_aafe9d7b336b821a604dd4563ab47225b}{const\+\_\+pointer} () const 
+\begin{DoxyCompactList}\small\item\em Gets a const pointer to the array. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1core_1_1pseudoarray_ab28729f59bf9e55e413a38f697014a1c}{size} () const 
+\begin{DoxyCompactList}\small\item\em Get number of occupied elements of the array. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1core_1_1pseudoarray_abeed6fb7c047af0fc07397976c3cedef}{allocated\+\_\+size} () const 
+\begin{DoxyCompactList}\small\item\em Get amount of memory allocated. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1pseudoarray_aa5ccbee4785125805d83f3b12bc10336}{empty} () const 
+\begin{DoxyCompactList}\small\item\em Check if array is empty. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1pseudoarray_a7e98df807c706fe41de8e3ab3253287e}{sort} ()
+\begin{DoxyCompactList}\small\item\em Sorts the array using heapsort. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \hyperlink{classirr_1_1core_1_1pseudoarray_ae027c281626d25f49f7042dde9d4085f}{binary\+\_\+search} (const T \&element)
+\begin{DoxyCompactList}\small\item\em Performs a binary search for an element, returns -\/1 if not found. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \hyperlink{classirr_1_1core_1_1pseudoarray_abe9db8ae9f0aa06d9bdfa36addc45102}{binary\+\_\+search} (const T \&element) const 
+\begin{DoxyCompactList}\small\item\em Performs a binary search for an element if possible, returns -\/1 if not found. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \hyperlink{classirr_1_1core_1_1pseudoarray_a06fa9de8befb5ce24e6e3c86692fdf72}{binary\+\_\+search} (const T \&element, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} left, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} right) const 
+\begin{DoxyCompactList}\small\item\em Performs a binary search for an element, returns -\/1 if not found. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \hyperlink{classirr_1_1core_1_1pseudoarray_a5c0fc3ea4723e044e48b1479513a9014}{binary\+\_\+search\+\_\+multi} (const T \&element, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \&last)
+\item 
+\hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \hyperlink{classirr_1_1core_1_1pseudoarray_a3ad731721c59cc25dfaf9619c5acb087}{linear\+\_\+search} (const T \&element) const 
+\begin{DoxyCompactList}\small\item\em Finds an element in linear time, which is very slow. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \hyperlink{classirr_1_1core_1_1pseudoarray_a04c85c2d9932d53c0c9efbeae53e1d59}{linear\+\_\+reverse\+\_\+search} (const T \&element) const 
+\begin{DoxyCompactList}\small\item\em Finds an element in linear time, which is very slow. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1pseudoarray_a90ba03bacae91dff41b49e18d63022c4}{erase} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index)
+\begin{DoxyCompactList}\small\item\em Erases an element from the array. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1pseudoarray_a42d70917aca97eba691c8468f78e8ba4}{erase} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} count)
+\begin{DoxyCompactList}\small\item\em Erases some elements from the array. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1pseudoarray_af8c4e02d718fc0749afe54c924cb03f1}{set\+\_\+sorted} (bool \+\_\+is\+\_\+sorted)\hypertarget{classirr_1_1core_1_1pseudoarray_af8c4e02d718fc0749afe54c924cb03f1}{}\label{classirr_1_1core_1_1pseudoarray_af8c4e02d718fc0749afe54c924cb03f1}
+
+\begin{DoxyCompactList}\small\item\em Sets if the array is sorted. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!allocated\+\_\+size@{allocated\+\_\+size}}
+\index{allocated\+\_\+size@{allocated\+\_\+size}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{allocated\+\_\+size() const }{allocated\_size() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf u32} {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::allocated\+\_\+size (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_abeed6fb7c047af0fc07397976c3cedef}{}\label{classirr_1_1core_1_1pseudoarray_abeed6fb7c047af0fc07397976c3cedef}
+
+
+Get amount of memory allocated. 
+
+\begin{DoxyReturn}{Returns}
+Amount of memory allocated. The amount of bytes allocated would be \hyperlink{classirr_1_1core_1_1pseudoarray_abeed6fb7c047af0fc07397976c3cedef}{allocated\+\_\+size()} $\ast$ sizeof(\+Element\+Type\+Used); 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!binary\+\_\+search@{binary\+\_\+search}}
+\index{binary\+\_\+search@{binary\+\_\+search}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{binary\+\_\+search(const T \&element)}{binary\_search(const T \&element)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf s32} {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::binary\+\_\+search (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_ae027c281626d25f49f7042dde9d4085f}{}\label{classirr_1_1core_1_1pseudoarray_ae027c281626d25f49f7042dde9d4085f}
+
+
+Performs a binary search for an element, returns -\/1 if not found. 
+
+The array will be sorted before the binary search if it is not already sorted. Caution is advised! Be careful not to call this on unsorted const arrays, or the slower method will be used. 
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to search for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position of the searched element if it was found, otherwise -\/1 is returned. 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!binary\+\_\+search@{binary\+\_\+search}}
+\index{binary\+\_\+search@{binary\+\_\+search}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{binary\+\_\+search(const T \&element) const }{binary\_search(const T \&element) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf s32} {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::binary\+\_\+search (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_abe9db8ae9f0aa06d9bdfa36addc45102}{}\label{classirr_1_1core_1_1pseudoarray_abe9db8ae9f0aa06d9bdfa36addc45102}
+
+
+Performs a binary search for an element if possible, returns -\/1 if not found. 
+
+This method is for const arrays and so cannot call \hyperlink{classirr_1_1core_1_1pseudoarray_a7e98df807c706fe41de8e3ab3253287e}{sort()}, if the array is not sorted then linear\+\_\+search will be used instead. Potentially very slow! 
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to search for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position of the searched element if it was found, otherwise -\/1 is returned. 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!binary\+\_\+search@{binary\+\_\+search}}
+\index{binary\+\_\+search@{binary\+\_\+search}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{binary\+\_\+search(const T \&element, s32 left, s32 right) const }{binary\_search(const T \&element, s32 left, s32 right) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf s32} {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::binary\+\_\+search (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element, }
+\item[{{\bf s32}}]{left, }
+\item[{{\bf s32}}]{right}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_a06fa9de8befb5ce24e6e3c86692fdf72}{}\label{classirr_1_1core_1_1pseudoarray_a06fa9de8befb5ce24e6e3c86692fdf72}
+
+
+Performs a binary search for an element, returns -\/1 if not found. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to search for. \\
+\hline
+{\em left} & First left index \\
+\hline
+{\em right} & Last right index. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position of the searched element if it was found, otherwise -\/1 is returned. 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!binary\+\_\+search\+\_\+multi@{binary\+\_\+search\+\_\+multi}}
+\index{binary\+\_\+search\+\_\+multi@{binary\+\_\+search\+\_\+multi}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{binary\+\_\+search\+\_\+multi(const T \&element, s32 \&last)}{binary\_search\_multi(const T \&element, s32 \&last)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf s32} {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::binary\+\_\+search\+\_\+multi (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element, }
+\item[{{\bf s32} \&}]{last}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_a5c0fc3ea4723e044e48b1479513a9014}{}\label{classirr_1_1core_1_1pseudoarray_a5c0fc3ea4723e044e48b1479513a9014}
+Performs a binary search for an element, returns -\/1 if not found. it is used for searching a multiset The array will be sorted before the binary search if it is not already sorted. 
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to search for. \\
+\hline
+{\em \&last} & return last\+Index of equal elements \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position of the first searched element if it was found, otherwise -\/1 is returned. 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!const\+\_\+pointer@{const\+\_\+pointer}}
+\index{const\+\_\+pointer@{const\+\_\+pointer}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{const\+\_\+pointer() const }{const\_pointer() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ const T$\ast$ {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::const\+\_\+pointer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_aafe9d7b336b821a604dd4563ab47225b}{}\label{classirr_1_1core_1_1pseudoarray_aafe9d7b336b821a604dd4563ab47225b}
+
+
+Gets a const pointer to the array. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the array. 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!empty@{empty}}
+\index{empty@{empty}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{empty() const }{empty() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ bool {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::empty (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_aa5ccbee4785125805d83f3b12bc10336}{}\label{classirr_1_1core_1_1pseudoarray_aa5ccbee4785125805d83f3b12bc10336}
+
+
+Check if array is empty. 
+
+\begin{DoxyReturn}{Returns}
+True if the array is empty false if not. 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!erase@{erase}}
+\index{erase@{erase}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{erase(u32 index)}{erase(u32 index)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::erase (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{index}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_a90ba03bacae91dff41b49e18d63022c4}{}\label{classirr_1_1core_1_1pseudoarray_a90ba03bacae91dff41b49e18d63022c4}
+
+
+Erases an element from the array. 
+
+May be slow, because all elements following after the erased element have to be copied. 
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of element to be erased. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!erase@{erase}}
+\index{erase@{erase}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{erase(u32 index, s32 count)}{erase(u32 index, s32 count)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::erase (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{index, }
+\item[{{\bf s32}}]{count}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_a42d70917aca97eba691c8468f78e8ba4}{}\label{classirr_1_1core_1_1pseudoarray_a42d70917aca97eba691c8468f78e8ba4}
+
+
+Erases some elements from the array. 
+
+May be slow, because all elements following after the erased element have to be copied. 
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the first element to be erased. \\
+\hline
+{\em count} & Amount of elements to be erased. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!insert@{insert}}
+\index{insert@{insert}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{insert(const T \&element, u32 index=0)}{insert(const T \&element, u32 index=0)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::insert (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element, }
+\item[{{\bf u32}}]{index = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_a170e5bbb017e369f2bc35312c36bcd5d}{}\label{classirr_1_1core_1_1pseudoarray_a170e5bbb017e369f2bc35312c36bcd5d}
+
+
+Insert item into array at specified position. 
+
+Please use this only if you know what you are doing (possible performance loss). The preferred method of adding elements should be \hyperlink{classirr_1_1core_1_1pseudoarray_a64254a230836a5cf6ebc68917333613e}{push\+\_\+back()}. 
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to be inserted \\
+\hline
+{\em index} & Where position to insert the new element. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!linear\+\_\+reverse\+\_\+search@{linear\+\_\+reverse\+\_\+search}}
+\index{linear\+\_\+reverse\+\_\+search@{linear\+\_\+reverse\+\_\+search}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{linear\+\_\+reverse\+\_\+search(const T \&element) const }{linear\_reverse\_search(const T \&element) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf s32} {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::linear\+\_\+reverse\+\_\+search (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_a04c85c2d9932d53c0c9efbeae53e1d59}{}\label{classirr_1_1core_1_1pseudoarray_a04c85c2d9932d53c0c9efbeae53e1d59}
+
+
+Finds an element in linear time, which is very slow. 
+
+Use binary\+\_\+search for faster finding. Only works if ==operator is implemented. 
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to search for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position of the searched element if it was found, otherwise -\/1 is returned. 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!linear\+\_\+search@{linear\+\_\+search}}
+\index{linear\+\_\+search@{linear\+\_\+search}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{linear\+\_\+search(const T \&element) const }{linear\_search(const T \&element) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf s32} {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::linear\+\_\+search (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_a3ad731721c59cc25dfaf9619c5acb087}{}\label{classirr_1_1core_1_1pseudoarray_a3ad731721c59cc25dfaf9619c5acb087}
+
+
+Finds an element in linear time, which is very slow. 
+
+Use binary\+\_\+search for faster finding. Only works if ==operator is implemented. 
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to search for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position of the searched element if it was found, otherwise -\/1 is returned. 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!pointer@{pointer}}
+\index{pointer@{pointer}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{pointer()}{pointer()}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ T$\ast$ {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::pointer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_afe861bbf5267706cf4e08e4da448a4ad}{}\label{classirr_1_1core_1_1pseudoarray_afe861bbf5267706cf4e08e4da448a4ad}
+
+
+Gets a pointer to the array. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the array. 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!push\+\_\+back@{push\+\_\+back}}
+\index{push\+\_\+back@{push\+\_\+back}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{push\+\_\+back(const T \&element)}{push\_back(const T \&element)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::push\+\_\+back (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_a64254a230836a5cf6ebc68917333613e}{}\label{classirr_1_1core_1_1pseudoarray_a64254a230836a5cf6ebc68917333613e}
+
+
+Adds an element at back of array. 
+
+If the array is too small to add this new element it is made bigger. 
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to add at the back of the array. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!push\+\_\+front@{push\+\_\+front}}
+\index{push\+\_\+front@{push\+\_\+front}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{push\+\_\+front(const T \&element)}{push\_front(const T \&element)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::push\+\_\+front (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{element}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_a0971acf89d90a44dc0b668ba5a8fda80}{}\label{classirr_1_1core_1_1pseudoarray_a0971acf89d90a44dc0b668ba5a8fda80}
+
+
+Adds an element at the front of the array. 
+
+If the array is to small to add this new element, the array is made bigger. Please note that this is slow, because the whole array needs to be copied for this. 
+\begin{DoxyParams}{Parameters}
+{\em element} & Element to add at the back of the array. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!set\+\_\+used@{set\+\_\+used}}
+\index{set\+\_\+used@{set\+\_\+used}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{set\+\_\+used(u32 used\+Now)}{set\_used(u32 usedNow)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::set\+\_\+used (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{used\+Now}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_ace4c1c83d532b76111e72d499fc10083}{}\label{classirr_1_1core_1_1pseudoarray_ace4c1c83d532b76111e72d499fc10083}
+
+
+Sets the size of the array and allocates new elements if necessary. 
+
+Please note\+: This is only secure when using it with simple types, because no default constructor will be called for the added elements. 
+\begin{DoxyParams}{Parameters}
+{\em used\+Now} & Amount of elements now used. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!size@{size}}
+\index{size@{size}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{size() const }{size() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf u32} {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::size (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_ab28729f59bf9e55e413a38f697014a1c}{}\label{classirr_1_1core_1_1pseudoarray_ab28729f59bf9e55e413a38f697014a1c}
+
+
+Get number of occupied elements of the array. 
+
+\begin{DoxyReturn}{Returns}
+Size of elements in the array which are actually occupied. 
+\end{DoxyReturn}
+\index{irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}!sort@{sort}}
+\index{sort@{sort}!irr\+::core\+::pseudoarray@{irr\+::core\+::pseudoarray}}
+\subsubsection[{\texorpdfstring{sort()}{sort()}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::pseudoarray}$<$ T $>$\+::sort (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1pseudoarray_a7e98df807c706fe41de8e3ab3253287e}{}\label{classirr_1_1core_1_1pseudoarray_a7e98df807c706fe41de8e3ab3253287e}
+
+
+Sorts the array using heapsort. 
+
+There is no additional memory waste and the algorithm performs O(n$\ast$log n) in worst case. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/irr\+Array.\+h\end{DoxyCompactItemize}

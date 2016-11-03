@@ -1,0 +1,94 @@
+\hypertarget{structirr_1_1video_1_1SExposedVideoData}{}\section{irr\+:\+:video\+:\+:S\+Exposed\+Video\+Data Struct Reference}
+\label{structirr_1_1video_1_1SExposedVideoData}\index{irr\+::video\+::\+S\+Exposed\+Video\+Data@{irr\+::video\+::\+S\+Exposed\+Video\+Data}}
+
+
+structure for holding data describing a driver and operating system specific data.  
+
+
+
+
+{\ttfamily \#include $<$S\+Exposed\+Video\+Data.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries S\+Exposed\+Video\+Data} (void $\ast$Window)\hypertarget{structirr_1_1video_1_1SExposedVideoData_ae9ee41d892eea320bbd5dc1f76230d6b}{}\label{structirr_1_1video_1_1SExposedVideoData_ae9ee41d892eea320bbd5dc1f76230d6b}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>struct \{\\
+\>\>IDirect3D9 $\ast$ \hyperlink{structirr_1_1video_1_1SExposedVideoData_a67c07a7b5197dcbcdbc5b952f9c24251}{D3D9}\\
+\>\>\>{\em Pointer to the IDirect3D9 interface. }\\
+\>\>IDirect3DDevice9 $\ast$ \hyperlink{structirr_1_1video_1_1SExposedVideoData_acb2bcad132f9aa57278a1c61df5cdf3c}{D3DDev9}\\
+\>\>\>{\em Pointer to the IDirect3DDevice9 interface. }\\
+\>\>void $\ast$ \hyperlink{structirr_1_1video_1_1SExposedVideoData_a1811289f08d71ca61b6b88b765753b88}{HWnd}\\
+\>\>\>{\em Window handle. }\\
+\>\} {\bfseries D3D9}\\
+\>struct \{\\
+\>\>IDirect3D8 $\ast$ \hyperlink{structirr_1_1video_1_1SExposedVideoData_a4af55cc4ac6d5d15371d1399d57284c8}{D3D8}\\
+\>\>\>{\em Pointer to the IDirect3D8 interface. }\\
+\>\>IDirect3DDevice8 $\ast$ \hyperlink{structirr_1_1video_1_1SExposedVideoData_ae7b1a142e2f4ce4ad67cbd0073d4ec1d}{D3DDev8}\\
+\>\>\>{\em Pointer to the IDirect3DDevice8 interface. }\\
+\>\>void $\ast$ \hyperlink{structirr_1_1video_1_1SExposedVideoData_a1811289f08d71ca61b6b88b765753b88}{HWnd}\\
+\>\>\>{\em Window handle. }\\
+\>\} {\bfseries D3D8}\\
+\>struct \{\\
+\>\>void $\ast$ \hyperlink{structirr_1_1video_1_1SExposedVideoData_ad7c4d919a8c0e17ee46577fcc69fe8e6}{HDc}\\
+\>\>\>{\em Private GDI Device Context. }\\
+\>\>void $\ast$ \hyperlink{structirr_1_1video_1_1SExposedVideoData_a02e3cb39affd68c68e0d2e416f078e13}{HRc}\\
+\>\>\>{\em Permanent Rendering Context. }\\
+\>\>void $\ast$ \hyperlink{structirr_1_1video_1_1SExposedVideoData_a1811289f08d71ca61b6b88b765753b88}{HWnd}\\
+\>\>\>{\em Window handle. }\\
+\>\} {\bfseries OpenGLWin32}\\
+\>struct \{\\
+\>\>void $\ast$ {\bfseries X11Display}\\
+\>\>void $\ast$ {\bfseries X11Context}\\
+\>\>unsigned long {\bfseries X11Window}\\
+\>\} {\bfseries OpenGLLinux}\\
+\}; \hypertarget{structirr_1_1video_1_1SExposedVideoData_a97c833015b9f592d474a146f2d055d7c}{}\label{structirr_1_1video_1_1SExposedVideoData_a97c833015b9f592d474a146f2d055d7c}
+\\
+
+\end{tabbing}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+structure for holding data describing a driver and operating system specific data. 
+
+This data can be retrived by \hyperlink{classirr_1_1video_1_1IVideoDriver_a4f3535b2125e654e2e9645745e50cc49}{I\+Video\+Driver\+::get\+Exposed\+Video\+Data()}. Use this with caution. This only should be used to make it possible to extend the engine easily without modification of its source. Note that this structure does not contain any valid data, if you are using the software or the null device. 
+
+\subsection{Member Data Documentation}
+\index{irr\+::video\+::\+S\+Exposed\+Video\+Data@{irr\+::video\+::\+S\+Exposed\+Video\+Data}!H\+Dc@{H\+Dc}}
+\index{H\+Dc@{H\+Dc}!irr\+::video\+::\+S\+Exposed\+Video\+Data@{irr\+::video\+::\+S\+Exposed\+Video\+Data}}
+\subsubsection[{\texorpdfstring{H\+Dc}{HDc}}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ irr\+::video\+::\+S\+Exposed\+Video\+Data\+::\+H\+Dc}\hypertarget{structirr_1_1video_1_1SExposedVideoData_ad7c4d919a8c0e17ee46577fcc69fe8e6}{}\label{structirr_1_1video_1_1SExposedVideoData_ad7c4d919a8c0e17ee46577fcc69fe8e6}
+
+
+Private G\+DI Device Context. 
+
+Get if for example with\+: H\+DC h = reinterpret\+\_\+cast$<$\+H\+D\+C$>$(exposed\+Data.\+Open\+G\+L\+Win32.\+H\+Dc) \index{irr\+::video\+::\+S\+Exposed\+Video\+Data@{irr\+::video\+::\+S\+Exposed\+Video\+Data}!H\+Rc@{H\+Rc}}
+\index{H\+Rc@{H\+Rc}!irr\+::video\+::\+S\+Exposed\+Video\+Data@{irr\+::video\+::\+S\+Exposed\+Video\+Data}}
+\subsubsection[{\texorpdfstring{H\+Rc}{HRc}}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ irr\+::video\+::\+S\+Exposed\+Video\+Data\+::\+H\+Rc}\hypertarget{structirr_1_1video_1_1SExposedVideoData_a02e3cb39affd68c68e0d2e416f078e13}{}\label{structirr_1_1video_1_1SExposedVideoData_a02e3cb39affd68c68e0d2e416f078e13}
+
+
+Permanent Rendering Context. 
+
+Get if for example with\+: H\+G\+L\+RC h = reinterpret\+\_\+cast$<$\+H\+G\+L\+R\+C$>$(exposed\+Data.\+Open\+G\+L\+Win32.\+H\+Rc) \index{irr\+::video\+::\+S\+Exposed\+Video\+Data@{irr\+::video\+::\+S\+Exposed\+Video\+Data}!H\+Wnd@{H\+Wnd}}
+\index{H\+Wnd@{H\+Wnd}!irr\+::video\+::\+S\+Exposed\+Video\+Data@{irr\+::video\+::\+S\+Exposed\+Video\+Data}}
+\subsubsection[{\texorpdfstring{H\+Wnd}{HWnd}}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ irr\+::video\+::\+S\+Exposed\+Video\+Data\+::\+H\+Wnd}\hypertarget{structirr_1_1video_1_1SExposedVideoData_a1811289f08d71ca61b6b88b765753b88}{}\label{structirr_1_1video_1_1SExposedVideoData_a1811289f08d71ca61b6b88b765753b88}
+
+
+Window handle. 
+
+Get with for example H\+W\+ND h = reinterpret\+\_\+cast$<$\+H\+W\+N\+D$>$(exposed\+Data.\+D3\+D9.\+H\+Wnd)
+
+Get with for example with\+: H\+W\+ND h = reinterpret\+\_\+cast$<$\+H\+W\+N\+D$>$(exposed\+Data.\+D3\+D8.\+H\+Wnd)
+
+Get with for example with\+: H\+W\+ND h = reinterpret\+\_\+cast$<$\+H\+W\+N\+D$>$(exposed\+Data.\+Open\+G\+L\+Win32.\+H\+Wnd) 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/S\+Exposed\+Video\+Data.\+h\end{DoxyCompactItemize}

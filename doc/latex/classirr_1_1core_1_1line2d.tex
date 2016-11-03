@@ -1,0 +1,271 @@
+\hypertarget{classirr_1_1core_1_1line2d}{}\section{irr\+:\+:core\+:\+:line2d$<$ T $>$ Class Template Reference}
+\label{classirr_1_1core_1_1line2d}\index{irr\+::core\+::line2d$<$ T $>$@{irr\+::core\+::line2d$<$ T $>$}}
+
+
+2D line between two points with intersection methods.  
+
+
+
+
+{\ttfamily \#include $<$line2d.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1core_1_1line2d_a7d0f25f93572eb73734da83da8490410}{line2d} ()\hypertarget{classirr_1_1core_1_1line2d_a7d0f25f93572eb73734da83da8490410}{}\label{classirr_1_1core_1_1line2d_a7d0f25f93572eb73734da83da8490410}
+
+\begin{DoxyCompactList}\small\item\em Default constructor for line going from (0,0) to (1,1). \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1line2d_af9614350cdb0527c190dcf3342ecb42e}{line2d} (T xa, T ya, T xb, T yb)\hypertarget{classirr_1_1core_1_1line2d_af9614350cdb0527c190dcf3342ecb42e}{}\label{classirr_1_1core_1_1line2d_af9614350cdb0527c190dcf3342ecb42e}
+
+\begin{DoxyCompactList}\small\item\em Constructor for line between the two points. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1line2d_a2e0935715c84712f48eeb492f689d5b0}{line2d} (const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&start\+\_\+in, const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&end\+\_\+in)\hypertarget{classirr_1_1core_1_1line2d_a2e0935715c84712f48eeb492f689d5b0}{}\label{classirr_1_1core_1_1line2d_a2e0935715c84712f48eeb492f689d5b0}
+
+\begin{DoxyCompactList}\small\item\em Constructor for line between the two points given as vectors. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1line2d_a19338e17d69fa3062709ebd7b7f73409}{line2d} (const \hyperlink{classirr_1_1core_1_1line2d}{line2d}$<$ T $>$ \&other)\hypertarget{classirr_1_1core_1_1line2d_a19338e17d69fa3062709ebd7b7f73409}{}\label{classirr_1_1core_1_1line2d_a19338e17d69fa3062709ebd7b7f73409}
+
+\begin{DoxyCompactList}\small\item\em Copy constructor. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1line2d}{line2d}$<$ T $>$ {\bfseries operator+} (const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&point) const \hypertarget{classirr_1_1core_1_1line2d_a51af9b8fe28dd6b86ecdec1a4bb0b33b}{}\label{classirr_1_1core_1_1line2d_a51af9b8fe28dd6b86ecdec1a4bb0b33b}
+
+\item 
+\hyperlink{classirr_1_1core_1_1line2d}{line2d}$<$ T $>$ \& {\bfseries operator+=} (const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&point)\hypertarget{classirr_1_1core_1_1line2d_a65cf466904a15dd61311c1381e05cf8a}{}\label{classirr_1_1core_1_1line2d_a65cf466904a15dd61311c1381e05cf8a}
+
+\item 
+\hyperlink{classirr_1_1core_1_1line2d}{line2d}$<$ T $>$ {\bfseries operator-\/} (const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&point) const \hypertarget{classirr_1_1core_1_1line2d_adf2a36aae4b47529e5675386dec27e2e}{}\label{classirr_1_1core_1_1line2d_adf2a36aae4b47529e5675386dec27e2e}
+
+\item 
+\hyperlink{classirr_1_1core_1_1line2d}{line2d}$<$ T $>$ \& {\bfseries operator-\/=} (const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&point)\hypertarget{classirr_1_1core_1_1line2d_a57edf657caac2f4c15ae8201fcef0e84}{}\label{classirr_1_1core_1_1line2d_a57edf657caac2f4c15ae8201fcef0e84}
+
+\item 
+bool {\bfseries operator==} (const \hyperlink{classirr_1_1core_1_1line2d}{line2d}$<$ T $>$ \&other) const \hypertarget{classirr_1_1core_1_1line2d_afe1f119e95b91aafedab58c5019bdd1c}{}\label{classirr_1_1core_1_1line2d_afe1f119e95b91aafedab58c5019bdd1c}
+
+\item 
+bool {\bfseries operator!=} (const \hyperlink{classirr_1_1core_1_1line2d}{line2d}$<$ T $>$ \&other) const \hypertarget{classirr_1_1core_1_1line2d_a6b11d575a1e248c2928ababb81638e87}{}\label{classirr_1_1core_1_1line2d_a6b11d575a1e248c2928ababb81638e87}
+
+\item 
+void \hyperlink{classirr_1_1core_1_1line2d_a65224228a0681a6be6f2576fb0093a12}{set\+Line} (const T \&xa, const T \&ya, const T \&xb, const T \&yb)\hypertarget{classirr_1_1core_1_1line2d_a65224228a0681a6be6f2576fb0093a12}{}\label{classirr_1_1core_1_1line2d_a65224228a0681a6be6f2576fb0093a12}
+
+\begin{DoxyCompactList}\small\item\em Set this line to new line going through the two points. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1line2d_a2573eb6b41d08ae4ab16be2630168d3b}{set\+Line} (const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&nstart, const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&nend)\hypertarget{classirr_1_1core_1_1line2d_a2573eb6b41d08ae4ab16be2630168d3b}{}\label{classirr_1_1core_1_1line2d_a2573eb6b41d08ae4ab16be2630168d3b}
+
+\begin{DoxyCompactList}\small\item\em Set this line to new line going through the two points. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1line2d_af7a159fc82aff5dcab173fcd24934df1}{set\+Line} (const \hyperlink{classirr_1_1core_1_1line2d}{line2d}$<$ T $>$ \&line)\hypertarget{classirr_1_1core_1_1line2d_af7a159fc82aff5dcab173fcd24934df1}{}\label{classirr_1_1core_1_1line2d_af7a159fc82aff5dcab173fcd24934df1}
+
+\begin{DoxyCompactList}\small\item\em Set this line to new line given as parameter. \end{DoxyCompactList}\item 
+T \hyperlink{classirr_1_1core_1_1line2d_a2eb306d0e3db94712ece741bfadbfa55}{get\+Length} () const 
+\begin{DoxyCompactList}\small\item\em Get length of line. \end{DoxyCompactList}\item 
+T \hyperlink{classirr_1_1core_1_1line2d_abd4c50d417c8d91401ff4bc59902ab35}{get\+Length\+SQ} () const 
+\begin{DoxyCompactList}\small\item\em Get squared length of the line. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \hyperlink{classirr_1_1core_1_1line2d_a83b583161e402d93a2346a2dfbbd885c}{get\+Middle} () const 
+\begin{DoxyCompactList}\small\item\em Get middle of the line. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \hyperlink{classirr_1_1core_1_1line2d_af6df3035ac8f217f86106ea88cc2e941}{get\+Vector} () const 
+\begin{DoxyCompactList}\small\item\em Get the vector of the line. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1line2d_a3ebdfe2b5dd3de6da61d7cb3030662e8}{intersect\+With} (const \hyperlink{classirr_1_1core_1_1line2d}{line2d}$<$ T $>$ \&l, \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&out, bool check\+Only\+Segments=true) const 
+\begin{DoxyCompactList}\small\item\em Tests if this line intersects with another line. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \hyperlink{classirr_1_1core_1_1line2d_aa504bac64b0ccd56786d6179809ecdd9}{get\+Unit\+Vector} () const 
+\begin{DoxyCompactList}\small\item\em Get unit vector of the line. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a1325b02603ad449f92c68fc640af9b28}{f64} \hyperlink{classirr_1_1core_1_1line2d_a0f5dbd437c10e127d2797dd002ed3f98}{get\+Angle\+With} (const \hyperlink{classirr_1_1core_1_1line2d}{line2d}$<$ T $>$ \&l) const 
+\begin{DoxyCompactList}\small\item\em Get angle between this line and given line. \end{DoxyCompactList}\item 
+T \hyperlink{classirr_1_1core_1_1line2d_ae9c006816863a6ec0e0eda497bc2ba96}{get\+Point\+Orientation} (const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&point) const 
+\begin{DoxyCompactList}\small\item\em Tells us if the given point lies to the left, right, or on the line. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1line2d_ad30c08c673c12674d29a942b657b9457}{is\+Point\+On\+Line} (const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&point) const 
+\begin{DoxyCompactList}\small\item\em Check if the given point is a member of the line. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1line2d_a44e00a0ecc9604954f7b5507a3b1e067}{is\+Point\+Between\+Start\+And\+End} (const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&point) const 
+\begin{DoxyCompactList}\small\item\em Check if the given point is between start and end of the line. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \hyperlink{classirr_1_1core_1_1line2d_acf6060494506a97e09052e661f1b6014}{get\+Closest\+Point} (const \hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \&point, bool check\+Only\+Segments=true) const 
+\begin{DoxyCompactList}\small\item\em Get the closest point on this line to a point. \end{DoxyCompactList}\item 
+{\footnotesize template$<$$>$ }\\\hyperlink{namespaceirr_1_1core_a2cf08556d77f6f5a792973a6e27ed11b}{vector2df} {\bfseries get\+Closest\+Point} (const \hyperlink{namespaceirr_1_1core_a2cf08556d77f6f5a792973a6e27ed11b}{vector2df} \&point, bool check\+Only\+Segments) const\hypertarget{classirr_1_1core_1_1line2d_a8768141176461ebf0f49d64182108e6e}{}\label{classirr_1_1core_1_1line2d_a8768141176461ebf0f49d64182108e6e}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \hyperlink{classirr_1_1core_1_1line2d_ae9a3be281b33b15eb7de868b51651ad8}{start}\hypertarget{classirr_1_1core_1_1line2d_ae9a3be281b33b15eb7de868b51651ad8}{}\label{classirr_1_1core_1_1line2d_ae9a3be281b33b15eb7de868b51651ad8}
+
+\begin{DoxyCompactList}\small\item\em Start point of the line. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vector2d}{vector2d}$<$ T $>$ \hyperlink{classirr_1_1core_1_1line2d_a339c443c3be2c006ac2f616a773f2863}{end}\hypertarget{classirr_1_1core_1_1line2d_a339c443c3be2c006ac2f616a773f2863}{}\label{classirr_1_1core_1_1line2d_a339c443c3be2c006ac2f616a773f2863}
+
+\begin{DoxyCompactList}\small\item\em End point of the line. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\\*
+class irr\+::core\+::line2d$<$ T $>$}
+
+2D line between two points with intersection methods. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!get\+Angle\+With@{get\+Angle\+With}}
+\index{get\+Angle\+With@{get\+Angle\+With}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{get\+Angle\+With(const line2d$<$ T $>$ \&l) const }{getAngleWith(const line2d< T > \&l) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf f64} {\bf irr\+::core\+::line2d}$<$ T $>$\+::get\+Angle\+With (
+\begin{DoxyParamCaption}
+\item[{const {\bf line2d}$<$ T $>$ \&}]{l}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_a0f5dbd437c10e127d2797dd002ed3f98}{}\label{classirr_1_1core_1_1line2d_a0f5dbd437c10e127d2797dd002ed3f98}
+
+
+Get angle between this line and given line. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em l} & Other line for test. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Angle in degrees. 
+\end{DoxyReturn}
+\index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!get\+Closest\+Point@{get\+Closest\+Point}}
+\index{get\+Closest\+Point@{get\+Closest\+Point}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{get\+Closest\+Point(const vector2d$<$ T $>$ \&point, bool check\+Only\+Segments=true) const }{getClosestPoint(const vector2d< T > \&point, bool checkOnlySegments=true) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf vector2d}$<$T$>$ {\bf irr\+::core\+::line2d}$<$ T $>$\+::get\+Closest\+Point (
+\begin{DoxyParamCaption}
+\item[{const {\bf vector2d}$<$ T $>$ \&}]{point, }
+\item[{bool}]{check\+Only\+Segments = {\ttfamily true}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_acf6060494506a97e09052e661f1b6014}{}\label{classirr_1_1core_1_1line2d_acf6060494506a97e09052e661f1b6014}
+
+
+Get the closest point on this line to a point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em check\+Only\+Segments} & Default (true) is to return a point on the line-\/segment (between begin and end) of the line. When set to false the function will check for the first the closest point on the the line even when outside the segment. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!get\+Length@{get\+Length}}
+\index{get\+Length@{get\+Length}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{get\+Length() const }{getLength() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ T {\bf irr\+::core\+::line2d}$<$ T $>$\+::get\+Length (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_a2eb306d0e3db94712ece741bfadbfa55}{}\label{classirr_1_1core_1_1line2d_a2eb306d0e3db94712ece741bfadbfa55}
+
+
+Get length of line. 
+
+\begin{DoxyReturn}{Returns}
+Length of the line. 
+\end{DoxyReturn}
+\index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!get\+Length\+SQ@{get\+Length\+SQ}}
+\index{get\+Length\+SQ@{get\+Length\+SQ}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{get\+Length\+S\+Q() const }{getLengthSQ() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ T {\bf irr\+::core\+::line2d}$<$ T $>$\+::get\+Length\+SQ (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_abd4c50d417c8d91401ff4bc59902ab35}{}\label{classirr_1_1core_1_1line2d_abd4c50d417c8d91401ff4bc59902ab35}
+
+
+Get squared length of the line. 
+
+\begin{DoxyReturn}{Returns}
+Squared length of line. 
+\end{DoxyReturn}
+\index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!get\+Middle@{get\+Middle}}
+\index{get\+Middle@{get\+Middle}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{get\+Middle() const }{getMiddle() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf vector2d}$<$T$>$ {\bf irr\+::core\+::line2d}$<$ T $>$\+::get\+Middle (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_a83b583161e402d93a2346a2dfbbd885c}{}\label{classirr_1_1core_1_1line2d_a83b583161e402d93a2346a2dfbbd885c}
+
+
+Get middle of the line. 
+
+\begin{DoxyReturn}{Returns}
+center of the line. 
+\end{DoxyReturn}
+\index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!get\+Point\+Orientation@{get\+Point\+Orientation}}
+\index{get\+Point\+Orientation@{get\+Point\+Orientation}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{get\+Point\+Orientation(const vector2d$<$ T $>$ \&point) const }{getPointOrientation(const vector2d< T > \&point) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ T {\bf irr\+::core\+::line2d}$<$ T $>$\+::get\+Point\+Orientation (
+\begin{DoxyParamCaption}
+\item[{const {\bf vector2d}$<$ T $>$ \&}]{point}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_ae9c006816863a6ec0e0eda497bc2ba96}{}\label{classirr_1_1core_1_1line2d_ae9c006816863a6ec0e0eda497bc2ba96}
+
+
+Tells us if the given point lies to the left, right, or on the line. 
+
+\begin{DoxyReturn}{Returns}
+0 if the point is on the line $<$0 if to the left, or $>$0 if to the right. 
+\end{DoxyReturn}
+\index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!get\+Unit\+Vector@{get\+Unit\+Vector}}
+\index{get\+Unit\+Vector@{get\+Unit\+Vector}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{get\+Unit\+Vector() const }{getUnitVector() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf vector2d}$<$T$>$ {\bf irr\+::core\+::line2d}$<$ T $>$\+::get\+Unit\+Vector (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_aa504bac64b0ccd56786d6179809ecdd9}{}\label{classirr_1_1core_1_1line2d_aa504bac64b0ccd56786d6179809ecdd9}
+
+
+Get unit vector of the line. 
+
+\begin{DoxyReturn}{Returns}
+Unit vector of this line. 
+\end{DoxyReturn}
+\index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!get\+Vector@{get\+Vector}}
+\index{get\+Vector@{get\+Vector}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{get\+Vector() const }{getVector() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf vector2d}$<$T$>$ {\bf irr\+::core\+::line2d}$<$ T $>$\+::get\+Vector (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_af6df3035ac8f217f86106ea88cc2e941}{}\label{classirr_1_1core_1_1line2d_af6df3035ac8f217f86106ea88cc2e941}
+
+
+Get the vector of the line. 
+
+\begin{DoxyReturn}{Returns}
+The vector of the line. 
+\end{DoxyReturn}
+\index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!intersect\+With@{intersect\+With}}
+\index{intersect\+With@{intersect\+With}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{intersect\+With(const line2d$<$ T $>$ \&l, vector2d$<$ T $>$ \&out, bool check\+Only\+Segments=true) const }{intersectWith(const line2d< T > \&l, vector2d< T > \&out, bool checkOnlySegments=true) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ bool {\bf irr\+::core\+::line2d}$<$ T $>$\+::intersect\+With (
+\begin{DoxyParamCaption}
+\item[{const {\bf line2d}$<$ T $>$ \&}]{l, }
+\item[{{\bf vector2d}$<$ T $>$ \&}]{out, }
+\item[{bool}]{check\+Only\+Segments = {\ttfamily true}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_a3ebdfe2b5dd3de6da61d7cb3030662e8}{}\label{classirr_1_1core_1_1line2d_a3ebdfe2b5dd3de6da61d7cb3030662e8}
+
+
+Tests if this line intersects with another line. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em l} & Other line to test intersection with. \\
+\hline
+{\em check\+Only\+Segments} & Default is to check intersection between the begin and endpoints. When set to false the function will check for the first intersection point when extending the lines. \\
+\hline
+{\em out} & If there is an intersection, the location of the intersection will be stored in this vector. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if there is an intersection, false if not. 
+\end{DoxyReturn}
+\index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!is\+Point\+Between\+Start\+And\+End@{is\+Point\+Between\+Start\+And\+End}}
+\index{is\+Point\+Between\+Start\+And\+End@{is\+Point\+Between\+Start\+And\+End}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{is\+Point\+Between\+Start\+And\+End(const vector2d$<$ T $>$ \&point) const }{isPointBetweenStartAndEnd(const vector2d< T > \&point) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ bool {\bf irr\+::core\+::line2d}$<$ T $>$\+::is\+Point\+Between\+Start\+And\+End (
+\begin{DoxyParamCaption}
+\item[{const {\bf vector2d}$<$ T $>$ \&}]{point}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_a44e00a0ecc9604954f7b5507a3b1e067}{}\label{classirr_1_1core_1_1line2d_a44e00a0ecc9604954f7b5507a3b1e067}
+
+
+Check if the given point is between start and end of the line. 
+
+Assumes that the point is already somewhere on the line. \index{irr\+::core\+::line2d@{irr\+::core\+::line2d}!is\+Point\+On\+Line@{is\+Point\+On\+Line}}
+\index{is\+Point\+On\+Line@{is\+Point\+On\+Line}!irr\+::core\+::line2d@{irr\+::core\+::line2d}}
+\subsubsection[{\texorpdfstring{is\+Point\+On\+Line(const vector2d$<$ T $>$ \&point) const }{isPointOnLine(const vector2d< T > \&point) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ bool {\bf irr\+::core\+::line2d}$<$ T $>$\+::is\+Point\+On\+Line (
+\begin{DoxyParamCaption}
+\item[{const {\bf vector2d}$<$ T $>$ \&}]{point}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1line2d_ad30c08c673c12674d29a942b657b9457}{}\label{classirr_1_1core_1_1line2d_ad30c08c673c12674d29a942b657b9457}
+
+
+Check if the given point is a member of the line. 
+
+\begin{DoxyReturn}{Returns}
+True if point is between start and end, else false. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/line2d.\+h\end{DoxyCompactItemize}

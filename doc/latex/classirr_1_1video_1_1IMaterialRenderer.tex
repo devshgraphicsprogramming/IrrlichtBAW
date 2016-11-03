@@ -1,0 +1,126 @@
+\hypertarget{classirr_1_1video_1_1IMaterialRenderer}{}\section{irr\+:\+:video\+:\+:I\+Material\+Renderer Class Reference}
+\label{classirr_1_1video_1_1IMaterialRenderer}\index{irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}}
+
+
+Interface for material rendering.  
+
+
+
+
+{\ttfamily \#include $<$I\+Material\+Renderer.\+h$>$}
+
+Inheritance diagram for irr\+:\+:video\+:\+:I\+Material\+Renderer\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classirr_1_1video_1_1IMaterialRenderer}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{classirr_1_1video_1_1IMaterialRenderer_aeaffc03c1b9feb40cd01469726b287e3}{On\+Set\+Material} (const \hyperlink{classirr_1_1video_1_1SMaterial}{S\+Material} \&material, const \hyperlink{classirr_1_1video_1_1SMaterial}{S\+Material} \&last\+Material, bool reset\+All\+Renderstates, \hyperlink{classirr_1_1video_1_1IMaterialRendererServices}{I\+Material\+Renderer\+Services} $\ast$services)
+\begin{DoxyCompactList}\small\item\em Called by the \hyperlink{classirr_1_1video_1_1IVideoDriver}{I\+Video\+Driver} implementation the let the renderer set its needed render states. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1video_1_1IMaterialRenderer_acdb3d562cbb7a7d7d83f8cc231ee0421}{On\+Render} (\hyperlink{classirr_1_1video_1_1IMaterialRendererServices}{I\+Material\+Renderer\+Services} $\ast$service)
+\begin{DoxyCompactList}\small\item\em Called every time before a new bunch of geometry is being drawn using this material with for example draw\+Indexed\+Triangle\+List() call. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1video_1_1IMaterialRenderer_a694b1285671853cb151c03100fd01c73}{On\+Unset\+Material} ()
+\begin{DoxyCompactList}\small\item\em Called by the \hyperlink{classirr_1_1video_1_1IVideoDriver}{I\+Video\+Driver} to unset this material. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1video_1_1IMaterialRenderer_a31ba4c2c50b85327d328cb9e7b1764bd}{is\+Transparent} () const 
+\begin{DoxyCompactList}\small\item\em Returns if the material is transparent. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} \hyperlink{classirr_1_1video_1_1IMaterialRenderer_a8ccaf22f84f26a718559d3c97f7cb550}{get\+Render\+Capability} () const 
+\begin{DoxyCompactList}\small\item\em Returns the render capability of the material. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Interface for material rendering. 
+
+Can be used to extend the engine with new materials. Refer to \hyperlink{classirr_1_1video_1_1IVideoDriver_a0dfc3a7168f3a73a6f4323b579f03ff6}{I\+Video\+Driver\+::add\+Material\+Renderer()} for more informations on how to extend the engine with new materials. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}!get\+Render\+Capability@{get\+Render\+Capability}}
+\index{get\+Render\+Capability@{get\+Render\+Capability}!irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}}
+\subsubsection[{\texorpdfstring{get\+Render\+Capability() const }{getRenderCapability() const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf s32} irr\+::video\+::\+I\+Material\+Renderer\+::get\+Render\+Capability (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1video_1_1IMaterialRenderer_a8ccaf22f84f26a718559d3c97f7cb550}{}\label{classirr_1_1video_1_1IMaterialRenderer_a8ccaf22f84f26a718559d3c97f7cb550}
+
+
+Returns the render capability of the material. 
+
+Because some more complex materials are implemented in multiple ways and need special hardware capabilities, it is possible to query how the current material renderer is performing on the current hardware with this function. \begin{DoxyReturn}{Returns}
+Returns 0 if everything is running fine. Any other value is material renderer specific and means for example that the renderer switched back to a fall back material because it cannot use the latest shaders. More specific examples\+: Fixed function pipeline materials should return 0 in most cases, parallax mapped material will only return 0 when at least pixel shader 1.\+4 is available on that machine. 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}!is\+Transparent@{is\+Transparent}}
+\index{is\+Transparent@{is\+Transparent}!irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}}
+\subsubsection[{\texorpdfstring{is\+Transparent() const }{isTransparent() const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::video\+::\+I\+Material\+Renderer\+::is\+Transparent (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1video_1_1IMaterialRenderer_a31ba4c2c50b85327d328cb9e7b1764bd}{}\label{classirr_1_1video_1_1IMaterialRenderer_a31ba4c2c50b85327d328cb9e7b1764bd}
+
+
+Returns if the material is transparent. 
+
+The scene managment needs to know this for being able to sort the materials by opaque and transparent. \index{irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}!On\+Render@{On\+Render}}
+\index{On\+Render@{On\+Render}!irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}}
+\subsubsection[{\texorpdfstring{On\+Render(\+I\+Material\+Renderer\+Services $\ast$service)}{OnRender(IMaterialRendererServices *service)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::video\+::\+I\+Material\+Renderer\+::\+On\+Render (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Material\+Renderer\+Services} $\ast$}]{service}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1video_1_1IMaterialRenderer_acdb3d562cbb7a7d7d83f8cc231ee0421}{}\label{classirr_1_1video_1_1IMaterialRenderer_acdb3d562cbb7a7d7d83f8cc231ee0421}
+
+
+Called every time before a new bunch of geometry is being drawn using this material with for example draw\+Indexed\+Triangle\+List() call. 
+
+On\+Set\+Material should normally only be called if the renderer decides that the renderstates should be changed, it won\textquotesingle{}t be called if for example two draw\+Indexed\+Triangle\+List() will be called with the same material set. This method will be called every time. This is useful for example for materials with shaders, which don\textquotesingle{}t only set new renderstates but also shader constants. 
+\begin{DoxyParams}{Parameters}
+{\em service} & Pointer to interface providing methos for setting constants and other things. \\
+\hline
+{\em vtxtype} & Vertex type with which the next rendering will be done. This can be used by the material renderer to set some specific optimized shaders or if this is an incompatible vertex type for this renderer, to refuse rendering for example. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if everything is ok, and false if nothing should be rendered. The material renderer can choose to return false for example if he doesn\textquotesingle{}t support the specified vertex type. This is actually done in D3\+D8 and D3\+D9 when using a normal mapped material with a vertex type other than E\+V\+T\+\_\+\+T\+A\+N\+G\+E\+N\+TS. 
+\end{DoxyReturn}
+\index{irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}!On\+Set\+Material@{On\+Set\+Material}}
+\index{On\+Set\+Material@{On\+Set\+Material}!irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}}
+\subsubsection[{\texorpdfstring{On\+Set\+Material(const S\+Material \&material, const S\+Material \&last\+Material, bool reset\+All\+Renderstates, I\+Material\+Renderer\+Services $\ast$services)}{OnSetMaterial(const SMaterial \&material, const SMaterial \&lastMaterial, bool resetAllRenderstates, IMaterialRendererServices *services)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::video\+::\+I\+Material\+Renderer\+::\+On\+Set\+Material (
+\begin{DoxyParamCaption}
+\item[{const {\bf S\+Material} \&}]{material, }
+\item[{const {\bf S\+Material} \&}]{last\+Material, }
+\item[{bool}]{reset\+All\+Renderstates, }
+\item[{{\bf I\+Material\+Renderer\+Services} $\ast$}]{services}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1video_1_1IMaterialRenderer_aeaffc03c1b9feb40cd01469726b287e3}{}\label{classirr_1_1video_1_1IMaterialRenderer_aeaffc03c1b9feb40cd01469726b287e3}
+
+
+Called by the \hyperlink{classirr_1_1video_1_1IVideoDriver}{I\+Video\+Driver} implementation the let the renderer set its needed render states. 
+
+This is called during the \hyperlink{classirr_1_1video_1_1IVideoDriver_a8c9e31b41b7e6fd26cf65ce538ebab05}{I\+Video\+Driver\+::set\+Material()} call. When overriding this, you can set some renderstates or for example a vertex or pixel shader if you like. 
+\begin{DoxyParams}{Parameters}
+{\em material} & The new material parameters to be set. The renderer may change the material flags in this material. For example if this material does not accept the zbuffer = true, it can set it to false. This is useful, because in the next last\+Material will be just the material in this call. \\
+\hline
+{\em last\+Material} & The material parameters which have been set before this material. \\
+\hline
+{\em reset\+All\+Renderstates} & True if all renderstates should really be reset. This is usually true if the last rendering mode was not a usual 3d rendering mode, but for example a 2d rendering mode. You should reset really all renderstates if this is true, no matter if the last\+Material had some similar settings. This is used because in most cases, some common renderstates are not changed if they are already there, for example bilinear filtering, wireframe, gouraudshading, lighting, zbuffer, zwriteenable, backfaceculling and fogenable. \\
+\hline
+{\em services} & Interface providing some methods for changing advanced, internal states of a \hyperlink{classirr_1_1video_1_1IVideoDriver}{I\+Video\+Driver}. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}!On\+Unset\+Material@{On\+Unset\+Material}}
+\index{On\+Unset\+Material@{On\+Unset\+Material}!irr\+::video\+::\+I\+Material\+Renderer@{irr\+::video\+::\+I\+Material\+Renderer}}
+\subsubsection[{\texorpdfstring{On\+Unset\+Material()}{OnUnsetMaterial()}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::video\+::\+I\+Material\+Renderer\+::\+On\+Unset\+Material (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1video_1_1IMaterialRenderer_a694b1285671853cb151c03100fd01c73}{}\label{classirr_1_1video_1_1IMaterialRenderer_a694b1285671853cb151c03100fd01c73}
+
+
+Called by the \hyperlink{classirr_1_1video_1_1IVideoDriver}{I\+Video\+Driver} to unset this material. 
+
+Called during the \hyperlink{classirr_1_1video_1_1IVideoDriver_a8c9e31b41b7e6fd26cf65ce538ebab05}{I\+Video\+Driver\+::set\+Material()} call before the new material will get the \hyperlink{classirr_1_1video_1_1IMaterialRenderer_aeaffc03c1b9feb40cd01469726b287e3}{On\+Set\+Material()} call. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Material\+Renderer.\+h\end{DoxyCompactItemize}

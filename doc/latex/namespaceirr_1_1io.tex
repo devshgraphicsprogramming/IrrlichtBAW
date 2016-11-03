@@ -1,0 +1,453 @@
+\hypertarget{namespaceirr_1_1io}{}\section{irr\+:\+:io Namespace Reference}
+\label{namespaceirr_1_1io}\index{irr\+::io@{irr\+::io}}
+
+
+This namespace provides interfaces for input/output\+: Reading and writing files, accessing zip archives, xml files, ...  
+
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classirr_1_1io_1_1IArchiveLoader}{I\+Archive\+Loader}
+\begin{DoxyCompactList}\small\item\em Class which is able to create an archive from a file. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1io_1_1IFileArchive}{I\+File\+Archive}
+\begin{DoxyCompactList}\small\item\em The File\+Archive manages archives and provides access to files inside them. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1io_1_1IFileList}{I\+File\+List}
+\begin{DoxyCompactList}\small\item\em Provides a list of files and folders. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1io_1_1IFileReadCallBack}{I\+File\+Read\+Call\+Back}
+\begin{DoxyCompactList}\small\item\em Callback class for file read abstraction. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1io_1_1IFileSystem}{I\+File\+System}
+\begin{DoxyCompactList}\small\item\em The File\+System manages files and archives and provides access to them. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader}
+\begin{DoxyCompactList}\small\item\em Interface providing easy read access to a X\+ML file. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1io_1_1IReadFile}{I\+Read\+File}
+\begin{DoxyCompactList}\small\item\em Interface providing read acess to a file. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1io_1_1IWriteFile}{I\+Write\+File}
+\begin{DoxyCompactList}\small\item\em Interface providing write access to a file. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1io_1_1IXMLBase}{I\+X\+M\+L\+Base}
+\begin{DoxyCompactList}\small\item\em Empty class to be used as parent class for Irr\+X\+M\+L\+Reader. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1io_1_1IXMLWriter}{I\+X\+M\+L\+Writer}
+\begin{DoxyCompactList}\small\item\em Interface providing methods for making it easier to write X\+ML files. \end{DoxyCompactList}\item 
+struct \hyperlink{structirr_1_1io_1_1SNamedPath}{S\+Named\+Path}
+\begin{DoxyCompactList}\small\item\em Used in places where we identify objects by a filename, but don\textquotesingle{}t actually work with the real filename. \end{DoxyCompactList}\item 
+struct \hyperlink{structirr_1_1io_1_1xmlChar}{xml\+Char}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef \hyperlink{structirr_1_1io_1_1xmlChar}{xml\+Char}$<$ unsigned short $>$ \hyperlink{namespaceirr_1_1io_a9140fe380f1a4e2fb4e114463e2d2838}{char16}
+\begin{DoxyCompactList}\small\item\em defines the utf-\/16 type. \end{DoxyCompactList}\item 
+typedef \hyperlink{structirr_1_1io_1_1xmlChar}{xml\+Char}$<$ unsigned int $>$ \hyperlink{namespaceirr_1_1io_adfbb5748d02235670728f95ab89b69a4}{char32}
+\begin{DoxyCompactList}\small\item\em defines the utf-\/32 type. \end{DoxyCompactList}\item 
+typedef \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader}$<$ char, \hyperlink{classirr_1_1io_1_1IXMLBase}{I\+X\+M\+L\+Base} $>$ \hyperlink{namespaceirr_1_1io_a1628edbb9d5d53f18c82d2a92b0ad27e}{Irr\+X\+M\+L\+Reader}
+\begin{DoxyCompactList}\small\item\em A U\+T\+F-\/8 or A\+S\+C\+II character xml parser. \end{DoxyCompactList}\item 
+typedef \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader}$<$ \hyperlink{namespaceirr_1_1io_a9140fe380f1a4e2fb4e114463e2d2838}{char16}, \hyperlink{classirr_1_1io_1_1IXMLBase}{I\+X\+M\+L\+Base} $>$ \hyperlink{namespaceirr_1_1io_a5eb4094dfd0d509e0cd8a9d1dd30a5b9}{Irr\+X\+M\+L\+Reader\+U\+T\+F16}
+\begin{DoxyCompactList}\small\item\em A U\+T\+F-\/16 xml parser. \end{DoxyCompactList}\item 
+typedef \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader}$<$ \hyperlink{namespaceirr_1_1io_adfbb5748d02235670728f95ab89b69a4}{char32}, \hyperlink{classirr_1_1io_1_1IXMLBase}{I\+X\+M\+L\+Base} $>$ \hyperlink{namespaceirr_1_1io_a70f411ff403636fb5c4e9becb090d5ec}{Irr\+X\+M\+L\+Reader\+U\+T\+F32}
+\begin{DoxyCompactList}\small\item\em A U\+T\+F-\/32 xml parser. \end{DoxyCompactList}\item 
+typedef \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader}$<$ wchar\+\_\+t, \hyperlink{classirr_1_1IReferenceCounted}{I\+Reference\+Counted} $>$ \hyperlink{namespaceirr_1_1io_a9dc6291fb7e4c73155a3e3c8339f9bff}{I\+X\+M\+L\+Reader}
+\begin{DoxyCompactList}\small\item\em An xml reader for wide characters, derived from \hyperlink{classirr_1_1IReferenceCounted}{I\+Reference\+Counted}. \end{DoxyCompactList}\item 
+typedef \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader}$<$ \hyperlink{namespaceirr_a9395eaea339bcb546b319e9c96bf7410}{c8}, \hyperlink{classirr_1_1IReferenceCounted}{I\+Reference\+Counted} $>$ \hyperlink{namespaceirr_1_1io_a2dedc8156931082e6b147b562195e310}{I\+X\+M\+L\+Reader\+U\+T\+F8}
+\begin{DoxyCompactList}\small\item\em An xml reader for A\+S\+C\+II or U\+T\+F-\/8 characters, derived from \hyperlink{classirr_1_1IReferenceCounted}{I\+Reference\+Counted}. \end{DoxyCompactList}\item 
+typedef \hyperlink{classirr_1_1core_1_1string}{core\+::string}$<$ \hyperlink{namespaceirr_a813cca9bac9fa0c1427d89720a451460}{fschar\+\_\+t} $>$ \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{path}
+\begin{DoxyCompactList}\small\item\em Type used for all file system related strings. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{namespaceirr_1_1io_a22364f1caf06442a70f6198025af3fe9}{E\+File\+System\+Type} \{ {\bfseries F\+I\+L\+E\+S\+Y\+S\+T\+E\+M\+\_\+\+N\+A\+T\+I\+VE} = 0, 
+{\bfseries F\+I\+L\+E\+S\+Y\+S\+T\+E\+M\+\_\+\+V\+I\+R\+T\+U\+AL}
+ \}\hypertarget{namespaceirr_1_1io_a22364f1caf06442a70f6198025af3fe9}{}\label{namespaceirr_1_1io_a22364f1caf06442a70f6198025af3fe9}
+\begin{DoxyCompactList}\small\item\em File\+System\+Type\+: which Filesystem should be used for e.\+g. browsing. \end{DoxyCompactList}
+\item 
+enum \hyperlink{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14f}{E\+\_\+\+F\+I\+L\+E\+\_\+\+A\+R\+C\+H\+I\+V\+E\+\_\+\+T\+Y\+PE} \{ \\*
+\hyperlink{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa63010a52f2efb42f3c85b91ecf077004}{E\+F\+A\+T\+\_\+\+Z\+IP} = M\+A\+K\+E\+\_\+\+I\+R\+R\+\_\+\+ID(\textquotesingle{}Z\textquotesingle{},\textquotesingle{}I\textquotesingle{},\textquotesingle{}P\textquotesingle{}, 0), 
+\hyperlink{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa9d37ff1b229bb63f52d29ef65a35b6ce}{E\+F\+A\+T\+\_\+\+G\+Z\+IP} = M\+A\+K\+E\+\_\+\+I\+R\+R\+\_\+\+ID(\textquotesingle{}g\textquotesingle{},\textquotesingle{}z\textquotesingle{},\textquotesingle{}i\textquotesingle{},\textquotesingle{}p\textquotesingle{}), 
+\hyperlink{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa1d1f159095f087da5647835b47cd85d4}{E\+F\+A\+T\+\_\+\+F\+O\+L\+D\+ER} = M\+A\+K\+E\+\_\+\+I\+R\+R\+\_\+\+ID(\textquotesingle{}f\textquotesingle{},\textquotesingle{}l\textquotesingle{},\textquotesingle{}d\textquotesingle{},\textquotesingle{}r\textquotesingle{}), 
+\hyperlink{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14faae9e1788acfc49c30a77f80f5ced7cf5}{E\+F\+A\+T\+\_\+\+P\+AK} = M\+A\+K\+E\+\_\+\+I\+R\+R\+\_\+\+ID(\textquotesingle{}P\textquotesingle{},\textquotesingle{}A\textquotesingle{},\textquotesingle{}K\textquotesingle{}, 0), 
+\\*
+\hyperlink{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fafcb0e1222939f010af78f15556f4fe07}{E\+F\+A\+T\+\_\+\+N\+PK} = M\+A\+K\+E\+\_\+\+I\+R\+R\+\_\+\+ID(\textquotesingle{}N\textquotesingle{},\textquotesingle{}P\textquotesingle{},\textquotesingle{}K\textquotesingle{}, 0), 
+\hyperlink{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa0f36ce25d47b45f41a58e32b4c029cb6}{E\+F\+A\+T\+\_\+\+T\+AR} = M\+A\+K\+E\+\_\+\+I\+R\+R\+\_\+\+ID(\textquotesingle{}T\textquotesingle{},\textquotesingle{}A\textquotesingle{},\textquotesingle{}R\textquotesingle{}, 0), 
+\hyperlink{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa58895648160db47291c12b7ade47f68c}{E\+F\+A\+T\+\_\+\+W\+AD} = M\+A\+K\+E\+\_\+\+I\+R\+R\+\_\+\+ID(\textquotesingle{}W\textquotesingle{},\textquotesingle{}A\textquotesingle{},\textquotesingle{}D\textquotesingle{}, 0), 
+\hyperlink{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa2c2aea9bc955ae4e0d29071ba66ff8dc}{E\+F\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN} = M\+A\+K\+E\+\_\+\+I\+R\+R\+\_\+\+ID(\textquotesingle{}u\textquotesingle{},\textquotesingle{}n\textquotesingle{},\textquotesingle{}k\textquotesingle{},\textquotesingle{}n\textquotesingle{})
+ \}\begin{DoxyCompactList}\small\item\em Contains the different types of archives. \end{DoxyCompactList}
+\item 
+enum \hyperlink{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9d}{E\+T\+E\+X\+T\+\_\+\+F\+O\+R\+M\+AT} \{ \\*
+\hyperlink{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9daa83b76584091bdef7401e2e7c27837bf}{E\+T\+F\+\_\+\+A\+S\+C\+II}, 
+\hyperlink{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9dae9766ce8a50bc70e144a7b0cc96ba8db}{E\+T\+F\+\_\+\+U\+T\+F8}, 
+\hyperlink{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9da5c0685f21f600ba0acdd84bae458ee5c}{E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+BE}, 
+\hyperlink{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9da331a03a8d3459ad9a05d31dee38a8a73}{E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+LE}, 
+\\*
+\hyperlink{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9daa550dbb5ed61125ff6a12a9a50e4e7b1}{E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+BE}, 
+\hyperlink{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9da122cd8cec108b4e5a4040f1a9bcc6709}{E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+LE}
+ \}\begin{DoxyCompactList}\small\item\em Enumeration of all supported source text file formats. \end{DoxyCompactList}
+\item 
+enum \hyperlink{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33ed}{E\+X\+M\+L\+\_\+\+N\+O\+DE} \{ \\*
+\hyperlink{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edaa7f8e643a481d9c8b75a25499f40235c}{E\+X\+N\+\_\+\+N\+O\+NE}, 
+\hyperlink{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33eda9df4f5baccc23a0ad1f6fa64d8de2fc0}{E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+NT}, 
+\hyperlink{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33eda54ef1997279f08180634f4a897f771b8}{E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+N\+T\+\_\+\+E\+ND}, 
+\hyperlink{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33eda0edf973f8ca0f6097f69369539d432a4}{E\+X\+N\+\_\+\+T\+E\+XT}, 
+\\*
+\hyperlink{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edadc47ef6b25afabf76ff3acea8fea2680}{E\+X\+N\+\_\+\+C\+O\+M\+M\+E\+NT}, 
+\hyperlink{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edaabb26cfe097fadf64c45db0f76523ac6}{E\+X\+N\+\_\+\+C\+D\+A\+TA}, 
+\hyperlink{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edaf80bf58165975de0e7a7c28882906865}{E\+X\+N\+\_\+\+U\+N\+K\+N\+O\+WN}
+ \}\begin{DoxyCompactList}\small\item\em Enumeration for all xml nodes which are parsed by Irr\+X\+M\+L\+Reader. \end{DoxyCompactList}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1io_1_1IReadFile}{I\+Read\+File} $\ast$ \hyperlink{namespaceirr_1_1io_a16ff593e91ead74120ac459c4fe97bcf}{create\+Read\+File} (const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&file\+Name)\hypertarget{namespaceirr_1_1io_a16ff593e91ead74120ac459c4fe97bcf}{}\label{namespaceirr_1_1io_a16ff593e91ead74120ac459c4fe97bcf}
+
+\begin{DoxyCompactList}\small\item\em Internal function, please do not use. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1io_1_1IReadFile}{I\+Read\+File} $\ast$ \hyperlink{namespaceirr_1_1io_aaffde8ef59ed98d4606a342caddca8e1}{create\+Limit\+Read\+File} (const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&file\+Name, \hyperlink{classirr_1_1io_1_1IReadFile}{I\+Read\+File} $\ast$already\+Opened\+File, long pos, long area\+Size)\hypertarget{namespaceirr_1_1io_aaffde8ef59ed98d4606a342caddca8e1}{}\label{namespaceirr_1_1io_aaffde8ef59ed98d4606a342caddca8e1}
+
+\begin{DoxyCompactList}\small\item\em Internal function, please do not use. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1io_1_1IReadFile}{I\+Read\+File} $\ast$ \hyperlink{namespaceirr_1_1io_ab30f7cd10d675fa7da0a936a7bd67d4a}{create\+Memory\+Read\+File} (void $\ast$memory, long size, const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&file\+Name, bool delete\+Memory\+When\+Dropped)\hypertarget{namespaceirr_1_1io_ab30f7cd10d675fa7da0a936a7bd67d4a}{}\label{namespaceirr_1_1io_ab30f7cd10d675fa7da0a936a7bd67d4a}
+
+\begin{DoxyCompactList}\small\item\em Internal function, please do not use. \end{DoxyCompactList}\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{namespaceirr_1_1io_a1628edbb9d5d53f18c82d2a92b0ad27e}{Irr\+X\+M\+L\+Reader} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_1_1io_a581f4d4648398759c61266d63d7106b1}{create\+Irr\+X\+M\+L\+Reader} (const char $\ast$filename)
+\begin{DoxyCompactList}\small\item\em Creates an instance of an U\+F\+T-\/8 or A\+S\+C\+II character xml parser. \end{DoxyCompactList}\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{namespaceirr_1_1io_a1628edbb9d5d53f18c82d2a92b0ad27e}{Irr\+X\+M\+L\+Reader} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_1_1io_a9c0ebca5a4addfcfd90f51b5131f7d56}{create\+Irr\+X\+M\+L\+Reader} (F\+I\+LE $\ast$file)
+\begin{DoxyCompactList}\small\item\em Creates an instance of an U\+F\+T-\/8 or A\+S\+C\+II character xml parser. \end{DoxyCompactList}\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{namespaceirr_1_1io_a1628edbb9d5d53f18c82d2a92b0ad27e}{Irr\+X\+M\+L\+Reader} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_1_1io_af853ea962be4432c2d9a50cc7d303fe5}{create\+Irr\+X\+M\+L\+Reader} (\hyperlink{classirr_1_1io_1_1IFileReadCallBack}{I\+File\+Read\+Call\+Back} $\ast$callback, bool delete\+Callback=false)
+\begin{DoxyCompactList}\small\item\em Creates an instance of an U\+F\+T-\/8 or A\+S\+C\+II character xml parser. \end{DoxyCompactList}\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{namespaceirr_1_1io_a5eb4094dfd0d509e0cd8a9d1dd30a5b9}{Irr\+X\+M\+L\+Reader\+U\+T\+F16} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_1_1io_a86473ef152c15b685af181a4c5461a5d}{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16} (const char $\ast$filename)
+\begin{DoxyCompactList}\small\item\em Creates an instance of an U\+F\+T-\/16 xml parser. \end{DoxyCompactList}\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{namespaceirr_1_1io_a5eb4094dfd0d509e0cd8a9d1dd30a5b9}{Irr\+X\+M\+L\+Reader\+U\+T\+F16} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_1_1io_a7e7ecf8350b446da3a4080f3949bc0b1}{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16} (F\+I\+LE $\ast$file)
+\begin{DoxyCompactList}\small\item\em Creates an instance of an U\+F\+T-\/16 xml parser. \end{DoxyCompactList}\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{namespaceirr_1_1io_a5eb4094dfd0d509e0cd8a9d1dd30a5b9}{Irr\+X\+M\+L\+Reader\+U\+T\+F16} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_1_1io_a9248bcaf5d5f394d7926c28bfc479d6c}{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16} (\hyperlink{classirr_1_1io_1_1IFileReadCallBack}{I\+File\+Read\+Call\+Back} $\ast$callback, bool delete\+Callback=false)
+\begin{DoxyCompactList}\small\item\em Creates an instance of an U\+F\+T-\/16 xml parser. \end{DoxyCompactList}\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{namespaceirr_1_1io_a70f411ff403636fb5c4e9becb090d5ec}{Irr\+X\+M\+L\+Reader\+U\+T\+F32} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_1_1io_ae05bf7ee342431ea8c98fb98e75b974a}{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32} (const char $\ast$filename)
+\begin{DoxyCompactList}\small\item\em Creates an instance of an U\+F\+T-\/32 xml parser. \end{DoxyCompactList}\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{namespaceirr_1_1io_a70f411ff403636fb5c4e9becb090d5ec}{Irr\+X\+M\+L\+Reader\+U\+T\+F32} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_1_1io_a4ea88dd2598272cff85357611a5e5938}{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32} (F\+I\+LE $\ast$file)
+\begin{DoxyCompactList}\small\item\em Creates an instance of an U\+F\+T-\/32 xml parser. \end{DoxyCompactList}\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{namespaceirr_1_1io_a70f411ff403636fb5c4e9becb090d5ec}{Irr\+X\+M\+L\+Reader\+U\+T\+F32} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_1_1io_a0f6ab4835641471a523c485c8d229eb2}{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32} (\hyperlink{classirr_1_1io_1_1IFileReadCallBack}{I\+File\+Read\+Call\+Back} $\ast$callback, bool delete\+Callback=false)
+\begin{DoxyCompactList}\small\item\em Creates an instance of an U\+F\+T-\/32 xml parser. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1io_1_1IWriteFile}{I\+Write\+File} $\ast$ \hyperlink{namespaceirr_1_1io_a5dec825b7f68ec19b252c9502ef501ec}{create\+Write\+File} (const \hyperlink{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{io\+::path} \&file\+Name, bool append)\hypertarget{namespaceirr_1_1io_a5dec825b7f68ec19b252c9502ef501ec}{}\label{namespaceirr_1_1io_a5dec825b7f68ec19b252c9502ef501ec}
+
+\begin{DoxyCompactList}\small\item\em Internal function, please do not use. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This namespace provides interfaces for input/output\+: Reading and writing files, accessing zip archives, xml files, ... 
+
+\subsection{Typedef Documentation}
+\index{irr\+::io@{irr\+::io}!char16@{char16}}
+\index{char16@{char16}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{char16}{char16}}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf xml\+Char}$<$unsigned short$>$ {\bf irr\+::io\+::char16}}\hypertarget{namespaceirr_1_1io_a9140fe380f1a4e2fb4e114463e2d2838}{}\label{namespaceirr_1_1io_a9140fe380f1a4e2fb4e114463e2d2838}
+
+
+defines the utf-\/16 type. 
+
+Not using wchar\+\_\+t for this because wchar\+\_\+t has 16 bit on windows and 32 bit on other operating systems. \index{irr\+::io@{irr\+::io}!char32@{char32}}
+\index{char32@{char32}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{char32}{char32}}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf xml\+Char}$<$unsigned int$>$ {\bf irr\+::io\+::char32}}\hypertarget{namespaceirr_1_1io_adfbb5748d02235670728f95ab89b69a4}{}\label{namespaceirr_1_1io_adfbb5748d02235670728f95ab89b69a4}
+
+
+defines the utf-\/32 type. 
+
+Not using wchar\+\_\+t for this because wchar\+\_\+t has 16 bit on windows and 32 bit on other operating systems. \index{irr\+::io@{irr\+::io}!Irr\+X\+M\+L\+Reader@{Irr\+X\+M\+L\+Reader}}
+\index{Irr\+X\+M\+L\+Reader@{Irr\+X\+M\+L\+Reader}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{Irr\+X\+M\+L\+Reader}{IrrXMLReader}}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf I\+Irr\+X\+M\+L\+Reader}$<$char, {\bf I\+X\+M\+L\+Base}$>$ {\bf irr\+::io\+::\+Irr\+X\+M\+L\+Reader}}\hypertarget{namespaceirr_1_1io_a1628edbb9d5d53f18c82d2a92b0ad27e}{}\label{namespaceirr_1_1io_a1628edbb9d5d53f18c82d2a92b0ad27e}
+
+
+A U\+T\+F-\/8 or A\+S\+C\+II character xml parser. 
+
+This means that all character data will be returned in 8 bit A\+S\+C\+II or U\+T\+F-\/8 by this parser. The file to read can be in any format, it will be converted to U\+T\+F-\/8 if it is not in this format. Create an instance of this with \hyperlink{namespaceirr_1_1io_a581f4d4648398759c61266d63d7106b1}{create\+Irr\+X\+M\+L\+Reader()}; See \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader} for description on how to use it. \index{irr\+::io@{irr\+::io}!Irr\+X\+M\+L\+Reader\+U\+T\+F16@{Irr\+X\+M\+L\+Reader\+U\+T\+F16}}
+\index{Irr\+X\+M\+L\+Reader\+U\+T\+F16@{Irr\+X\+M\+L\+Reader\+U\+T\+F16}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{Irr\+X\+M\+L\+Reader\+U\+T\+F16}{IrrXMLReaderUTF16}}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf I\+Irr\+X\+M\+L\+Reader}$<${\bf char16}, {\bf I\+X\+M\+L\+Base}$>$ {\bf irr\+::io\+::\+Irr\+X\+M\+L\+Reader\+U\+T\+F16}}\hypertarget{namespaceirr_1_1io_a5eb4094dfd0d509e0cd8a9d1dd30a5b9}{}\label{namespaceirr_1_1io_a5eb4094dfd0d509e0cd8a9d1dd30a5b9}
+
+
+A U\+T\+F-\/16 xml parser. 
+
+This means that all character data will be returned in U\+T\+F-\/16 by this parser. The file to read can be in any format, it will be converted to U\+T\+F-\/16 if it is not in this format. Create an instance of this with \hyperlink{namespaceirr_1_1io_a86473ef152c15b685af181a4c5461a5d}{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16()}; See \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader} for description on how to use it. \index{irr\+::io@{irr\+::io}!Irr\+X\+M\+L\+Reader\+U\+T\+F32@{Irr\+X\+M\+L\+Reader\+U\+T\+F32}}
+\index{Irr\+X\+M\+L\+Reader\+U\+T\+F32@{Irr\+X\+M\+L\+Reader\+U\+T\+F32}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{Irr\+X\+M\+L\+Reader\+U\+T\+F32}{IrrXMLReaderUTF32}}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf I\+Irr\+X\+M\+L\+Reader}$<${\bf char32}, {\bf I\+X\+M\+L\+Base}$>$ {\bf irr\+::io\+::\+Irr\+X\+M\+L\+Reader\+U\+T\+F32}}\hypertarget{namespaceirr_1_1io_a70f411ff403636fb5c4e9becb090d5ec}{}\label{namespaceirr_1_1io_a70f411ff403636fb5c4e9becb090d5ec}
+
+
+A U\+T\+F-\/32 xml parser. 
+
+This means that all character data will be returned in U\+T\+F-\/32 by this parser. The file to read can be in any format, it will be converted to U\+T\+F-\/32 if it is not in this format. Create an instance of this with \hyperlink{namespaceirr_1_1io_ae05bf7ee342431ea8c98fb98e75b974a}{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32()}; See \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader} for description on how to use it. \index{irr\+::io@{irr\+::io}!I\+X\+M\+L\+Reader@{I\+X\+M\+L\+Reader}}
+\index{I\+X\+M\+L\+Reader@{I\+X\+M\+L\+Reader}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{I\+X\+M\+L\+Reader}{IXMLReader}}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf I\+Irr\+X\+M\+L\+Reader}$<$wchar\+\_\+t, {\bf I\+Reference\+Counted}$>$ {\bf irr\+::io\+::\+I\+X\+M\+L\+Reader}}\hypertarget{namespaceirr_1_1io_a9dc6291fb7e4c73155a3e3c8339f9bff}{}\label{namespaceirr_1_1io_a9dc6291fb7e4c73155a3e3c8339f9bff}
+
+
+An xml reader for wide characters, derived from \hyperlink{classirr_1_1IReferenceCounted}{I\+Reference\+Counted}. 
+
+This X\+ML Parser can read any type of text files from any source Irrlicht can read. Just call \hyperlink{classirr_1_1io_1_1IFileSystem_a167c9fa159d16ee5c56c074636b0865e}{I\+File\+System\+::create\+X\+M\+L\+Reader()}. For more informations on how to use the parser, see \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader} \index{irr\+::io@{irr\+::io}!I\+X\+M\+L\+Reader\+U\+T\+F8@{I\+X\+M\+L\+Reader\+U\+T\+F8}}
+\index{I\+X\+M\+L\+Reader\+U\+T\+F8@{I\+X\+M\+L\+Reader\+U\+T\+F8}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{I\+X\+M\+L\+Reader\+U\+T\+F8}{IXMLReaderUTF8}}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf I\+Irr\+X\+M\+L\+Reader}$<${\bf c8}, {\bf I\+Reference\+Counted}$>$ {\bf irr\+::io\+::\+I\+X\+M\+L\+Reader\+U\+T\+F8}}\hypertarget{namespaceirr_1_1io_a2dedc8156931082e6b147b562195e310}{}\label{namespaceirr_1_1io_a2dedc8156931082e6b147b562195e310}
+
+
+An xml reader for A\+S\+C\+II or U\+T\+F-\/8 characters, derived from \hyperlink{classirr_1_1IReferenceCounted}{I\+Reference\+Counted}. 
+
+This X\+ML Parser can read any type of text files from any source Irrlicht can read. Just call \hyperlink{classirr_1_1io_1_1IFileSystem_affd8f622ac7c3dcd507f20f9cd23b21f}{I\+File\+System\+::create\+X\+M\+L\+Reader\+U\+T\+F8()}. For more informations on how to use the parser, see \hyperlink{classirr_1_1io_1_1IIrrXMLReader}{I\+Irr\+X\+M\+L\+Reader} \index{irr\+::io@{irr\+::io}!path@{path}}
+\index{path@{path}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{path}{path}}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf core\+::string}$<${\bf fschar\+\_\+t}$>$ {\bf irr\+::io\+::path}}\hypertarget{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}{}\label{namespaceirr_1_1io_ab1bdc45edb3f94d8319c02bc0f840ee1}
+
+
+Type used for all file system related strings. 
+
+This type will transparently handle different file system encodings. 
+
+\subsection{Enumeration Type Documentation}
+\index{irr\+::io@{irr\+::io}!E\+\_\+\+F\+I\+L\+E\+\_\+\+A\+R\+C\+H\+I\+V\+E\+\_\+\+T\+Y\+PE@{E\+\_\+\+F\+I\+L\+E\+\_\+\+A\+R\+C\+H\+I\+V\+E\+\_\+\+T\+Y\+PE}}
+\index{E\+\_\+\+F\+I\+L\+E\+\_\+\+A\+R\+C\+H\+I\+V\+E\+\_\+\+T\+Y\+PE@{E\+\_\+\+F\+I\+L\+E\+\_\+\+A\+R\+C\+H\+I\+V\+E\+\_\+\+T\+Y\+PE}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{E\+\_\+\+F\+I\+L\+E\+\_\+\+A\+R\+C\+H\+I\+V\+E\+\_\+\+T\+Y\+PE}{E\_FILE\_ARCHIVE\_TYPE}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::io\+::\+E\+\_\+\+F\+I\+L\+E\+\_\+\+A\+R\+C\+H\+I\+V\+E\+\_\+\+T\+Y\+PE}}\hypertarget{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14f}{}\label{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14f}
+
+
+Contains the different types of archives. 
+
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{E\+F\+A\+T\+\_\+\+Z\+IP@{E\+F\+A\+T\+\_\+\+Z\+IP}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+F\+A\+T\+\_\+\+Z\+IP@{E\+F\+A\+T\+\_\+\+Z\+IP}}\item[{\em 
+E\+F\+A\+T\+\_\+\+Z\+IP\hypertarget{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa63010a52f2efb42f3c85b91ecf077004}{}\label{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa63010a52f2efb42f3c85b91ecf077004}
+}]A P\+K\+Z\+IP archive. \index{E\+F\+A\+T\+\_\+\+G\+Z\+IP@{E\+F\+A\+T\+\_\+\+G\+Z\+IP}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+F\+A\+T\+\_\+\+G\+Z\+IP@{E\+F\+A\+T\+\_\+\+G\+Z\+IP}}\item[{\em 
+E\+F\+A\+T\+\_\+\+G\+Z\+IP\hypertarget{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa9d37ff1b229bb63f52d29ef65a35b6ce}{}\label{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa9d37ff1b229bb63f52d29ef65a35b6ce}
+}]A gzip archive. \index{E\+F\+A\+T\+\_\+\+F\+O\+L\+D\+ER@{E\+F\+A\+T\+\_\+\+F\+O\+L\+D\+ER}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+F\+A\+T\+\_\+\+F\+O\+L\+D\+ER@{E\+F\+A\+T\+\_\+\+F\+O\+L\+D\+ER}}\item[{\em 
+E\+F\+A\+T\+\_\+\+F\+O\+L\+D\+ER\hypertarget{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa1d1f159095f087da5647835b47cd85d4}{}\label{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa1d1f159095f087da5647835b47cd85d4}
+}]A virtual directory. \index{E\+F\+A\+T\+\_\+\+P\+AK@{E\+F\+A\+T\+\_\+\+P\+AK}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+F\+A\+T\+\_\+\+P\+AK@{E\+F\+A\+T\+\_\+\+P\+AK}}\item[{\em 
+E\+F\+A\+T\+\_\+\+P\+AK\hypertarget{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14faae9e1788acfc49c30a77f80f5ced7cf5}{}\label{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14faae9e1788acfc49c30a77f80f5ced7cf5}
+}]An ID Software P\+AK archive. \index{E\+F\+A\+T\+\_\+\+N\+PK@{E\+F\+A\+T\+\_\+\+N\+PK}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+F\+A\+T\+\_\+\+N\+PK@{E\+F\+A\+T\+\_\+\+N\+PK}}\item[{\em 
+E\+F\+A\+T\+\_\+\+N\+PK\hypertarget{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fafcb0e1222939f010af78f15556f4fe07}{}\label{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fafcb0e1222939f010af78f15556f4fe07}
+}]A Nebula Device archive. \index{E\+F\+A\+T\+\_\+\+T\+AR@{E\+F\+A\+T\+\_\+\+T\+AR}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+F\+A\+T\+\_\+\+T\+AR@{E\+F\+A\+T\+\_\+\+T\+AR}}\item[{\em 
+E\+F\+A\+T\+\_\+\+T\+AR\hypertarget{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa0f36ce25d47b45f41a58e32b4c029cb6}{}\label{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa0f36ce25d47b45f41a58e32b4c029cb6}
+}]A Tape A\+Rchive. \index{E\+F\+A\+T\+\_\+\+W\+AD@{E\+F\+A\+T\+\_\+\+W\+AD}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+F\+A\+T\+\_\+\+W\+AD@{E\+F\+A\+T\+\_\+\+W\+AD}}\item[{\em 
+E\+F\+A\+T\+\_\+\+W\+AD\hypertarget{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa58895648160db47291c12b7ade47f68c}{}\label{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa58895648160db47291c12b7ade47f68c}
+}]A wad Archive, Quake2, Halflife. \index{E\+F\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN@{E\+F\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+F\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN@{E\+F\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN}}\item[{\em 
+E\+F\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN\hypertarget{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa2c2aea9bc955ae4e0d29071ba66ff8dc}{}\label{namespaceirr_1_1io_adb3e3c445ec8e608ed1f0f93306da14fa2c2aea9bc955ae4e0d29071ba66ff8dc}
+}]The type of this archive is unknown. \end{description}
+\end{Desc}
+\index{irr\+::io@{irr\+::io}!E\+T\+E\+X\+T\+\_\+\+F\+O\+R\+M\+AT@{E\+T\+E\+X\+T\+\_\+\+F\+O\+R\+M\+AT}}
+\index{E\+T\+E\+X\+T\+\_\+\+F\+O\+R\+M\+AT@{E\+T\+E\+X\+T\+\_\+\+F\+O\+R\+M\+AT}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{E\+T\+E\+X\+T\+\_\+\+F\+O\+R\+M\+AT}{ETEXT\_FORMAT}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::io\+::\+E\+T\+E\+X\+T\+\_\+\+F\+O\+R\+M\+AT}}\hypertarget{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9d}{}\label{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9d}
+
+
+Enumeration of all supported source text file formats. 
+
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{E\+T\+F\+\_\+\+A\+S\+C\+II@{E\+T\+F\+\_\+\+A\+S\+C\+II}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+T\+F\+\_\+\+A\+S\+C\+II@{E\+T\+F\+\_\+\+A\+S\+C\+II}}\item[{\em 
+E\+T\+F\+\_\+\+A\+S\+C\+II\hypertarget{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9daa83b76584091bdef7401e2e7c27837bf}{}\label{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9daa83b76584091bdef7401e2e7c27837bf}
+}]A\+S\+C\+II, file without byte order mark, or not a text file. \index{E\+T\+F\+\_\+\+U\+T\+F8@{E\+T\+F\+\_\+\+U\+T\+F8}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+T\+F\+\_\+\+U\+T\+F8@{E\+T\+F\+\_\+\+U\+T\+F8}}\item[{\em 
+E\+T\+F\+\_\+\+U\+T\+F8\hypertarget{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9dae9766ce8a50bc70e144a7b0cc96ba8db}{}\label{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9dae9766ce8a50bc70e144a7b0cc96ba8db}
+}]U\+T\+F-\/8 format. \index{E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+BE@{E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+BE}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+BE@{E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+BE}}\item[{\em 
+E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+BE\hypertarget{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9da5c0685f21f600ba0acdd84bae458ee5c}{}\label{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9da5c0685f21f600ba0acdd84bae458ee5c}
+}]U\+T\+F-\/16 format, big endian. \index{E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+LE@{E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+LE}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+LE@{E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+LE}}\item[{\em 
+E\+T\+F\+\_\+\+U\+T\+F16\+\_\+\+LE\hypertarget{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9da331a03a8d3459ad9a05d31dee38a8a73}{}\label{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9da331a03a8d3459ad9a05d31dee38a8a73}
+}]U\+T\+F-\/16 format, little endian. \index{E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+BE@{E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+BE}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+BE@{E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+BE}}\item[{\em 
+E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+BE\hypertarget{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9daa550dbb5ed61125ff6a12a9a50e4e7b1}{}\label{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9daa550dbb5ed61125ff6a12a9a50e4e7b1}
+}]U\+T\+F-\/32 format, big endian. \index{E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+LE@{E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+LE}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+LE@{E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+LE}}\item[{\em 
+E\+T\+F\+\_\+\+U\+T\+F32\+\_\+\+LE\hypertarget{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9da122cd8cec108b4e5a4040f1a9bcc6709}{}\label{namespaceirr_1_1io_ac7e51e5a6bd00451dec248f497b16a9da122cd8cec108b4e5a4040f1a9bcc6709}
+}]U\+T\+F-\/32 format, little endian. \end{description}
+\end{Desc}
+\index{irr\+::io@{irr\+::io}!E\+X\+M\+L\+\_\+\+N\+O\+DE@{E\+X\+M\+L\+\_\+\+N\+O\+DE}}
+\index{E\+X\+M\+L\+\_\+\+N\+O\+DE@{E\+X\+M\+L\+\_\+\+N\+O\+DE}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{E\+X\+M\+L\+\_\+\+N\+O\+DE}{EXML\_NODE}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::io\+::\+E\+X\+M\+L\+\_\+\+N\+O\+DE}}\hypertarget{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33ed}{}\label{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33ed}
+
+
+Enumeration for all xml nodes which are parsed by Irr\+X\+M\+L\+Reader. 
+
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{E\+X\+N\+\_\+\+N\+O\+NE@{E\+X\+N\+\_\+\+N\+O\+NE}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+X\+N\+\_\+\+N\+O\+NE@{E\+X\+N\+\_\+\+N\+O\+NE}}\item[{\em 
+E\+X\+N\+\_\+\+N\+O\+NE\hypertarget{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edaa7f8e643a481d9c8b75a25499f40235c}{}\label{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edaa7f8e643a481d9c8b75a25499f40235c}
+}]No xml node. This is usually the node if you did not read anything yet. \index{E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+NT@{E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+NT}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+NT@{E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+NT}}\item[{\em 
+E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+NT\hypertarget{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33eda9df4f5baccc23a0ad1f6fa64d8de2fc0}{}\label{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33eda9df4f5baccc23a0ad1f6fa64d8de2fc0}
+}]An xml element such as $<$foo$>$. \index{E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+N\+T\+\_\+\+E\+ND@{E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+N\+T\+\_\+\+E\+ND}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+N\+T\+\_\+\+E\+ND@{E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+N\+T\+\_\+\+E\+ND}}\item[{\em 
+E\+X\+N\+\_\+\+E\+L\+E\+M\+E\+N\+T\+\_\+\+E\+ND\hypertarget{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33eda54ef1997279f08180634f4a897f771b8}{}\label{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33eda54ef1997279f08180634f4a897f771b8}
+}]End of an xml element such as $<$/foo$>$. \index{E\+X\+N\+\_\+\+T\+E\+XT@{E\+X\+N\+\_\+\+T\+E\+XT}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+X\+N\+\_\+\+T\+E\+XT@{E\+X\+N\+\_\+\+T\+E\+XT}}\item[{\em 
+E\+X\+N\+\_\+\+T\+E\+XT\hypertarget{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33eda0edf973f8ca0f6097f69369539d432a4}{}\label{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33eda0edf973f8ca0f6097f69369539d432a4}
+}]Text within an xml element\+: $<$foo$>$ this is the text. $<$/foo$>$ Also text between 2 xml elements\+: $<$/foo$>$ this is the text. $<$foo$>$ \index{E\+X\+N\+\_\+\+C\+O\+M\+M\+E\+NT@{E\+X\+N\+\_\+\+C\+O\+M\+M\+E\+NT}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+X\+N\+\_\+\+C\+O\+M\+M\+E\+NT@{E\+X\+N\+\_\+\+C\+O\+M\+M\+E\+NT}}\item[{\em 
+E\+X\+N\+\_\+\+C\+O\+M\+M\+E\+NT\hypertarget{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edadc47ef6b25afabf76ff3acea8fea2680}{}\label{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edadc47ef6b25afabf76ff3acea8fea2680}
+}]An xml comment like $<$!-- I am a comment --$>$ or a D\+TD definition. \index{E\+X\+N\+\_\+\+C\+D\+A\+TA@{E\+X\+N\+\_\+\+C\+D\+A\+TA}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+X\+N\+\_\+\+C\+D\+A\+TA@{E\+X\+N\+\_\+\+C\+D\+A\+TA}}\item[{\em 
+E\+X\+N\+\_\+\+C\+D\+A\+TA\hypertarget{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edaabb26cfe097fadf64c45db0f76523ac6}{}\label{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edaabb26cfe097fadf64c45db0f76523ac6}
+}]An xml cdata section like $<$!\mbox{[}C\+D\+A\+TA\mbox{[} this is some C\+D\+A\+TA \mbox{]}\mbox{]}$>$. \index{E\+X\+N\+\_\+\+U\+N\+K\+N\+O\+WN@{E\+X\+N\+\_\+\+U\+N\+K\+N\+O\+WN}!irr\+::io@{irr\+::io}}\index{irr\+::io@{irr\+::io}!E\+X\+N\+\_\+\+U\+N\+K\+N\+O\+WN@{E\+X\+N\+\_\+\+U\+N\+K\+N\+O\+WN}}\item[{\em 
+E\+X\+N\+\_\+\+U\+N\+K\+N\+O\+WN\hypertarget{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edaf80bf58165975de0e7a7c28882906865}{}\label{namespaceirr_1_1io_a86a02676c9cbb822e04d60c81b4f33edaf80bf58165975de0e7a7c28882906865}
+}]Unknown element. \end{description}
+\end{Desc}
+
+
+\subsection{Function Documentation}
+\index{irr\+::io@{irr\+::io}!create\+Irr\+X\+M\+L\+Reader@{create\+Irr\+X\+M\+L\+Reader}}
+\index{create\+Irr\+X\+M\+L\+Reader@{create\+Irr\+X\+M\+L\+Reader}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{create\+Irr\+X\+M\+L\+Reader(const char $\ast$filename)}{createIrrXMLReader(const char *filename)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irr\+X\+M\+L\+Reader}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::io\+::create\+Irr\+X\+M\+L\+Reader (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{filename}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_1_1io_a581f4d4648398759c61266d63d7106b1}{}\label{namespaceirr_1_1io_a581f4d4648398759c61266d63d7106b1}
+
+
+Creates an instance of an U\+F\+T-\/8 or A\+S\+C\+II character xml parser. 
+
+This means that all character data will be returned in 8 bit A\+S\+C\+II or U\+T\+F-\/8. The file to read can be in any format, it will be converted to U\+T\+F-\/8 if it is not in this format. If you are using the Irrlicht Engine, it is better not to use this function but \hyperlink{classirr_1_1io_1_1IFileSystem_affd8f622ac7c3dcd507f20f9cd23b21f}{I\+File\+System\+::create\+X\+M\+L\+Reader\+U\+T\+F8()} instead. 
+\begin{DoxyParams}{Parameters}
+{\em filename} & Name of file to be opened. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to the created xml parser. This pointer should be deleted using \textquotesingle{}delete\textquotesingle{} after no longer needed. Returns 0 if an error occured and the file could not be opened. 
+\end{DoxyReturn}
+\index{irr\+::io@{irr\+::io}!create\+Irr\+X\+M\+L\+Reader@{create\+Irr\+X\+M\+L\+Reader}}
+\index{create\+Irr\+X\+M\+L\+Reader@{create\+Irr\+X\+M\+L\+Reader}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{create\+Irr\+X\+M\+L\+Reader(\+F\+I\+L\+E $\ast$file)}{createIrrXMLReader(FILE *file)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irr\+X\+M\+L\+Reader}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::io\+::create\+Irr\+X\+M\+L\+Reader (
+\begin{DoxyParamCaption}
+\item[{F\+I\+LE $\ast$}]{file}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_1_1io_a9c0ebca5a4addfcfd90f51b5131f7d56}{}\label{namespaceirr_1_1io_a9c0ebca5a4addfcfd90f51b5131f7d56}
+
+
+Creates an instance of an U\+F\+T-\/8 or A\+S\+C\+II character xml parser. 
+
+This means that all character data will be returned in 8 bit A\+S\+C\+II or U\+T\+F-\/8. The file to read can be in any format, it will be converted to U\+T\+F-\/8 if it is not in this format. If you are using the Irrlicht Engine, it is better not to use this function but \hyperlink{classirr_1_1io_1_1IFileSystem_affd8f622ac7c3dcd507f20f9cd23b21f}{I\+File\+System\+::create\+X\+M\+L\+Reader\+U\+T\+F8()} instead. 
+\begin{DoxyParams}{Parameters}
+{\em file} & Pointer to opened file, must have been opened in binary mode, e.\+g. using fopen(\char`\"{}foo.\+bar\char`\"{}, \char`\"{}wb\char`\"{}); The file will not be closed after it has been read. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to the created xml parser. This pointer should be deleted using \textquotesingle{}delete\textquotesingle{} after no longer needed. Returns 0 if an error occured and the file could not be opened. 
+\end{DoxyReturn}
+\index{irr\+::io@{irr\+::io}!create\+Irr\+X\+M\+L\+Reader@{create\+Irr\+X\+M\+L\+Reader}}
+\index{create\+Irr\+X\+M\+L\+Reader@{create\+Irr\+X\+M\+L\+Reader}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{create\+Irr\+X\+M\+L\+Reader(\+I\+File\+Read\+Call\+Back $\ast$callback, bool delete\+Callback=false)}{createIrrXMLReader(IFileReadCallBack *callback, bool deleteCallback=false)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irr\+X\+M\+L\+Reader}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::io\+::create\+Irr\+X\+M\+L\+Reader (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+File\+Read\+Call\+Back} $\ast$}]{callback, }
+\item[{bool}]{delete\+Callback = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_1_1io_af853ea962be4432c2d9a50cc7d303fe5}{}\label{namespaceirr_1_1io_af853ea962be4432c2d9a50cc7d303fe5}
+
+
+Creates an instance of an U\+F\+T-\/8 or A\+S\+C\+II character xml parser. 
+
+This means that all character data will be returned in 8 bit A\+S\+C\+II or U\+T\+F-\/8. The file to read can be in any format, it will be converted to U\+T\+F-\/8 if it is not in this format. If you are using the Irrlicht Engine, it is better not to use this function but \hyperlink{classirr_1_1io_1_1IFileSystem_affd8f622ac7c3dcd507f20f9cd23b21f}{I\+File\+System\+::create\+X\+M\+L\+Reader\+U\+T\+F8()} instead. 
+\begin{DoxyParams}{Parameters}
+{\em callback} & Callback for file read abstraction. Implement your own callback to make the xml parser read in other things than just files. See \hyperlink{classirr_1_1io_1_1IFileReadCallBack}{I\+File\+Read\+Call\+Back} for more information about this. \\
+\hline
+{\em delete\+Callback} & if true, the callback will be deleted after the file has been read. Otherwise the caller si responsible for cleaning it up. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to the created xml parser. This pointer should be deleted using \textquotesingle{}delete\textquotesingle{} after no longer needed. Returns 0 if an error occured and the file could not be opened. 
+\end{DoxyReturn}
+\index{irr\+::io@{irr\+::io}!create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16}}
+\index{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16(const char $\ast$filename)}{createIrrXMLReaderUTF16(const char *filename)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irr\+X\+M\+L\+Reader\+U\+T\+F16}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::io\+::create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16 (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{filename}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_1_1io_a86473ef152c15b685af181a4c5461a5d}{}\label{namespaceirr_1_1io_a86473ef152c15b685af181a4c5461a5d}
+
+
+Creates an instance of an U\+F\+T-\/16 xml parser. 
+
+This means that all character data will be returned in U\+T\+F-\/16. The file to read can be in any format, it will be converted to U\+T\+F-\/16 if it is not in this format. If you are using the Irrlicht Engine, it is better not to use this function but \hyperlink{classirr_1_1io_1_1IFileSystem_a167c9fa159d16ee5c56c074636b0865e}{I\+File\+System\+::create\+X\+M\+L\+Reader()} instead. 
+\begin{DoxyParams}{Parameters}
+{\em filename} & Name of file to be opened. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to the created xml parser. This pointer should be deleted using \textquotesingle{}delete\textquotesingle{} after no longer needed. Returns 0 if an error occured and the file could not be opened. 
+\end{DoxyReturn}
+\index{irr\+::io@{irr\+::io}!create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16}}
+\index{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16(\+F\+I\+L\+E $\ast$file)}{createIrrXMLReaderUTF16(FILE *file)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irr\+X\+M\+L\+Reader\+U\+T\+F16}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::io\+::create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16 (
+\begin{DoxyParamCaption}
+\item[{F\+I\+LE $\ast$}]{file}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_1_1io_a7e7ecf8350b446da3a4080f3949bc0b1}{}\label{namespaceirr_1_1io_a7e7ecf8350b446da3a4080f3949bc0b1}
+
+
+Creates an instance of an U\+F\+T-\/16 xml parser. 
+
+This means that all character data will be returned in U\+T\+F-\/16. The file to read can be in any format, it will be converted to U\+T\+F-\/16 if it is not in this format. If you are using the Irrlicht Engine, it is better not to use this function but \hyperlink{classirr_1_1io_1_1IFileSystem_a167c9fa159d16ee5c56c074636b0865e}{I\+File\+System\+::create\+X\+M\+L\+Reader()} instead. 
+\begin{DoxyParams}{Parameters}
+{\em file} & Pointer to opened file, must have been opened in binary mode, e.\+g. using fopen(\char`\"{}foo.\+bar\char`\"{}, \char`\"{}wb\char`\"{}); The file will not be closed after it has been read. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to the created xml parser. This pointer should be deleted using \textquotesingle{}delete\textquotesingle{} after no longer needed. Returns 0 if an error occured and the file could not be opened. 
+\end{DoxyReturn}
+\index{irr\+::io@{irr\+::io}!create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16}}
+\index{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16(\+I\+File\+Read\+Call\+Back $\ast$callback, bool delete\+Callback=false)}{createIrrXMLReaderUTF16(IFileReadCallBack *callback, bool deleteCallback=false)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irr\+X\+M\+L\+Reader\+U\+T\+F16}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::io\+::create\+Irr\+X\+M\+L\+Reader\+U\+T\+F16 (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+File\+Read\+Call\+Back} $\ast$}]{callback, }
+\item[{bool}]{delete\+Callback = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_1_1io_a9248bcaf5d5f394d7926c28bfc479d6c}{}\label{namespaceirr_1_1io_a9248bcaf5d5f394d7926c28bfc479d6c}
+
+
+Creates an instance of an U\+F\+T-\/16 xml parser. 
+
+This means that all character data will be returned in U\+T\+F-\/16. The file to read can be in any format, it will be converted to U\+T\+F-\/16 if it is not in this format. If you are using the Irrlicht Engine, it is better not to use this function but \hyperlink{classirr_1_1io_1_1IFileSystem_a167c9fa159d16ee5c56c074636b0865e}{I\+File\+System\+::create\+X\+M\+L\+Reader()} instead. 
+\begin{DoxyParams}{Parameters}
+{\em callback} & Callback for file read abstraction. Implement your own callback to make the xml parser read in other things than just files. See \hyperlink{classirr_1_1io_1_1IFileReadCallBack}{I\+File\+Read\+Call\+Back} for more information about this. \\
+\hline
+{\em delete\+Callback} & if true, the callback will be deleted after the file has been read. Otherwise the caller si responsible for cleaning it up. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to the created xml parser. This pointer should be deleted using \textquotesingle{}delete\textquotesingle{} after no longer needed. Returns 0 if an error occured and the file could not be opened. 
+\end{DoxyReturn}
+\index{irr\+::io@{irr\+::io}!create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32}}
+\index{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32(const char $\ast$filename)}{createIrrXMLReaderUTF32(const char *filename)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irr\+X\+M\+L\+Reader\+U\+T\+F32}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::io\+::create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32 (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{filename}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_1_1io_ae05bf7ee342431ea8c98fb98e75b974a}{}\label{namespaceirr_1_1io_ae05bf7ee342431ea8c98fb98e75b974a}
+
+
+Creates an instance of an U\+F\+T-\/32 xml parser. 
+
+This means that all character data will be returned in U\+T\+F-\/32. The file to read can be in any format, it will be converted to U\+T\+F-\/32 if it is not in this format. If you are using the Irrlicht Engine, it is better not to use this function but \hyperlink{classirr_1_1io_1_1IFileSystem_a167c9fa159d16ee5c56c074636b0865e}{I\+File\+System\+::create\+X\+M\+L\+Reader()} instead. 
+\begin{DoxyParams}{Parameters}
+{\em filename} & Name of file to be opened. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to the created xml parser. This pointer should be deleted using \textquotesingle{}delete\textquotesingle{} after no longer needed. Returns 0 if an error occured and the file could not be opened. 
+\end{DoxyReturn}
+\index{irr\+::io@{irr\+::io}!create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32}}
+\index{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32(\+F\+I\+L\+E $\ast$file)}{createIrrXMLReaderUTF32(FILE *file)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irr\+X\+M\+L\+Reader\+U\+T\+F32}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::io\+::create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32 (
+\begin{DoxyParamCaption}
+\item[{F\+I\+LE $\ast$}]{file}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_1_1io_a4ea88dd2598272cff85357611a5e5938}{}\label{namespaceirr_1_1io_a4ea88dd2598272cff85357611a5e5938}
+
+
+Creates an instance of an U\+F\+T-\/32 xml parser. 
+
+This means that all character data will be returned in U\+T\+F-\/32. The file to read can be in any format, it will be converted to U\+T\+F-\/32 if it is not in this format. if you are using the Irrlicht Engine, it is better not to use this function but \hyperlink{classirr_1_1io_1_1IFileSystem_a167c9fa159d16ee5c56c074636b0865e}{I\+File\+System\+::create\+X\+M\+L\+Reader()} instead. 
+\begin{DoxyParams}{Parameters}
+{\em file} & Pointer to opened file, must have been opened in binary mode, e.\+g. using fopen(\char`\"{}foo.\+bar\char`\"{}, \char`\"{}wb\char`\"{}); The file will not be closed after it has been read. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to the created xml parser. This pointer should be deleted using \textquotesingle{}delete\textquotesingle{} after no longer needed. Returns 0 if an error occured and the file could not be opened. 
+\end{DoxyReturn}
+\index{irr\+::io@{irr\+::io}!create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32}}
+\index{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32@{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32}!irr\+::io@{irr\+::io}}
+\subsubsection[{\texorpdfstring{create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32(\+I\+File\+Read\+Call\+Back $\ast$callback, bool delete\+Callback=false)}{createIrrXMLReaderUTF32(IFileReadCallBack *callback, bool deleteCallback=false)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irr\+X\+M\+L\+Reader\+U\+T\+F32}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::io\+::create\+Irr\+X\+M\+L\+Reader\+U\+T\+F32 (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+File\+Read\+Call\+Back} $\ast$}]{callback, }
+\item[{bool}]{delete\+Callback = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_1_1io_a0f6ab4835641471a523c485c8d229eb2}{}\label{namespaceirr_1_1io_a0f6ab4835641471a523c485c8d229eb2}
+
+
+Creates an instance of an U\+F\+T-\/32 xml parser. 
+
+This means that all character data will be returned in U\+T\+F-\/32. The file to read can be in any format, it will be converted to U\+T\+F-\/32 if it is not in this format. If you are using the Irrlicht Engine, it is better not to use this function but \hyperlink{classirr_1_1io_1_1IFileSystem_a167c9fa159d16ee5c56c074636b0865e}{I\+File\+System\+::create\+X\+M\+L\+Reader()} instead. 
+\begin{DoxyParams}{Parameters}
+{\em callback} & Callback for file read abstraction. Implement your own callback to make the xml parser read in other things than just files. See \hyperlink{classirr_1_1io_1_1IFileReadCallBack}{I\+File\+Read\+Call\+Back} for more information about this. \\
+\hline
+{\em delete\+Callback} & if true, the callback will be deleted after the file has been read. Otherwise the caller si responsible for cleaning it up. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to the created xml parser. This pointer should be deleted using \textquotesingle{}delete\textquotesingle{} after no longer needed. Returns 0 if an error occured and the file could not be opened. 
+\end{DoxyReturn}

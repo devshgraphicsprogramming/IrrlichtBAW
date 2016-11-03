@@ -1,0 +1,282 @@
+\hypertarget{classirr_1_1scene_1_1IGeometryCreator}{}\section{irr\+:\+:scene\+:\+:I\+Geometry\+Creator Class Reference}
+\label{classirr_1_1scene_1_1IGeometryCreator}\index{irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}}
+
+
+Helper class for creating geometry on the fly.  
+
+
+
+
+{\ttfamily \#include $<$I\+Geometry\+Creator.\+h$>$}
+
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Geometry\+Creator\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classirr_1_1scene_1_1IGeometryCreator}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+G\+P\+U\+Mesh} $\ast$ \hyperlink{classirr_1_1scene_1_1IGeometryCreator_a1676dd58d6bfd7546e728dd9ea5599f6}{create\+Cube\+Mesh\+G\+PU} (\hyperlink{classirr_1_1video_1_1IVideoDriver}{video\+::\+I\+Video\+Driver} $\ast$driver, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&size=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(5.f, 5.f, 5.f)) const  =0
+\begin{DoxyCompactList}\small\item\em Creates a simple cube mesh. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+C\+P\+U\+Mesh} $\ast$ {\bfseries create\+Cube\+Mesh\+C\+PU} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&size=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(5.f, 5.f, 5.f)) const  =0\hypertarget{classirr_1_1scene_1_1IGeometryCreator_aba9a44905c6b09242da0b2646feed423}{}\label{classirr_1_1scene_1_1IGeometryCreator_aba9a44905c6b09242da0b2646feed423}
+
+\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+G\+P\+U\+Mesh} $\ast$ \hyperlink{classirr_1_1scene_1_1IGeometryCreator_a687cc4dc19a40ab892d6a18cb9c6f86e}{create\+Terrain\+Mesh\+G\+PU} (\hyperlink{classirr_1_1video_1_1IImage}{video\+::\+I\+Image} $\ast$texture, \hyperlink{classirr_1_1video_1_1IImage}{video\+::\+I\+Image} $\ast$heightmap, const \hyperlink{classirr_1_1core_1_1dimension2d}{core\+::dimension2d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \&stretch\+Size, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} max\+Height, \hyperlink{classirr_1_1video_1_1IVideoDriver}{video\+::\+I\+Video\+Driver} $\ast$driver, const \hyperlink{classirr_1_1core_1_1dimension2d}{core\+::dimension2d}$<$ \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} $>$ \&default\+Vertex\+Block\+Size, bool debug\+Borders=false) const  =0
+\begin{DoxyCompactList}\small\item\em Create a terrain mesh from an image representing a heightfield. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+C\+P\+U\+Mesh} $\ast$ {\bfseries create\+Terrain\+Mesh\+C\+PU} (\hyperlink{classirr_1_1video_1_1IImage}{video\+::\+I\+Image} $\ast$texture, \hyperlink{classirr_1_1video_1_1IImage}{video\+::\+I\+Image} $\ast$heightmap, const \hyperlink{classirr_1_1core_1_1dimension2d}{core\+::dimension2d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \&stretch\+Size, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} max\+Height, \hyperlink{classirr_1_1video_1_1IVideoDriver}{video\+::\+I\+Video\+Driver} $\ast$driver, const \hyperlink{classirr_1_1core_1_1dimension2d}{core\+::dimension2d}$<$ \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} $>$ \&default\+Vertex\+Block\+Size, bool debug\+Borders=false) const  =0\hypertarget{classirr_1_1scene_1_1IGeometryCreator_a534d5cc0c557daaf3ee9160c24866ddd}{}\label{classirr_1_1scene_1_1IGeometryCreator_a534d5cc0c557daaf3ee9160c24866ddd}
+
+\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+G\+P\+U\+Mesh} $\ast$ \hyperlink{classirr_1_1scene_1_1IGeometryCreator_abca19991f6bbfbc05b64ab45c2df80c7}{create\+Arrow\+Mesh\+G\+PU} (\hyperlink{classirr_1_1video_1_1IVideoDriver}{video\+::\+I\+Video\+Driver} $\ast$driver, const \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} tesselation\+Cylinder=4, const \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} tesselation\+Cone=8, const \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} height=1.f, const \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} cylinder\+Height=0.\+6f, const f32 width\+Cylinder=0.\+05f, const f32 width\+Cone=0.\+3f, const video\+::\+S\+Color color\+Cylinder=0x\+F\+F\+F\+F\+F\+F\+F\+F, const video\+::\+S\+Color color\+Cone=0x\+F\+F\+F\+F\+F\+F\+F\+F) const  =0
+\begin{DoxyCompactList}\small\item\em Create an arrow mesh, composed of a cylinder and a cone. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+C\+P\+U\+Mesh} $\ast$ {\bfseries create\+Arrow\+Mesh\+C\+PU} (const \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} tesselation\+Cylinder=4, const \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} tesselation\+Cone=8, const \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} height=1.f, const \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} cylinder\+Height=0.\+6f, const f32 width\+Cylinder=0.\+05f, const f32 width\+Cone=0.\+3f, const video\+::\+S\+Color color\+Cylinder=0x\+F\+F\+F\+F\+F\+F\+F\+F, const video\+::\+S\+Color color\+Cone=0x\+F\+F\+F\+F\+F\+F\+F\+F) const  =0\hypertarget{classirr_1_1scene_1_1IGeometryCreator_a654005b83bc734daf6531d096e647a18}{}\label{classirr_1_1scene_1_1IGeometryCreator_a654005b83bc734daf6531d096e647a18}
+
+\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+G\+P\+U\+Mesh} $\ast$ \hyperlink{classirr_1_1scene_1_1IGeometryCreator_abdea997960c37f721892203312dcadbd}{create\+Sphere\+Mesh\+G\+PU} (\hyperlink{classirr_1_1video_1_1IVideoDriver}{video\+::\+I\+Video\+Driver} $\ast$driver, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} radius=5.f, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} poly\+CountX=16, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} poly\+CountY=16) const  =0
+\begin{DoxyCompactList}\small\item\em Create a sphere mesh. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+C\+P\+U\+Mesh} $\ast$ {\bfseries create\+Sphere\+Mesh\+C\+PU} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} radius=5.f, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} poly\+CountX=16, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} poly\+CountY=16) const  =0\hypertarget{classirr_1_1scene_1_1IGeometryCreator_a4302454584a0fb49e2be465d191fe79d}{}\label{classirr_1_1scene_1_1IGeometryCreator_a4302454584a0fb49e2be465d191fe79d}
+
+\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+G\+P\+U\+Mesh} $\ast$ \hyperlink{classirr_1_1scene_1_1IGeometryCreator_a407144cf0d15dcac00cdbf32478cb62b}{create\+Cylinder\+Mesh\+G\+PU} (\hyperlink{classirr_1_1video_1_1IVideoDriver}{video\+::\+I\+Video\+Driver} $\ast$driver, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} radius, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} length, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} tesselation, const \hyperlink{classirr_1_1video_1_1SColor}{video\+::\+S\+Color} \&color=\hyperlink{classirr_1_1video_1_1SColor}{video\+::\+S\+Color}(0xffffffff), bool close\+Top=true, f32 oblique=0.\+f) const  =0
+\begin{DoxyCompactList}\small\item\em Create a cylinder mesh. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+C\+P\+U\+Mesh} $\ast$ {\bfseries create\+Cylinder\+Mesh\+C\+PU} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} radius, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} length, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} tesselation, const \hyperlink{classirr_1_1video_1_1SColor}{video\+::\+S\+Color} \&color=\hyperlink{classirr_1_1video_1_1SColor}{video\+::\+S\+Color}(0xffffffff), bool close\+Top=true, f32 oblique=0.\+f) const  =0\hypertarget{classirr_1_1scene_1_1IGeometryCreator_a16fa2473091b8b5b8c11e4c8a67eccb4}{}\label{classirr_1_1scene_1_1IGeometryCreator_a16fa2473091b8b5b8c11e4c8a67eccb4}
+
+\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+G\+P\+U\+Mesh} $\ast$ \hyperlink{classirr_1_1scene_1_1IGeometryCreator_ad977d1ab6a7d9f839d47e4dc2b50d756}{create\+Cone\+Mesh\+G\+PU} (\hyperlink{classirr_1_1video_1_1IVideoDriver}{video\+::\+I\+Video\+Driver} $\ast$driver, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} radius, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} length, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} tesselation, const \hyperlink{classirr_1_1video_1_1SColor}{video\+::\+S\+Color} \&color\+Top=\hyperlink{classirr_1_1video_1_1SColor}{video\+::\+S\+Color}(0xffffffff), const video\+::\+S\+Color \&color\+Bottom=video\+::\+S\+Color(0xffffffff), f32 oblique=0.\+f) const  =0
+\begin{DoxyCompactList}\small\item\em Create a cone mesh. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IMesh}{I\+C\+P\+U\+Mesh} $\ast$ {\bfseries create\+Cone\+Mesh\+C\+PU} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} radius, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} length, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} tesselation, const \hyperlink{classirr_1_1video_1_1SColor}{video\+::\+S\+Color} \&color\+Top=\hyperlink{classirr_1_1video_1_1SColor}{video\+::\+S\+Color}(0xffffffff), const video\+::\+S\+Color \&color\+Bottom=video\+::\+S\+Color(0xffffffff), f32 oblique=0.\+f) const  =0\hypertarget{classirr_1_1scene_1_1IGeometryCreator_a78035212f111bc622b640508c9e65b54}{}\label{classirr_1_1scene_1_1IGeometryCreator_a78035212f111bc622b640508c9e65b54}
+
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Helper class for creating geometry on the fly. 
+
+You can get an instance of this class through \hyperlink{classirr_1_1scene_1_1ISceneManager_aa907bfdd82887a9855157fdfb41985e0}{I\+Scene\+Manager\+::get\+Geometry\+Creator()} 
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}!create\+Arrow\+Mesh\+G\+PU@{create\+Arrow\+Mesh\+G\+PU}}
+\index{create\+Arrow\+Mesh\+G\+PU@{create\+Arrow\+Mesh\+G\+PU}!irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}}
+\subsubsection[{\texorpdfstring{create\+Arrow\+Mesh\+G\+P\+U(video\+::\+I\+Video\+Driver $\ast$driver, const u32 tesselation\+Cylinder=4, const u32 tesselation\+Cone=8, const f32 height=1.\+f, const f32 cylinder\+Height=0.\+6f, const f32 width\+Cylinder=0.\+05f, const f32 width\+Cone=0.\+3f, const video\+::\+S\+Color color\+Cylinder=0x\+F\+F\+F\+F\+F\+F\+F\+F, const video\+::\+S\+Color color\+Cone=0x\+F\+F\+F\+F\+F\+F\+F\+F) const  =0}{createArrowMeshGPU(video::IVideoDriver *driver, const u32 tesselationCylinder=4, const u32 tesselationCone=8, const f32 height=1.f, const f32 cylinderHeight=0.6f, const f32 widthCylinder=0.05f, const f32 widthCone=0.3f, const video::SColor colorCylinder=0xFFFFFFFF, const video::SColor colorCone=0xFFFFFFFF) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+G\+P\+U\+Mesh}$\ast$ irr\+::scene\+::\+I\+Geometry\+Creator\+::create\+Arrow\+Mesh\+G\+PU (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+I\+Video\+Driver} $\ast$}]{driver, }
+\item[{const {\bf u32}}]{tesselation\+Cylinder = {\ttfamily 4}, }
+\item[{const {\bf u32}}]{tesselation\+Cone = {\ttfamily 8}, }
+\item[{const {\bf f32}}]{height = {\ttfamily 1.f}, }
+\item[{const {\bf f32}}]{cylinder\+Height = {\ttfamily 0.6f}, }
+\item[{const {\bf f32}}]{width\+Cylinder = {\ttfamily 0.05f}, }
+\item[{const {\bf f32}}]{width\+Cone = {\ttfamily 0.3f}, }
+\item[{const {\bf video\+::\+S\+Color}}]{color\+Cylinder = {\ttfamily 0xFFFFFFFF}, }
+\item[{const {\bf video\+::\+S\+Color}}]{color\+Cone = {\ttfamily 0xFFFFFFFF}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IGeometryCreator_abca19991f6bbfbc05b64ab45c2df80c7}{}\label{classirr_1_1scene_1_1IGeometryCreator_abca19991f6bbfbc05b64ab45c2df80c7}
+
+
+Create an arrow mesh, composed of a cylinder and a cone. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tesselation\+Cylinder} & Number of quads composing the cylinder. \\
+\hline
+{\em tesselation\+Cone} & Number of triangles composing the cone\textquotesingle{}s roof. \\
+\hline
+{\em height} & Total height of the arrow \\
+\hline
+{\em cylinder\+Height} & Total height of the cylinder, should be lesser than total height \\
+\hline
+{\em width\+Cylinder} & Diameter of the cylinder \\
+\hline
+{\em width\+Cone} & Diameter of the cone\textquotesingle{}s base, should be not smaller than the cylinder\textquotesingle{}s diameter \\
+\hline
+{\em color\+Cylinder} & color of the cylinder \\
+\hline
+{\em color\+Cone} & color of the cone \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Generated mesh. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classirr_1_1scene_1_1CGeometryCreator_a2409f4deb5ede1eec584137928b4bdb5}{irr\+::scene\+::\+C\+Geometry\+Creator}.
+
+\index{irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}!create\+Cone\+Mesh\+G\+PU@{create\+Cone\+Mesh\+G\+PU}}
+\index{create\+Cone\+Mesh\+G\+PU@{create\+Cone\+Mesh\+G\+PU}!irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}}
+\subsubsection[{\texorpdfstring{create\+Cone\+Mesh\+G\+P\+U(video\+::\+I\+Video\+Driver $\ast$driver, f32 radius, f32 length, u32 tesselation, const video\+::\+S\+Color \&color\+Top=video\+::\+S\+Color(0xffffffff), const video\+::\+S\+Color \&color\+Bottom=video\+::\+S\+Color(0xffffffff), f32 oblique=0.\+f) const  =0}{createConeMeshGPU(video::IVideoDriver *driver, f32 radius, f32 length, u32 tesselation, const video::SColor \&colorTop=video::SColor(0xffffffff), const video::SColor \&colorBottom=video::SColor(0xffffffff), f32 oblique=0.f) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+G\+P\+U\+Mesh}$\ast$ irr\+::scene\+::\+I\+Geometry\+Creator\+::create\+Cone\+Mesh\+G\+PU (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+I\+Video\+Driver} $\ast$}]{driver, }
+\item[{{\bf f32}}]{radius, }
+\item[{{\bf f32}}]{length, }
+\item[{{\bf u32}}]{tesselation, }
+\item[{const {\bf video\+::\+S\+Color} \&}]{color\+Top = {\ttfamily {\bf video\+::\+S\+Color}(0xffffffff)}, }
+\item[{const {\bf video\+::\+S\+Color} \&}]{color\+Bottom = {\ttfamily {\bf video\+::\+S\+Color}(0xffffffff)}, }
+\item[{{\bf f32}}]{oblique = {\ttfamily 0.f}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IGeometryCreator_ad977d1ab6a7d9f839d47e4dc2b50d756}{}\label{classirr_1_1scene_1_1IGeometryCreator_ad977d1ab6a7d9f839d47e4dc2b50d756}
+
+
+Create a cone mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em radius} & Radius of the cone. \\
+\hline
+{\em length} & Length of the cone. \\
+\hline
+{\em tesselation} & Number of quads around the circumference of the cone. \\
+\hline
+{\em color\+Top} & The color of the top of the cone. \\
+\hline
+{\em color\+Bottom} & The color of the bottom of the cone. \\
+\hline
+{\em oblique} & (to be documented) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Generated mesh. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classirr_1_1scene_1_1CGeometryCreator_a6587c178f43773c42d4566c93147eebb}{irr\+::scene\+::\+C\+Geometry\+Creator}.
+
+\index{irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}!create\+Cube\+Mesh\+G\+PU@{create\+Cube\+Mesh\+G\+PU}}
+\index{create\+Cube\+Mesh\+G\+PU@{create\+Cube\+Mesh\+G\+PU}!irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}}
+\subsubsection[{\texorpdfstring{create\+Cube\+Mesh\+G\+P\+U(video\+::\+I\+Video\+Driver $\ast$driver, const core\+::vector3df \&size=core\+::vector3df(5.\+f, 5.\+f, 5.\+f)) const  =0}{createCubeMeshGPU(video::IVideoDriver *driver, const core::vector3df \&size=core::vector3df(5.f, 5.f, 5.f)) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+G\+P\+U\+Mesh}$\ast$ irr\+::scene\+::\+I\+Geometry\+Creator\+::create\+Cube\+Mesh\+G\+PU (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+I\+Video\+Driver} $\ast$}]{driver, }
+\item[{const {\bf core\+::vector3df} \&}]{size = {\ttfamily {\bf core\+::vector3df}(5.f,~5.f,~5.f)}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IGeometryCreator_a1676dd58d6bfd7546e728dd9ea5599f6}{}\label{classirr_1_1scene_1_1IGeometryCreator_a1676dd58d6bfd7546e728dd9ea5599f6}
+
+
+Creates a simple cube mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & Dimensions of the cube. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Generated mesh. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classirr_1_1scene_1_1CGeometryCreator_a9aea899bffc8dc7042f4b2d8d176f40d}{irr\+::scene\+::\+C\+Geometry\+Creator}.
+
+\index{irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}!create\+Cylinder\+Mesh\+G\+PU@{create\+Cylinder\+Mesh\+G\+PU}}
+\index{create\+Cylinder\+Mesh\+G\+PU@{create\+Cylinder\+Mesh\+G\+PU}!irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}}
+\subsubsection[{\texorpdfstring{create\+Cylinder\+Mesh\+G\+P\+U(video\+::\+I\+Video\+Driver $\ast$driver, f32 radius, f32 length, u32 tesselation, const video\+::\+S\+Color \&color=video\+::\+S\+Color(0xffffffff), bool close\+Top=true, f32 oblique=0.\+f) const  =0}{createCylinderMeshGPU(video::IVideoDriver *driver, f32 radius, f32 length, u32 tesselation, const video::SColor \&color=video::SColor(0xffffffff), bool closeTop=true, f32 oblique=0.f) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+G\+P\+U\+Mesh}$\ast$ irr\+::scene\+::\+I\+Geometry\+Creator\+::create\+Cylinder\+Mesh\+G\+PU (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+I\+Video\+Driver} $\ast$}]{driver, }
+\item[{{\bf f32}}]{radius, }
+\item[{{\bf f32}}]{length, }
+\item[{{\bf u32}}]{tesselation, }
+\item[{const {\bf video\+::\+S\+Color} \&}]{color = {\ttfamily {\bf video\+::\+S\+Color}(0xffffffff)}, }
+\item[{bool}]{close\+Top = {\ttfamily true}, }
+\item[{{\bf f32}}]{oblique = {\ttfamily 0.f}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IGeometryCreator_a407144cf0d15dcac00cdbf32478cb62b}{}\label{classirr_1_1scene_1_1IGeometryCreator_a407144cf0d15dcac00cdbf32478cb62b}
+
+
+Create a cylinder mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em radius} & Radius of the cylinder. \\
+\hline
+{\em length} & Length of the cylinder. \\
+\hline
+{\em tesselation} & Number of quads around the circumference of the cylinder. \\
+\hline
+{\em color} & The color of the cylinder. \\
+\hline
+{\em close\+Top} & If true, close the ends of the cylinder, otherwise leave them open. \\
+\hline
+{\em oblique} & (to be documented) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Generated mesh. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classirr_1_1scene_1_1CGeometryCreator_ac35744e4622432d0df0d550c588d5082}{irr\+::scene\+::\+C\+Geometry\+Creator}.
+
+\index{irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}!create\+Sphere\+Mesh\+G\+PU@{create\+Sphere\+Mesh\+G\+PU}}
+\index{create\+Sphere\+Mesh\+G\+PU@{create\+Sphere\+Mesh\+G\+PU}!irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}}
+\subsubsection[{\texorpdfstring{create\+Sphere\+Mesh\+G\+P\+U(video\+::\+I\+Video\+Driver $\ast$driver, f32 radius=5.\+f, u32 poly\+Count\+X=16, u32 poly\+Count\+Y=16) const  =0}{createSphereMeshGPU(video::IVideoDriver *driver, f32 radius=5.f, u32 polyCountX=16, u32 polyCountY=16) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+G\+P\+U\+Mesh}$\ast$ irr\+::scene\+::\+I\+Geometry\+Creator\+::create\+Sphere\+Mesh\+G\+PU (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+I\+Video\+Driver} $\ast$}]{driver, }
+\item[{{\bf f32}}]{radius = {\ttfamily 5.f}, }
+\item[{{\bf u32}}]{poly\+CountX = {\ttfamily 16}, }
+\item[{{\bf u32}}]{poly\+CountY = {\ttfamily 16}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IGeometryCreator_abdea997960c37f721892203312dcadbd}{}\label{classirr_1_1scene_1_1IGeometryCreator_abdea997960c37f721892203312dcadbd}
+
+
+Create a sphere mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em radius} & Radius of the sphere \\
+\hline
+{\em poly\+CountX} & Number of quads used for the horizontal tiling \\
+\hline
+{\em poly\+CountY} & Number of quads used for the vertical tiling \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Generated mesh. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classirr_1_1scene_1_1CGeometryCreator_a3dd60997db6232e563cba44eb3c0880f}{irr\+::scene\+::\+C\+Geometry\+Creator}.
+
+\index{irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}!create\+Terrain\+Mesh\+G\+PU@{create\+Terrain\+Mesh\+G\+PU}}
+\index{create\+Terrain\+Mesh\+G\+PU@{create\+Terrain\+Mesh\+G\+PU}!irr\+::scene\+::\+I\+Geometry\+Creator@{irr\+::scene\+::\+I\+Geometry\+Creator}}
+\subsubsection[{\texorpdfstring{create\+Terrain\+Mesh\+G\+P\+U(video\+::\+I\+Image $\ast$texture, video\+::\+I\+Image $\ast$heightmap, const core\+::dimension2d$<$ f32 $>$ \&stretch\+Size, f32 max\+Height, video\+::\+I\+Video\+Driver $\ast$driver, const core\+::dimension2d$<$ u32 $>$ \&default\+Vertex\+Block\+Size, bool debug\+Borders=false) const  =0}{createTerrainMeshGPU(video::IImage *texture, video::IImage *heightmap, const core::dimension2d< f32 > \&stretchSize, f32 maxHeight, video::IVideoDriver *driver, const core::dimension2d< u32 > \&defaultVertexBlockSize, bool debugBorders=false) const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+G\+P\+U\+Mesh}$\ast$ irr\+::scene\+::\+I\+Geometry\+Creator\+::create\+Terrain\+Mesh\+G\+PU (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+I\+Image} $\ast$}]{texture, }
+\item[{{\bf video\+::\+I\+Image} $\ast$}]{heightmap, }
+\item[{const {\bf core\+::dimension2d}$<$ {\bf f32} $>$ \&}]{stretch\+Size, }
+\item[{{\bf f32}}]{max\+Height, }
+\item[{{\bf video\+::\+I\+Video\+Driver} $\ast$}]{driver, }
+\item[{const {\bf core\+::dimension2d}$<$ {\bf u32} $>$ \&}]{default\+Vertex\+Block\+Size, }
+\item[{bool}]{debug\+Borders = {\ttfamily false}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IGeometryCreator_a687cc4dc19a40ab892d6a18cb9c6f86e}{}\label{classirr_1_1scene_1_1IGeometryCreator_a687cc4dc19a40ab892d6a18cb9c6f86e}
+
+
+Create a terrain mesh from an image representing a heightfield. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em texture} & The texture to apply to the terrain. \\
+\hline
+{\em heightmap} & An image that will be interpreted as a heightmap. The brightness (average color) of each pixel is interpreted as a height, with a 255 brightness pixel producing the maximum height. \\
+\hline
+{\em stretch\+Size} & The size that each pixel will produce, i.\+e. a 512x512 heightmap and a stretch\+Size of (10.\+f, 20.\+f) will produce a mesh of size 5120.\+f x 10240.\+f \\
+\hline
+{\em max\+Height} & The maximum height of the terrain. \\
+\hline
+{\em driver} & The current video driver. \\
+\hline
+{\em default\+Vertex\+Block\+Size} & (to be documented) \\
+\hline
+{\em debug\+Borders} & (to be documented) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Generated mesh. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classirr_1_1scene_1_1CGeometryCreator_a98e9498db779952823f9f1b5fcf7d68e}{irr\+::scene\+::\+C\+Geometry\+Creator}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Geometry\+Creator.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,89 @@
+\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh}{}\section{irr\+:\+:scene\+:\+:I\+G\+P\+U\+Skinned\+Mesh Class Reference}
+\label{classirr_1_1scene_1_1IGPUSkinnedMesh}\index{irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh@{irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh}}
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+G\+P\+U\+Skinned\+Mesh\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classirr_1_1scene_1_1IGPUSkinnedMesh}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries I\+G\+P\+U\+Skinned\+Mesh} (\hyperlink{classirr_1_1scene_1_1CFinalBoneHierarchy}{C\+Final\+Bone\+Hierarchy} $\ast$bone\+Hierarchy)\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_a689247f8e29bbbafb51a8600457254c4}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_a689247f8e29bbbafb51a8600457254c4}
+
+\item 
+const \hyperlink{classirr_1_1scene_1_1CFinalBoneHierarchy}{C\+Final\+Bone\+Hierarchy} $\ast$ {\bfseries get\+Bone\+Reference\+Hierarchy} () const \hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_a17c6911519d5af6cf220e07cacd998f5}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_a17c6911519d5af6cf220e07cacd998f5}
+
+\item 
+virtual const \hyperlink{classirr_1_1core_1_1aabbox3d}{core\+::aabbox3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \& \hyperlink{classirr_1_1scene_1_1IGPUSkinnedMesh_af6e2919ba3abcb6747f7b688b338ac16}{get\+Bounding\+Box} () const 
+\begin{DoxyCompactList}\small\item\em Returns an axis aligned bounding box of the mesh. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1IGPUSkinnedMesh_a91372effa8144b0bac6f7483eccb1f66}{set\+Bounding\+Box} (const \hyperlink{namespaceirr_1_1core_adfc8fa01b30044c55f3332a1d6c1aa19}{core\+::aabbox3df} \&box)\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_a91372effa8144b0bac6f7483eccb1f66}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_a91372effa8144b0bac6f7483eccb1f66}
+
+\begin{DoxyCompactList}\small\item\em set user axis aligned bounding box \end{DoxyCompactList}\item 
+virtual uint32\+\_\+t \hyperlink{classirr_1_1scene_1_1IGPUSkinnedMesh_ae55d0240ceae42379e5b5dfaa4efa0ea}{get\+Frame\+Count} () const  =0
+\begin{DoxyCompactList}\small\item\em Gets the frame count of the animated mesh. \end{DoxyCompactList}\item 
+virtual float {\bfseries get\+First\+Frame} () const  =0\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_a42a856efa06d48e11024f225fb5dc710}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_a42a856efa06d48e11024f225fb5dc710}
+
+\item 
+virtual float {\bfseries get\+Last\+Frame} () const  =0\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_ae8f69ffa9b586e4334c63655c650483b}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_ae8f69ffa9b586e4334c63655c650483b}
+
+\item 
+virtual \hyperlink{namespaceirr_1_1scene_aef0400177e5941293dff6640e800d11b}{E\+\_\+\+M\+E\+S\+H\+\_\+\+T\+Y\+PE} {\bfseries get\+Mesh\+Type} () const \hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_afcde74ebf49b3789a78a297dca93bf23}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_afcde74ebf49b3789a78a297dca93bf23}
+
+\item 
+virtual const uint32\+\_\+t \& \hyperlink{classirr_1_1scene_1_1IGPUSkinnedMesh_a2b2779acd0213c9769237e216891b892}{get\+Max\+Vertex\+Weights} (const size\+\_\+t \&meshbuffer\+Ix) const  =0\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_a2b2779acd0213c9769237e216891b892}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_a2b2779acd0213c9769237e216891b892}
+
+\begin{DoxyCompactList}\small\item\em can use more efficient shaders this way \+:D \end{DoxyCompactList}\item 
+virtual uint32\+\_\+t {\bfseries get\+Max\+Vertex\+Weights} () const  =0\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_aca93da90a67c3c2e5a783af739569d85}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_aca93da90a67c3c2e5a783af739569d85}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+const \hyperlink{classirr_1_1scene_1_1CFinalBoneHierarchy}{C\+Final\+Bone\+Hierarchy} $\ast$ {\bfseries reference\+Hierarchy}\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_a05574ad2f9284c6fb552d434bbcba6eb}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_a05574ad2f9284c6fb552d434bbcba6eb}
+
+\item 
+\hyperlink{classirr_1_1core_1_1aabbox3d}{core\+::aabbox3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \hyperlink{classirr_1_1scene_1_1IGPUSkinnedMesh_ae83749a4ab9aec4f98f2d16cc49e14f6}{Box}\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_ae83749a4ab9aec4f98f2d16cc49e14f6}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_ae83749a4ab9aec4f98f2d16cc49e14f6}
+
+\begin{DoxyCompactList}\small\item\em The bounding box of this mesh. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh@{irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh}!get\+Bounding\+Box@{get\+Bounding\+Box}}
+\index{get\+Bounding\+Box@{get\+Bounding\+Box}!irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh@{irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh}}
+\subsubsection[{\texorpdfstring{get\+Bounding\+Box() const }{getBoundingBox() const }}]{\setlength{\rightskip}{0pt plus 5cm}virtual const {\bf core\+::aabbox3d}$<${\bf f32}$>$\& irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh\+::get\+Bounding\+Box (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_af6e2919ba3abcb6747f7b688b338ac16}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_af6e2919ba3abcb6747f7b688b338ac16}
+
+
+Returns an axis aligned bounding box of the mesh. 
+
+\begin{DoxyReturn}{Returns}
+A bounding box of this mesh is returned. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classirr_1_1scene_1_1IMesh_a821ad4b325444ff5b47035cf54a4303f}{irr\+::scene\+::\+I\+Mesh$<$ T $>$}.
+
+\index{irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh@{irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh}!get\+Frame\+Count@{get\+Frame\+Count}}
+\index{get\+Frame\+Count@{get\+Frame\+Count}!irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh@{irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh}}
+\subsubsection[{\texorpdfstring{get\+Frame\+Count() const  =0}{getFrameCount() const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual uint32\+\_\+t irr\+::scene\+::\+I\+G\+P\+U\+Skinned\+Mesh\+::get\+Frame\+Count (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1IGPUSkinnedMesh_ae55d0240ceae42379e5b5dfaa4efa0ea}{}\label{classirr_1_1scene_1_1IGPUSkinnedMesh_ae55d0240ceae42379e5b5dfaa4efa0ea}
+
+
+Gets the frame count of the animated mesh. 
+
+\begin{DoxyReturn}{Returns}
+The amount of frames. If the amount is 1, it is a static, non animated mesh. If 0 it just is in the bind-\/pose doesn\textquotesingle{}t have keyframes 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Skinned\+Mesh.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,94 @@
+\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode}{}\section{irr\+:\+:scene\+:\+:I\+Skinning\+State\+Manager\+:\+:I\+Bone\+Scene\+Node Class Reference}
+\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode}\index{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node@{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node}}
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Skinning\+State\+Manager\+:\+:I\+Bone\+Scene\+Node\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bd}{E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE} \{ \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bda80eee20d1f6a106998a7c97378126398}{E\+B\+S\+S\+\_\+\+L\+O\+C\+AL} =0, 
+\hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bda3408d599f51f779ffae4dce7908c3f69}{E\+B\+S\+S\+\_\+\+G\+L\+O\+B\+AL}, 
+{\bfseries E\+B\+S\+S\+\_\+\+C\+O\+U\+NT}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries I\+Bone\+Scene\+Node} (\hyperlink{classirr_1_1scene_1_1ISkinningStateManager}{I\+Skinning\+State\+Manager} $\ast$owner, const uint32\+\_\+t \&instance\+Index, \hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent, const uint32\+\_\+t \&bone\+Index, const \hyperlink{classirr_1_1core_1_1matrix4x3}{core\+::matrix4x3} \&initial\+Relative\+Matrix=\hyperlink{classirr_1_1core_1_1matrix4x3}{core\+::matrix4x3}())\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_abddb29366296038e2220227c40409977}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_abddb29366296038e2220227c40409977}
+
+\item 
+void \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_af55d36fe96f9e41c994648f1950db450}{set\+Skinning\+Space} (const \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bd}{E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE} \&space)
+\item 
+const \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bd}{E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE} \& \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_af9670516d5c70ed4bc2ac0e87912a6fc}{get\+Skinning\+Space} () const \hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_af9670516d5c70ed4bc2ac0e87912a6fc}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_af9670516d5c70ed4bc2ac0e87912a6fc}
+
+\begin{DoxyCompactList}\small\item\em How the relative transformation of the bone is used. \end{DoxyCompactList}\item 
+virtual const \hyperlink{classirr_1_1core_1_1matrix4x3}{core\+::matrix4x3} \& \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_aa01aed4ed2c55c61449ee38c98583fd4}{get\+Relative\+Transformation\+Matrix} ()\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_aa01aed4ed2c55c61449ee38c98583fd4}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_aa01aed4ed2c55c61449ee38c98583fd4}
+
+\begin{DoxyCompactList}\small\item\em O\+V\+E\+R\+R\+I\+D\+D\+EN F\+U\+N\+C\+T\+I\+O\+NS. \end{DoxyCompactList}\item 
+virtual bool {\bfseries needs\+Absolute\+Transform\+Recompute} () const \hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a1719818c1c7c746d55221015034ddd97}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a1719818c1c7c746d55221015034ddd97}
+
+\item 
+virtual size\+\_\+t {\bfseries needs\+Deep\+Absolute\+Transform\+Recompute} () const \hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_aa4bcdd303e29df104fa19ec5af857e59}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_aa4bcdd303e29df104fa19ec5af857e59}
+
+\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a32bd793195468797fb07249946a8be21}{update\+Absolute\+Position} ()\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a32bd793195468797fb07249946a8be21}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a32bd793195468797fb07249946a8be21}
+
+\begin{DoxyCompactList}\small\item\em if the M\+O\+DE is R\+E\+AD, have to do implicit boning of an instance \+:D \end{DoxyCompactList}\item 
+bool {\bfseries get\+Transform\+Changed\+Boning\+Hint} () const \hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a6f4044ae71a568c1f4d42130763b329c}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a6f4044ae71a568c1f4d42130763b329c}
+
+\item 
+void {\bfseries set\+Transform\+Changed\+Boning\+Hint} ()\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a2ff6348df87f35dc49cb2c82356d925c}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a2ff6348df87f35dc49cb2c82356d925c}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1scene_1_1ISkinningStateManager}{I\+Skinning\+State\+Manager} $\ast$ {\bfseries owner\+Manager}\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a0b58c21b7a684497a94be417f22e7cad}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a0b58c21b7a684497a94be417f22e7cad}
+
+\item 
+uint32\+\_\+t {\bfseries Instance\+ID}\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a1a2eb0bd7dd37561e62d5c1579f605eb}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a1a2eb0bd7dd37561e62d5c1579f605eb}
+
+\item 
+uint32\+\_\+t {\bfseries Bone\+Index}\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_ab3a059c2b6add6d2d320d04adb899be8}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_ab3a059c2b6add6d2d320d04adb899be8}
+
+\item 
+\hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bd}{E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE} {\bfseries Skinning\+Space}\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_ab8193efc734344696dabfda9a928afd8}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_ab8193efc734344696dabfda9a928afd8}
+
+\item 
+uint64\+\_\+t {\bfseries last\+Time\+Pulled\+Absolute\+T\+Form\+For\+Boning}\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_ac262bb415c1cea3d13213f5c80f02138}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_ac262bb415c1cea3d13213f5c80f02138}
+
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Member Enumeration Documentation}
+\index{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node@{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node}!E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE@{E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE}}
+\index{E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE@{E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE}!irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node@{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE}{E\_BONE\_SKINNING\_SPACE}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node\+::\+E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE}}\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bd}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bd}
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{E\+B\+S\+S\+\_\+\+L\+O\+C\+AL@{E\+B\+S\+S\+\_\+\+L\+O\+C\+AL}!irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node@{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node}}\index{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node@{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node}!E\+B\+S\+S\+\_\+\+L\+O\+C\+AL@{E\+B\+S\+S\+\_\+\+L\+O\+C\+AL}}\item[{\em 
+E\+B\+S\+S\+\_\+\+L\+O\+C\+AL\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bda80eee20d1f6a106998a7c97378126398}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bda80eee20d1f6a106998a7c97378126398}
+}]local skinning, standard \index{E\+B\+S\+S\+\_\+\+G\+L\+O\+B\+AL@{E\+B\+S\+S\+\_\+\+G\+L\+O\+B\+AL}!irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node@{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node}}\index{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node@{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node}!E\+B\+S\+S\+\_\+\+G\+L\+O\+B\+AL@{E\+B\+S\+S\+\_\+\+G\+L\+O\+B\+AL}}\item[{\em 
+E\+B\+S\+S\+\_\+\+G\+L\+O\+B\+AL\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bda3408d599f51f779ffae4dce7908c3f69}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_a746e46bb30372063ca11a4695fd345bda3408d599f51f779ffae4dce7908c3f69}
+}]global skinning \end{description}
+\end{Desc}
+
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node@{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node}!set\+Skinning\+Space@{set\+Skinning\+Space}}
+\index{set\+Skinning\+Space@{set\+Skinning\+Space}!irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node@{irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Skinning\+Space(const E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+C\+E \&space)}{setSkinningSpace(const E\_BONE\_SKINNING\_SPACE \&space)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::scene\+::\+I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node\+::set\+Skinning\+Space (
+\begin{DoxyParamCaption}
+\item[{const {\bf E\+\_\+\+B\+O\+N\+E\+\_\+\+S\+K\+I\+N\+N\+I\+N\+G\+\_\+\+S\+P\+A\+CE} \&}]{space}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_af55d36fe96f9e41c994648f1950db450}{}\label{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode_af55d36fe96f9e41c994648f1950db450}
+How the relative transformation of the bone is used T\+H\+IS W\+I\+LL N\+OT M\+A\+G\+I\+C\+A\+L\+LY C\+O\+N\+V\+E\+RT T\+HE M\+A\+T\+R\+IX V\+A\+L\+U\+ES O\+N\+\_\+\+S\+W\+I\+T\+CH Y\+OU N\+E\+ED TO C\+A\+L\+C\+U\+L\+A\+TE T\+H\+EM A\+ND S\+ET T\+H\+EM B\+E\+F\+O\+RE OR A\+F\+T\+ER T\+HE S\+W\+I\+T\+C\+H!!! 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Skinning\+State\+Manager.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,179 @@
+\hypertarget{structirr_1_1scene_1_1SViewFrustum}{}\section{irr\+:\+:scene\+:\+:S\+View\+Frustum Struct Reference}
+\label{structirr_1_1scene_1_1SViewFrustum}\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}
+
+
+Defines the view frustum. That\textquotesingle{}s the space visible by the camera.  
+
+
+
+
+{\ttfamily \#include $<$S\+View\+Frustum.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0}{V\+F\+P\+L\+A\+N\+ES} \{ \\*
+\hyperlink{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0a33c11636c0cf3a29df16551fb3222f89}{V\+F\+\_\+\+F\+A\+R\+\_\+\+P\+L\+A\+NE} = 0, 
+\hyperlink{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0ad4e37002c2f3f5c9aa7219ca74ffb48e}{V\+F\+\_\+\+N\+E\+A\+R\+\_\+\+P\+L\+A\+NE}, 
+\hyperlink{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0a4d611f15cd215819287e533b45715d5c}{V\+F\+\_\+\+L\+E\+F\+T\+\_\+\+P\+L\+A\+NE}, 
+\hyperlink{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0acc02c8b170e35f1416f1511646b051aa}{V\+F\+\_\+\+R\+I\+G\+H\+T\+\_\+\+P\+L\+A\+NE}, 
+\\*
+\hyperlink{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0aa230be71193da774ddcb735ec7b10dd1}{V\+F\+\_\+\+B\+O\+T\+T\+O\+M\+\_\+\+P\+L\+A\+NE}, 
+\hyperlink{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0adc6f550cf3890b19837cd8f0d7b1020a}{V\+F\+\_\+\+T\+O\+P\+\_\+\+P\+L\+A\+NE}, 
+\hyperlink{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0a6c3c4cb8060a23a2365cf1df46fcefd7}{V\+F\+\_\+\+P\+L\+A\+N\+E\+\_\+\+C\+O\+U\+NT}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structirr_1_1scene_1_1SViewFrustum_a7052e88c612bd1239115929e94e6210d}{S\+View\+Frustum} ()\hypertarget{structirr_1_1scene_1_1SViewFrustum_a7052e88c612bd1239115929e94e6210d}{}\label{structirr_1_1scene_1_1SViewFrustum_a7052e88c612bd1239115929e94e6210d}
+
+\begin{DoxyCompactList}\small\item\em Default Constructor. \end{DoxyCompactList}\item 
+\hyperlink{structirr_1_1scene_1_1SViewFrustum_aa7cfed3ee9feee79efe02d26f3b14b0c}{S\+View\+Frustum} (const \hyperlink{structirr_1_1scene_1_1SViewFrustum}{S\+View\+Frustum} \&other)
+\begin{DoxyCompactList}\small\item\em Copy Constructor. \end{DoxyCompactList}\item 
+\hyperlink{structirr_1_1scene_1_1SViewFrustum_acfcbb01f1e26f73ee1d9c7695302a508}{S\+View\+Frustum} (const \hyperlink{namespaceirr_1_1core_a73fa92e638c5ca97efd72da307cc9b65}{core\+::matrix4} \&mat)\hypertarget{structirr_1_1scene_1_1SViewFrustum_acfcbb01f1e26f73ee1d9c7695302a508}{}\label{structirr_1_1scene_1_1SViewFrustum_acfcbb01f1e26f73ee1d9c7695302a508}
+
+\begin{DoxyCompactList}\small\item\em This constructor creates a view frustum based on a projection and/or view matrix. \end{DoxyCompactList}\item 
+void \hyperlink{structirr_1_1scene_1_1SViewFrustum_a2517bde9292aa26119d75b9ff0b92833}{set\+From} (const \hyperlink{namespaceirr_1_1core_a73fa92e638c5ca97efd72da307cc9b65}{core\+::matrix4} \&mat)
+\begin{DoxyCompactList}\small\item\em This constructor creates a view frustum based on a projection and/or view matrix. \end{DoxyCompactList}\item 
+void \hyperlink{structirr_1_1scene_1_1SViewFrustum_aeabadaf532f08ba3cb98b897ff0619f2}{transform} (const \hyperlink{namespaceirr_1_1core_a73fa92e638c5ca97efd72da307cc9b65}{core\+::matrix4} \&mat)
+\begin{DoxyCompactList}\small\item\em transforms the frustum by the matrix \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1scene_1_1SViewFrustum_a99712510130276f440e2c399dde7e5f3}{get\+Far\+Left\+Up} () const \hypertarget{structirr_1_1scene_1_1SViewFrustum_a99712510130276f440e2c399dde7e5f3}{}\label{structirr_1_1scene_1_1SViewFrustum_a99712510130276f440e2c399dde7e5f3}
+
+\begin{DoxyCompactList}\small\item\em returns the point which is on the far left upper corner inside the the view frustum. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1scene_1_1SViewFrustum_a9a79eb4430af41031850adc7a0e0e3cf}{get\+Far\+Left\+Down} () const \hypertarget{structirr_1_1scene_1_1SViewFrustum_a9a79eb4430af41031850adc7a0e0e3cf}{}\label{structirr_1_1scene_1_1SViewFrustum_a9a79eb4430af41031850adc7a0e0e3cf}
+
+\begin{DoxyCompactList}\small\item\em returns the point which is on the far left bottom corner inside the the view frustum. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1scene_1_1SViewFrustum_a1b7f3b1cd4da4ea886b77d674e1c17dd}{get\+Far\+Right\+Up} () const \hypertarget{structirr_1_1scene_1_1SViewFrustum_a1b7f3b1cd4da4ea886b77d674e1c17dd}{}\label{structirr_1_1scene_1_1SViewFrustum_a1b7f3b1cd4da4ea886b77d674e1c17dd}
+
+\begin{DoxyCompactList}\small\item\em returns the point which is on the far right top corner inside the the view frustum. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1scene_1_1SViewFrustum_add04c29bfa22d94be96c92ecff5420b9}{get\+Far\+Right\+Down} () const \hypertarget{structirr_1_1scene_1_1SViewFrustum_add04c29bfa22d94be96c92ecff5420b9}{}\label{structirr_1_1scene_1_1SViewFrustum_add04c29bfa22d94be96c92ecff5420b9}
+
+\begin{DoxyCompactList}\small\item\em returns the point which is on the far right bottom corner inside the the view frustum. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1scene_1_1SViewFrustum_af240a13958215ce0cbe6ccd75301828a}{get\+Near\+Left\+Up} () const \hypertarget{structirr_1_1scene_1_1SViewFrustum_af240a13958215ce0cbe6ccd75301828a}{}\label{structirr_1_1scene_1_1SViewFrustum_af240a13958215ce0cbe6ccd75301828a}
+
+\begin{DoxyCompactList}\small\item\em returns the point which is on the near left upper corner inside the the view frustum. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1scene_1_1SViewFrustum_addbe9237ea17c93ae60bc4c27e862a76}{get\+Near\+Left\+Down} () const \hypertarget{structirr_1_1scene_1_1SViewFrustum_addbe9237ea17c93ae60bc4c27e862a76}{}\label{structirr_1_1scene_1_1SViewFrustum_addbe9237ea17c93ae60bc4c27e862a76}
+
+\begin{DoxyCompactList}\small\item\em returns the point which is on the near left bottom corner inside the the view frustum. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1scene_1_1SViewFrustum_a4fe9e7b51a3f7f7235ef0f895bf32054}{get\+Near\+Right\+Up} () const \hypertarget{structirr_1_1scene_1_1SViewFrustum_a4fe9e7b51a3f7f7235ef0f895bf32054}{}\label{structirr_1_1scene_1_1SViewFrustum_a4fe9e7b51a3f7f7235ef0f895bf32054}
+
+\begin{DoxyCompactList}\small\item\em returns the point which is on the near right top corner inside the the view frustum. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1scene_1_1SViewFrustum_a74e011d85fb41206b5dd0af76635dc00}{get\+Near\+Right\+Down} () const \hypertarget{structirr_1_1scene_1_1SViewFrustum_a74e011d85fb41206b5dd0af76635dc00}{}\label{structirr_1_1scene_1_1SViewFrustum_a74e011d85fb41206b5dd0af76635dc00}
+
+\begin{DoxyCompactList}\small\item\em returns the point which is on the near right bottom corner inside the the view frustum. \end{DoxyCompactList}\item 
+const \hyperlink{classirr_1_1core_1_1aabbox3d}{core\+::aabbox3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \& \hyperlink{structirr_1_1scene_1_1SViewFrustum_a4328fe06bedd409ae20e9efc64e68706}{get\+Bounding\+Box} () const \hypertarget{structirr_1_1scene_1_1SViewFrustum_a4328fe06bedd409ae20e9efc64e68706}{}\label{structirr_1_1scene_1_1SViewFrustum_a4328fe06bedd409ae20e9efc64e68706}
+
+\begin{DoxyCompactList}\small\item\em returns a bounding box enclosing the whole view frustum \end{DoxyCompactList}\item 
+void \hyperlink{structirr_1_1scene_1_1SViewFrustum_a458eb19a23bcad50da0f9d3163e3621b}{recalculate\+Bounding\+Box} ()\hypertarget{structirr_1_1scene_1_1SViewFrustum_a458eb19a23bcad50da0f9d3163e3621b}{}\label{structirr_1_1scene_1_1SViewFrustum_a458eb19a23bcad50da0f9d3163e3621b}
+
+\begin{DoxyCompactList}\small\item\em recalculates the bounding box member based on the planes \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1scene_1_1SViewFrustum_ace0b4c93dcd1d4e6ae50615b457f1851}{clip\+Line} (\hyperlink{classirr_1_1core_1_1line3d}{core\+::line3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \&line) const 
+\begin{DoxyCompactList}\small\item\em clips a line to the view frustum. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1scene_1_1SViewFrustum_a77726fa084f416d69f058a7b2f887545}{camera\+Position}\hypertarget{structirr_1_1scene_1_1SViewFrustum_a77726fa084f416d69f058a7b2f887545}{}\label{structirr_1_1scene_1_1SViewFrustum_a77726fa084f416d69f058a7b2f887545}
+
+\begin{DoxyCompactList}\small\item\em the position of the camera \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1plane3d}{core\+::plane3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \hyperlink{structirr_1_1scene_1_1SViewFrustum_afa59258f22c23b6f1dc4bcaff142dba2}{planes} \mbox{[}\hyperlink{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0a6c3c4cb8060a23a2365cf1df46fcefd7}{V\+F\+\_\+\+P\+L\+A\+N\+E\+\_\+\+C\+O\+U\+NT}\mbox{]}\hypertarget{structirr_1_1scene_1_1SViewFrustum_afa59258f22c23b6f1dc4bcaff142dba2}{}\label{structirr_1_1scene_1_1SViewFrustum_afa59258f22c23b6f1dc4bcaff142dba2}
+
+\begin{DoxyCompactList}\small\item\em all planes enclosing the view frustum. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1aabbox3d}{core\+::aabbox3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \hyperlink{structirr_1_1scene_1_1SViewFrustum_ad4c8605ad3494093e3e5860e0332fe8a}{bounding\+Box}\hypertarget{structirr_1_1scene_1_1SViewFrustum_ad4c8605ad3494093e3e5860e0332fe8a}{}\label{structirr_1_1scene_1_1SViewFrustum_ad4c8605ad3494093e3e5860e0332fe8a}
+
+\begin{DoxyCompactList}\small\item\em bounding box around the view frustum \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Defines the view frustum. That\textquotesingle{}s the space visible by the camera. 
+
+The view frustum is enclosed by 6 planes. These six planes share eight points. A bounding box around these eight points is also stored in this structure. 
+
+\subsection{Member Enumeration Documentation}
+\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!V\+F\+P\+L\+A\+N\+ES@{V\+F\+P\+L\+A\+N\+ES}}
+\index{V\+F\+P\+L\+A\+N\+ES@{V\+F\+P\+L\+A\+N\+ES}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}
+\subsubsection[{\texorpdfstring{V\+F\+P\+L\+A\+N\+ES}{VFPLANES}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::scene\+::\+S\+View\+Frustum\+::\+V\+F\+P\+L\+A\+N\+ES}}\hypertarget{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0}{}\label{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0}
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{V\+F\+\_\+\+F\+A\+R\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+F\+A\+R\+\_\+\+P\+L\+A\+NE}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!V\+F\+\_\+\+F\+A\+R\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+F\+A\+R\+\_\+\+P\+L\+A\+NE}}\item[{\em 
+V\+F\+\_\+\+F\+A\+R\+\_\+\+P\+L\+A\+NE\hypertarget{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0a33c11636c0cf3a29df16551fb3222f89}{}\label{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0a33c11636c0cf3a29df16551fb3222f89}
+}]Far plane of the frustum. That is the plane farest away from the eye. \index{V\+F\+\_\+\+N\+E\+A\+R\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+N\+E\+A\+R\+\_\+\+P\+L\+A\+NE}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!V\+F\+\_\+\+N\+E\+A\+R\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+N\+E\+A\+R\+\_\+\+P\+L\+A\+NE}}\item[{\em 
+V\+F\+\_\+\+N\+E\+A\+R\+\_\+\+P\+L\+A\+NE\hypertarget{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0ad4e37002c2f3f5c9aa7219ca74ffb48e}{}\label{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0ad4e37002c2f3f5c9aa7219ca74ffb48e}
+}]Near plane of the frustum. That is the plane nearest to the eye. \index{V\+F\+\_\+\+L\+E\+F\+T\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+L\+E\+F\+T\+\_\+\+P\+L\+A\+NE}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!V\+F\+\_\+\+L\+E\+F\+T\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+L\+E\+F\+T\+\_\+\+P\+L\+A\+NE}}\item[{\em 
+V\+F\+\_\+\+L\+E\+F\+T\+\_\+\+P\+L\+A\+NE\hypertarget{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0a4d611f15cd215819287e533b45715d5c}{}\label{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0a4d611f15cd215819287e533b45715d5c}
+}]Left plane of the frustum. \index{V\+F\+\_\+\+R\+I\+G\+H\+T\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+R\+I\+G\+H\+T\+\_\+\+P\+L\+A\+NE}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!V\+F\+\_\+\+R\+I\+G\+H\+T\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+R\+I\+G\+H\+T\+\_\+\+P\+L\+A\+NE}}\item[{\em 
+V\+F\+\_\+\+R\+I\+G\+H\+T\+\_\+\+P\+L\+A\+NE\hypertarget{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0acc02c8b170e35f1416f1511646b051aa}{}\label{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0acc02c8b170e35f1416f1511646b051aa}
+}]Right plane of the frustum. \index{V\+F\+\_\+\+B\+O\+T\+T\+O\+M\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+B\+O\+T\+T\+O\+M\+\_\+\+P\+L\+A\+NE}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!V\+F\+\_\+\+B\+O\+T\+T\+O\+M\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+B\+O\+T\+T\+O\+M\+\_\+\+P\+L\+A\+NE}}\item[{\em 
+V\+F\+\_\+\+B\+O\+T\+T\+O\+M\+\_\+\+P\+L\+A\+NE\hypertarget{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0aa230be71193da774ddcb735ec7b10dd1}{}\label{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0aa230be71193da774ddcb735ec7b10dd1}
+}]Bottom plane of the frustum. \index{V\+F\+\_\+\+T\+O\+P\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+T\+O\+P\+\_\+\+P\+L\+A\+NE}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!V\+F\+\_\+\+T\+O\+P\+\_\+\+P\+L\+A\+NE@{V\+F\+\_\+\+T\+O\+P\+\_\+\+P\+L\+A\+NE}}\item[{\em 
+V\+F\+\_\+\+T\+O\+P\+\_\+\+P\+L\+A\+NE\hypertarget{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0adc6f550cf3890b19837cd8f0d7b1020a}{}\label{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0adc6f550cf3890b19837cd8f0d7b1020a}
+}]Top plane of the frustum. \index{V\+F\+\_\+\+P\+L\+A\+N\+E\+\_\+\+C\+O\+U\+NT@{V\+F\+\_\+\+P\+L\+A\+N\+E\+\_\+\+C\+O\+U\+NT}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!V\+F\+\_\+\+P\+L\+A\+N\+E\+\_\+\+C\+O\+U\+NT@{V\+F\+\_\+\+P\+L\+A\+N\+E\+\_\+\+C\+O\+U\+NT}}\item[{\em 
+V\+F\+\_\+\+P\+L\+A\+N\+E\+\_\+\+C\+O\+U\+NT\hypertarget{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0a6c3c4cb8060a23a2365cf1df46fcefd7}{}\label{structirr_1_1scene_1_1SViewFrustum_ae3a96797aec028717f0589e82926b9f0a6c3c4cb8060a23a2365cf1df46fcefd7}
+}]Amount of planes enclosing the view frustum. Should be 6. \end{description}
+\end{Desc}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!S\+View\+Frustum@{S\+View\+Frustum}}
+\index{S\+View\+Frustum@{S\+View\+Frustum}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}
+\subsubsection[{\texorpdfstring{S\+View\+Frustum(const S\+View\+Frustum \&other)}{SViewFrustum(const SViewFrustum \&other)}}]{\setlength{\rightskip}{0pt plus 5cm}irr\+::scene\+::\+S\+View\+Frustum\+::\+S\+View\+Frustum (
+\begin{DoxyParamCaption}
+\item[{const {\bf S\+View\+Frustum} \&}]{other}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{structirr_1_1scene_1_1SViewFrustum_aa7cfed3ee9feee79efe02d26f3b14b0c}{}\label{structirr_1_1scene_1_1SViewFrustum_aa7cfed3ee9feee79efe02d26f3b14b0c}
+
+
+Copy Constructor. 
+
+Copy constructor View\+Frustum 
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!clip\+Line@{clip\+Line}}
+\index{clip\+Line@{clip\+Line}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}
+\subsubsection[{\texorpdfstring{clip\+Line(core\+::line3d$<$ f32 $>$ \&line) const }{clipLine(core::line3d< f32 > \&line) const }}]{\setlength{\rightskip}{0pt plus 5cm}bool irr\+::scene\+::\+S\+View\+Frustum\+::clip\+Line (
+\begin{DoxyParamCaption}
+\item[{{\bf core\+::line3d}$<$ {\bf f32} $>$ \&}]{line}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{structirr_1_1scene_1_1SViewFrustum_ace0b4c93dcd1d4e6ae50615b457f1851}{}\label{structirr_1_1scene_1_1SViewFrustum_ace0b4c93dcd1d4e6ae50615b457f1851}
+
+
+clips a line to the view frustum. 
+
+Clips a line to the frustum.
+
+\begin{DoxyReturn}{Returns}
+True if the line was clipped, false if not 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!set\+From@{set\+From}}
+\index{set\+From@{set\+From}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}
+\subsubsection[{\texorpdfstring{set\+From(const core\+::matrix4 \&mat)}{setFrom(const core::matrix4 \&mat)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::scene\+::\+S\+View\+Frustum\+::set\+From (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::matrix4} \&}]{mat}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{structirr_1_1scene_1_1SViewFrustum_a2517bde9292aa26119d75b9ff0b92833}{}\label{structirr_1_1scene_1_1SViewFrustum_a2517bde9292aa26119d75b9ff0b92833}
+
+
+This constructor creates a view frustum based on a projection and/or view matrix. 
+
+This constructor creates a view frustum based on a projection and/or view matrix. \index{irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}!transform@{transform}}
+\index{transform@{transform}!irr\+::scene\+::\+S\+View\+Frustum@{irr\+::scene\+::\+S\+View\+Frustum}}
+\subsubsection[{\texorpdfstring{transform(const core\+::matrix4 \&mat)}{transform(const core::matrix4 \&mat)}}]{\setlength{\rightskip}{0pt plus 5cm}void irr\+::scene\+::\+S\+View\+Frustum\+::transform (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::matrix4} \&}]{mat}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{structirr_1_1scene_1_1SViewFrustum_aeabadaf532f08ba3cb98b897ff0619f2}{}\label{structirr_1_1scene_1_1SViewFrustum_aeabadaf532f08ba3cb98b897ff0619f2}
+
+
+transforms the frustum by the matrix 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat} & Matrix by which the view frustum is transformed. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/S\+View\+Frustum.\+h\end{DoxyCompactItemize}

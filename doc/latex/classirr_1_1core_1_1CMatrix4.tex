@@ -1,0 +1,753 @@
+\hypertarget{classirr_1_1core_1_1CMatrix4}{}\section{irr\+:\+:core\+:\+:C\+Matrix4$<$ T $>$ Class Template Reference}
+\label{classirr_1_1core_1_1CMatrix4}\index{irr\+::core\+::\+C\+Matrix4$<$ T $>$@{irr\+::core\+::\+C\+Matrix4$<$ T $>$}}
+
+
+4x4 matrix. Mostly used as transformation matrix for 3d calculations.  
+
+
+
+
+{\ttfamily \#include $<$matrix4.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classirr_1_1core_1_1CMatrix4_a7bb79712227617f706ed57a34f3eb4fe}{e\+Constructor} \{ \\*
+{\bfseries E\+M4\+C\+O\+N\+S\+T\+\_\+\+N\+O\+T\+H\+I\+NG} = 0, 
+{\bfseries E\+M4\+C\+O\+N\+S\+T\+\_\+\+C\+O\+PY}, 
+{\bfseries E\+M4\+C\+O\+N\+S\+T\+\_\+\+I\+D\+E\+N\+T\+I\+TY}, 
+{\bfseries E\+M4\+C\+O\+N\+S\+T\+\_\+\+T\+R\+A\+N\+S\+P\+O\+S\+ED}, 
+\\*
+{\bfseries E\+M4\+C\+O\+N\+S\+T\+\_\+\+I\+N\+V\+E\+R\+SE}, 
+{\bfseries E\+M4\+C\+O\+N\+S\+T\+\_\+\+I\+N\+V\+E\+R\+S\+E\+\_\+\+T\+R\+A\+N\+S\+P\+O\+S\+ED}
+ \}\hypertarget{classirr_1_1core_1_1CMatrix4_a7bb79712227617f706ed57a34f3eb4fe}{}\label{classirr_1_1core_1_1CMatrix4_a7bb79712227617f706ed57a34f3eb4fe}
+\begin{DoxyCompactList}\small\item\em Constructor Flags. \end{DoxyCompactList}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4_af771bfde63cdaa3baa4d9f6121e56411}{C\+Matrix4} (\hyperlink{classirr_1_1core_1_1CMatrix4_a7bb79712227617f706ed57a34f3eb4fe}{e\+Constructor} constructor=E\+M4\+C\+O\+N\+S\+T\+\_\+\+I\+D\+E\+N\+T\+I\+TY)
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4_acdb7afc2248d97a7e882cd1bdeed07b7}{C\+Matrix4} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other, \hyperlink{classirr_1_1core_1_1CMatrix4_a7bb79712227617f706ed57a34f3eb4fe}{e\+Constructor} constructor=E\+M4\+C\+O\+N\+S\+T\+\_\+\+C\+O\+PY)
+\begin{DoxyCompactList}\small\item\em Copy constructor. \end{DoxyCompactList}\item 
+T \& \hyperlink{classirr_1_1core_1_1CMatrix4_aaede6824ed3ee05b928815d52e1834d1}{operator()} (const \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} row, const \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} col)\hypertarget{classirr_1_1core_1_1CMatrix4_aaede6824ed3ee05b928815d52e1834d1}{}\label{classirr_1_1core_1_1CMatrix4_aaede6824ed3ee05b928815d52e1834d1}
+
+\begin{DoxyCompactList}\small\item\em Simple operator for directly accessing every element of the matrix. \end{DoxyCompactList}\item 
+const T \& \hyperlink{classirr_1_1core_1_1CMatrix4_a370e3a1ed88e95011125d09943b50e3b}{operator()} (const \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} row, const \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} col) const \hypertarget{classirr_1_1core_1_1CMatrix4_a370e3a1ed88e95011125d09943b50e3b}{}\label{classirr_1_1core_1_1CMatrix4_a370e3a1ed88e95011125d09943b50e3b}
+
+\begin{DoxyCompactList}\small\item\em Simple operator for directly accessing every element of the matrix. \end{DoxyCompactList}\item 
+T \& \hyperlink{classirr_1_1core_1_1CMatrix4_aead4909f8bb2ab40875af175caf0085f}{operator\mbox{[}$\,$\mbox{]}} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index)\hypertarget{classirr_1_1core_1_1CMatrix4_aead4909f8bb2ab40875af175caf0085f}{}\label{classirr_1_1core_1_1CMatrix4_aead4909f8bb2ab40875af175caf0085f}
+
+\begin{DoxyCompactList}\small\item\em Simple operator for linearly accessing every element of the matrix. \end{DoxyCompactList}\item 
+const T \& \hyperlink{classirr_1_1core_1_1CMatrix4_a1c7a81521e81280c31b8ae3397d1fffe}{operator\mbox{[}$\,$\mbox{]}} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} index) const \hypertarget{classirr_1_1core_1_1CMatrix4_a1c7a81521e81280c31b8ae3397d1fffe}{}\label{classirr_1_1core_1_1CMatrix4_a1c7a81521e81280c31b8ae3397d1fffe}
+
+\begin{DoxyCompactList}\small\item\em Simple operator for linearly accessing every element of the matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a47571eb3acae9a6aa330a03edcea7896}{operator=} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other)\hypertarget{classirr_1_1core_1_1CMatrix4_a47571eb3acae9a6aa330a03edcea7896}{}\label{classirr_1_1core_1_1CMatrix4_a47571eb3acae9a6aa330a03edcea7896}
+
+\begin{DoxyCompactList}\small\item\em Sets this matrix equal to the other matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_aa77c0ec30f4e42f7281392440898e9e3}{operator=} (const T \&scalar)\hypertarget{classirr_1_1core_1_1CMatrix4_aa77c0ec30f4e42f7281392440898e9e3}{}\label{classirr_1_1core_1_1CMatrix4_aa77c0ec30f4e42f7281392440898e9e3}
+
+\begin{DoxyCompactList}\small\item\em Sets all elements of this matrix to the value. \end{DoxyCompactList}\item 
+const T $\ast$ \hyperlink{classirr_1_1core_1_1CMatrix4_a11a3ffa3eb0987030e7a8758dee8965a}{pointer} () const \hypertarget{classirr_1_1core_1_1CMatrix4_a11a3ffa3eb0987030e7a8758dee8965a}{}\label{classirr_1_1core_1_1CMatrix4_a11a3ffa3eb0987030e7a8758dee8965a}
+
+\begin{DoxyCompactList}\small\item\em Returns pointer to internal array. \end{DoxyCompactList}\item 
+T $\ast$ {\bfseries pointer} ()\hypertarget{classirr_1_1core_1_1CMatrix4_a2d9b231425d1b8abddb9e1e997fbf2ea}{}\label{classirr_1_1core_1_1CMatrix4_a2d9b231425d1b8abddb9e1e997fbf2ea}
+
+\item 
+bool \hyperlink{classirr_1_1core_1_1CMatrix4_a81029252a2a83ef4647f5d8a02cf62b5}{operator==} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other) const \hypertarget{classirr_1_1core_1_1CMatrix4_a81029252a2a83ef4647f5d8a02cf62b5}{}\label{classirr_1_1core_1_1CMatrix4_a81029252a2a83ef4647f5d8a02cf62b5}
+
+\begin{DoxyCompactList}\small\item\em Returns true if other matrix is equal to this matrix. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1CMatrix4_a99b4c127f31033b5f7314b98164b99ed}{operator!=} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other) const \hypertarget{classirr_1_1core_1_1CMatrix4_a99b4c127f31033b5f7314b98164b99ed}{}\label{classirr_1_1core_1_1CMatrix4_a99b4c127f31033b5f7314b98164b99ed}
+
+\begin{DoxyCompactList}\small\item\em Returns true if other matrix is not equal to this matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \hyperlink{classirr_1_1core_1_1CMatrix4_ac2192a7d9dd89dcd23fe2f9ded3252bf}{operator+} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other) const \hypertarget{classirr_1_1core_1_1CMatrix4_ac2192a7d9dd89dcd23fe2f9ded3252bf}{}\label{classirr_1_1core_1_1CMatrix4_ac2192a7d9dd89dcd23fe2f9ded3252bf}
+
+\begin{DoxyCompactList}\small\item\em Add another matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_af91c5be0562ce4be3f8feedd3d017ba1}{operator+=} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other)\hypertarget{classirr_1_1core_1_1CMatrix4_af91c5be0562ce4be3f8feedd3d017ba1}{}\label{classirr_1_1core_1_1CMatrix4_af91c5be0562ce4be3f8feedd3d017ba1}
+
+\begin{DoxyCompactList}\small\item\em Add another matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \hyperlink{classirr_1_1core_1_1CMatrix4_aee45563e7f9fdf3d4ef7f5a9d63d87c0}{operator-\/} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other) const \hypertarget{classirr_1_1core_1_1CMatrix4_aee45563e7f9fdf3d4ef7f5a9d63d87c0}{}\label{classirr_1_1core_1_1CMatrix4_aee45563e7f9fdf3d4ef7f5a9d63d87c0}
+
+\begin{DoxyCompactList}\small\item\em Subtract another matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a24eb7faa1418765ba87d3f02f27d643f}{operator-\/=} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other)\hypertarget{classirr_1_1core_1_1CMatrix4_a24eb7faa1418765ba87d3f02f27d643f}{}\label{classirr_1_1core_1_1CMatrix4_a24eb7faa1418765ba87d3f02f27d643f}
+
+\begin{DoxyCompactList}\small\item\em Subtract another matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a8503c58913ba9407ba00b173d8a3e25c}{setbyproduct} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other\+\_\+a, const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other\+\_\+b)
+\begin{DoxyCompactList}\small\item\em set this matrix to the product of two matrices \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a526a2a11dcd8b18c9e77deb84094778d}{setbyproduct\+\_\+nocheck} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other\+\_\+a, const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other\+\_\+b)
+\begin{DoxyCompactList}\small\item\em Set this matrix to the product of two matrices. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \hyperlink{classirr_1_1core_1_1CMatrix4_a4173ab9beecf99940ba2eb01081f1613}{operator$\ast$} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other) const 
+\begin{DoxyCompactList}\small\item\em Multiply by another matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_ac3d29f86c91d9d095ab155ecb8870f87}{operator$\ast$=} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&other)
+\begin{DoxyCompactList}\small\item\em Multiply by another matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \hyperlink{classirr_1_1core_1_1CMatrix4_a2695d5d90aa8cf55e06649fc83752466}{operator$\ast$} (const T \&scalar) const \hypertarget{classirr_1_1core_1_1CMatrix4_a2695d5d90aa8cf55e06649fc83752466}{}\label{classirr_1_1core_1_1CMatrix4_a2695d5d90aa8cf55e06649fc83752466}
+
+\begin{DoxyCompactList}\small\item\em Multiply by scalar. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_ae78879a3d7f0113ba5208d5476c3af9c}{operator$\ast$=} (const T \&scalar)\hypertarget{classirr_1_1core_1_1CMatrix4_ae78879a3d7f0113ba5208d5476c3af9c}{}\label{classirr_1_1core_1_1CMatrix4_ae78879a3d7f0113ba5208d5476c3af9c}
+
+\begin{DoxyCompactList}\small\item\em Multiply by scalar. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a45f876ed1aed2c3c98b87fee6d938604}{make\+Identity} ()\hypertarget{classirr_1_1core_1_1CMatrix4_a45f876ed1aed2c3c98b87fee6d938604}{}\label{classirr_1_1core_1_1CMatrix4_a45f876ed1aed2c3c98b87fee6d938604}
+
+\begin{DoxyCompactList}\small\item\em Set matrix to identity. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1CMatrix4_a24e7bc5d302f6c0cb11bad0771a40826}{is\+Identity} () const \hypertarget{classirr_1_1core_1_1CMatrix4_a24e7bc5d302f6c0cb11bad0771a40826}{}\label{classirr_1_1core_1_1CMatrix4_a24e7bc5d302f6c0cb11bad0771a40826}
+
+\begin{DoxyCompactList}\small\item\em Returns true if the matrix is the identity matrix. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1CMatrix4_afc4fe0bdfb771b15eff91264c0ed37f9}{is\+Orthogonal} () const \hypertarget{classirr_1_1core_1_1CMatrix4_afc4fe0bdfb771b15eff91264c0ed37f9}{}\label{classirr_1_1core_1_1CMatrix4_afc4fe0bdfb771b15eff91264c0ed37f9}
+
+\begin{DoxyCompactList}\small\item\em Returns true if the matrix is orthogonal. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1CMatrix4_ab4b515a697bb3749a8e1dd9fc31342bd}{is\+Identity\+\_\+integer\+\_\+base} () const \hypertarget{classirr_1_1core_1_1CMatrix4_ab4b515a697bb3749a8e1dd9fc31342bd}{}\label{classirr_1_1core_1_1CMatrix4_ab4b515a697bb3749a8e1dd9fc31342bd}
+
+\begin{DoxyCompactList}\small\item\em Returns true if the matrix is the identity matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_ac04a3b341cbfbb7986be682691655622}{set\+Translation} (const \hyperlink{classirr_1_1core_1_1vector3d}{vector3d}$<$ T $>$ \&translation)\hypertarget{classirr_1_1core_1_1CMatrix4_ac04a3b341cbfbb7986be682691655622}{}\label{classirr_1_1core_1_1CMatrix4_ac04a3b341cbfbb7986be682691655622}
+
+\begin{DoxyCompactList}\small\item\em Set the translation of the current matrix. Will erase any previous values. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vector3d}{vector3d}$<$ T $>$ \hyperlink{classirr_1_1core_1_1CMatrix4_aec84b278e87611352b75298238e54006}{get\+Translation} () const \hypertarget{classirr_1_1core_1_1CMatrix4_aec84b278e87611352b75298238e54006}{}\label{classirr_1_1core_1_1CMatrix4_aec84b278e87611352b75298238e54006}
+
+\begin{DoxyCompactList}\small\item\em Gets the current translation. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a258e103fcb6ce1564978624280ecb7fe}{set\+Inverse\+Translation} (const \hyperlink{classirr_1_1core_1_1vector3d}{vector3d}$<$ T $>$ \&translation)\hypertarget{classirr_1_1core_1_1CMatrix4_a258e103fcb6ce1564978624280ecb7fe}{}\label{classirr_1_1core_1_1CMatrix4_a258e103fcb6ce1564978624280ecb7fe}
+
+\begin{DoxyCompactList}\small\item\em Set the inverse translation of the current matrix. Will erase any previous values. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a05aac7bd2e7651369fc813a51258afbe}{set\+Rotation\+Radians} (const \hyperlink{classirr_1_1core_1_1vector3d}{vector3d}$<$ T $>$ \&rotation)\hypertarget{classirr_1_1core_1_1CMatrix4_a05aac7bd2e7651369fc813a51258afbe}{}\label{classirr_1_1core_1_1CMatrix4_a05aac7bd2e7651369fc813a51258afbe}
+
+\begin{DoxyCompactList}\small\item\em Make a rotation matrix from Euler angles. The 4th row and column are unmodified. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a8ee5ef8619d4b0f56d72ac84495ed644}{set\+Rotation\+Degrees} (const \hyperlink{classirr_1_1core_1_1vector3d}{vector3d}$<$ T $>$ \&rotation)\hypertarget{classirr_1_1core_1_1CMatrix4_a8ee5ef8619d4b0f56d72ac84495ed644}{}\label{classirr_1_1core_1_1CMatrix4_a8ee5ef8619d4b0f56d72ac84495ed644}
+
+\begin{DoxyCompactList}\small\item\em Make a rotation matrix from Euler angles. The 4th row and column are unmodified. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vector3d}{core\+::vector3d}$<$ T $>$ \hyperlink{classirr_1_1core_1_1CMatrix4_aa348817a724b49816da5c181ba672e1d}{get\+Rotation\+Degrees} () const 
+\begin{DoxyCompactList}\small\item\em Returns the rotation, as set by set\+Rotation(). \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a1a15d7b55769678512144f0fb7e15a92}{set\+Inverse\+Rotation\+Radians} (const \hyperlink{classirr_1_1core_1_1vector3d}{vector3d}$<$ T $>$ \&rotation)
+\begin{DoxyCompactList}\small\item\em Make an inverted rotation matrix from Euler angles. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_afd84b9c93b4c8e9dc2abefa4a28057f9}{set\+Inverse\+Rotation\+Degrees} (const \hyperlink{classirr_1_1core_1_1vector3d}{vector3d}$<$ T $>$ \&rotation)
+\begin{DoxyCompactList}\small\item\em Make an inverted rotation matrix from Euler angles. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a2fad61540e78fc7dafe7f6270b0558ac}{set\+Rotation\+Axis\+Radians} (const T \&angle, const \hyperlink{classirr_1_1core_1_1vector3d}{vector3d}$<$ T $>$ \&axis)
+\begin{DoxyCompactList}\small\item\em Make a rotation matrix from angle and axis, assuming left handed rotation. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a47117d44419af87e70084c01ab852049}{set\+Scale} (const \hyperlink{classirr_1_1core_1_1vector3d}{vector3d}$<$ T $>$ \&scale)\hypertarget{classirr_1_1core_1_1CMatrix4_a47117d44419af87e70084c01ab852049}{}\label{classirr_1_1core_1_1CMatrix4_a47117d44419af87e70084c01ab852049}
+
+\begin{DoxyCompactList}\small\item\em Set Scale. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a18af980e2bc3575f60576b6d4b4cc0f3}{set\+Scale} (const T scale)\hypertarget{classirr_1_1core_1_1CMatrix4_a18af980e2bc3575f60576b6d4b4cc0f3}{}\label{classirr_1_1core_1_1CMatrix4_a18af980e2bc3575f60576b6d4b4cc0f3}
+
+\begin{DoxyCompactList}\small\item\em Set Scale. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1vector3d}{core\+::vector3d}$<$ T $>$ \hyperlink{classirr_1_1core_1_1CMatrix4_aa29f46680cea92b6d38886d1e9759cdd}{get\+Scale} () const 
+\begin{DoxyCompactList}\small\item\em Get Scale. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a83bf069639e0538f047041ae51042907}{inverse\+Translate\+Vect} (\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&vect) const \hypertarget{classirr_1_1core_1_1CMatrix4_a83bf069639e0538f047041ae51042907}{}\label{classirr_1_1core_1_1CMatrix4_a83bf069639e0538f047041ae51042907}
+
+\begin{DoxyCompactList}\small\item\em Translate a vector by the inverse of the translation part of this matrix. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a8abcfbf972b19946c3022db380c6d153}{rotate\+Vect} (\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&vect) const \hypertarget{classirr_1_1core_1_1CMatrix4_a8abcfbf972b19946c3022db380c6d153}{}\label{classirr_1_1core_1_1CMatrix4_a8abcfbf972b19946c3022db380c6d153}
+
+\begin{DoxyCompactList}\small\item\em Rotate a vector by the rotation part of this matrix. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a592d57581118b651a24dc68b17b99ff6}{rotate\+Vect} (\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&out, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&in) const \hypertarget{classirr_1_1core_1_1CMatrix4_a592d57581118b651a24dc68b17b99ff6}{}\label{classirr_1_1core_1_1CMatrix4_a592d57581118b651a24dc68b17b99ff6}
+
+\begin{DoxyCompactList}\small\item\em An alternate transform vector method, writing into a second vector. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_aa188488f489118e4daafd3b2ebab5119}{rotate\+Vect} (T $\ast$out, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&in) const \hypertarget{classirr_1_1core_1_1CMatrix4_aa188488f489118e4daafd3b2ebab5119}{}\label{classirr_1_1core_1_1CMatrix4_aa188488f489118e4daafd3b2ebab5119}
+
+\begin{DoxyCompactList}\small\item\em An alternate transform vector method, writing into an array of 3 floats. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_aa6bb8b39114749d70e51bd1b90bce0a1}{transform\+Vect} (\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&vect) const \hypertarget{classirr_1_1core_1_1CMatrix4_aa6bb8b39114749d70e51bd1b90bce0a1}{}\label{classirr_1_1core_1_1CMatrix4_aa6bb8b39114749d70e51bd1b90bce0a1}
+
+\begin{DoxyCompactList}\small\item\em Transforms the vector by this matrix. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a7f630ed6811ab36921c2fe6f63f7f426}{transform\+Vect} (\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&out, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&in) const \hypertarget{classirr_1_1core_1_1CMatrix4_a7f630ed6811ab36921c2fe6f63f7f426}{}\label{classirr_1_1core_1_1CMatrix4_a7f630ed6811ab36921c2fe6f63f7f426}
+
+\begin{DoxyCompactList}\small\item\em Transforms input vector by this matrix and stores result in output vector. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_aad3d6e0c59e2d5709a534abc2b86dbd3}{transform\+Vect} (T $\ast$out, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&in) const \hypertarget{classirr_1_1core_1_1CMatrix4_aad3d6e0c59e2d5709a534abc2b86dbd3}{}\label{classirr_1_1core_1_1CMatrix4_aad3d6e0c59e2d5709a534abc2b86dbd3}
+
+\begin{DoxyCompactList}\small\item\em An alternate transform vector method, writing into an array of 4 floats. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a82b910d8a4116a7455167dfa62fc4d72}{transform\+Vec3} (T $\ast$out, const T $\ast$in) const \hypertarget{classirr_1_1core_1_1CMatrix4_a82b910d8a4116a7455167dfa62fc4d72}{}\label{classirr_1_1core_1_1CMatrix4_a82b910d8a4116a7455167dfa62fc4d72}
+
+\begin{DoxyCompactList}\small\item\em An alternate transform vector method, reading from and writing to an array of 3 floats. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a587cb77fd7de7a13771c96a90c4f3de0}{translate\+Vect} (\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&vect) const \hypertarget{classirr_1_1core_1_1CMatrix4_a587cb77fd7de7a13771c96a90c4f3de0}{}\label{classirr_1_1core_1_1CMatrix4_a587cb77fd7de7a13771c96a90c4f3de0}
+
+\begin{DoxyCompactList}\small\item\em Translate a vector by the translation part of this matrix. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_ac4f0d4156d573d8b73eb51dce76e094e}{transform\+Plane} (\hyperlink{classirr_1_1core_1_1plane3d}{core\+::plane3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \&plane) const \hypertarget{classirr_1_1core_1_1CMatrix4_ac4f0d4156d573d8b73eb51dce76e094e}{}\label{classirr_1_1core_1_1CMatrix4_ac4f0d4156d573d8b73eb51dce76e094e}
+
+\begin{DoxyCompactList}\small\item\em Transforms a plane by this matrix. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a949042276c2025189cc568c8080d7579}{transform\+Plane} (const \hyperlink{classirr_1_1core_1_1plane3d}{core\+::plane3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \&in, \hyperlink{classirr_1_1core_1_1plane3d}{core\+::plane3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \&out) const \hypertarget{classirr_1_1core_1_1CMatrix4_a949042276c2025189cc568c8080d7579}{}\label{classirr_1_1core_1_1CMatrix4_a949042276c2025189cc568c8080d7579}
+
+\begin{DoxyCompactList}\small\item\em Transforms a plane by this matrix. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_ac12468d698fbf6cd545e8b3fbf2a0042}{transform\+Box} (\hyperlink{classirr_1_1core_1_1aabbox3d}{core\+::aabbox3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \&box) const 
+\begin{DoxyCompactList}\small\item\em Transforms a axis aligned bounding box. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a87451aea9c07b71d1a8b6091b8cefa63}{transform\+Box\+Ex} (\hyperlink{classirr_1_1core_1_1aabbox3d}{core\+::aabbox3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \&box) const 
+\begin{DoxyCompactList}\small\item\em Transforms a axis aligned bounding box. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a1e1f04cdf57dc76be2875427498a0d62}{multiply\+With1x4\+Matrix} (T $\ast$matrix) const \hypertarget{classirr_1_1core_1_1CMatrix4_a1e1f04cdf57dc76be2875427498a0d62}{}\label{classirr_1_1core_1_1CMatrix4_a1e1f04cdf57dc76be2875427498a0d62}
+
+\begin{DoxyCompactList}\small\item\em Multiplies this matrix by a 1x4 matrix. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1CMatrix4_a3fbface2cb6b959af64f82a5bb17540e}{make\+Inverse} ()
+\begin{DoxyCompactList}\small\item\em Calculates inverse of matrix. Slow. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1CMatrix4_af8c024c494998296fc7ed63603d7cb62}{get\+Inverse\+Primitive} (\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Inverts a primitive matrix which only contains a translation and a rotation. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1CMatrix4_a33c110cd75fdddb840a990ab52f10900}{get\+Inverse} (\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Gets the inversed matrix of this one. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a5bea6c6f5479720841cea61651e35879}{build\+Projection\+Matrix\+Perspective\+Fov\+RH} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} field\+Of\+View\+Radians, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} aspect\+Ratio, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Near, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Far)\hypertarget{classirr_1_1core_1_1CMatrix4_a5bea6c6f5479720841cea61651e35879}{}\label{classirr_1_1core_1_1CMatrix4_a5bea6c6f5479720841cea61651e35879}
+
+\begin{DoxyCompactList}\small\item\em Builds a right-\/handed perspective projection matrix based on a field of view. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a1895b967a8f8c9d7ad90fe5434f2499f}{build\+Projection\+Matrix\+Perspective\+Fov\+LH} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} field\+Of\+View\+Radians, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} aspect\+Ratio, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Near, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Far)\hypertarget{classirr_1_1core_1_1CMatrix4_a1895b967a8f8c9d7ad90fe5434f2499f}{}\label{classirr_1_1core_1_1CMatrix4_a1895b967a8f8c9d7ad90fe5434f2499f}
+
+\begin{DoxyCompactList}\small\item\em Builds a left-\/handed perspective projection matrix based on a field of view. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a3e4c3f6c545dd522f9f09177259f2f18}{build\+Projection\+Matrix\+Perspective\+Fov\+Infinity\+LH} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} field\+Of\+View\+Radians, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} aspect\+Ratio, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Near, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} epsilon=0)\hypertarget{classirr_1_1core_1_1CMatrix4_a3e4c3f6c545dd522f9f09177259f2f18}{}\label{classirr_1_1core_1_1CMatrix4_a3e4c3f6c545dd522f9f09177259f2f18}
+
+\begin{DoxyCompactList}\small\item\em Builds a left-\/handed perspective projection matrix based on a field of view, with far plane at infinity. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a649a29922f622503399bcb16c97b78b4}{build\+Projection\+Matrix\+Perspective\+RH} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} width\+Of\+View\+Volume, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} height\+Of\+View\+Volume, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Near, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Far)\hypertarget{classirr_1_1core_1_1CMatrix4_a649a29922f622503399bcb16c97b78b4}{}\label{classirr_1_1core_1_1CMatrix4_a649a29922f622503399bcb16c97b78b4}
+
+\begin{DoxyCompactList}\small\item\em Builds a right-\/handed perspective projection matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a8306f02451b06f8e6710f23631654086}{build\+Projection\+Matrix\+Perspective\+LH} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} width\+Of\+View\+Volume, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} height\+Of\+View\+Volume, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Near, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Far)\hypertarget{classirr_1_1core_1_1CMatrix4_a8306f02451b06f8e6710f23631654086}{}\label{classirr_1_1core_1_1CMatrix4_a8306f02451b06f8e6710f23631654086}
+
+\begin{DoxyCompactList}\small\item\em Builds a left-\/handed perspective projection matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_ae4a0618e2da724a26a5d8a201a63d8a5}{build\+Projection\+Matrix\+Ortho\+LH} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} width\+Of\+View\+Volume, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} height\+Of\+View\+Volume, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Near, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Far)\hypertarget{classirr_1_1core_1_1CMatrix4_ae4a0618e2da724a26a5d8a201a63d8a5}{}\label{classirr_1_1core_1_1CMatrix4_ae4a0618e2da724a26a5d8a201a63d8a5}
+
+\begin{DoxyCompactList}\small\item\em Builds a left-\/handed orthogonal projection matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_ae7a837a3b2d86bfc830d25c6144b7a46}{build\+Projection\+Matrix\+Ortho\+RH} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} width\+Of\+View\+Volume, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} height\+Of\+View\+Volume, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Near, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Far)\hypertarget{classirr_1_1core_1_1CMatrix4_ae7a837a3b2d86bfc830d25c6144b7a46}{}\label{classirr_1_1core_1_1CMatrix4_ae7a837a3b2d86bfc830d25c6144b7a46}
+
+\begin{DoxyCompactList}\small\item\em Builds a right-\/handed orthogonal projection matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a78e15297c806006898df58498755ecd4}{build\+Camera\+Look\+At\+Matrix\+LH} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&position, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&target, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&up\+Vector)\hypertarget{classirr_1_1core_1_1CMatrix4_a78e15297c806006898df58498755ecd4}{}\label{classirr_1_1core_1_1CMatrix4_a78e15297c806006898df58498755ecd4}
+
+\begin{DoxyCompactList}\small\item\em Builds a left-\/handed look-\/at matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a62ebd6002a5018c1096ac368f6be271a}{build\+Camera\+Look\+At\+Matrix\+RH} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&position, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&target, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{vector3df} \&up\+Vector)\hypertarget{classirr_1_1core_1_1CMatrix4_a62ebd6002a5018c1096ac368f6be271a}{}\label{classirr_1_1core_1_1CMatrix4_a62ebd6002a5018c1096ac368f6be271a}
+
+\begin{DoxyCompactList}\small\item\em Builds a right-\/handed look-\/at matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a583d0ece1d80f69101660e1cbe441768}{build\+Shadow\+Matrix} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&light, \hyperlink{namespaceirr_1_1core_ae7491b7985dcb74b840bfcd9c054b232}{core\+::plane3df} plane, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} point=1.\+0f)
+\begin{DoxyCompactList}\small\item\em Builds a matrix that flattens geometry into a plane. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a88a7d2f56d4ce637823379de308f673a}{build\+N\+D\+C\+To\+D\+C\+Matrix} (const \hyperlink{classirr_1_1core_1_1rect}{core\+::rect}$<$ \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} $>$ \&area, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} z\+Scale)
+\begin{DoxyCompactList}\small\item\em Builds a matrix which transforms a normalized Device Coordinate to Device Coordinates. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \hyperlink{classirr_1_1core_1_1CMatrix4_a0c9ed4a87ab8a1340e075490cd9de309}{interpolate} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{core\+::\+C\+Matrix4}$<$ T $>$ \&b, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} time) const 
+\begin{DoxyCompactList}\small\item\em Creates a new matrix as interpolated matrix from two other ones. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \hyperlink{classirr_1_1core_1_1CMatrix4_a83e8a629180ab12262d2e2cf52c7991b}{get\+Transposed} () const \hypertarget{classirr_1_1core_1_1CMatrix4_a83e8a629180ab12262d2e2cf52c7991b}{}\label{classirr_1_1core_1_1CMatrix4_a83e8a629180ab12262d2e2cf52c7991b}
+
+\begin{DoxyCompactList}\small\item\em Gets transposed matrix. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_abc4f641ad798591424020e38efe21636}{get\+Transposed} (\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \&dest) const \hypertarget{classirr_1_1core_1_1CMatrix4_abc4f641ad798591424020e38efe21636}{}\label{classirr_1_1core_1_1CMatrix4_abc4f641ad798591424020e38efe21636}
+
+\begin{DoxyCompactList}\small\item\em Gets transposed matrix. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a4802c6a89ad813e2919f68f512fb320f}{build\+Rotate\+From\+To} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&from, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&to)
+\begin{DoxyCompactList}\small\item\em Builds a matrix that rotates from one vector to another. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a8117628146ce654b3b292af7c49e25e2}{set\+Rotation\+Center} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&center, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&translate)
+\begin{DoxyCompactList}\small\item\em Builds a combined matrix which translates to a center before rotation and translates from origin afterwards. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_ad2dc80f2aed15900839389cf52f9e798}{build\+Axis\+Aligned\+Billboard} (const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&cam\+Pos, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&center, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&translation, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&axis, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&from)
+\begin{DoxyCompactList}\small\item\em Builds a matrix which rotates a source vector to a look vector over an arbitrary axis. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_afc72faaf2c883d9c0fdc1e0940d1acde}{build\+Texture\+Transform} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} rotate\+Rad, const \hyperlink{namespaceirr_1_1core_a2cf08556d77f6f5a792973a6e27ed11b}{core\+::vector2df} \&rotatecenter, const \hyperlink{namespaceirr_1_1core_a2cf08556d77f6f5a792973a6e27ed11b}{core\+::vector2df} \&translate, const \hyperlink{namespaceirr_1_1core_a2cf08556d77f6f5a792973a6e27ed11b}{core\+::vector2df} \&scale)
+\begin{DoxyCompactList}\small\item\em Set to a texture transformation matrix with the given parameters. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a445a7653292ae4ffb0baa50032a8674e}{set\+Texture\+Rotation\+Center} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} rad\+Angle)
+\begin{DoxyCompactList}\small\item\em Set texture transformation rotation. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a2bab9633697a892f08d89c7aeee6daf6}{set\+Texture\+Translate} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} x, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} y)
+\begin{DoxyCompactList}\small\item\em Set texture transformation translation. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_a7d999210cc7427e9d744271e50d26c3c}{set\+Texture\+Translate\+Transposed} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} x, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} y)
+\begin{DoxyCompactList}\small\item\em Set texture transformation translation, using a transposed representation. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_aed32a7a8da9c4cee5babe8f6b4aa7dd4}{set\+Texture\+Scale} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} sx, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} sy)
+\begin{DoxyCompactList}\small\item\em Set texture transformation scale. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_adbd668867d117dc9331e68abef0af221}{set\+Texture\+Scale\+Center} (\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} sx, \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} sy)
+\begin{DoxyCompactList}\small\item\em Set texture transformation scale, and recenter at (0.\+5,0.\+5) \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1core_1_1CMatrix4}{C\+Matrix4}$<$ T $>$ \& \hyperlink{classirr_1_1core_1_1CMatrix4_ae59fb2248865eba3026d13b9756ba1e1}{setM} (const T $\ast$data)\hypertarget{classirr_1_1core_1_1CMatrix4_ae59fb2248865eba3026d13b9756ba1e1}{}\label{classirr_1_1core_1_1CMatrix4_ae59fb2248865eba3026d13b9756ba1e1}
+
+\begin{DoxyCompactList}\small\item\em Sets all matrix data members at once. \end{DoxyCompactList}\item 
+void \hyperlink{classirr_1_1core_1_1CMatrix4_a87f7195337a2bf7a49978c2ec1100c0a}{set\+Definitely\+Identity\+Matrix} (bool is\+Definitely\+Identity\+Matrix)\hypertarget{classirr_1_1core_1_1CMatrix4_a87f7195337a2bf7a49978c2ec1100c0a}{}\label{classirr_1_1core_1_1CMatrix4_a87f7195337a2bf7a49978c2ec1100c0a}
+
+\begin{DoxyCompactList}\small\item\em Sets if the matrix is definitely identity matrix. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1CMatrix4_ab91cb550bdacbc7b79a47d5b4ee5f4fa}{get\+Definitely\+Identity\+Matrix} () const \hypertarget{classirr_1_1core_1_1CMatrix4_ab91cb550bdacbc7b79a47d5b4ee5f4fa}{}\label{classirr_1_1core_1_1CMatrix4_ab91cb550bdacbc7b79a47d5b4ee5f4fa}
+
+\begin{DoxyCompactList}\small\item\em Gets if the matrix is definitely identity matrix. \end{DoxyCompactList}\item 
+bool \hyperlink{classirr_1_1core_1_1CMatrix4_a5342bc1ac46e8bf7e287f1d58ec702c2}{equals} (const \hyperlink{classirr_1_1core_1_1CMatrix4}{core\+::\+C\+Matrix4}$<$ T $>$ \&other, const T tolerance=(T) R\+O\+U\+N\+D\+I\+N\+G\+\_\+\+E\+R\+R\+O\+R\+\_\+f64) const \hypertarget{classirr_1_1core_1_1CMatrix4_a5342bc1ac46e8bf7e287f1d58ec702c2}{}\label{classirr_1_1core_1_1CMatrix4_a5342bc1ac46e8bf7e287f1d58ec702c2}
+
+\begin{DoxyCompactList}\small\item\em Compare two matrices using the equal method. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\\*
+class irr\+::core\+::\+C\+Matrix4$<$ T $>$}
+
+4x4 matrix. Mostly used as transformation matrix for 3d calculations. 
+
+The matrix is a D3D style matrix, row major with translations in the 4th row. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!C\+Matrix4@{C\+Matrix4}}
+\index{C\+Matrix4@{C\+Matrix4}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{C\+Matrix4(e\+Constructor constructor=\+E\+M4\+C\+O\+N\+S\+T\+\_\+\+I\+D\+E\+N\+T\+I\+T\+Y)}{CMatrix4(eConstructor constructor=EM4CONST\_IDENTITY)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::{\bf C\+Matrix4} (
+\begin{DoxyParamCaption}
+\item[{{\bf e\+Constructor}}]{constructor = {\ttfamily EM4CONST\+\_\+IDENTITY}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_af771bfde63cdaa3baa4d9f6121e56411}{}\label{classirr_1_1core_1_1CMatrix4_af771bfde63cdaa3baa4d9f6121e56411}
+
+
+Default constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em constructor} & Choose the initialization style \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!C\+Matrix4@{C\+Matrix4}}
+\index{C\+Matrix4@{C\+Matrix4}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{C\+Matrix4(const C\+Matrix4$<$ T $>$ \&other, e\+Constructor constructor=\+E\+M4\+C\+O\+N\+S\+T\+\_\+\+C\+O\+P\+Y)}{CMatrix4(const CMatrix4< T > \&other, eConstructor constructor=EM4CONST\_COPY)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::{\bf C\+Matrix4} (
+\begin{DoxyParamCaption}
+\item[{const {\bf C\+Matrix4}$<$ T $>$ \&}]{other, }
+\item[{{\bf e\+Constructor}}]{constructor = {\ttfamily EM4CONST\+\_\+COPY}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_acdb7afc2248d97a7e882cd1bdeed07b7}{}\label{classirr_1_1core_1_1CMatrix4_acdb7afc2248d97a7e882cd1bdeed07b7}
+
+
+Copy constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Other matrix to copy from \\
+\hline
+{\em constructor} & Choose the initialization style \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!build\+Axis\+Aligned\+Billboard@{build\+Axis\+Aligned\+Billboard}}
+\index{build\+Axis\+Aligned\+Billboard@{build\+Axis\+Aligned\+Billboard}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{build\+Axis\+Aligned\+Billboard(const core\+::vector3df \&cam\+Pos, const core\+::vector3df \&center, const core\+::vector3df \&translation, const core\+::vector3df \&axis, const core\+::vector3df \&from)}{buildAxisAlignedBillboard(const core::vector3df \&camPos, const core::vector3df \&center, const core::vector3df \&translation, const core::vector3df \&axis, const core::vector3df \&from)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ void {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::build\+Axis\+Aligned\+Billboard (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::vector3df} \&}]{cam\+Pos, }
+\item[{const {\bf core\+::vector3df} \&}]{center, }
+\item[{const {\bf core\+::vector3df} \&}]{translation, }
+\item[{const {\bf core\+::vector3df} \&}]{axis, }
+\item[{const {\bf core\+::vector3df} \&}]{from}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_ad2dc80f2aed15900839389cf52f9e798}{}\label{classirr_1_1core_1_1CMatrix4_ad2dc80f2aed15900839389cf52f9e798}
+
+
+Builds a matrix which rotates a source vector to a look vector over an arbitrary axis. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cam\+Pos} & viewer position in world coo \\
+\hline
+{\em center} & object position in world-\/coo and rotation pivot \\
+\hline
+{\em translation} & object final translation from center \\
+\hline
+{\em axis} & axis to rotate about \\
+\hline
+{\em from} & source vector to rotate from\\
+\hline
+{\em cam\+Pos} & viewer position in world coord \\
+\hline
+{\em center} & object position in world-\/coord, rotation pivot \\
+\hline
+{\em translation} & object final translation from center \\
+\hline
+{\em axis} & axis to rotate about \\
+\hline
+{\em from} & source vector to rotate from \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!build\+N\+D\+C\+To\+D\+C\+Matrix@{build\+N\+D\+C\+To\+D\+C\+Matrix}}
+\index{build\+N\+D\+C\+To\+D\+C\+Matrix@{build\+N\+D\+C\+To\+D\+C\+Matrix}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{build\+N\+D\+C\+To\+D\+C\+Matrix(const core\+::rect$<$ s32 $>$ \&area, f32 z\+Scale)}{buildNDCToDCMatrix(const core::rect< s32 > \&area, f32 zScale)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::build\+N\+D\+C\+To\+D\+C\+Matrix (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::rect}$<$ {\bf s32} $>$ \&}]{area, }
+\item[{{\bf f32}}]{z\+Scale}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a88a7d2f56d4ce637823379de308f673a}{}\label{classirr_1_1core_1_1CMatrix4_a88a7d2f56d4ce637823379de308f673a}
+
+
+Builds a matrix which transforms a normalized Device Coordinate to Device Coordinates. 
+
+Used to scale $<$-\/1,-\/1$>$$<$1,1$>$ to viewport, for example from $<$-\/1,-\/1$>$ $<$1,1$>$ to the viewport $<$0,0$>$$<$0,640$>$ \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!build\+Rotate\+From\+To@{build\+Rotate\+From\+To}}
+\index{build\+Rotate\+From\+To@{build\+Rotate\+From\+To}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{build\+Rotate\+From\+To(const core\+::vector3df \&from, const core\+::vector3df \&to)}{buildRotateFromTo(const core::vector3df \&from, const core::vector3df \&to)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::build\+Rotate\+From\+To (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::vector3df} \&}]{from, }
+\item[{const {\bf core\+::vector3df} \&}]{to}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a4802c6a89ad813e2919f68f512fb320f}{}\label{classirr_1_1core_1_1CMatrix4_a4802c6a89ad813e2919f68f512fb320f}
+
+
+Builds a matrix that rotates from one vector to another. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & vector to rotate from \\
+\hline
+{\em to} & vector to rotate to\\
+\hline
+{\em from} & vector to rotate from \\
+\hline
+{\em to} & vector to rotate to \begin{DoxyVerb}http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix/index.htm\end{DoxyVerb}
+ \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!build\+Shadow\+Matrix@{build\+Shadow\+Matrix}}
+\index{build\+Shadow\+Matrix@{build\+Shadow\+Matrix}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{build\+Shadow\+Matrix(const core\+::vector3df \&light, core\+::plane3df plane, f32 point=1.\+0f)}{buildShadowMatrix(const core::vector3df \&light, core::plane3df plane, f32 point=1.0f)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::build\+Shadow\+Matrix (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::vector3df} \&}]{light, }
+\item[{{\bf core\+::plane3df}}]{plane, }
+\item[{{\bf f32}}]{point = {\ttfamily 1.0f}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a583d0ece1d80f69101660e1cbe441768}{}\label{classirr_1_1core_1_1CMatrix4_a583d0ece1d80f69101660e1cbe441768}
+
+
+Builds a matrix that flattens geometry into a plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em light} & light source \\
+\hline
+{\em plane} & plane into which the geometry if flattened into \\
+\hline
+{\em point} & value between 0 and 1, describing the light source. If this is 1, it is a point light, if it is 0, it is a directional light. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!build\+Texture\+Transform@{build\+Texture\+Transform}}
+\index{build\+Texture\+Transform@{build\+Texture\+Transform}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{build\+Texture\+Transform(f32 rotate\+Rad, const core\+::vector2df \&rotatecenter, const core\+::vector2df \&translate, const core\+::vector2df \&scale)}{buildTextureTransform(f32 rotateRad, const core::vector2df \&rotatecenter, const core::vector2df \&translate, const core::vector2df \&scale)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::build\+Texture\+Transform (
+\begin{DoxyParamCaption}
+\item[{{\bf f32}}]{rotate\+Rad, }
+\item[{const {\bf core\+::vector2df} \&}]{rotatecenter, }
+\item[{const {\bf core\+::vector2df} \&}]{translate, }
+\item[{const {\bf core\+::vector2df} \&}]{scale}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_afc72faaf2c883d9c0fdc1e0940d1acde}{}\label{classirr_1_1core_1_1CMatrix4_afc72faaf2c883d9c0fdc1e0940d1acde}
+
+
+Set to a texture transformation matrix with the given parameters. 
+
+Generate texture coordinates as linear functions so that\+: u = Ux$\ast$x + Uy$\ast$y + Uz$\ast$z + Uw v = Vx$\ast$x + Vy$\ast$y + Vz$\ast$z + Vw The matrix M for this case is\+: Ux Vx 0 0 Uy Vy 0 0 Uz Vz 0 0 Uw Vw 0 0 \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!get\+Inverse@{get\+Inverse}}
+\index{get\+Inverse@{get\+Inverse}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{get\+Inverse(\+C\+Matrix4$<$ T $>$ \&out) const }{getInverse(CMatrix4< T > \&out) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ bool {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::get\+Inverse (
+\begin{DoxyParamCaption}
+\item[{{\bf C\+Matrix4}$<$ T $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a33c110cd75fdddb840a990ab52f10900}{}\label{classirr_1_1core_1_1CMatrix4_a33c110cd75fdddb840a990ab52f10900}
+
+
+Gets the inversed matrix of this one. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & where result matrix is written to. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns false if there is no inverse matrix. 
+\end{DoxyReturn}
+Calculates the inverse of this Matrix The inverse is calculated using Cramers rule. If no inverse exists then \textquotesingle{}false\textquotesingle{} is returned. \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!get\+Inverse\+Primitive@{get\+Inverse\+Primitive}}
+\index{get\+Inverse\+Primitive@{get\+Inverse\+Primitive}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{get\+Inverse\+Primitive(\+C\+Matrix4$<$ T $>$ \&out) const }{getInversePrimitive(CMatrix4< T > \&out) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ bool {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::get\+Inverse\+Primitive (
+\begin{DoxyParamCaption}
+\item[{{\bf C\+Matrix4}$<$ T $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_af8c024c494998296fc7ed63603d7cb62}{}\label{classirr_1_1core_1_1CMatrix4_af8c024c494998296fc7ed63603d7cb62}
+
+
+Inverts a primitive matrix which only contains a translation and a rotation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & where result matrix is written to.\\
+\hline
+\end{DoxyParams}
+Inverts a primitive matrix which only contains a translation and a rotation 
+\begin{DoxyParams}{Parameters}
+{\em out} & where result matrix is written to. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!get\+Rotation\+Degrees@{get\+Rotation\+Degrees}}
+\index{get\+Rotation\+Degrees@{get\+Rotation\+Degrees}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{get\+Rotation\+Degrees() const }{getRotationDegrees() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf core\+::vector3d}$<$ T $>$ {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::get\+Rotation\+Degrees (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_aa348817a724b49816da5c181ba672e1d}{}\label{classirr_1_1core_1_1CMatrix4_aa348817a724b49816da5c181ba672e1d}
+
+
+Returns the rotation, as set by set\+Rotation(). 
+
+Returns a rotation that is equivalent to that set by \hyperlink{classirr_1_1core_1_1CMatrix4_a8ee5ef8619d4b0f56d72ac84495ed644}{set\+Rotation\+Degrees()}.
+
+This code was orginally written by by Chev.
+
+This code was sent in by Chev. Note that it does not necessarily return the {\itshape same} Euler angles as those set by \hyperlink{classirr_1_1core_1_1CMatrix4_a8ee5ef8619d4b0f56d72ac84495ed644}{set\+Rotation\+Degrees()}, but the rotation will be equivalent, i.\+e. will have the same result when used to rotate a vector or node. \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!get\+Scale@{get\+Scale}}
+\index{get\+Scale@{get\+Scale}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{get\+Scale() const }{getScale() const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf vector3d}$<$ T $>$ {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::get\+Scale (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_aa29f46680cea92b6d38886d1e9759cdd}{}\label{classirr_1_1core_1_1CMatrix4_aa29f46680cea92b6d38886d1e9759cdd}
+
+
+Get Scale. 
+
+Returns the absolute values of the scales of the matrix.
+
+Note that this returns the absolute (positive) values unless only scale is set. Unfortunately it does not appear to be possible to extract any original negative values. The best that we could do would be to arbitrarily make one scale negative if one or three of them were negative. F\+I\+X\+ME -\/ return the original values. \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!interpolate@{interpolate}}
+\index{interpolate@{interpolate}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{interpolate(const core\+::\+C\+Matrix4$<$ T $>$ \&b, f32 time) const }{interpolate(const core::CMatrix4< T > \&b, f32 time) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::interpolate (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::\+C\+Matrix4}$<$ T $>$ \&}]{b, }
+\item[{{\bf f32}}]{time}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a0c9ed4a87ab8a1340e075490cd9de309}{}\label{classirr_1_1core_1_1CMatrix4_a0c9ed4a87ab8a1340e075490cd9de309}
+
+
+Creates a new matrix as interpolated matrix from two other ones. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em b} & other matrix to interpolate with \\
+\hline
+{\em time} & Must be a value between 0 and 1. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!make\+Inverse@{make\+Inverse}}
+\index{make\+Inverse@{make\+Inverse}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{make\+Inverse()}{makeInverse()}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ bool {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::make\+Inverse (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a3fbface2cb6b959af64f82a5bb17540e}{}\label{classirr_1_1core_1_1CMatrix4_a3fbface2cb6b959af64f82a5bb17540e}
+
+
+Calculates inverse of matrix. Slow. 
+
+\begin{DoxyReturn}{Returns}
+Returns false if there is no inverse matrix. 
+\end{DoxyReturn}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{operator$\ast$(const C\+Matrix4$<$ T $>$ \&other) const }{operator*(const CMatrix4< T > \&other) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::operator$\ast$ (
+\begin{DoxyParamCaption}
+\item[{const {\bf C\+Matrix4}$<$ T $>$ \&}]{other}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a4173ab9beecf99940ba2eb01081f1613}{}\label{classirr_1_1core_1_1CMatrix4_a4173ab9beecf99940ba2eb01081f1613}
+
+
+Multiply by another matrix. 
+
+multiply by another matrix
+
+Calculate other$\ast$this \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!operator$\ast$=@{operator$\ast$=}}
+\index{operator$\ast$=@{operator$\ast$=}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{operator$\ast$=(const C\+Matrix4$<$ T $>$ \&other)}{operator*=(const CMatrix4< T > \&other)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::operator$\ast$= (
+\begin{DoxyParamCaption}
+\item[{const {\bf C\+Matrix4}$<$ T $>$ \&}]{other}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_ac3d29f86c91d9d095ab155ecb8870f87}{}\label{classirr_1_1core_1_1CMatrix4_ac3d29f86c91d9d095ab155ecb8870f87}
+
+
+Multiply by another matrix. 
+
+Calculate and return other$\ast$this \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!setbyproduct@{setbyproduct}}
+\index{setbyproduct@{setbyproduct}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{setbyproduct(const C\+Matrix4$<$ T $>$ \&other\+\_\+a, const C\+Matrix4$<$ T $>$ \&other\+\_\+b)}{setbyproduct(const CMatrix4< T > \&other\_a, const CMatrix4< T > \&other\_b)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::setbyproduct (
+\begin{DoxyParamCaption}
+\item[{const {\bf C\+Matrix4}$<$ T $>$ \&}]{other\+\_\+a, }
+\item[{const {\bf C\+Matrix4}$<$ T $>$ \&}]{other\+\_\+b}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a8503c58913ba9407ba00b173d8a3e25c}{}\label{classirr_1_1core_1_1CMatrix4_a8503c58913ba9407ba00b173d8a3e25c}
+
+
+set this matrix to the product of two matrices 
+
+multiply by another matrix
+
+Calculate b$\ast$a \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!setbyproduct\+\_\+nocheck@{setbyproduct\+\_\+nocheck}}
+\index{setbyproduct\+\_\+nocheck@{setbyproduct\+\_\+nocheck}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{setbyproduct\+\_\+nocheck(const C\+Matrix4$<$ T $>$ \&other\+\_\+a, const C\+Matrix4$<$ T $>$ \&other\+\_\+b)}{setbyproduct\_nocheck(const CMatrix4< T > \&other\_a, const CMatrix4< T > \&other\_b)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::setbyproduct\+\_\+nocheck (
+\begin{DoxyParamCaption}
+\item[{const {\bf C\+Matrix4}$<$ T $>$ \&}]{other\+\_\+a, }
+\item[{const {\bf C\+Matrix4}$<$ T $>$ \&}]{other\+\_\+b}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a526a2a11dcd8b18c9e77deb84094778d}{}\label{classirr_1_1core_1_1CMatrix4_a526a2a11dcd8b18c9e77deb84094778d}
+
+
+Set this matrix to the product of two matrices. 
+
+multiply by another matrix
+
+Calculate b$\ast$a, no optimization used, use it if you know you never have a identity matrix \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!set\+Inverse\+Rotation\+Degrees@{set\+Inverse\+Rotation\+Degrees}}
+\index{set\+Inverse\+Rotation\+Degrees@{set\+Inverse\+Rotation\+Degrees}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{set\+Inverse\+Rotation\+Degrees(const vector3d$<$ T $>$ \&rotation)}{setInverseRotationDegrees(const vector3d< T > \&rotation)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::set\+Inverse\+Rotation\+Degrees (
+\begin{DoxyParamCaption}
+\item[{const {\bf vector3d}$<$ T $>$ \&}]{rotation}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_afd84b9c93b4c8e9dc2abefa4a28057f9}{}\label{classirr_1_1core_1_1CMatrix4_afd84b9c93b4c8e9dc2abefa4a28057f9}
+
+
+Make an inverted rotation matrix from Euler angles. 
+
+The 4th row and column are unmodified. \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!set\+Inverse\+Rotation\+Radians@{set\+Inverse\+Rotation\+Radians}}
+\index{set\+Inverse\+Rotation\+Radians@{set\+Inverse\+Rotation\+Radians}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{set\+Inverse\+Rotation\+Radians(const vector3d$<$ T $>$ \&rotation)}{setInverseRotationRadians(const vector3d< T > \&rotation)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::set\+Inverse\+Rotation\+Radians (
+\begin{DoxyParamCaption}
+\item[{const {\bf vector3d}$<$ T $>$ \&}]{rotation}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a1a15d7b55769678512144f0fb7e15a92}{}\label{classirr_1_1core_1_1CMatrix4_a1a15d7b55769678512144f0fb7e15a92}
+
+
+Make an inverted rotation matrix from Euler angles. 
+
+Sets matrix to rotation matrix of inverse angles given as parameters.
+
+The 4th row and column are unmodified. \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!set\+Rotation\+Axis\+Radians@{set\+Rotation\+Axis\+Radians}}
+\index{set\+Rotation\+Axis\+Radians@{set\+Rotation\+Axis\+Radians}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{set\+Rotation\+Axis\+Radians(const T \&angle, const vector3d$<$ T $>$ \&axis)}{setRotationAxisRadians(const T \&angle, const vector3d< T > \&axis)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::set\+Rotation\+Axis\+Radians (
+\begin{DoxyParamCaption}
+\item[{const T \&}]{angle, }
+\item[{const {\bf vector3d}$<$ T $>$ \&}]{axis}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a2fad61540e78fc7dafe7f6270b0558ac}{}\label{classirr_1_1core_1_1CMatrix4_a2fad61540e78fc7dafe7f6270b0558ac}
+
+
+Make a rotation matrix from angle and axis, assuming left handed rotation. 
+
+Sets matrix to rotation matrix defined by axis and angle, assuming LH rotation.
+
+The 4th row and column are unmodified. \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!set\+Rotation\+Center@{set\+Rotation\+Center}}
+\index{set\+Rotation\+Center@{set\+Rotation\+Center}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{set\+Rotation\+Center(const core\+::vector3df \&center, const core\+::vector3df \&translate)}{setRotationCenter(const core::vector3df \&center, const core::vector3df \&translate)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ void {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::set\+Rotation\+Center (
+\begin{DoxyParamCaption}
+\item[{const {\bf core\+::vector3df} \&}]{center, }
+\item[{const {\bf core\+::vector3df} \&}]{translate}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a8117628146ce654b3b292af7c49e25e2}{}\label{classirr_1_1core_1_1CMatrix4_a8117628146ce654b3b292af7c49e25e2}
+
+
+Builds a combined matrix which translates to a center before rotation and translates from origin afterwards. 
+
+Builds a combined matrix which translate to a center before rotation and translate afterwards.
+
+
+\begin{DoxyParams}{Parameters}
+{\em center} & Position to rotate around \\
+\hline
+{\em translate} & Translation applied after the rotation \\
+\hline
+\end{DoxyParams}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!set\+Texture\+Rotation\+Center@{set\+Texture\+Rotation\+Center}}
+\index{set\+Texture\+Rotation\+Center@{set\+Texture\+Rotation\+Center}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{set\+Texture\+Rotation\+Center(f32 rad\+Angle)}{setTextureRotationCenter(f32 radAngle)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::set\+Texture\+Rotation\+Center (
+\begin{DoxyParamCaption}
+\item[{{\bf f32}}]{rad\+Angle}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a445a7653292ae4ffb0baa50032a8674e}{}\label{classirr_1_1core_1_1CMatrix4_a445a7653292ae4ffb0baa50032a8674e}
+
+
+Set texture transformation rotation. 
+
+Rotate about z axis, recenter at (0.\+5,0.\+5). Doesn\textquotesingle{}t clear other elements than those affected 
+\begin{DoxyParams}{Parameters}
+{\em rad\+Angle} & Angle in radians \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Altered matrix 
+\end{DoxyReturn}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!set\+Texture\+Scale@{set\+Texture\+Scale}}
+\index{set\+Texture\+Scale@{set\+Texture\+Scale}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{set\+Texture\+Scale(f32 sx, f32 sy)}{setTextureScale(f32 sx, f32 sy)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::set\+Texture\+Scale (
+\begin{DoxyParamCaption}
+\item[{{\bf f32}}]{sx, }
+\item[{{\bf f32}}]{sy}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_aed32a7a8da9c4cee5babe8f6b4aa7dd4}{}\label{classirr_1_1core_1_1CMatrix4_aed32a7a8da9c4cee5babe8f6b4aa7dd4}
+
+
+Set texture transformation scale. 
+
+Doesn\textquotesingle{}t clear other elements than those affected. 
+\begin{DoxyParams}{Parameters}
+{\em sx} & Scale factor on x axis \\
+\hline
+{\em sy} & Scale factor on y axis \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Altered matrix. 
+\end{DoxyReturn}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!set\+Texture\+Scale\+Center@{set\+Texture\+Scale\+Center}}
+\index{set\+Texture\+Scale\+Center@{set\+Texture\+Scale\+Center}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{set\+Texture\+Scale\+Center(f32 sx, f32 sy)}{setTextureScaleCenter(f32 sx, f32 sy)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::set\+Texture\+Scale\+Center (
+\begin{DoxyParamCaption}
+\item[{{\bf f32}}]{sx, }
+\item[{{\bf f32}}]{sy}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_adbd668867d117dc9331e68abef0af221}{}\label{classirr_1_1core_1_1CMatrix4_adbd668867d117dc9331e68abef0af221}
+
+
+Set texture transformation scale, and recenter at (0.\+5,0.\+5) 
+
+Doesn\textquotesingle{}t clear other elements than those affected. 
+\begin{DoxyParams}{Parameters}
+{\em sx} & Scale factor on x axis \\
+\hline
+{\em sy} & Scale factor on y axis \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Altered matrix. 
+\end{DoxyReturn}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!set\+Texture\+Translate@{set\+Texture\+Translate}}
+\index{set\+Texture\+Translate@{set\+Texture\+Translate}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{set\+Texture\+Translate(f32 x, f32 y)}{setTextureTranslate(f32 x, f32 y)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::set\+Texture\+Translate (
+\begin{DoxyParamCaption}
+\item[{{\bf f32}}]{x, }
+\item[{{\bf f32}}]{y}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a2bab9633697a892f08d89c7aeee6daf6}{}\label{classirr_1_1core_1_1CMatrix4_a2bab9633697a892f08d89c7aeee6daf6}
+
+
+Set texture transformation translation. 
+
+Doesn\textquotesingle{}t clear other elements than those affected. 
+\begin{DoxyParams}{Parameters}
+{\em x} & Offset on x axis \\
+\hline
+{\em y} & Offset on y axis \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Altered matrix 
+\end{DoxyReturn}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!set\+Texture\+Translate\+Transposed@{set\+Texture\+Translate\+Transposed}}
+\index{set\+Texture\+Translate\+Transposed@{set\+Texture\+Translate\+Transposed}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{set\+Texture\+Translate\+Transposed(f32 x, f32 y)}{setTextureTranslateTransposed(f32 x, f32 y)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ {\bf C\+Matrix4}$<$ T $>$ \& {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::set\+Texture\+Translate\+Transposed (
+\begin{DoxyParamCaption}
+\item[{{\bf f32}}]{x, }
+\item[{{\bf f32}}]{y}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a7d999210cc7427e9d744271e50d26c3c}{}\label{classirr_1_1core_1_1CMatrix4_a7d999210cc7427e9d744271e50d26c3c}
+
+
+Set texture transformation translation, using a transposed representation. 
+
+Doesn\textquotesingle{}t clear other elements than those affected. 
+\begin{DoxyParams}{Parameters}
+{\em x} & Offset on x axis \\
+\hline
+{\em y} & Offset on y axis \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Altered matrix 
+\end{DoxyReturn}
+\index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!transform\+Box@{transform\+Box}}
+\index{transform\+Box@{transform\+Box}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{transform\+Box(core\+::aabbox3d$<$ f32 $>$ \&box) const }{transformBox(core::aabbox3d< f32 > \&box) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::transform\+Box (
+\begin{DoxyParamCaption}
+\item[{{\bf core\+::aabbox3d}$<$ {\bf f32} $>$ \&}]{box}
+\end{DoxyParamCaption}
+) const}\hypertarget{classirr_1_1core_1_1CMatrix4_ac12468d698fbf6cd545e8b3fbf2a0042}{}\label{classirr_1_1core_1_1CMatrix4_ac12468d698fbf6cd545e8b3fbf2a0042}
+
+
+Transforms a axis aligned bounding box. 
+
+The result box of this operation may not be accurate at all. For correct results, use \hyperlink{classirr_1_1core_1_1CMatrix4_a87451aea9c07b71d1a8b6091b8cefa63}{transform\+Box\+Ex()} \index{irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}!transform\+Box\+Ex@{transform\+Box\+Ex}}
+\index{transform\+Box\+Ex@{transform\+Box\+Ex}!irr\+::core\+::\+C\+Matrix4@{irr\+::core\+::\+C\+Matrix4}}
+\subsubsection[{\texorpdfstring{transform\+Box\+Ex(core\+::aabbox3d$<$ f32 $>$ \&box) const }{transformBoxEx(core::aabbox3d< f32 > \&box) const }}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T $>$ void {\bf irr\+::core\+::\+C\+Matrix4}$<$ T $>$\+::transform\+Box\+Ex (
+\begin{DoxyParamCaption}
+\item[{{\bf core\+::aabbox3d}$<$ {\bf f32} $>$ \&}]{box}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classirr_1_1core_1_1CMatrix4_a87451aea9c07b71d1a8b6091b8cefa63}{}\label{classirr_1_1core_1_1CMatrix4_a87451aea9c07b71d1a8b6091b8cefa63}
+
+
+Transforms a axis aligned bounding box. 
+
+Transforms a axis aligned bounding box more accurately than \hyperlink{classirr_1_1core_1_1CMatrix4_ac12468d698fbf6cd545e8b3fbf2a0042}{transform\+Box()}
+
+The result box of this operation should by accurate, but this operation is slower than \hyperlink{classirr_1_1core_1_1CMatrix4_ac12468d698fbf6cd545e8b3fbf2a0042}{transform\+Box()}. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/matrix4.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,68 @@
+\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc}{}\section{irr\+:\+:scene\+:\+:I\+Mesh\+Data\+Format\+Desc$<$ T $>$ Class Template Reference}
+\label{classirr_1_1scene_1_1IMeshDataFormatDesc}\index{irr\+::scene\+::\+I\+Mesh\+Data\+Format\+Desc$<$ T $>$@{irr\+::scene\+::\+I\+Mesh\+Data\+Format\+Desc$<$ T $>$}}
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Mesh\+Data\+Format\+Desc$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classirr_1_1scene_1_1IMeshDataFormatDesc}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool {\bfseries format\+Can\+Be\+Appended} (const \hyperlink{classirr_1_1scene_1_1IMeshDataFormatDesc}{I\+Mesh\+Data\+Format\+Desc} $\ast$other) const  =0\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a4b51403b1c2c43f14ad2d17d4610b8d4}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a4b51403b1c2c43f14ad2d17d4610b8d4}
+
+\item 
+virtual void {\bfseries map\+Index\+Buffer} (T $\ast$ixbuf)=0\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_aa0dfd0c43df0141a3cb3b390ced4fb0c}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_aa0dfd0c43df0141a3cb3b390ced4fb0c}
+
+\item 
+virtual const T $\ast$ {\bfseries get\+Index\+Buffer} () const  =0\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_af3e0c28174c2ed19961ec499d1265f3b}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_af3e0c28174c2ed19961ec499d1265f3b}
+
+\item 
+virtual void {\bfseries map\+Vertex\+Attr\+Buffer} (T $\ast$attr\+Buf, const E\+\_\+\+V\+E\+R\+T\+E\+X\+\_\+\+A\+T\+T\+R\+I\+B\+U\+T\+E\+\_\+\+ID \&attr\+Id, E\+\_\+\+C\+O\+M\+P\+O\+N\+E\+N\+T\+S\+\_\+\+P\+E\+R\+\_\+\+A\+T\+T\+R\+I\+B\+U\+TE components, E\+\_\+\+C\+O\+M\+P\+O\+N\+E\+N\+T\+\_\+\+T\+Y\+PE type, const size\+\_\+t \&stride=0, size\+\_\+t offset=0, uint32\+\_\+t divisor=0)=0\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a00500097ec5a89aa60dc0c9db737ab99}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a00500097ec5a89aa60dc0c9db737ab99}
+
+\item 
+virtual const T $\ast$ {\bfseries get\+Mapped\+Buffer} (const E\+\_\+\+V\+E\+R\+T\+E\+X\+\_\+\+A\+T\+T\+R\+I\+B\+U\+T\+E\+\_\+\+ID \&attr\+Id) const  =0\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a969a5fb222ac95993e3b7c3bfa9f6adf}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a969a5fb222ac95993e3b7c3bfa9f6adf}
+
+\item 
+E\+\_\+\+C\+O\+M\+P\+O\+N\+E\+N\+T\+\_\+\+T\+Y\+PE {\bfseries get\+Attrib\+Type} (const E\+\_\+\+V\+E\+R\+T\+E\+X\+\_\+\+A\+T\+T\+R\+I\+B\+U\+T\+E\+\_\+\+ID \&attr\+Id) const \hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a63473bd4cb2c740272fc3f132fa13ea4}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a63473bd4cb2c740272fc3f132fa13ea4}
+
+\item 
+E\+\_\+\+C\+O\+M\+P\+O\+N\+E\+N\+T\+S\+\_\+\+P\+E\+R\+\_\+\+A\+T\+T\+R\+I\+B\+U\+TE {\bfseries get\+Attrib\+Component\+Count} (const E\+\_\+\+V\+E\+R\+T\+E\+X\+\_\+\+A\+T\+T\+R\+I\+B\+U\+T\+E\+\_\+\+ID \&attr\+Id) const \hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_ae7a9a0b275926e5b6a3788688beb1cd2}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_ae7a9a0b275926e5b6a3788688beb1cd2}
+
+\item 
+virtual void {\bfseries set\+Mapped\+Buffer\+Offset} (const E\+\_\+\+V\+E\+R\+T\+E\+X\+\_\+\+A\+T\+T\+R\+I\+B\+U\+T\+E\+\_\+\+ID \&attr\+Id, const size\+\_\+t \&offset)=0\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a38cc39383b3d46752a338244caaa537d}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a38cc39383b3d46752a338244caaa537d}
+
+\item 
+size\+\_\+t {\bfseries get\+Mapped\+Buffer\+Offset} (const E\+\_\+\+V\+E\+R\+T\+E\+X\+\_\+\+A\+T\+T\+R\+I\+B\+U\+T\+E\+\_\+\+ID \&attr\+Id) const \hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_aa8e96e7b7fbc292d5b66b735f48fcdd7}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_aa8e96e7b7fbc292d5b66b735f48fcdd7}
+
+\item 
+size\+\_\+t {\bfseries get\+Mapped\+Buffer\+Stride} (const E\+\_\+\+V\+E\+R\+T\+E\+X\+\_\+\+A\+T\+T\+R\+I\+B\+U\+T\+E\+\_\+\+ID \&attr\+Id) const \hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a4b5ca31ff9ba87b2d49e0cd4f2256db6}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a4b5ca31ff9ba87b2d49e0cd4f2256db6}
+
+\item 
+uint32\+\_\+t {\bfseries get\+Attrib\+Divisor} (const E\+\_\+\+V\+E\+R\+T\+E\+X\+\_\+\+A\+T\+T\+R\+I\+B\+U\+T\+E\+\_\+\+ID \&attr\+Id) const \hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a4ef356e8ac1bb3dc4f34e0badabae787}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a4ef356e8ac1bb3dc4f34e0badabae787}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+E\+\_\+\+C\+O\+M\+P\+O\+N\+E\+N\+T\+S\+\_\+\+P\+E\+R\+\_\+\+A\+T\+T\+R\+I\+B\+U\+TE {\bfseries compnts\+Per\+Attr} \mbox{[}E\+V\+A\+I\+\_\+\+C\+O\+U\+NT\mbox{]}\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a3a40a6d342dafa80dc998208f9b9ee30}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a3a40a6d342dafa80dc998208f9b9ee30}
+
+\item 
+E\+\_\+\+C\+O\+M\+P\+O\+N\+E\+N\+T\+\_\+\+T\+Y\+PE {\bfseries attr\+Type} \mbox{[}E\+V\+A\+I\+\_\+\+C\+O\+U\+NT\mbox{]}\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a08caf005474f007de70b2852fa976c0d}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a08caf005474f007de70b2852fa976c0d}
+
+\item 
+size\+\_\+t {\bfseries attr\+Stride} \mbox{[}E\+V\+A\+I\+\_\+\+C\+O\+U\+NT\mbox{]}\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a728b3f3df3f5d7a905cbdd79eb34036f}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a728b3f3df3f5d7a905cbdd79eb34036f}
+
+\item 
+size\+\_\+t {\bfseries attr\+Offset} \mbox{[}E\+V\+A\+I\+\_\+\+C\+O\+U\+NT\mbox{]}\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a41c18f15fadfaf04fdbd14cde995a1d6}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a41c18f15fadfaf04fdbd14cde995a1d6}
+
+\item 
+uint32\+\_\+t {\bfseries attr\+Divisor} \mbox{[}E\+V\+A\+I\+\_\+\+C\+O\+U\+NT\mbox{]}\hypertarget{classirr_1_1scene_1_1IMeshDataFormatDesc_a753628e19b1f0a60eca390692d825d4d}{}\label{classirr_1_1scene_1_1IMeshDataFormatDesc_a753628e19b1f0a60eca390692d825d4d}
+
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Mesh\+Buffer.\+h\end{DoxyCompactItemize}

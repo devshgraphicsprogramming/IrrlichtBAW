@@ -1,0 +1,137 @@
+\hypertarget{classirr_1_1scene_1_1ILightManager}{}\section{irr\+:\+:scene\+:\+:I\+Light\+Manager Class Reference}
+\label{classirr_1_1scene_1_1ILightManager}\index{irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}}
+
+
+\hyperlink{classirr_1_1scene_1_1ILightManager}{I\+Light\+Manager} provides an interface for user applications to manipulate the list of lights in the scene.  
+
+
+
+
+{\ttfamily \#include $<$I\+Light\+Manager.\+h$>$}
+
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Light\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classirr_1_1scene_1_1ILightManager}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ILightManager_a060badf09dc2f8ba8ddb148034c27817}{On\+Pre\+Render} (\hyperlink{classirr_1_1core_1_1array}{core\+::array}$<$ \hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$ $>$ \&light\+List)=0
+\begin{DoxyCompactList}\small\item\em Called after the scene\textquotesingle{}s light list has been built, but before rendering has begun. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ILightManager_ac8f92f0fbd43ba9cb01b47647125a1a3}{On\+Post\+Render} (void)=0
+\begin{DoxyCompactList}\small\item\em Called after the last scene node is rendered. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ILightManager_a56eaec6a697659f40b4f29b681fbdfad}{On\+Render\+Pass\+Pre\+Render} (\hyperlink{namespaceirr_1_1scene_a7862269bd1abc123929d4dbb8200d67f}{E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+SS} render\+Pass)=0
+\begin{DoxyCompactList}\small\item\em Called before a render pass begins. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ILightManager_a189edbf3a16ebb3c82e5d9f93dd2b41b}{On\+Render\+Pass\+Post\+Render} (\hyperlink{namespaceirr_1_1scene_a7862269bd1abc123929d4dbb8200d67f}{E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+SS} render\+Pass)=0
+\begin{DoxyCompactList}\small\item\em Called after the render pass specified in \hyperlink{classirr_1_1scene_1_1ILightManager_a56eaec6a697659f40b4f29b681fbdfad}{On\+Render\+Pass\+Pre\+Render()} ends. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ILightManager_a23ae7bdf54613e6dd41d4138cb6f5edc}{On\+Node\+Pre\+Render} (\hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$node)=0
+\begin{DoxyCompactList}\small\item\em Called before the given scene node is rendered. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ILightManager_aa9e6195a3a783a97f440a4b947090ab0}{On\+Node\+Post\+Render} (\hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$node)=0
+\begin{DoxyCompactList}\small\item\em Called after the the node specified in \hyperlink{classirr_1_1scene_1_1ILightManager_a23ae7bdf54613e6dd41d4138cb6f5edc}{On\+Node\+Pre\+Render()} has been rendered. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\hyperlink{classirr_1_1scene_1_1ILightManager}{I\+Light\+Manager} provides an interface for user applications to manipulate the list of lights in the scene. 
+
+The light list can be trimmed or re-\/ordered before device/ hardware lights are created, and/or individual lights can be switched on and off before or after each scene node is rendered. It is assumed that the \hyperlink{classirr_1_1scene_1_1ILightManager}{I\+Light\+Manager} implementation will store any data that it wishes to retain, i.\+e. the \hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} to which it is assigned, the light\+List, the current render pass, and the current scene node. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}!On\+Node\+Post\+Render@{On\+Node\+Post\+Render}}
+\index{On\+Node\+Post\+Render@{On\+Node\+Post\+Render}!irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}}
+\subsubsection[{\texorpdfstring{On\+Node\+Post\+Render(\+I\+Scene\+Node $\ast$node)=0}{OnNodePostRender(ISceneNode *node)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Light\+Manager\+::\+On\+Node\+Post\+Render (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Scene\+Node} $\ast$}]{node}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ILightManager_aa9e6195a3a783a97f440a4b947090ab0}{}\label{classirr_1_1scene_1_1ILightManager_aa9e6195a3a783a97f440a4b947090ab0}
+
+
+Called after the the node specified in \hyperlink{classirr_1_1scene_1_1ILightManager_a23ae7bdf54613e6dd41d4138cb6f5edc}{On\+Node\+Pre\+Render()} has been rendered. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em node} & the scene node that has just been rendered \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}!On\+Node\+Pre\+Render@{On\+Node\+Pre\+Render}}
+\index{On\+Node\+Pre\+Render@{On\+Node\+Pre\+Render}!irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}}
+\subsubsection[{\texorpdfstring{On\+Node\+Pre\+Render(\+I\+Scene\+Node $\ast$node)=0}{OnNodePreRender(ISceneNode *node)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Light\+Manager\+::\+On\+Node\+Pre\+Render (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Scene\+Node} $\ast$}]{node}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ILightManager_a23ae7bdf54613e6dd41d4138cb6f5edc}{}\label{classirr_1_1scene_1_1ILightManager_a23ae7bdf54613e6dd41d4138cb6f5edc}
+
+
+Called before the given scene node is rendered. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em node} & the scene node that\textquotesingle{}s about to be rendered \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}!On\+Post\+Render@{On\+Post\+Render}}
+\index{On\+Post\+Render@{On\+Post\+Render}!irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}}
+\subsubsection[{\texorpdfstring{On\+Post\+Render(void)=0}{OnPostRender(void)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Light\+Manager\+::\+On\+Post\+Render (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ILightManager_ac8f92f0fbd43ba9cb01b47647125a1a3}{}\label{classirr_1_1scene_1_1ILightManager_ac8f92f0fbd43ba9cb01b47647125a1a3}
+
+
+Called after the last scene node is rendered. 
+
+After this call returns, the light\+List passed to \hyperlink{classirr_1_1scene_1_1ILightManager_a060badf09dc2f8ba8ddb148034c27817}{On\+Pre\+Render()} becomes invalid. \index{irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}!On\+Pre\+Render@{On\+Pre\+Render}}
+\index{On\+Pre\+Render@{On\+Pre\+Render}!irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}}
+\subsubsection[{\texorpdfstring{On\+Pre\+Render(core\+::array$<$ I\+Scene\+Node $\ast$ $>$ \&light\+List)=0}{OnPreRender(core::array< ISceneNode * > \&lightList)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Light\+Manager\+::\+On\+Pre\+Render (
+\begin{DoxyParamCaption}
+\item[{{\bf core\+::array}$<$ {\bf I\+Scene\+Node} $\ast$ $>$ \&}]{light\+List}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ILightManager_a060badf09dc2f8ba8ddb148034c27817}{}\label{classirr_1_1scene_1_1ILightManager_a060badf09dc2f8ba8ddb148034c27817}
+
+
+Called after the scene\textquotesingle{}s light list has been built, but before rendering has begun. 
+
+As actual device/hardware lights are not created until the E\+S\+N\+R\+P\+\_\+\+L\+I\+G\+HT render pass, this provides an opportunity for the light manager to trim or re-\/order the light list, before any device/hardware lights have actually been created. 
+\begin{DoxyParams}{Parameters}
+{\em light\+List} & the Scene Manager\textquotesingle{}s light list, which the light manager may modify. This reference will remain valid until \hyperlink{classirr_1_1scene_1_1ILightManager_ac8f92f0fbd43ba9cb01b47647125a1a3}{On\+Post\+Render()}. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}!On\+Render\+Pass\+Post\+Render@{On\+Render\+Pass\+Post\+Render}}
+\index{On\+Render\+Pass\+Post\+Render@{On\+Render\+Pass\+Post\+Render}!irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}}
+\subsubsection[{\texorpdfstring{On\+Render\+Pass\+Post\+Render(\+E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+S\+S render\+Pass)=0}{OnRenderPassPostRender(E\_SCENE\_NODE\_RENDER\_PASS renderPass)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Light\+Manager\+::\+On\+Render\+Pass\+Post\+Render (
+\begin{DoxyParamCaption}
+\item[{{\bf E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+SS}}]{render\+Pass}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ILightManager_a189edbf3a16ebb3c82e5d9f93dd2b41b}{}\label{classirr_1_1scene_1_1ILightManager_a189edbf3a16ebb3c82e5d9f93dd2b41b}
+
+
+Called after the render pass specified in \hyperlink{classirr_1_1scene_1_1ILightManager_a56eaec6a697659f40b4f29b681fbdfad}{On\+Render\+Pass\+Pre\+Render()} ends. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em render\+Pass} & the render pass that has finished \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}!On\+Render\+Pass\+Pre\+Render@{On\+Render\+Pass\+Pre\+Render}}
+\index{On\+Render\+Pass\+Pre\+Render@{On\+Render\+Pass\+Pre\+Render}!irr\+::scene\+::\+I\+Light\+Manager@{irr\+::scene\+::\+I\+Light\+Manager}}
+\subsubsection[{\texorpdfstring{On\+Render\+Pass\+Pre\+Render(\+E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+S\+S render\+Pass)=0}{OnRenderPassPreRender(E\_SCENE\_NODE\_RENDER\_PASS renderPass)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Light\+Manager\+::\+On\+Render\+Pass\+Pre\+Render (
+\begin{DoxyParamCaption}
+\item[{{\bf E\+\_\+\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+R\+E\+N\+D\+E\+R\+\_\+\+P\+A\+SS}}]{render\+Pass}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ILightManager_a56eaec6a697659f40b4f29b681fbdfad}{}\label{classirr_1_1scene_1_1ILightManager_a56eaec6a697659f40b4f29b681fbdfad}
+
+
+Called before a render pass begins. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em render\+Pass} & the render pass that\textquotesingle{}s about to begin \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Light\+Manager.\+h\end{DoxyCompactItemize}

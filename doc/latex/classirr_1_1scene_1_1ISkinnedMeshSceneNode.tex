@@ -1,0 +1,287 @@
+\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode}{}\section{irr\+:\+:scene\+:\+:I\+Skinned\+Mesh\+Scene\+Node Class Reference}
+\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode}\index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+
+
+Scene node capable of displaying an Skinned mesh and its shadow.  
+
+
+
+
+{\ttfamily \#include $<$I\+Skinned\+Mesh\+Scene\+Node.\+h$>$}
+
+Inheritance diagram for irr\+:\+:scene\+:\+:I\+Skinned\+Mesh\+Scene\+Node\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classirr_1_1scene_1_1ISkinnedMeshSceneNode}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_af3e1741041a378a668fca3510214260c}{I\+Skinned\+Mesh\+Scene\+Node} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$parent, \hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} $\ast$mgr, \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32} id, const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&position=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&rotation=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(0, 0, 0), const \hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \&scale=\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df}(1.\+0f, 1.\+0f, 1.\+0f))\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_af3e1741041a378a668fca3510214260c}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_af3e1741041a378a668fca3510214260c}
+
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a6209924b450ae29d61ac00eb412ac52a}{$\sim$\+I\+Skinned\+Mesh\+Scene\+Node} ()\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a6209924b450ae29d61ac00eb412ac52a}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a6209924b450ae29d61ac00eb412ac52a}
+
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+virtual \hyperlink{namespaceirr_1_1scene_acad3d7ef92a9807d391ba29120f3b7bd}{E\+S\+C\+E\+N\+E\+\_\+\+N\+O\+D\+E\+\_\+\+T\+Y\+PE} \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a9624f557ef2236424cc26ce9a6d1a9c1}{get\+Type} () const \hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a9624f557ef2236424cc26ce9a6d1a9c1}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a9624f557ef2236424cc26ce9a6d1a9c1}
+
+\begin{DoxyCompactList}\small\item\em Returns type of the scene node. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1video_1_1ITexture}{video\+::\+I\+Texture} $\ast$ {\bfseries get\+Bone\+Pose\+T\+BO} () const  =0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a3f2df0084ecc0944f61c748e3393e8d3}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a3f2df0084ecc0944f61c748e3393e8d3}
+
+\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ad545607e976621e97fe2df6aed1740e5}{set\+Current\+Frame} (const float \&frame)=0
+\begin{DoxyCompactList}\small\item\em Sets the current frame number. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a9fe34b9fd091c5910f3fecedd90a30d5}{set\+Frame\+Loop} (const float \&begin, const float \&end)=0
+\begin{DoxyCompactList}\small\item\em Sets the frame numbers between the animation is looped. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ae0c03f0f2db8fa1c58b2de49c3d31352}{set\+Animation\+Speed} (const float \&frames\+Per\+Second)=0
+\begin{DoxyCompactList}\small\item\em Sets the speed with which the animation is played. \end{DoxyCompactList}\item 
+virtual float \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ad66f474edadb93b8cfbaa567ce667772}{get\+Animation\+Speed} () const  =0
+\begin{DoxyCompactList}\small\item\em Gets the speed with which the animation is played. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aaac892e54cfa06a6e98ffd3cafe6646f}{set\+Desired\+Update\+Frequency} (const float \&hertz)=0
+\item 
+virtual float {\bfseries get\+Desired\+Update\+Frequency} () const  =0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a843c025365cc2650d4c6f866aed4140b}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a843c025365cc2650d4c6f866aed4140b}
+
+\item 
+virtual \hyperlink{classirr_1_1video_1_1SMaterial}{video\+::\+S\+Material} \& \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a38bb136fca8d4860b474c076447eba32}{get\+Material} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} i)=0
+\item 
+virtual \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a55a2001d34463a4d84a206d4e5c74629}{get\+Material\+Count} () const  =0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a55a2001d34463a4d84a206d4e5c74629}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a55a2001d34463a4d84a206d4e5c74629}
+
+\begin{DoxyCompactList}\small\item\em returns amount of materials used by this scene node. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a08480c06181d4c855b6858251b956524}{On\+Register\+Scene\+Node} ()=0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a08480c06181d4c855b6858251b956524}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a08480c06181d4c855b6858251b956524}
+
+\begin{DoxyCompactList}\small\item\em frame \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aa3ebdfb8b061492bdfb33198ee6f5f8c}{On\+Animate} (\hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} time\+Ms)=0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aa3ebdfb8b061492bdfb33198ee6f5f8c}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aa3ebdfb8b061492bdfb33198ee6f5f8c}
+
+\begin{DoxyCompactList}\small\item\em \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aa3ebdfb8b061492bdfb33198ee6f5f8c}{On\+Animate()} is called just before rendering the whole scene. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a31275ffd9047f6e59dbf6a985da61867}{render} ()=0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a31275ffd9047f6e59dbf6a985da61867}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a31275ffd9047f6e59dbf6a985da61867}
+
+\begin{DoxyCompactList}\small\item\em renders the node. \end{DoxyCompactList}\item 
+virtual void {\bfseries set\+Bounding\+Box} (const \hyperlink{classirr_1_1core_1_1aabbox3d}{core\+::aabbox3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \&bbox)=0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ae257040dfca5c8f91d6c138d61aa49f7}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ae257040dfca5c8f91d6c138d61aa49f7}
+
+\item 
+virtual const \hyperlink{classirr_1_1core_1_1aabbox3d}{core\+::aabbox3d}$<$ \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} $>$ \& \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a5a5613c75cc0ed13151f73cdea0a241d}{get\+Bounding\+Box} ()=0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a5a5613c75cc0ed13151f73cdea0a241d}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a5a5613c75cc0ed13151f73cdea0a241d}
+
+\begin{DoxyCompactList}\small\item\em returns the axis aligned bounding box of this node \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_1_1IBoneSceneNode}{I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a9bdebc409416a8dc972046b94517e294}{get\+Joint\+Node} (const size\+\_\+t \&joint\+ID)=0
+\begin{DoxyCompactList}\small\item\em Get a pointer to a joint in the mesh. \end{DoxyCompactList}\item 
+virtual float \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a6c4220f9aee4e02cfe983895dd3176ad}{get\+Frame\+Nr} () const  =0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a6c4220f9aee4e02cfe983895dd3176ad}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a6c4220f9aee4e02cfe983895dd3176ad}
+
+\begin{DoxyCompactList}\small\item\em Returns the currently displayed frame number. \end{DoxyCompactList}\item 
+virtual float \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a21292043e2ad53e737db5efcc88dd8bf}{get\+Start\+Frame} () const  =0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a21292043e2ad53e737db5efcc88dd8bf}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a21292043e2ad53e737db5efcc88dd8bf}
+
+\begin{DoxyCompactList}\small\item\em Returns the current start frame number. \end{DoxyCompactList}\item 
+virtual float \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a685112d6f355e49377fe00e359c468fa}{get\+End\+Frame} () const  =0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a685112d6f355e49377fe00e359c468fa}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a685112d6f355e49377fe00e359c468fa}
+
+\begin{DoxyCompactList}\small\item\em Returns the current end frame number. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a5dd774c3fa110e8bada9d4e53266dc34}{set\+Loop\+Mode} (bool play\+Animation\+Looped)=0
+\begin{DoxyCompactList}\small\item\em Sets looping mode which is on by default. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a0c6f3c8a9d56cbe24acbdaa2bc0fa029}{get\+Loop\+Mode} () const  =0
+\begin{DoxyCompactList}\small\item\em returns the current loop mode \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aff45c2cd4eb26d8ca6142109ea3e351f}{set\+Animation\+End\+Callback} (\hyperlink{classirr_1_1scene_1_1IAnimationEndCallBack}{I\+Animation\+End\+Call\+Back}$<$ \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode}{I\+Skinned\+Mesh\+Scene\+Node} $>$ $\ast$callback=0)=0
+\begin{DoxyCompactList}\small\item\em Sets a callback interface which will be called if an animation playback has ended. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a60eea4931588604b2e7569a3c6a26cea}{set\+Mesh} (\hyperlink{classirr_1_1scene_1_1IGPUSkinnedMesh}{I\+G\+P\+U\+Skinned\+Mesh} $\ast$mesh, const \hyperlink{classirr_1_1scene_1_1ISkinningStateManager_a78f9d8d280dc029b3637bd3a48c0c3c6}{I\+Skinning\+State\+Manager\+::\+E\+\_\+\+B\+O\+N\+E\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+\+M\+O\+DE} \&bone\+Control=\hyperlink{classirr_1_1scene_1_1ISkinningStateManager_a78f9d8d280dc029b3637bd3a48c0c3c6af91613b0a4c9ac338de93ff48a28885c}{I\+Skinning\+State\+Manager\+::\+E\+B\+U\+M\+\_\+\+N\+O\+NE})=0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a60eea4931588604b2e7569a3c6a26cea}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a60eea4931588604b2e7569a3c6a26cea}
+
+\begin{DoxyCompactList}\small\item\em Sets a new mesh. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1IGPUSkinnedMesh}{I\+G\+P\+U\+Skinned\+Mesh} $\ast$ \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a7a8dba15a9dd83b733282e8acbb3cdea}{get\+Mesh} (void)=0\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a7a8dba15a9dd83b733282e8acbb3cdea}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a7a8dba15a9dd83b733282e8acbb3cdea}
+
+\begin{DoxyCompactList}\small\item\em Returns the current mesh. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a64990a5ca347edafa131ccd0e4d60b8b}{animate\+Joints} ()=0
+\begin{DoxyCompactList}\small\item\em animates the joints in the mesh based on the current frame. \end{DoxyCompactList}\item 
+virtual \hyperlink{classirr_1_1scene_1_1ISceneNode}{I\+Scene\+Node} $\ast$ \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ad77d0172fd48b2f531acc734bc6a2d16}{clone} (\hyperlink{classirr_1_1scene_1_1IDummyTransformationSceneNode}{I\+Dummy\+Transformation\+Scene\+Node} $\ast$new\+Parent=0, \hyperlink{classirr_1_1scene_1_1ISceneManager}{I\+Scene\+Manager} $\ast$new\+Manager=0)
+\begin{DoxyCompactList}\small\item\em Creates a clone of this scene node and its children. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Scene node capable of displaying an Skinned mesh and its shadow. 
+
+The shadow is optional\+: If a shadow should be displayed too, just invoke the I\+Skinned\+Mesh\+Scene\+Node\+::create\+Shadow\+Volume\+Scene\+Node(). 
+
+\subsection{Member Function Documentation}
+\index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!animate\+Joints@{animate\+Joints}}
+\index{animate\+Joints@{animate\+Joints}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{animate\+Joints()=0}{animateJoints()=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::animate\+Joints (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a64990a5ca347edafa131ccd0e4d60b8b}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a64990a5ca347edafa131ccd0e4d60b8b}
+
+
+animates the joints in the mesh based on the current frame. 
+
+Also takes in to account transitions. \index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!clone@{clone}}
+\index{clone@{clone}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{clone(\+I\+Dummy\+Transformation\+Scene\+Node $\ast$new\+Parent=0, I\+Scene\+Manager $\ast$new\+Manager=0)}{clone(IDummyTransformationSceneNode *newParent=0, ISceneManager *newManager=0)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::clone (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Dummy\+Transformation\+Scene\+Node} $\ast$}]{new\+Parent = {\ttfamily 0}, }
+\item[{{\bf I\+Scene\+Manager} $\ast$}]{new\+Manager = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ad77d0172fd48b2f531acc734bc6a2d16}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ad77d0172fd48b2f531acc734bc6a2d16}
+
+
+Creates a clone of this scene node and its children. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Parent} & An optional new parent. \\
+\hline
+{\em new\+Manager} & An optional new scene manager. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The newly created clone of this node. 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classirr_1_1scene_1_1ISceneNode_a551a6aaa89346393a0868f609b79c133}{irr\+::scene\+::\+I\+Scene\+Node}.
+
+\index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!get\+Animation\+Speed@{get\+Animation\+Speed}}
+\index{get\+Animation\+Speed@{get\+Animation\+Speed}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Animation\+Speed() const  =0}{getAnimationSpeed() const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual float irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::get\+Animation\+Speed (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ad66f474edadb93b8cfbaa567ce667772}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ad66f474edadb93b8cfbaa567ce667772}
+
+
+Gets the speed with which the animation is played. 
+
+\begin{DoxyReturn}{Returns}
+Frames per second played. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!get\+Joint\+Node@{get\+Joint\+Node}}
+\index{get\+Joint\+Node@{get\+Joint\+Node}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Joint\+Node(const size\+\_\+t \&joint\+I\+D)=0}{getJointNode(const size\_t \&jointID)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf I\+Skinning\+State\+Manager\+::\+I\+Bone\+Scene\+Node}$\ast$ irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::get\+Joint\+Node (
+\begin{DoxyParamCaption}
+\item[{const size\+\_\+t \&}]{joint\+ID}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a9bdebc409416a8dc972046b94517e294}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a9bdebc409416a8dc972046b94517e294}
+
+
+Get a pointer to a joint in the mesh. 
+
+With this method it is possible to attach scene nodes to joints for example possible to attach a weapon to the left hand of an Skinned model. This example shows how\+: 
+\begin{DoxyCode}
+\hyperlink{classirr_1_1scene_1_1ISceneNode_a9e49a6113057f0e89cbdad6646a1fc14}{ISceneNode}* hand =
+    yourSkinnedMeshSceneNode->getJointNode(\textcolor{stringliteral}{"LeftHand"});
+hand->addChild(weaponSceneNode);
+\end{DoxyCode}
+ Please note that the joint returned by this method may not exist before this call and the joints in the node were created by it. 
+\begin{DoxyParams}{Parameters}
+{\em joint\+ID} & ID of the joint. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the scene node which represents the joint with the specified name. Returns 0 if the contained mesh is not an skinned mesh or the name of the joint could not be found. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!get\+Loop\+Mode@{get\+Loop\+Mode}}
+\index{get\+Loop\+Mode@{get\+Loop\+Mode}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Loop\+Mode() const  =0}{getLoopMode() const  =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::get\+Loop\+Mode (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a0c6f3c8a9d56cbe24acbdaa2bc0fa029}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a0c6f3c8a9d56cbe24acbdaa2bc0fa029}
+
+
+returns the current loop mode 
+
+When true the animations are played looped \index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!get\+Material@{get\+Material}}
+\index{get\+Material@{get\+Material}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{get\+Material(u32 i)=0}{getMaterial(u32 i)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf video\+::\+S\+Material}\& irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::get\+Material (
+\begin{DoxyParamCaption}
+\item[{{\bf u32}}]{i}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a38bb136fca8d4860b474c076447eba32}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a38bb136fca8d4860b474c076447eba32}
+returns the material based on the zero based index i. To get the amount of materials used by this scene node, use \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a55a2001d34463a4d84a206d4e5c74629}{get\+Material\+Count()}. This function is needed for inserting the node into the scene hirachy on a optimal position for minimizing renderstate changes, but can also be used to directly modify the material of a scene node. 
+
+Reimplemented from \hyperlink{classirr_1_1scene_1_1ISceneNode_a1f44d8cf753b2e4c17c90d4fc2ed05b2}{irr\+::scene\+::\+I\+Scene\+Node}.
+
+\index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!set\+Animation\+End\+Callback@{set\+Animation\+End\+Callback}}
+\index{set\+Animation\+End\+Callback@{set\+Animation\+End\+Callback}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Animation\+End\+Callback(\+I\+Animation\+End\+Call\+Back$<$ I\+Skinned\+Mesh\+Scene\+Node $>$ $\ast$callback=0)=0}{setAnimationEndCallback(IAnimationEndCallBack< ISkinnedMeshSceneNode > *callback=0)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::set\+Animation\+End\+Callback (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Animation\+End\+Call\+Back}$<$ {\bf I\+Skinned\+Mesh\+Scene\+Node} $>$ $\ast$}]{callback = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aff45c2cd4eb26d8ca6142109ea3e351f}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aff45c2cd4eb26d8ca6142109ea3e351f}
+
+
+Sets a callback interface which will be called if an animation playback has ended. 
+
+Set this to 0 to disable the callback again. Please note that this will only be called when in non looped mode, see \hyperlink{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a5dd774c3fa110e8bada9d4e53266dc34}{I\+Skinned\+Mesh\+Scene\+Node\+::set\+Loop\+Mode()}. \index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!set\+Animation\+Speed@{set\+Animation\+Speed}}
+\index{set\+Animation\+Speed@{set\+Animation\+Speed}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Animation\+Speed(const float \&frames\+Per\+Second)=0}{setAnimationSpeed(const float \&framesPerSecond)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::set\+Animation\+Speed (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{frames\+Per\+Second}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ae0c03f0f2db8fa1c58b2de49c3d31352}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ae0c03f0f2db8fa1c58b2de49c3d31352}
+
+
+Sets the speed with which the animation is played. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em frames\+Per\+Second} & Frames per second played. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!set\+Current\+Frame@{set\+Current\+Frame}}
+\index{set\+Current\+Frame@{set\+Current\+Frame}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Current\+Frame(const float \&frame)=0}{setCurrentFrame(const float \&frame)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::set\+Current\+Frame (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{frame}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ad545607e976621e97fe2df6aed1740e5}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_ad545607e976621e97fe2df6aed1740e5}
+
+
+Sets the current frame number. 
+
+From now on the animation is played from this frame. 
+\begin{DoxyParams}{Parameters}
+{\em frame} & Number of the frame to let the animation be started from. The frame number must be a valid frame number of the \hyperlink{classirr_1_1scene_1_1IMesh}{I\+Mesh} used by this scene node. Set I\+Skinned\+Mesh\+::get\+Mesh() for details. \\
+\hline
+\end{DoxyParams}
+\index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!set\+Desired\+Update\+Frequency@{set\+Desired\+Update\+Frequency}}
+\index{set\+Desired\+Update\+Frequency@{set\+Desired\+Update\+Frequency}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Desired\+Update\+Frequency(const float \&hertz)=0}{setDesiredUpdateFrequency(const float \&hertz)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::set\+Desired\+Update\+Frequency (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{hertz}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aaac892e54cfa06a6e98ffd3cafe6646f}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_aaac892e54cfa06a6e98ffd3cafe6646f}
+only for E\+B\+U\+M\+\_\+\+N\+O\+NE and E\+B\+U\+M\+\_\+\+R\+E\+AD, it dictates what is the actual frequency we want to bother updating the mesh because we don\textquotesingle{}t want to waste C\+PU time if we can tolerate the bones updating at 120\+Hz or similar \index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!set\+Frame\+Loop@{set\+Frame\+Loop}}
+\index{set\+Frame\+Loop@{set\+Frame\+Loop}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Frame\+Loop(const float \&begin, const float \&end)=0}{setFrameLoop(const float \&begin, const float \&end)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::set\+Frame\+Loop (
+\begin{DoxyParamCaption}
+\item[{const float \&}]{begin, }
+\item[{const float \&}]{end}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a9fe34b9fd091c5910f3fecedd90a30d5}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a9fe34b9fd091c5910f3fecedd90a30d5}
+
+
+Sets the frame numbers between the animation is looped. 
+
+The default is 0 -\/ Maximal\+Frame\+Count of the mesh. 
+\begin{DoxyParams}{Parameters}
+{\em begin} & Start frame number of the loop. \\
+\hline
+{\em end} & End frame number of the loop. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if successful, false if not. 
+\end{DoxyReturn}
+\index{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}!set\+Loop\+Mode@{set\+Loop\+Mode}}
+\index{set\+Loop\+Mode@{set\+Loop\+Mode}!irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node@{irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node}}
+\subsubsection[{\texorpdfstring{set\+Loop\+Mode(bool play\+Animation\+Looped)=0}{setLoopMode(bool playAnimationLooped)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void irr\+::scene\+::\+I\+Skinned\+Mesh\+Scene\+Node\+::set\+Loop\+Mode (
+\begin{DoxyParamCaption}
+\item[{bool}]{play\+Animation\+Looped}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a5dd774c3fa110e8bada9d4e53266dc34}{}\label{classirr_1_1scene_1_1ISkinnedMeshSceneNode_a5dd774c3fa110e8bada9d4e53266dc34}
+
+
+Sets looping mode which is on by default. 
+
+If set to false, animations will not be played looped. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+Skinned\+Mesh\+Scene\+Node.\+h\end{DoxyCompactItemize}

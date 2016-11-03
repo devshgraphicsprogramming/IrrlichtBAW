@@ -1,0 +1,93 @@
+\hypertarget{structirr_1_1video_1_1SLight}{}\section{irr\+:\+:video\+:\+:S\+Light Struct Reference}
+\label{structirr_1_1video_1_1SLight}\index{irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}}
+
+
+structure for holding data describing a dynamic point light.  
+
+
+
+
+{\ttfamily \#include $<$S\+Light.\+h$>$}
+
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classirr_1_1video_1_1SColorf}{S\+Colorf} \hyperlink{structirr_1_1video_1_1SLight_a120e9234a2141eb1fbe46cad23794e0e}{Ambient\+Color}\hypertarget{structirr_1_1video_1_1SLight_a120e9234a2141eb1fbe46cad23794e0e}{}\label{structirr_1_1video_1_1SLight_a120e9234a2141eb1fbe46cad23794e0e}
+
+\begin{DoxyCompactList}\small\item\em Ambient color emitted by the light. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1video_1_1SColorf}{S\+Colorf} \hyperlink{structirr_1_1video_1_1SLight_a226622e93aa1e249fe876fdb9d0186fe}{Diffuse\+Color}
+\begin{DoxyCompactList}\small\item\em Diffuse color emitted by the light. \end{DoxyCompactList}\item 
+\hyperlink{classirr_1_1video_1_1SColorf}{S\+Colorf} \hyperlink{structirr_1_1video_1_1SLight_a2d66ad28850a8588b2ba727103710604}{Specular\+Color}
+\begin{DoxyCompactList}\small\item\em Specular color emitted by the light. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1video_1_1SLight_a06c10ab01b8ad1ee554b956bd5baeacc}{Attenuation}
+\begin{DoxyCompactList}\small\item\em Attenuation factors (constant, linear, quadratic) \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} \hyperlink{structirr_1_1video_1_1SLight_a38ee805b9145d4ab1b1a889bbded9adc}{Outer\+Cone}\hypertarget{structirr_1_1video_1_1SLight_a38ee805b9145d4ab1b1a889bbded9adc}{}\label{structirr_1_1video_1_1SLight_a38ee805b9145d4ab1b1a889bbded9adc}
+
+\begin{DoxyCompactList}\small\item\em The angle of the spot\textquotesingle{}s outer cone. Ignored for other lights. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} \hyperlink{structirr_1_1video_1_1SLight_ab079c170fbab1e0a191e8801839d6c83}{Inner\+Cone}\hypertarget{structirr_1_1video_1_1SLight_ab079c170fbab1e0a191e8801839d6c83}{}\label{structirr_1_1video_1_1SLight_ab079c170fbab1e0a191e8801839d6c83}
+
+\begin{DoxyCompactList}\small\item\em The angle of the spot\textquotesingle{}s inner cone. Ignored for other lights. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} \hyperlink{structirr_1_1video_1_1SLight_a38cea8db5e6951a9d98802f2f249129d}{Falloff}\hypertarget{structirr_1_1video_1_1SLight_a38cea8db5e6951a9d98802f2f249129d}{}\label{structirr_1_1video_1_1SLight_a38cea8db5e6951a9d98802f2f249129d}
+
+\begin{DoxyCompactList}\small\item\em The light strength\textquotesingle{}s decrease between Outer and Inner cone. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1video_1_1SLight_ac1f0fda0cc1780b09a2597adcfc9c946}{Position}
+\begin{DoxyCompactList}\small\item\em Read-\/\+O\+N\+L\+Y! Position of the light. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1core_a06f169d08b5c429f5575acb7edbad811}{core\+::vector3df} \hyperlink{structirr_1_1video_1_1SLight_a226c488abec5696b995df6895ab42d41}{Direction}
+\begin{DoxyCompactList}\small\item\em Read-\/\+O\+N\+L\+Y! Direction of the light. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32} \hyperlink{structirr_1_1video_1_1SLight_a9f3fbdf2869d9beca604ba1cca7499cb}{Radius}\hypertarget{structirr_1_1video_1_1SLight_a9f3fbdf2869d9beca604ba1cca7499cb}{}\label{structirr_1_1video_1_1SLight_a9f3fbdf2869d9beca604ba1cca7499cb}
+
+\begin{DoxyCompactList}\small\item\em Read-\/\+O\+N\+L\+Y! Radius of light. Everything within this radius will be lighted. \end{DoxyCompactList}\item 
+\hyperlink{namespaceirr_1_1video_aaf0e02f6f83cc35cf9e764bf18400d39}{E\+\_\+\+L\+I\+G\+H\+T\+\_\+\+T\+Y\+PE} \hyperlink{structirr_1_1video_1_1SLight_ac06681bb78d4911775f50d33e21761b4}{Type}\hypertarget{structirr_1_1video_1_1SLight_ac06681bb78d4911775f50d33e21761b4}{}\label{structirr_1_1video_1_1SLight_ac06681bb78d4911775f50d33e21761b4}
+
+\begin{DoxyCompactList}\small\item\em Read-\/\+O\+N\+L\+Y! Type of the light. Default\+: E\+L\+T\+\_\+\+P\+O\+I\+NT. \end{DoxyCompactList}\item 
+bool \hyperlink{structirr_1_1video_1_1SLight_afbc66ada0baaf9f642d165fb8b11118b}{Cast\+Shadows}\+:1\hypertarget{structirr_1_1video_1_1SLight_afbc66ada0baaf9f642d165fb8b11118b}{}\label{structirr_1_1video_1_1SLight_afbc66ada0baaf9f642d165fb8b11118b}
+
+\begin{DoxyCompactList}\small\item\em Read-\/\+O\+N\+L\+Y! Does the light cast shadows? \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+structure for holding data describing a dynamic point light. 
+
+Irrlicht supports point lights, spot lights, and directional lights. 
+
+\subsection{Member Data Documentation}
+\index{irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}!Attenuation@{Attenuation}}
+\index{Attenuation@{Attenuation}!irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}}
+\subsubsection[{\texorpdfstring{Attenuation}{Attenuation}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf core\+::vector3df} irr\+::video\+::\+S\+Light\+::\+Attenuation}\hypertarget{structirr_1_1video_1_1SLight_a06c10ab01b8ad1ee554b956bd5baeacc}{}\label{structirr_1_1video_1_1SLight_a06c10ab01b8ad1ee554b956bd5baeacc}
+
+
+Attenuation factors (constant, linear, quadratic) 
+
+Changes the light strength fading over distance. Can also be altered by setting the radius, Attenuation will change to (0,1.\+f/radius,0). Can be overridden after radius was set. \index{irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}!Diffuse\+Color@{Diffuse\+Color}}
+\index{Diffuse\+Color@{Diffuse\+Color}!irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}}
+\subsubsection[{\texorpdfstring{Diffuse\+Color}{DiffuseColor}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+Colorf} irr\+::video\+::\+S\+Light\+::\+Diffuse\+Color}\hypertarget{structirr_1_1video_1_1SLight_a226622e93aa1e249fe876fdb9d0186fe}{}\label{structirr_1_1video_1_1SLight_a226622e93aa1e249fe876fdb9d0186fe}
+
+
+Diffuse color emitted by the light. 
+
+This is the primary color you want to set. \index{irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}!Direction@{Direction}}
+\index{Direction@{Direction}!irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}}
+\subsubsection[{\texorpdfstring{Direction}{Direction}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf core\+::vector3df} irr\+::video\+::\+S\+Light\+::\+Direction}\hypertarget{structirr_1_1video_1_1SLight_a226c488abec5696b995df6895ab42d41}{}\label{structirr_1_1video_1_1SLight_a226c488abec5696b995df6895ab42d41}
+
+
+Read-\/\+O\+N\+L\+Y! Direction of the light. 
+
+If Type is E\+L\+T\+\_\+\+P\+O\+I\+NT, it is ignored. Changed via light scene node\textquotesingle{}s rotation. \index{irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}!Position@{Position}}
+\index{Position@{Position}!irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}}
+\subsubsection[{\texorpdfstring{Position}{Position}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf core\+::vector3df} irr\+::video\+::\+S\+Light\+::\+Position}\hypertarget{structirr_1_1video_1_1SLight_ac1f0fda0cc1780b09a2597adcfc9c946}{}\label{structirr_1_1video_1_1SLight_ac1f0fda0cc1780b09a2597adcfc9c946}
+
+
+Read-\/\+O\+N\+L\+Y! Position of the light. 
+
+If Type is E\+L\+T\+\_\+\+D\+I\+R\+E\+C\+T\+I\+O\+N\+AL, it is ignored. Changed via light scene node\textquotesingle{}s position. \index{irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}!Specular\+Color@{Specular\+Color}}
+\index{Specular\+Color@{Specular\+Color}!irr\+::video\+::\+S\+Light@{irr\+::video\+::\+S\+Light}}
+\subsubsection[{\texorpdfstring{Specular\+Color}{SpecularColor}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\+Colorf} irr\+::video\+::\+S\+Light\+::\+Specular\+Color}\hypertarget{structirr_1_1video_1_1SLight_a2d66ad28850a8588b2ba727103710604}{}\label{structirr_1_1video_1_1SLight_a2d66ad28850a8588b2ba727103710604}
+
+
+Specular color emitted by the light. 
+
+For details how to use specular highlights, see \hyperlink{classirr_1_1video_1_1SMaterial_a877106a83108db6d1f30a38379d28494}{S\+Material\+::\+Shininess} 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/S\+Light.\+h\end{DoxyCompactItemize}

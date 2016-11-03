@@ -1,0 +1,733 @@
+\hypertarget{namespaceirr}{}\section{irr Namespace Reference}
+\label{namespaceirr}\index{irr@{irr}}
+
+
+Everything in the Irrlicht Engine can be found in this namespace.  
+
+
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespaceirr_1_1core}{core}
+\begin{DoxyCompactList}\small\item\em Basic classes such as vectors, planes, arrays, lists, and so on can be found in this namespace. \end{DoxyCompactList}\item 
+ \hyperlink{namespaceirr_1_1gui}{gui}
+\begin{DoxyCompactList}\small\item\em The gui namespace contains useful classes for easy creation of a graphical user interface. \end{DoxyCompactList}\item 
+ \hyperlink{namespaceirr_1_1io}{io}
+\begin{DoxyCompactList}\small\item\em This namespace provides interfaces for input/output\+: Reading and writing files, accessing zip archives, xml files, ... \end{DoxyCompactList}\item 
+ \hyperlink{namespaceirr_1_1scene}{scene}
+\begin{DoxyCompactList}\small\item\em All scene management can be found in this namespace\+: Mesh loading, special scene nodes like octrees and billboards, ... \end{DoxyCompactList}\item 
+ \hyperlink{namespaceirr_1_1video}{video}
+\begin{DoxyCompactList}\small\item\em The video namespace contains classes for accessing the video driver. All 2d and 3d rendering is done here. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classirr_1_1IEventReceiver}{I\+Event\+Receiver}
+\begin{DoxyCompactList}\small\item\em Interface of an object which can receive events. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1ILogger}{I\+Logger}
+\begin{DoxyCompactList}\small\item\em Interface for logging messages, warnings and errors. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1IOSOperator}{I\+O\+S\+Operator}
+\begin{DoxyCompactList}\small\item\em The Operating system operator provides operation system specific methods and informations. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1IRandomizer}{I\+Randomizer}
+\begin{DoxyCompactList}\small\item\em Interface for generating random numbers. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1IReferenceCounted}{I\+Reference\+Counted}
+\begin{DoxyCompactList}\small\item\em Base class of most objects of the Irrlicht Engine. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1IrrlichtDevice}{Irrlicht\+Device}
+\begin{DoxyCompactList}\small\item\em The Irrlicht device. You can create it with \hyperlink{namespaceirr_abaf4d8719cc26b0d30813abf85e47c76}{create\+Device()} or \hyperlink{namespaceirr_ac83a30d674204dcb94d70f849e9b4a62}{create\+Device\+Ex()}. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1ITimer}{I\+Timer}
+\begin{DoxyCompactList}\small\item\em Interface for getting and manipulating the virtual time. \end{DoxyCompactList}\item 
+struct \hyperlink{structirr_1_1SEvent}{S\+Event}
+\begin{DoxyCompactList}\small\item\em S\+Events hold information about an event. See \hyperlink{classirr_1_1IEventReceiver}{irr\+::\+I\+Event\+Receiver} for details on event handling. \end{DoxyCompactList}\item 
+struct \hyperlink{structirr_1_1SIrrlichtCreationParameters}{S\+Irrlicht\+Creation\+Parameters}
+\begin{DoxyCompactList}\small\item\em Structure for holding Irrlicht Device creation parameters. \end{DoxyCompactList}\item 
+struct \hyperlink{structirr_1_1SJoystickInfo}{S\+Joystick\+Info}
+\begin{DoxyCompactList}\small\item\em Information on a joystick, returned from \hyperlink{classirr_1_1IrrlichtDevice_af06f8d2c4fdffd1f879e46685bcbc6e3}{irr\+::\+Irrlicht\+Device\+::activate\+Joysticks()} \end{DoxyCompactList}\item 
+struct \hyperlink{structirr_1_1SKeyMap}{S\+Key\+Map}
+\begin{DoxyCompactList}\small\item\em Struct storing which key belongs to which action. \end{DoxyCompactList}\item 
+class \hyperlink{classirr_1_1vectorSIMD__32}{vector\+S\+I\+M\+D\+\_\+32}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef \hyperlink{classirr_1_1IrrlichtDevice}{Irrlicht\+Device} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV $\ast$ \hyperlink{namespaceirr_a0ab845f2df3820e04106b7625e9919cd}{funcptr\+\_\+create\+Device}(\hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0}{video\+::\+E\+\_\+\+D\+R\+I\+V\+E\+R\+\_\+\+T\+Y\+PE} device\+Type, const \hyperlink{classirr_1_1core_1_1dimension2d}{core\+::dimension2d}$<$ \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} $>$ \&window\+Size, \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} bits, bool fullscreen, bool stencilbuffer, bool vsync, \hyperlink{classirr_1_1IEventReceiver}{I\+Event\+Receiver} $\ast$receiver)\hypertarget{namespaceirr_a0ab845f2df3820e04106b7625e9919cd}{}\label{namespaceirr_a0ab845f2df3820e04106b7625e9919cd}
+
+\begin{DoxyCompactList}\small\item\em typedef for Function Pointer \end{DoxyCompactList}\item 
+typedef \hyperlink{classirr_1_1IrrlichtDevice}{Irrlicht\+Device} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV $\ast$ \hyperlink{namespaceirr_a5137701377b2241305607fc37a27e9f8}{funcptr\+\_\+create\+Device\+Ex}(const \hyperlink{structirr_1_1SIrrlichtCreationParameters}{S\+Irrlicht\+Creation\+Parameters} \&parameters)\hypertarget{namespaceirr_a5137701377b2241305607fc37a27e9f8}{}\label{namespaceirr_a5137701377b2241305607fc37a27e9f8}
+
+\begin{DoxyCompactList}\small\item\em typedef for Function Pointer \end{DoxyCompactList}\item 
+typedef unsigned char \hyperlink{namespaceirr_a646874f69af8ff87fc10201b0254a761}{u8}
+\begin{DoxyCompactList}\small\item\em 8 bit unsigned variable. \end{DoxyCompactList}\item 
+typedef signed char \hyperlink{namespaceirr_adc3ec66d7537550be0fea1c9eeadd63d}{s8}
+\begin{DoxyCompactList}\small\item\em 8 bit signed variable. \end{DoxyCompactList}\item 
+typedef char \hyperlink{namespaceirr_a9395eaea339bcb546b319e9c96bf7410}{c8}
+\begin{DoxyCompactList}\small\item\em 8 bit character variable. \end{DoxyCompactList}\item 
+typedef unsigned short \hyperlink{namespaceirr_ae9f8ec82692ad3b83c21f555bfa70bcc}{u16}
+\begin{DoxyCompactList}\small\item\em 16 bit unsigned variable. \end{DoxyCompactList}\item 
+typedef signed short \hyperlink{namespaceirr_a43ace0af066371ac0862bac3f7314220}{s16}
+\begin{DoxyCompactList}\small\item\em 16 bit signed variable. \end{DoxyCompactList}\item 
+typedef unsigned int \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32}
+\begin{DoxyCompactList}\small\item\em 32 bit unsigned variable. \end{DoxyCompactList}\item 
+typedef signed int \hyperlink{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{s32}
+\begin{DoxyCompactList}\small\item\em 32 bit signed variable. \end{DoxyCompactList}\item 
+typedef unsigned long long \hyperlink{namespaceirr_a9701cac11d289143453e212684075af7}{u64}
+\begin{DoxyCompactList}\small\item\em 64 bit unsigned variable. \end{DoxyCompactList}\item 
+typedef long long \hyperlink{namespaceirr_abf54bd535f8d4dd996270e68c3ad8c08}{s64}
+\begin{DoxyCompactList}\small\item\em 64 bit signed variable. \end{DoxyCompactList}\item 
+typedef float \hyperlink{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{f32}
+\begin{DoxyCompactList}\small\item\em 32 bit floating point variable. \end{DoxyCompactList}\item 
+typedef double \hyperlink{namespaceirr_a1325b02603ad449f92c68fc640af9b28}{f64}
+\begin{DoxyCompactList}\small\item\em 64 bit floating point variable. \end{DoxyCompactList}\item 
+typedef char \hyperlink{namespaceirr_a813cca9bac9fa0c1427d89720a451460}{fschar\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type name for character type used by the file system. \end{DoxyCompactList}\item 
+typedef vector\+S\+I\+M\+Df \hyperlink{namespaceirr_a1445105f2b4fe7ea5b025f5e6a0ccaa9}{vector4df\+\_\+\+S\+I\+MD}\hypertarget{namespaceirr_a1445105f2b4fe7ea5b025f5e6a0ccaa9}{}\label{namespaceirr_a1445105f2b4fe7ea5b025f5e6a0ccaa9}
+
+\begin{DoxyCompactList}\small\item\em Typedef for a f32 n-\/dimensional vector. \end{DoxyCompactList}\item 
+typedef vector\+S\+I\+M\+Df {\bfseries vector3df\+\_\+\+S\+I\+MD}\hypertarget{namespaceirr_a9bd4fb6624fb9daf76951d5c7aca0814}{}\label{namespaceirr_a9bd4fb6624fb9daf76951d5c7aca0814}
+
+\item 
+typedef vector\+S\+I\+M\+Df {\bfseries vector2df\+\_\+\+S\+I\+MD}\hypertarget{namespaceirr_a91d38da76b89a93a4e4e321db6f9a77e}{}\label{namespaceirr_a91d38da76b89a93a4e4e321db6f9a77e}
+
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505}{E\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE} \{ \\*
+\hyperlink{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a20fb61ff76bfa2269a5f9e41d50018f1}{E\+I\+D\+T\+\_\+\+W\+I\+N32}, 
+\hyperlink{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a839d8602c1a118791425d3df0d31ced1}{E\+I\+D\+T\+\_\+\+W\+I\+N\+CE}, 
+\hyperlink{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505aa084c40bd6cc595378d28182dd74ff80}{E\+I\+D\+T\+\_\+\+X11}, 
+\hyperlink{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a140f80a523981af1487cd774e9a2a656}{E\+I\+D\+T\+\_\+\+O\+SX}, 
+\\*
+\hyperlink{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505ab9cafb4f0108f3fd5da94e886b529979}{E\+I\+D\+T\+\_\+\+S\+DL}, 
+\hyperlink{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a5516da97d0b6ef1708a3a13cdb157bee}{E\+I\+D\+T\+\_\+\+F\+R\+A\+M\+E\+B\+U\+F\+F\+ER}, 
+\hyperlink{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a54387cdabc602203abce675b027a3ede}{E\+I\+D\+T\+\_\+\+C\+O\+N\+S\+O\+LE}, 
+\hyperlink{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505ad00f870da762af833dbab2eacc96ae0b}{E\+I\+D\+T\+\_\+\+B\+E\+ST}
+ \}\begin{DoxyCompactList}\small\item\em An enum for the different device types supported by the Irrlicht Engine. \end{DoxyCompactList}
+\item 
+enum \hyperlink{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0c}{E\+E\+V\+E\+N\+T\+\_\+\+T\+Y\+PE} \{ \\*
+\hyperlink{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0cae85bb44dd09a29c879d64a05047fc1d2}{E\+E\+T\+\_\+\+G\+U\+I\+\_\+\+E\+V\+E\+NT} = 0, 
+\hyperlink{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0caa230b748674e074aa67f661819ad5891}{E\+E\+T\+\_\+\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}, 
+\hyperlink{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca6f90390f3147a1693e5e2e3422d6ca09}{E\+E\+T\+\_\+\+K\+E\+Y\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}, 
+\hyperlink{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0cac81558e4607ad260e96ae0f7b889e9a5}{E\+E\+T\+\_\+\+J\+O\+Y\+S\+T\+I\+C\+K\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}, 
+\\*
+\hyperlink{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca8553b889c8da285c96b90116ae019952}{E\+E\+T\+\_\+\+L\+O\+G\+\_\+\+T\+E\+X\+T\+\_\+\+E\+V\+E\+NT}, 
+\hyperlink{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca4cc15ca95969a8b5d150c3d952ad06e4}{E\+E\+T\+\_\+\+U\+S\+E\+R\+\_\+\+E\+V\+E\+NT}, 
+\hyperlink{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca736f79f0892ace68311f62939cae5678}{E\+G\+U\+I\+E\+T\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+\_\+\+B\+IT} = 0x7fffffff
+ \}\begin{DoxyCompactList}\small\item\em Enumeration for all event types there are. \end{DoxyCompactList}
+\item 
+enum \hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739f}{E\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT} \{ \\*
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa3f551814f5f38596ea1f3ed7c6c7bad7}{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN} = 0, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fab54734344dc9cc7c00b33afcc6443575}{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN}, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa3daff77552ab92abc317afe09b41bc76}{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN}, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa26d91b99a8912ff622133f02c60f306a}{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP}, 
+\\*
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fadb92d5c1011534b2b18065573182d9f4}{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP}, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa13e6b5b0964334f1dbefae9848dc26df}{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP}, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fae3288f42ed4b8372853c1822bbc0a7a1}{E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+M\+O\+V\+ED}, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fad091f4f4144d57e46be11b029c3c6720}{E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+W\+H\+E\+EL}, 
+\\*
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa689d3c959226829a85d5dc005400c7ce}{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK}, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa90865e216488a0a92c030f220a5a69d6}{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK}, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa89b46e2e0e79ee26d9c2478ebe1dd9ee}{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK}, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa1145828528f7999720df3dd10a3a7de3}{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK}, 
+\\*
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fab24cbd2197b888022531799561c12b49}{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK}, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa72b90a632c6063a6f8e2fbf26187c9c6}{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK}, 
+\hyperlink{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa2cda06d009d09fc263752310cc64340f}{E\+M\+I\+E\+\_\+\+C\+O\+U\+NT}
+ \}\begin{DoxyCompactList}\small\item\em Enumeration for all mouse input events. \end{DoxyCompactList}
+\item 
+enum \hyperlink{namespaceirr_a7057ec6fd3bba7cbbab3593c9e405a86}{E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+B\+U\+T\+T\+O\+N\+\_\+\+S\+T\+A\+T\+E\+\_\+\+M\+A\+SK} \{ \\*
+{\bfseries E\+M\+B\+S\+M\+\_\+\+L\+E\+FT} = 0x01, 
+{\bfseries E\+M\+B\+S\+M\+\_\+\+R\+I\+G\+HT} = 0x02, 
+{\bfseries E\+M\+B\+S\+M\+\_\+\+M\+I\+D\+D\+LE} = 0x04, 
+\hyperlink{namespaceirr_a7057ec6fd3bba7cbbab3593c9e405a86ac0a92aabd6e6789f71b94f249f957f74}{E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A1} = 0x08, 
+\\*
+\hyperlink{namespaceirr_a7057ec6fd3bba7cbbab3593c9e405a86ac560dffdf74df8ceebaedc79f1bb7c11}{E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A2} = 0x10, 
+{\bfseries E\+M\+B\+S\+M\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+\_\+\+B\+IT} = 0x7fffffff
+ \}\begin{DoxyCompactList}\small\item\em Masks for mouse button states. \end{DoxyCompactList}
+\item 
+enum \hyperlink{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92}{E\+L\+O\+G\+\_\+\+L\+E\+V\+EL} \{ \\*
+\hyperlink{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a58d2a62ce004018e8bb6a29c732c70e3}{E\+L\+L\+\_\+\+D\+E\+B\+UG}, 
+\hyperlink{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a9d74de15737e326a91aec6f38c23f9cf}{E\+L\+L\+\_\+\+I\+N\+F\+O\+R\+M\+A\+T\+I\+ON}, 
+\hyperlink{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92ad3d7f6bdd2f842cfc17561ba4be95001}{E\+L\+L\+\_\+\+W\+A\+R\+N\+I\+NG}, 
+\hyperlink{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a1c16e615e15fc3f75bacb50faaeb73ff}{E\+L\+L\+\_\+\+E\+R\+R\+OR}, 
+\\*
+\hyperlink{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a558fe286a76cbba090c8301f7b1f7dcb}{E\+L\+L\+\_\+\+N\+O\+NE}
+ \}
+\item 
+enum {\bfseries E\+K\+E\+Y\+\_\+\+C\+O\+DE} \{ \\*
+{\bfseries K\+E\+Y\+\_\+\+L\+B\+U\+T\+T\+ON} = 0x01, 
+{\bfseries K\+E\+Y\+\_\+\+R\+B\+U\+T\+T\+ON} = 0x02, 
+{\bfseries K\+E\+Y\+\_\+\+C\+A\+N\+C\+EL} = 0x03, 
+{\bfseries K\+E\+Y\+\_\+\+M\+B\+U\+T\+T\+ON} = 0x04, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+X\+B\+U\+T\+T\+O\+N1} = 0x05, 
+{\bfseries K\+E\+Y\+\_\+\+X\+B\+U\+T\+T\+O\+N2} = 0x06, 
+{\bfseries K\+E\+Y\+\_\+\+B\+A\+CK} = 0x08, 
+{\bfseries K\+E\+Y\+\_\+\+T\+AB} = 0x09, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+C\+L\+E\+AR} = 0x0C, 
+{\bfseries K\+E\+Y\+\_\+\+R\+E\+T\+U\+RN} = 0x0D, 
+{\bfseries K\+E\+Y\+\_\+\+S\+H\+I\+FT} = 0x10, 
+{\bfseries K\+E\+Y\+\_\+\+C\+O\+N\+T\+R\+OL} = 0x11, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+M\+E\+NU} = 0x12, 
+{\bfseries K\+E\+Y\+\_\+\+P\+A\+U\+SE} = 0x13, 
+{\bfseries K\+E\+Y\+\_\+\+C\+A\+P\+I\+T\+AL} = 0x14, 
+{\bfseries K\+E\+Y\+\_\+\+K\+A\+NA} = 0x15, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+H\+A\+N\+G\+U\+EL} = 0x15, 
+{\bfseries K\+E\+Y\+\_\+\+H\+A\+N\+G\+UL} = 0x15, 
+{\bfseries K\+E\+Y\+\_\+\+P\+A\+S\+TE} = 0x16, 
+{\bfseries K\+E\+Y\+\_\+\+J\+U\+N\+JA} = 0x17, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+F\+I\+N\+AL} = 0x18, 
+{\bfseries K\+E\+Y\+\_\+\+H\+A\+N\+JA} = 0x19, 
+{\bfseries K\+E\+Y\+\_\+\+K\+A\+N\+JI} = 0x19, 
+{\bfseries K\+E\+Y\+\_\+\+E\+S\+C\+A\+PE} = 0x1B, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+C\+O\+N\+V\+E\+RT} = 0x1C, 
+{\bfseries K\+E\+Y\+\_\+\+N\+O\+N\+C\+O\+N\+V\+E\+RT} = 0x1D, 
+{\bfseries K\+E\+Y\+\_\+\+A\+C\+C\+E\+PT} = 0x1E, 
+{\bfseries K\+E\+Y\+\_\+\+M\+O\+D\+E\+C\+H\+A\+N\+GE} = 0x1F, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+S\+P\+A\+CE} = 0x20, 
+{\bfseries K\+E\+Y\+\_\+\+P\+R\+I\+OR} = 0x21, 
+{\bfseries K\+E\+Y\+\_\+\+N\+E\+XT} = 0x22, 
+{\bfseries K\+E\+Y\+\_\+\+E\+ND} = 0x23, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+H\+O\+ME} = 0x24, 
+{\bfseries K\+E\+Y\+\_\+\+L\+E\+FT} = 0x25, 
+{\bfseries K\+E\+Y\+\_\+\+UP} = 0x26, 
+{\bfseries K\+E\+Y\+\_\+\+R\+I\+G\+HT} = 0x27, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+D\+O\+WN} = 0x28, 
+{\bfseries K\+E\+Y\+\_\+\+S\+E\+L\+E\+CT} = 0x29, 
+{\bfseries K\+E\+Y\+\_\+\+P\+R\+I\+NT} = 0x2A, 
+{\bfseries K\+E\+Y\+\_\+\+E\+X\+E\+C\+UT} = 0x2B, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+S\+N\+A\+P\+S\+H\+OT} = 0x2C, 
+{\bfseries K\+E\+Y\+\_\+\+I\+N\+S\+E\+RT} = 0x2D, 
+{\bfseries K\+E\+Y\+\_\+\+D\+E\+L\+E\+TE} = 0x2E, 
+{\bfseries K\+E\+Y\+\_\+\+H\+E\+LP} = 0x2F, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+0} = 0x30, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+1} = 0x31, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+2} = 0x32, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+3} = 0x33, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+4} = 0x34, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+5} = 0x35, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+6} = 0x36, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+7} = 0x37, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+8} = 0x38, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+9} = 0x39, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+A} = 0x41, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+B} = 0x42, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+C} = 0x43, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+D} = 0x44, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+E} = 0x45, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+F} = 0x46, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+G} = 0x47, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+H} = 0x48, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+I} = 0x49, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+J} = 0x4A, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+K} = 0x4B, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+L} = 0x4C, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+M} = 0x4D, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+N} = 0x4E, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+O} = 0x4F, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+P} = 0x50, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+Q} = 0x51, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+R} = 0x52, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+S} = 0x53, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+T} = 0x54, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+U} = 0x55, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+V} = 0x56, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+W} = 0x57, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+X} = 0x58, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+Y} = 0x59, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+Z} = 0x5A, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+L\+W\+IN} = 0x5B, 
+{\bfseries K\+E\+Y\+\_\+\+R\+W\+IN} = 0x5C, 
+{\bfseries K\+E\+Y\+\_\+\+A\+P\+PS} = 0x5D, 
+{\bfseries K\+E\+Y\+\_\+\+S\+L\+E\+EP} = 0x5F, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+P\+A\+D0} = 0x60, 
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+P\+A\+D1} = 0x61, 
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+P\+A\+D2} = 0x62, 
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+P\+A\+D3} = 0x63, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+P\+A\+D4} = 0x64, 
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+P\+A\+D5} = 0x65, 
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+P\+A\+D6} = 0x66, 
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+P\+A\+D7} = 0x67, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+P\+A\+D8} = 0x68, 
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+P\+A\+D9} = 0x69, 
+{\bfseries K\+E\+Y\+\_\+\+M\+U\+L\+T\+I\+P\+LY} = 0x6A, 
+{\bfseries K\+E\+Y\+\_\+\+A\+DD} = 0x6B, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+S\+E\+P\+A\+R\+A\+T\+OR} = 0x6C, 
+{\bfseries K\+E\+Y\+\_\+\+S\+U\+B\+T\+R\+A\+CT} = 0x6D, 
+{\bfseries K\+E\+Y\+\_\+\+D\+E\+C\+I\+M\+AL} = 0x6E, 
+{\bfseries K\+E\+Y\+\_\+\+D\+I\+V\+I\+DE} = 0x6F, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+F1} = 0x70, 
+{\bfseries K\+E\+Y\+\_\+\+F2} = 0x71, 
+{\bfseries K\+E\+Y\+\_\+\+F3} = 0x72, 
+{\bfseries K\+E\+Y\+\_\+\+F4} = 0x73, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+F5} = 0x74, 
+{\bfseries K\+E\+Y\+\_\+\+F6} = 0x75, 
+{\bfseries K\+E\+Y\+\_\+\+F7} = 0x76, 
+{\bfseries K\+E\+Y\+\_\+\+F8} = 0x77, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+F9} = 0x78, 
+{\bfseries K\+E\+Y\+\_\+\+F10} = 0x79, 
+{\bfseries K\+E\+Y\+\_\+\+F11} = 0x7A, 
+{\bfseries K\+E\+Y\+\_\+\+F12} = 0x7B, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+F13} = 0x7C, 
+{\bfseries K\+E\+Y\+\_\+\+F14} = 0x7D, 
+{\bfseries K\+E\+Y\+\_\+\+F15} = 0x7E, 
+{\bfseries K\+E\+Y\+\_\+\+F16} = 0x7F, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+F17} = 0x80, 
+{\bfseries K\+E\+Y\+\_\+\+F18} = 0x81, 
+{\bfseries K\+E\+Y\+\_\+\+F19} = 0x82, 
+{\bfseries K\+E\+Y\+\_\+\+F20} = 0x83, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+F21} = 0x84, 
+{\bfseries K\+E\+Y\+\_\+\+F22} = 0x85, 
+{\bfseries K\+E\+Y\+\_\+\+F23} = 0x86, 
+{\bfseries K\+E\+Y\+\_\+\+F24} = 0x87, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+N\+U\+M\+L\+O\+CK} = 0x90, 
+{\bfseries K\+E\+Y\+\_\+\+S\+C\+R\+O\+LL} = 0x91, 
+{\bfseries K\+E\+Y\+\_\+\+L\+S\+H\+I\+FT} = 0x\+A0, 
+{\bfseries K\+E\+Y\+\_\+\+R\+S\+H\+I\+FT} = 0x\+A1, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+L\+C\+O\+N\+T\+R\+OL} = 0x\+A2, 
+{\bfseries K\+E\+Y\+\_\+\+R\+C\+O\+N\+T\+R\+OL} = 0x\+A3, 
+{\bfseries K\+E\+Y\+\_\+\+L\+M\+E\+NU} = 0x\+A4, 
+{\bfseries K\+E\+Y\+\_\+\+R\+M\+E\+NU} = 0x\+A5, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+1} = 0x\+BA, 
+{\bfseries K\+E\+Y\+\_\+\+P\+L\+US} = 0x\+BB, 
+{\bfseries K\+E\+Y\+\_\+\+C\+O\+M\+MA} = 0x\+BC, 
+{\bfseries K\+E\+Y\+\_\+\+M\+I\+N\+US} = 0x\+BD, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+P\+E\+R\+I\+OD} = 0x\+BE, 
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+2} = 0x\+BF, 
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+3} = 0x\+C0, 
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+4} = 0x\+DB, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+5} = 0x\+DC, 
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+6} = 0x\+DD, 
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+7} = 0x\+DE, 
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+8} = 0x\+DF, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+\+AX} = 0x\+E1, 
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+102} = 0x\+E2, 
+{\bfseries K\+E\+Y\+\_\+\+A\+T\+TN} = 0x\+F6, 
+{\bfseries K\+E\+Y\+\_\+\+C\+R\+S\+EL} = 0x\+F7, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+E\+X\+S\+EL} = 0x\+F8, 
+{\bfseries K\+E\+Y\+\_\+\+E\+R\+E\+OF} = 0x\+F9, 
+{\bfseries K\+E\+Y\+\_\+\+P\+L\+AY} = 0x\+FA, 
+{\bfseries K\+E\+Y\+\_\+\+Z\+O\+OM} = 0x\+FB, 
+\\*
+{\bfseries K\+E\+Y\+\_\+\+P\+A1} = 0x\+FD, 
+{\bfseries K\+E\+Y\+\_\+\+O\+E\+M\+\_\+\+C\+L\+E\+AR} = 0x\+FE, 
+{\bfseries K\+E\+Y\+\_\+\+K\+E\+Y\+\_\+\+C\+O\+D\+E\+S\+\_\+\+C\+O\+U\+NT} = 0x\+FF
+ \}\hypertarget{namespaceirr_a54da2a0e231901735e3da1b0edf72eb3}{}\label{namespaceirr_a54da2a0e231901735e3da1b0edf72eb3}
+
+\item 
+enum \hyperlink{namespaceirr_aa9946ac9f3142f9e790ce52d59fd6168}{E\+K\+E\+Y\+\_\+\+A\+C\+T\+I\+ON} \{ \\*
+{\bfseries E\+K\+A\+\_\+\+M\+O\+V\+E\+\_\+\+F\+O\+R\+W\+A\+RD} = 0, 
+{\bfseries E\+K\+A\+\_\+\+M\+O\+V\+E\+\_\+\+B\+A\+C\+K\+W\+A\+RD}, 
+{\bfseries E\+K\+A\+\_\+\+S\+T\+R\+A\+F\+E\+\_\+\+L\+E\+FT}, 
+{\bfseries E\+K\+A\+\_\+\+S\+T\+R\+A\+F\+E\+\_\+\+R\+I\+G\+HT}, 
+\\*
+{\bfseries E\+K\+A\+\_\+\+J\+U\+M\+P\+\_\+\+UP}, 
+{\bfseries E\+K\+A\+\_\+\+C\+R\+O\+U\+CH}, 
+{\bfseries E\+K\+A\+\_\+\+C\+O\+U\+NT}, 
+\hyperlink{namespaceirr_aa9946ac9f3142f9e790ce52d59fd6168a27e7067f9bc0bc5143b0bac183ca6c6b}{E\+K\+A\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+B\+IT} = 0x7fffffff
+ \}\begin{DoxyCompactList}\small\item\em enumeration for key actions. Used for example in the F\+PS Camera. \end{DoxyCompactList}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{classirr_1_1IrrlichtDevice}{Irrlicht\+Device} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_abaf4d8719cc26b0d30813abf85e47c76}{create\+Device} (\hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0}{video\+::\+E\+\_\+\+D\+R\+I\+V\+E\+R\+\_\+\+T\+Y\+PE} device\+Type=\hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0a1598cd235a1a6bd052e2011b559e8995}{video\+::\+E\+D\+T\+\_\+\+S\+O\+F\+T\+W\+A\+RE}, const \hyperlink{classirr_1_1core_1_1dimension2d}{core\+::dimension2d}$<$ \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} $>$ \&window\+Size=(\hyperlink{classirr_1_1core_1_1dimension2d}{core\+::dimension2d}$<$ \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} $>$(640, 480)), \hyperlink{namespaceirr_a0416a53257075833e7002efd0a18e804}{u32} bits=16, bool fullscreen=false, bool stencilbuffer=false, bool vsync=false, \hyperlink{classirr_1_1IEventReceiver}{I\+Event\+Receiver} $\ast$receiver=0)
+\begin{DoxyCompactList}\small\item\em Creates an Irrlicht device. The Irrlicht device is the root object for using the engine. \end{DoxyCompactList}\item 
+I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI \hyperlink{classirr_1_1IrrlichtDevice}{Irrlicht\+Device} $\ast$I\+R\+R\+C\+A\+L\+L\+C\+O\+NV \hyperlink{namespaceirr_ac83a30d674204dcb94d70f849e9b4a62}{create\+Device\+Ex} (const \hyperlink{structirr_1_1SIrrlichtCreationParameters}{S\+Irrlicht\+Creation\+Parameters} \&parameters)
+\begin{DoxyCompactList}\small\item\em Creates an Irrlicht device with the option to specify advanced parameters. \end{DoxyCompactList}\item 
+{\bfseries \+\_\+\+\_\+attribute\+\_\+\+\_\+} ((\+\_\+\+\_\+aligned\+\_\+\+\_\+(S\+I\+M\+D\+\_\+\+A\+L\+I\+G\+N\+M\+E\+NT)))\hypertarget{namespaceirr_a0ddd30252b9413995f4de49e41628d79}{}\label{namespaceirr_a0ddd30252b9413995f4de49e41628d79}
+
+\item 
+vector\+S\+I\+M\+Df \hyperlink{namespaceirr_ae1f6e17b55f855b5381596c4a2c70abb}{abs} (const vector\+S\+I\+M\+Df \&a)\hypertarget{namespaceirr_ae1f6e17b55f855b5381596c4a2c70abb}{}\label{namespaceirr_ae1f6e17b55f855b5381596c4a2c70abb}
+
+\begin{DoxyCompactList}\small\item\em Returns component-\/wise absolute value of a. \end{DoxyCompactList}\item 
+vector\+S\+I\+M\+Df {\bfseries rad\+To\+Deg} (const vector\+S\+I\+M\+Df \&radians)\hypertarget{namespaceirr_a066c66f19bdf0a8a5383d6f2c8fc0045}{}\label{namespaceirr_a066c66f19bdf0a8a5383d6f2c8fc0045}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries deg\+To\+Rad} (const vector\+S\+I\+M\+Df \&degrees)\hypertarget{namespaceirr_a4bedbe1338ca1e87d983c69f2df71fcd}{}\label{namespaceirr_a4bedbe1338ca1e87d983c69f2df71fcd}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries mix} (const vector\+S\+I\+M\+Df \&a, const vector\+S\+I\+M\+Df \&b, const vector\+S\+I\+M\+Df \&t)\hypertarget{namespaceirr_ae00f4a79d17e9736ab0c23aac565bbe0}{}\label{namespaceirr_ae00f4a79d17e9736ab0c23aac565bbe0}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries lerp} (const vector\+S\+I\+M\+Df \&a, const vector\+S\+I\+M\+Df \&b, const vector\+S\+I\+M\+Df \&t)\hypertarget{namespaceirr_a0b772bbfb1de86d50e908d20fe023c26}{}\label{namespaceirr_a0b772bbfb1de86d50e908d20fe023c26}
+
+\item 
+{\footnotesize template$<$$>$ }\\vector\+S\+I\+M\+Df {\bfseries max\+\_\+} (const vector\+S\+I\+M\+Df \&a, const vector\+S\+I\+M\+Df \&b)\hypertarget{namespaceirr_ada12ad51c343c2702bbcbe5ae39e2675}{}\label{namespaceirr_ada12ad51c343c2702bbcbe5ae39e2675}
+
+\item 
+{\footnotesize template$<$$>$ }\\vector\+S\+I\+M\+Df {\bfseries min\+\_\+} (const vector\+S\+I\+M\+Df \&a, const vector\+S\+I\+M\+Df \&b)\hypertarget{namespaceirr_aa94a773f770122d6d68f900a41a337ac}{}\label{namespaceirr_aa94a773f770122d6d68f900a41a337ac}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries clamp} (const vector\+S\+I\+M\+Df \&value, const vector\+S\+I\+M\+Df \&low, const vector\+S\+I\+M\+Df \&high)\hypertarget{namespaceirr_a9fc9bc39e5f647794c69693516ba0217}{}\label{namespaceirr_a9fc9bc39e5f647794c69693516ba0217}
+
+\item 
+vector4db\+\_\+\+S\+I\+MD {\bfseries equals} (const vector\+S\+I\+M\+Df \&a, const vector\+S\+I\+M\+Df \&b, const float tolerance)\hypertarget{namespaceirr_a632255cba1677a5414f9dbd8f34b7ce6}{}\label{namespaceirr_a632255cba1677a5414f9dbd8f34b7ce6}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries floor} (const vector\+S\+I\+M\+Df \&a)\hypertarget{namespaceirr_a913c3ea3611dc23b0fa62fd6e1348841}{}\label{namespaceirr_a913c3ea3611dc23b0fa62fd6e1348841}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries ceil} (const vector\+S\+I\+M\+Df \&a)\hypertarget{namespaceirr_a2ab9b9ed9c718fe4891c48f40ef6e8cc}{}\label{namespaceirr_a2ab9b9ed9c718fe4891c48f40ef6e8cc}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries fract} (const vector\+S\+I\+M\+Df \&a)\hypertarget{namespaceirr_a2ea9f347e3b1056ce5d974b19a832c30}{}\label{namespaceirr_a2ea9f347e3b1056ce5d974b19a832c30}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries sqrt} (const vector\+S\+I\+M\+Df \&a)\hypertarget{namespaceirr_a81e517d146fc58967964a00cabbb5fc3}{}\label{namespaceirr_a81e517d146fc58967964a00cabbb5fc3}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries inversesqrt} (const vector\+S\+I\+M\+Df \&a)\hypertarget{namespaceirr_a53e656bb85fc627fd78570e2ef4432ce}{}\label{namespaceirr_a53e656bb85fc627fd78570e2ef4432ce}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries reciprocal} (const vector\+S\+I\+M\+Df \&a)\hypertarget{namespaceirr_a1f503fb09c23545f0c1f1bcf82e096bb}{}\label{namespaceirr_a1f503fb09c23545f0c1f1bcf82e096bb}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries dot} (const vector\+S\+I\+M\+Df \&a, const vector\+S\+I\+M\+Df \&b)\hypertarget{namespaceirr_ae9fe6b99bb08338fef5ffa5d1107c05a}{}\label{namespaceirr_ae9fe6b99bb08338fef5ffa5d1107c05a}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries cross} (const vector\+S\+I\+M\+Df \&a, const vector\+S\+I\+M\+Df \&b)\hypertarget{namespaceirr_ad793371b2d476f613f660d76547ee36c}{}\label{namespaceirr_ad793371b2d476f613f660d76547ee36c}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries length} (const vector\+S\+I\+M\+Df \&v)\hypertarget{namespaceirr_a38b01789ebe90dc846880c7d0d52e055}{}\label{namespaceirr_a38b01789ebe90dc846880c7d0d52e055}
+
+\item 
+vector\+S\+I\+M\+Df {\bfseries normalize} (const vector\+S\+I\+M\+Df \&v)\hypertarget{namespaceirr_a3945df7f83f75c086d73ac6c7e956579}{}\label{namespaceirr_a3945df7f83f75c086d73ac6c7e956579}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Everything in the Irrlicht Engine can be found in this namespace. 
+
+\#define I\+R\+R\+\_\+\+T\+E\+S\+T\+\_\+\+B\+R\+O\+K\+E\+N\+\_\+\+Q\+U\+A\+T\+E\+R\+N\+I\+O\+N\+\_\+\+U\+SE 1
+
+As of Irrlicht 1.\+6, position2d is a synonym for vector2d.
+
+You should consider position2d to be deprecated, and use vector2d by preference. 
+
+\subsection{Typedef Documentation}
+\index{irr@{irr}!c8@{c8}}
+\index{c8@{c8}!irr@{irr}}
+\subsubsection[{\texorpdfstring{c8}{c8}}]{\setlength{\rightskip}{0pt plus 5cm}typedef char {\bf irr\+::c8}}\hypertarget{namespaceirr_a9395eaea339bcb546b319e9c96bf7410}{}\label{namespaceirr_a9395eaea339bcb546b319e9c96bf7410}
+
+
+8 bit character variable. 
+
+This is a typedef for char, it ensures portability of the engine. \index{irr@{irr}!f32@{f32}}
+\index{f32@{f32}!irr@{irr}}
+\subsubsection[{\texorpdfstring{f32}{f32}}]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf irr\+::f32}}\hypertarget{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}{}\label{namespaceirr_a0277be98d67dc26ff93b1a6a1d086b07}
+
+
+32 bit floating point variable. 
+
+This is a typedef for float, it ensures portability of the engine. \index{irr@{irr}!f64@{f64}}
+\index{f64@{f64}!irr@{irr}}
+\subsubsection[{\texorpdfstring{f64}{f64}}]{\setlength{\rightskip}{0pt plus 5cm}typedef double {\bf irr\+::f64}}\hypertarget{namespaceirr_a1325b02603ad449f92c68fc640af9b28}{}\label{namespaceirr_a1325b02603ad449f92c68fc640af9b28}
+
+
+64 bit floating point variable. 
+
+This is a typedef for double, it ensures portability of the engine. \index{irr@{irr}!fschar\+\_\+t@{fschar\+\_\+t}}
+\index{fschar\+\_\+t@{fschar\+\_\+t}!irr@{irr}}
+\subsubsection[{\texorpdfstring{fschar\+\_\+t}{fschar\_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef char {\bf irr\+::fschar\+\_\+t}}\hypertarget{namespaceirr_a813cca9bac9fa0c1427d89720a451460}{}\label{namespaceirr_a813cca9bac9fa0c1427d89720a451460}
+
+
+Type name for character type used by the file system. 
+
+Should the wide character version of the File\+System be used it is a 16 bit character variable. Used for unicode Filesystem and unicode strings. Else it is a 8 bit character variable. Used for ansi Filesystem and non-\/unicode strings \index{irr@{irr}!s16@{s16}}
+\index{s16@{s16}!irr@{irr}}
+\subsubsection[{\texorpdfstring{s16}{s16}}]{\setlength{\rightskip}{0pt plus 5cm}typedef signed short {\bf irr\+::s16}}\hypertarget{namespaceirr_a43ace0af066371ac0862bac3f7314220}{}\label{namespaceirr_a43ace0af066371ac0862bac3f7314220}
+
+
+16 bit signed variable. 
+
+This is a typedef for signed short, it ensures portability of the engine. \index{irr@{irr}!s32@{s32}}
+\index{s32@{s32}!irr@{irr}}
+\subsubsection[{\texorpdfstring{s32}{s32}}]{\setlength{\rightskip}{0pt plus 5cm}typedef signed int {\bf irr\+::s32}}\hypertarget{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}{}\label{namespaceirr_ac66849b7a6ed16e30ebede579f9b47c6}
+
+
+32 bit signed variable. 
+
+This is a typedef for signed int, it ensures portability of the engine. \index{irr@{irr}!s64@{s64}}
+\index{s64@{s64}!irr@{irr}}
+\subsubsection[{\texorpdfstring{s64}{s64}}]{\setlength{\rightskip}{0pt plus 5cm}typedef long long {\bf irr\+::s64}}\hypertarget{namespaceirr_abf54bd535f8d4dd996270e68c3ad8c08}{}\label{namespaceirr_abf54bd535f8d4dd996270e68c3ad8c08}
+
+
+64 bit signed variable. 
+
+This is a typedef for 64bit int, it ensures portability of the engine. \index{irr@{irr}!s8@{s8}}
+\index{s8@{s8}!irr@{irr}}
+\subsubsection[{\texorpdfstring{s8}{s8}}]{\setlength{\rightskip}{0pt plus 5cm}typedef signed char {\bf irr\+::s8}}\hypertarget{namespaceirr_adc3ec66d7537550be0fea1c9eeadd63d}{}\label{namespaceirr_adc3ec66d7537550be0fea1c9eeadd63d}
+
+
+8 bit signed variable. 
+
+This is a typedef for signed char, it ensures portability of the engine. \index{irr@{irr}!u16@{u16}}
+\index{u16@{u16}!irr@{irr}}
+\subsubsection[{\texorpdfstring{u16}{u16}}]{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned short {\bf irr\+::u16}}\hypertarget{namespaceirr_ae9f8ec82692ad3b83c21f555bfa70bcc}{}\label{namespaceirr_ae9f8ec82692ad3b83c21f555bfa70bcc}
+
+
+16 bit unsigned variable. 
+
+This is a typedef for unsigned short, it ensures portability of the engine. \index{irr@{irr}!u32@{u32}}
+\index{u32@{u32}!irr@{irr}}
+\subsubsection[{\texorpdfstring{u32}{u32}}]{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned int {\bf irr\+::u32}}\hypertarget{namespaceirr_a0416a53257075833e7002efd0a18e804}{}\label{namespaceirr_a0416a53257075833e7002efd0a18e804}
+
+
+32 bit unsigned variable. 
+
+This is a typedef for unsigned int, it ensures portability of the engine. \index{irr@{irr}!u64@{u64}}
+\index{u64@{u64}!irr@{irr}}
+\subsubsection[{\texorpdfstring{u64}{u64}}]{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned long long {\bf irr\+::u64}}\hypertarget{namespaceirr_a9701cac11d289143453e212684075af7}{}\label{namespaceirr_a9701cac11d289143453e212684075af7}
+
+
+64 bit unsigned variable. 
+
+This is a typedef for 64bit uint, it ensures portability of the engine. \index{irr@{irr}!u8@{u8}}
+\index{u8@{u8}!irr@{irr}}
+\subsubsection[{\texorpdfstring{u8}{u8}}]{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned char {\bf irr\+::u8}}\hypertarget{namespaceirr_a646874f69af8ff87fc10201b0254a761}{}\label{namespaceirr_a646874f69af8ff87fc10201b0254a761}
+
+
+8 bit unsigned variable. 
+
+This is a typedef for unsigned char, it ensures portability of the engine. 
+
+\subsection{Enumeration Type Documentation}
+\index{irr@{irr}!E\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE@{E\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE}}
+\index{E\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE@{E\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE}!irr@{irr}}
+\subsubsection[{\texorpdfstring{E\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE}{E\_DEVICE\_TYPE}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::\+E\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE}}\hypertarget{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505}{}\label{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505}
+
+
+An enum for the different device types supported by the Irrlicht Engine. 
+
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{E\+I\+D\+T\+\_\+\+W\+I\+N32@{E\+I\+D\+T\+\_\+\+W\+I\+N32}!irr@{irr}}\index{irr@{irr}!E\+I\+D\+T\+\_\+\+W\+I\+N32@{E\+I\+D\+T\+\_\+\+W\+I\+N32}}\item[{\em 
+E\+I\+D\+T\+\_\+\+W\+I\+N32\hypertarget{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a20fb61ff76bfa2269a5f9e41d50018f1}{}\label{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a20fb61ff76bfa2269a5f9e41d50018f1}
+}]A device native to Microsoft Windows. This device uses the Win32 A\+PI and works in all versions of Windows. \index{E\+I\+D\+T\+\_\+\+W\+I\+N\+CE@{E\+I\+D\+T\+\_\+\+W\+I\+N\+CE}!irr@{irr}}\index{irr@{irr}!E\+I\+D\+T\+\_\+\+W\+I\+N\+CE@{E\+I\+D\+T\+\_\+\+W\+I\+N\+CE}}\item[{\em 
+E\+I\+D\+T\+\_\+\+W\+I\+N\+CE\hypertarget{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a839d8602c1a118791425d3df0d31ced1}{}\label{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a839d8602c1a118791425d3df0d31ced1}
+}]A device native to Windows CE devices. This device works on Windows Mobile, Pocket PC and Microsoft Smart\+Phone devices \index{E\+I\+D\+T\+\_\+\+X11@{E\+I\+D\+T\+\_\+\+X11}!irr@{irr}}\index{irr@{irr}!E\+I\+D\+T\+\_\+\+X11@{E\+I\+D\+T\+\_\+\+X11}}\item[{\em 
+E\+I\+D\+T\+\_\+\+X11\hypertarget{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505aa084c40bd6cc595378d28182dd74ff80}{}\label{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505aa084c40bd6cc595378d28182dd74ff80}
+}]A device native to Unix style operating systems. This device uses the X11 windowing system and works in Linux, Solaris, Free\+B\+SD, O\+SX and other operating systems which support X11. \index{E\+I\+D\+T\+\_\+\+O\+SX@{E\+I\+D\+T\+\_\+\+O\+SX}!irr@{irr}}\index{irr@{irr}!E\+I\+D\+T\+\_\+\+O\+SX@{E\+I\+D\+T\+\_\+\+O\+SX}}\item[{\em 
+E\+I\+D\+T\+\_\+\+O\+SX\hypertarget{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a140f80a523981af1487cd774e9a2a656}{}\label{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a140f80a523981af1487cd774e9a2a656}
+}]A device native to Mac O\+SX. This device uses Apple\textquotesingle{}s Cocoa A\+PI and works in Mac O\+SX 10.\+2 and above. \index{E\+I\+D\+T\+\_\+\+S\+DL@{E\+I\+D\+T\+\_\+\+S\+DL}!irr@{irr}}\index{irr@{irr}!E\+I\+D\+T\+\_\+\+S\+DL@{E\+I\+D\+T\+\_\+\+S\+DL}}\item[{\em 
+E\+I\+D\+T\+\_\+\+S\+DL\hypertarget{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505ab9cafb4f0108f3fd5da94e886b529979}{}\label{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505ab9cafb4f0108f3fd5da94e886b529979}
+}]A device which uses Simple Direct\+Media Layer. The S\+DL device works under all platforms supported by S\+DL but first must be compiled in by defining the I\+R\+R\+\_\+\+U\+S\+E\+\_\+\+S\+D\+L\+\_\+\+D\+E\+V\+I\+CE macro in \hyperlink{IrrCompileConfig_8h_source}{Irr\+Compile\+Config.\+h} \index{E\+I\+D\+T\+\_\+\+F\+R\+A\+M\+E\+B\+U\+F\+F\+ER@{E\+I\+D\+T\+\_\+\+F\+R\+A\+M\+E\+B\+U\+F\+F\+ER}!irr@{irr}}\index{irr@{irr}!E\+I\+D\+T\+\_\+\+F\+R\+A\+M\+E\+B\+U\+F\+F\+ER@{E\+I\+D\+T\+\_\+\+F\+R\+A\+M\+E\+B\+U\+F\+F\+ER}}\item[{\em 
+E\+I\+D\+T\+\_\+\+F\+R\+A\+M\+E\+B\+U\+F\+F\+ER\hypertarget{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a5516da97d0b6ef1708a3a13cdb157bee}{}\label{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a5516da97d0b6ef1708a3a13cdb157bee}
+}]A device for raw framebuffer access. Best used with embedded devices and mobile systems. Does not need X11 or other graphical subsystems. May support hw-\/acceleration via Open\+G\+L-\/\+ES for F\+B\+Direct \index{E\+I\+D\+T\+\_\+\+C\+O\+N\+S\+O\+LE@{E\+I\+D\+T\+\_\+\+C\+O\+N\+S\+O\+LE}!irr@{irr}}\index{irr@{irr}!E\+I\+D\+T\+\_\+\+C\+O\+N\+S\+O\+LE@{E\+I\+D\+T\+\_\+\+C\+O\+N\+S\+O\+LE}}\item[{\em 
+E\+I\+D\+T\+\_\+\+C\+O\+N\+S\+O\+LE\hypertarget{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a54387cdabc602203abce675b027a3ede}{}\label{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505a54387cdabc602203abce675b027a3ede}
+}]A simple text only device supported by all platforms. This device allows applications to run from the command line without opening a window. It can render the output of the software drivers to the console as A\+S\+C\+II. It only supports mouse and keyboard in Windows operating systems. \index{E\+I\+D\+T\+\_\+\+B\+E\+ST@{E\+I\+D\+T\+\_\+\+B\+E\+ST}!irr@{irr}}\index{irr@{irr}!E\+I\+D\+T\+\_\+\+B\+E\+ST@{E\+I\+D\+T\+\_\+\+B\+E\+ST}}\item[{\em 
+E\+I\+D\+T\+\_\+\+B\+E\+ST\hypertarget{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505ad00f870da762af833dbab2eacc96ae0b}{}\label{namespaceirr_ac25d94cf2e1037c7ca18ee79b3bd4505ad00f870da762af833dbab2eacc96ae0b}
+}]This selection allows Irrlicht to choose the best device from the ones available. If this selection is chosen then Irrlicht will try to use the \hyperlink{classirr_1_1IrrlichtDevice}{Irrlicht\+Device} native to your operating system. If this is unavailable then the X11, S\+DL and then console device will be tried. This ensures that Irrlicht will run even if your platform is unsupported, although it may not be able to render anything. \end{description}
+\end{Desc}
+\index{irr@{irr}!E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+B\+U\+T\+T\+O\+N\+\_\+\+S\+T\+A\+T\+E\+\_\+\+M\+A\+SK@{E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+B\+U\+T\+T\+O\+N\+\_\+\+S\+T\+A\+T\+E\+\_\+\+M\+A\+SK}}
+\index{E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+B\+U\+T\+T\+O\+N\+\_\+\+S\+T\+A\+T\+E\+\_\+\+M\+A\+SK@{E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+B\+U\+T\+T\+O\+N\+\_\+\+S\+T\+A\+T\+E\+\_\+\+M\+A\+SK}!irr@{irr}}
+\subsubsection[{\texorpdfstring{E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+B\+U\+T\+T\+O\+N\+\_\+\+S\+T\+A\+T\+E\+\_\+\+M\+A\+SK}{E\_MOUSE\_BUTTON\_STATE\_MASK}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+B\+U\+T\+T\+O\+N\+\_\+\+S\+T\+A\+T\+E\+\_\+\+M\+A\+SK}}\hypertarget{namespaceirr_a7057ec6fd3bba7cbbab3593c9e405a86}{}\label{namespaceirr_a7057ec6fd3bba7cbbab3593c9e405a86}
+
+
+Masks for mouse button states. 
+
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A1@{E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A1}!irr@{irr}}\index{irr@{irr}!E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A1@{E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A1}}\item[{\em 
+E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A1\hypertarget{namespaceirr_a7057ec6fd3bba7cbbab3593c9e405a86ac0a92aabd6e6789f71b94f249f957f74}{}\label{namespaceirr_a7057ec6fd3bba7cbbab3593c9e405a86ac0a92aabd6e6789f71b94f249f957f74}
+}]currently only on windows \index{E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A2@{E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A2}!irr@{irr}}\index{irr@{irr}!E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A2@{E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A2}}\item[{\em 
+E\+M\+B\+S\+M\+\_\+\+E\+X\+T\+R\+A2\hypertarget{namespaceirr_a7057ec6fd3bba7cbbab3593c9e405a86ac560dffdf74df8ceebaedc79f1bb7c11}{}\label{namespaceirr_a7057ec6fd3bba7cbbab3593c9e405a86ac560dffdf74df8ceebaedc79f1bb7c11}
+}]currently only on windows \end{description}
+\end{Desc}
+\index{irr@{irr}!E\+E\+V\+E\+N\+T\+\_\+\+T\+Y\+PE@{E\+E\+V\+E\+N\+T\+\_\+\+T\+Y\+PE}}
+\index{E\+E\+V\+E\+N\+T\+\_\+\+T\+Y\+PE@{E\+E\+V\+E\+N\+T\+\_\+\+T\+Y\+PE}!irr@{irr}}
+\subsubsection[{\texorpdfstring{E\+E\+V\+E\+N\+T\+\_\+\+T\+Y\+PE}{EEVENT\_TYPE}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::\+E\+E\+V\+E\+N\+T\+\_\+\+T\+Y\+PE}}\hypertarget{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0c}{}\label{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0c}
+
+
+Enumeration for all event types there are. 
+
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{E\+E\+T\+\_\+\+G\+U\+I\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+G\+U\+I\+\_\+\+E\+V\+E\+NT}!irr@{irr}}\index{irr@{irr}!E\+E\+T\+\_\+\+G\+U\+I\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+G\+U\+I\+\_\+\+E\+V\+E\+NT}}\item[{\em 
+E\+E\+T\+\_\+\+G\+U\+I\+\_\+\+E\+V\+E\+NT\hypertarget{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0cae85bb44dd09a29c879d64a05047fc1d2}{}\label{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0cae85bb44dd09a29c879d64a05047fc1d2}
+}]An event of the graphical user interface. G\+UI events are created by the G\+UI environment or the G\+UI elements in response to mouse or keyboard events. When a G\+UI element receives an event it will either process it and return true, or pass the event to its parent. If an event is not absorbed before it reaches the root element then it will then be passed to the user receiver. \index{E\+E\+T\+\_\+\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}!irr@{irr}}\index{irr@{irr}!E\+E\+T\+\_\+\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}}\item[{\em 
+E\+E\+T\+\_\+\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT\hypertarget{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0caa230b748674e074aa67f661819ad5891}{}\label{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0caa230b748674e074aa67f661819ad5891}
+}]A mouse input event. Mouse events are created by the device and passed to \hyperlink{classirr_1_1IrrlichtDevice_abf859e39f017b0403c6ed331e48e01df}{Irrlicht\+Device\+::post\+Event\+From\+User} in response to mouse input received from the operating system. Mouse events are first passed to the user receiver, then to the G\+UI environment and its elements, then finally the input receiving scene manager where it is passed to the active camera. \index{E\+E\+T\+\_\+\+K\+E\+Y\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+K\+E\+Y\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}!irr@{irr}}\index{irr@{irr}!E\+E\+T\+\_\+\+K\+E\+Y\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+K\+E\+Y\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}}\item[{\em 
+E\+E\+T\+\_\+\+K\+E\+Y\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT\hypertarget{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca6f90390f3147a1693e5e2e3422d6ca09}{}\label{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca6f90390f3147a1693e5e2e3422d6ca09}
+}]A key input event. Like mouse events, keyboard events are created by the device and passed to \hyperlink{classirr_1_1IrrlichtDevice_abf859e39f017b0403c6ed331e48e01df}{Irrlicht\+Device\+::post\+Event\+From\+User}. They take the same path as mouse events. \index{E\+E\+T\+\_\+\+J\+O\+Y\+S\+T\+I\+C\+K\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+J\+O\+Y\+S\+T\+I\+C\+K\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}!irr@{irr}}\index{irr@{irr}!E\+E\+T\+\_\+\+J\+O\+Y\+S\+T\+I\+C\+K\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+J\+O\+Y\+S\+T\+I\+C\+K\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}}\item[{\em 
+E\+E\+T\+\_\+\+J\+O\+Y\+S\+T\+I\+C\+K\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT\hypertarget{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0cac81558e4607ad260e96ae0f7b889e9a5}{}\label{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0cac81558e4607ad260e96ae0f7b889e9a5}
+}]A joystick (joypad, gamepad) input event. Joystick events are created by polling all connected joysticks once per device run() and then passing the events to \hyperlink{classirr_1_1IrrlichtDevice_abf859e39f017b0403c6ed331e48e01df}{Irrlicht\+Device\+::post\+Event\+From\+User}. They take the same path as mouse events. Windows, S\+DL\+: Implemented. Linux\+: Implemented, with P\+OV hat issues. Mac\+OS / Other\+: Not yet implemented. \index{E\+E\+T\+\_\+\+L\+O\+G\+\_\+\+T\+E\+X\+T\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+L\+O\+G\+\_\+\+T\+E\+X\+T\+\_\+\+E\+V\+E\+NT}!irr@{irr}}\index{irr@{irr}!E\+E\+T\+\_\+\+L\+O\+G\+\_\+\+T\+E\+X\+T\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+L\+O\+G\+\_\+\+T\+E\+X\+T\+\_\+\+E\+V\+E\+NT}}\item[{\em 
+E\+E\+T\+\_\+\+L\+O\+G\+\_\+\+T\+E\+X\+T\+\_\+\+E\+V\+E\+NT\hypertarget{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca8553b889c8da285c96b90116ae019952}{}\label{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca8553b889c8da285c96b90116ae019952}
+}]A log event. Log events are only passed to the user receiver if there is one. If they are absorbed by the user receiver then no text will be sent to the console. \index{E\+E\+T\+\_\+\+U\+S\+E\+R\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+U\+S\+E\+R\+\_\+\+E\+V\+E\+NT}!irr@{irr}}\index{irr@{irr}!E\+E\+T\+\_\+\+U\+S\+E\+R\+\_\+\+E\+V\+E\+NT@{E\+E\+T\+\_\+\+U\+S\+E\+R\+\_\+\+E\+V\+E\+NT}}\item[{\em 
+E\+E\+T\+\_\+\+U\+S\+E\+R\+\_\+\+E\+V\+E\+NT\hypertarget{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca4cc15ca95969a8b5d150c3d952ad06e4}{}\label{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca4cc15ca95969a8b5d150c3d952ad06e4}
+}]A user event with user data. This is not used by Irrlicht and can be used to send user specific data though the system. The Irrlicht \textquotesingle{}window handle\textquotesingle{} can be obtained from Irrlicht\+Device\+::get\+Exposed\+Video\+Data() The usage and behavior depends on the operating system\+: Windows\+: send a W\+M\+\_\+\+U\+S\+ER message to the Irrlicht Window; the w\+Param and l\+Param will be used to populate the User\+Data1 and User\+Data2 members of the S\+User\+Event. Linux\+: send a Client\+Message via X\+Send\+Event to the Irrlicht Window; the data.\+l\mbox{[}0\mbox{]} and data.\+l\mbox{[}1\mbox{]} members will be casted to s32 and used as User\+Data1 and User\+Data2. Mac\+OS\+: Not yet implemented \index{E\+G\+U\+I\+E\+T\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+\_\+\+B\+IT@{E\+G\+U\+I\+E\+T\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+\_\+\+B\+IT}!irr@{irr}}\index{irr@{irr}!E\+G\+U\+I\+E\+T\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+\_\+\+B\+IT@{E\+G\+U\+I\+E\+T\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+\_\+\+B\+IT}}\item[{\em 
+E\+G\+U\+I\+E\+T\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+\_\+\+B\+IT\hypertarget{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca736f79f0892ace68311f62939cae5678}{}\label{namespaceirr_ac9eed96e06e85ce3c86fcbbbe9e48a0ca736f79f0892ace68311f62939cae5678}
+}]This enum is never used, it only forces the compiler to compile these enumeration values to 32 bit. \end{description}
+\end{Desc}
+\index{irr@{irr}!E\+K\+E\+Y\+\_\+\+A\+C\+T\+I\+ON@{E\+K\+E\+Y\+\_\+\+A\+C\+T\+I\+ON}}
+\index{E\+K\+E\+Y\+\_\+\+A\+C\+T\+I\+ON@{E\+K\+E\+Y\+\_\+\+A\+C\+T\+I\+ON}!irr@{irr}}
+\subsubsection[{\texorpdfstring{E\+K\+E\+Y\+\_\+\+A\+C\+T\+I\+ON}{EKEY\_ACTION}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::\+E\+K\+E\+Y\+\_\+\+A\+C\+T\+I\+ON}}\hypertarget{namespaceirr_aa9946ac9f3142f9e790ce52d59fd6168}{}\label{namespaceirr_aa9946ac9f3142f9e790ce52d59fd6168}
+
+
+enumeration for key actions. Used for example in the F\+PS Camera. 
+
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{E\+K\+A\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+B\+IT@{E\+K\+A\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+B\+IT}!irr@{irr}}\index{irr@{irr}!E\+K\+A\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+B\+IT@{E\+K\+A\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+B\+IT}}\item[{\em 
+E\+K\+A\+\_\+\+F\+O\+R\+C\+E\+\_\+32\+B\+IT\hypertarget{namespaceirr_aa9946ac9f3142f9e790ce52d59fd6168a27e7067f9bc0bc5143b0bac183ca6c6b}{}\label{namespaceirr_aa9946ac9f3142f9e790ce52d59fd6168a27e7067f9bc0bc5143b0bac183ca6c6b}
+}]This value is not used. It only forces this enumeration to compile in 32 bit. \end{description}
+\end{Desc}
+\index{irr@{irr}!E\+L\+O\+G\+\_\+\+L\+E\+V\+EL@{E\+L\+O\+G\+\_\+\+L\+E\+V\+EL}}
+\index{E\+L\+O\+G\+\_\+\+L\+E\+V\+EL@{E\+L\+O\+G\+\_\+\+L\+E\+V\+EL}!irr@{irr}}
+\subsubsection[{\texorpdfstring{E\+L\+O\+G\+\_\+\+L\+E\+V\+EL}{ELOG\_LEVEL}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::\+E\+L\+O\+G\+\_\+\+L\+E\+V\+EL}}\hypertarget{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92}{}\label{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92}
+Possible log levels. When used has filter E\+L\+L\+\_\+\+D\+E\+B\+UG means =$>$ log everything and E\+L\+L\+\_\+\+N\+O\+NE means =$>$ log (nearly) nothing. When used to print logging information E\+L\+L\+\_\+\+D\+E\+B\+UG will have lowest priority while E\+L\+L\+\_\+\+N\+O\+NE messages are never filtered and always printed. \begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{E\+L\+L\+\_\+\+D\+E\+B\+UG@{E\+L\+L\+\_\+\+D\+E\+B\+UG}!irr@{irr}}\index{irr@{irr}!E\+L\+L\+\_\+\+D\+E\+B\+UG@{E\+L\+L\+\_\+\+D\+E\+B\+UG}}\item[{\em 
+E\+L\+L\+\_\+\+D\+E\+B\+UG\hypertarget{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a58d2a62ce004018e8bb6a29c732c70e3}{}\label{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a58d2a62ce004018e8bb6a29c732c70e3}
+}]Used for printing information helpful in debugging. \index{E\+L\+L\+\_\+\+I\+N\+F\+O\+R\+M\+A\+T\+I\+ON@{E\+L\+L\+\_\+\+I\+N\+F\+O\+R\+M\+A\+T\+I\+ON}!irr@{irr}}\index{irr@{irr}!E\+L\+L\+\_\+\+I\+N\+F\+O\+R\+M\+A\+T\+I\+ON@{E\+L\+L\+\_\+\+I\+N\+F\+O\+R\+M\+A\+T\+I\+ON}}\item[{\em 
+E\+L\+L\+\_\+\+I\+N\+F\+O\+R\+M\+A\+T\+I\+ON\hypertarget{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a9d74de15737e326a91aec6f38c23f9cf}{}\label{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a9d74de15737e326a91aec6f38c23f9cf}
+}]Useful information to print. For example hardware infos or something started/stopped. \index{E\+L\+L\+\_\+\+W\+A\+R\+N\+I\+NG@{E\+L\+L\+\_\+\+W\+A\+R\+N\+I\+NG}!irr@{irr}}\index{irr@{irr}!E\+L\+L\+\_\+\+W\+A\+R\+N\+I\+NG@{E\+L\+L\+\_\+\+W\+A\+R\+N\+I\+NG}}\item[{\em 
+E\+L\+L\+\_\+\+W\+A\+R\+N\+I\+NG\hypertarget{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92ad3d7f6bdd2f842cfc17561ba4be95001}{}\label{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92ad3d7f6bdd2f842cfc17561ba4be95001}
+}]Warnings that something isn\textquotesingle{}t as expected and can cause oddities. \index{E\+L\+L\+\_\+\+E\+R\+R\+OR@{E\+L\+L\+\_\+\+E\+R\+R\+OR}!irr@{irr}}\index{irr@{irr}!E\+L\+L\+\_\+\+E\+R\+R\+OR@{E\+L\+L\+\_\+\+E\+R\+R\+OR}}\item[{\em 
+E\+L\+L\+\_\+\+E\+R\+R\+OR\hypertarget{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a1c16e615e15fc3f75bacb50faaeb73ff}{}\label{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a1c16e615e15fc3f75bacb50faaeb73ff}
+}]Something did go wrong. \index{E\+L\+L\+\_\+\+N\+O\+NE@{E\+L\+L\+\_\+\+N\+O\+NE}!irr@{irr}}\index{irr@{irr}!E\+L\+L\+\_\+\+N\+O\+NE@{E\+L\+L\+\_\+\+N\+O\+NE}}\item[{\em 
+E\+L\+L\+\_\+\+N\+O\+NE\hypertarget{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a558fe286a76cbba090c8301f7b1f7dcb}{}\label{namespaceirr_aa2d1cac68606a25ed24cfffccfa30a92a558fe286a76cbba090c8301f7b1f7dcb}
+}]Logs with E\+L\+L\+\_\+\+N\+O\+NE will never be filtered. And used as filter it will remove all logging except E\+L\+L\+\_\+\+N\+O\+NE messages. \end{description}
+\end{Desc}
+\index{irr@{irr}!E\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT@{E\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}}
+\index{E\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT@{E\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}!irr@{irr}}
+\subsubsection[{\texorpdfstring{E\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}{EMOUSE\_INPUT\_EVENT}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf irr\+::\+E\+M\+O\+U\+S\+E\+\_\+\+I\+N\+P\+U\+T\+\_\+\+E\+V\+E\+NT}}\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739f}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739f}
+
+
+Enumeration for all mouse input events. 
+
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN@{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN@{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN}}\item[{\em 
+E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa3f551814f5f38596ea1f3ed7c6c7bad7}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa3f551814f5f38596ea1f3ed7c6c7bad7}
+}]Left mouse button was pressed down. \index{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN@{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN@{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN}}\item[{\em 
+E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fab54734344dc9cc7c00b33afcc6443575}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fab54734344dc9cc7c00b33afcc6443575}
+}]Right mouse button was pressed down. \index{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN@{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN@{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN}}\item[{\em 
+E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa3daff77552ab92abc317afe09b41bc76}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa3daff77552ab92abc317afe09b41bc76}
+}]Middle mouse button was pressed down. \index{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP@{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP@{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP}}\item[{\em 
+E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa26d91b99a8912ff622133f02c60f306a}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa26d91b99a8912ff622133f02c60f306a}
+}]Left mouse button was left up. \index{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP@{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP@{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP}}\item[{\em 
+E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fadb92d5c1011534b2b18065573182d9f4}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fadb92d5c1011534b2b18065573182d9f4}
+}]Right mouse button was left up. \index{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP@{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP@{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP}}\item[{\em 
+E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+L\+E\+F\+T\+\_\+\+UP\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa13e6b5b0964334f1dbefae9848dc26df}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa13e6b5b0964334f1dbefae9848dc26df}
+}]Middle mouse button was left up. \index{E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+M\+O\+V\+ED@{E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+M\+O\+V\+ED}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+M\+O\+V\+ED@{E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+M\+O\+V\+ED}}\item[{\em 
+E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+M\+O\+V\+ED\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fae3288f42ed4b8372853c1822bbc0a7a1}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fae3288f42ed4b8372853c1822bbc0a7a1}
+}]The mouse cursor changed its position. \index{E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+W\+H\+E\+EL@{E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+W\+H\+E\+EL}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+W\+H\+E\+EL@{E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+W\+H\+E\+EL}}\item[{\em 
+E\+M\+I\+E\+\_\+\+M\+O\+U\+S\+E\+\_\+\+W\+H\+E\+EL\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fad091f4f4144d57e46be11b029c3c6720}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fad091f4f4144d57e46be11b029c3c6720}
+}]The mouse wheel was moved. Use Wheel value in event data to find out in what direction and how fast. \index{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK}}\item[{\em 
+E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa689d3c959226829a85d5dc005400c7ce}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa689d3c959226829a85d5dc005400c7ce}
+}]Left mouse button double click. This event is generated after the second E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN event. \index{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK}}\item[{\em 
+E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa90865e216488a0a92c030f220a5a69d6}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa90865e216488a0a92c030f220a5a69d6}
+}]Right mouse button double click. This event is generated after the second E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN event. \index{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK}}\item[{\em 
+E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+C\+L\+I\+CK\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa89b46e2e0e79ee26d9c2478ebe1dd9ee}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa89b46e2e0e79ee26d9c2478ebe1dd9ee}
+}]Middle mouse button double click. This event is generated after the second E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN event. \index{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK}}\item[{\em 
+E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa1145828528f7999720df3dd10a3a7de3}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa1145828528f7999720df3dd10a3a7de3}
+}]Left mouse button triple click. This event is generated after the third E\+M\+I\+E\+\_\+\+L\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN event. \index{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK}}\item[{\em 
+E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fab24cbd2197b888022531799561c12b49}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fab24cbd2197b888022531799561c12b49}
+}]Right mouse button triple click. This event is generated after the third E\+M\+I\+E\+\_\+\+R\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN event. \index{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK@{E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK}}\item[{\em 
+E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+T\+R\+I\+P\+L\+E\+\_\+\+C\+L\+I\+CK\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa72b90a632c6063a6f8e2fbf26187c9c6}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa72b90a632c6063a6f8e2fbf26187c9c6}
+}]Middle mouse button triple click. This event is generated after the third E\+M\+I\+E\+\_\+\+M\+M\+O\+U\+S\+E\+\_\+\+P\+R\+E\+S\+S\+E\+D\+\_\+\+D\+O\+WN event. \index{E\+M\+I\+E\+\_\+\+C\+O\+U\+NT@{E\+M\+I\+E\+\_\+\+C\+O\+U\+NT}!irr@{irr}}\index{irr@{irr}!E\+M\+I\+E\+\_\+\+C\+O\+U\+NT@{E\+M\+I\+E\+\_\+\+C\+O\+U\+NT}}\item[{\em 
+E\+M\+I\+E\+\_\+\+C\+O\+U\+NT\hypertarget{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa2cda06d009d09fc263752310cc64340f}{}\label{namespaceirr_a2dbf2a247aa17a9eeefbbf36ebd5739fa2cda06d009d09fc263752310cc64340f}
+}]No real event. Just for convenience to get number of events. \end{description}
+\end{Desc}
+
+
+\subsection{Function Documentation}
+\index{irr@{irr}!create\+Device@{create\+Device}}
+\index{create\+Device@{create\+Device}!irr@{irr}}
+\subsubsection[{\texorpdfstring{create\+Device(video\+::\+E\+\_\+\+D\+R\+I\+V\+E\+R\+\_\+\+T\+Y\+P\+E device\+Type=video\+::\+E\+D\+T\+\_\+\+S\+O\+F\+T\+W\+A\+R\+E, const core\+::dimension2d$<$ u32 $>$ \&window\+Size=(core\+::dimension2d$<$ u32 $>$(640, 480)), u32 bits=16, bool fullscreen=false, bool stencilbuffer=false, bool vsync=false, I\+Event\+Receiver $\ast$receiver=0)}{createDevice(video::E\_DRIVER\_TYPE deviceType=video::EDT\_SOFTWARE, const core::dimension2d< u32 > \&windowSize=(core::dimension2d< u32 >(640, 480)), u32 bits=16, bool fullscreen=false, bool stencilbuffer=false, bool vsync=false, IEventReceiver *receiver=0)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irrlicht\+Device}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::create\+Device (
+\begin{DoxyParamCaption}
+\item[{{\bf video\+::\+E\+\_\+\+D\+R\+I\+V\+E\+R\+\_\+\+T\+Y\+PE}}]{device\+Type = {\ttfamily {\bf video\+::\+E\+D\+T\+\_\+\+S\+O\+F\+T\+W\+A\+RE}}, }
+\item[{const {\bf core\+::dimension2d}$<$ {\bf u32} $>$ \&}]{window\+Size = {\ttfamily ({\bf core\+::dimension2d}$<$~{\bf u32}~$>$(640,~480))}, }
+\item[{{\bf u32}}]{bits = {\ttfamily 16}, }
+\item[{bool}]{fullscreen = {\ttfamily false}, }
+\item[{bool}]{stencilbuffer = {\ttfamily false}, }
+\item[{bool}]{vsync = {\ttfamily false}, }
+\item[{{\bf I\+Event\+Receiver} $\ast$}]{receiver = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_abaf4d8719cc26b0d30813abf85e47c76}{}\label{namespaceirr_abaf4d8719cc26b0d30813abf85e47c76}
+
+
+Creates an Irrlicht device. The Irrlicht device is the root object for using the engine. 
+
+If you need more parameters to be passed to the creation of the Irrlicht Engine device, use the \hyperlink{namespaceirr_ac83a30d674204dcb94d70f849e9b4a62}{create\+Device\+Ex()} function. 
+\begin{DoxyParams}{Parameters}
+{\em device\+Type} & Type of the device. This can currently be \hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0acfdbd476cbfd4d05e72f9adffcc42210}{video\+::\+E\+D\+T\+\_\+\+N\+U\+LL}, \hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0a1598cd235a1a6bd052e2011b559e8995}{video\+::\+E\+D\+T\+\_\+\+S\+O\+F\+T\+W\+A\+RE}, \hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0ae85481da26159b967191ccc6de1e4a05}{video\+::\+E\+D\+T\+\_\+\+B\+U\+R\+N\+I\+N\+G\+S\+V\+I\+D\+EO}, video\+::\+E\+D\+T\+\_\+\+D\+I\+R\+E\+C\+T3\+D8, video\+::\+E\+D\+T\+\_\+\+D\+I\+R\+E\+C\+T3\+D9 and \hyperlink{namespaceirr_1_1video_ae35a6de6d436c76107ad157fe42356d0a2715182a79f1cb8e2826fd68a8150a53}{video\+::\+E\+D\+T\+\_\+\+O\+P\+E\+N\+GL}. \\
+\hline
+{\em window\+Size} & Size of the window or the video mode in fullscreen mode. \\
+\hline
+{\em bits} & Bits per pixel in fullscreen mode. Ignored if windowed mode. \\
+\hline
+{\em fullscreen} & Should be set to true if the device should run in fullscreen. Otherwise the device runs in windowed mode. \\
+\hline
+{\em stencilbuffer} & Specifies if the stencil buffer should be enabled. Set this to true, if you want the engine be able to draw stencil buffer shadows. Note that not all devices are able to use the stencil buffer. If they don\textquotesingle{}t no shadows will be drawn. \\
+\hline
+{\em vsync} & Specifies vertical syncronisation\+: If set to true, the driver will wait for the vertical retrace period, otherwise not. \\
+\hline
+{\em receiver} & A user created event receiver. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns pointer to the created \hyperlink{classirr_1_1IrrlichtDevice}{Irrlicht\+Device} or null if the device could not be created. 
+\end{DoxyReturn}
+\index{irr@{irr}!create\+Device\+Ex@{create\+Device\+Ex}}
+\index{create\+Device\+Ex@{create\+Device\+Ex}!irr@{irr}}
+\subsubsection[{\texorpdfstring{create\+Device\+Ex(const S\+Irrlicht\+Creation\+Parameters \&parameters)}{createDeviceEx(const SIrrlichtCreationParameters \&parameters)}}]{\setlength{\rightskip}{0pt plus 5cm}I\+R\+R\+L\+I\+C\+H\+T\+\_\+\+A\+PI {\bf Irrlicht\+Device}$\ast$ I\+R\+R\+C\+A\+L\+L\+C\+O\+NV irr\+::create\+Device\+Ex (
+\begin{DoxyParamCaption}
+\item[{const {\bf S\+Irrlicht\+Creation\+Parameters} \&}]{parameters}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceirr_ac83a30d674204dcb94d70f849e9b4a62}{}\label{namespaceirr_ac83a30d674204dcb94d70f849e9b4a62}
+
+
+Creates an Irrlicht device with the option to specify advanced parameters. 
+
+Usually you should used \hyperlink{namespaceirr_abaf4d8719cc26b0d30813abf85e47c76}{create\+Device()} for creating an Irrlicht Engine device. Use this function only if you wish to specify advanced parameters like a window handle in which the device should be created. 
+\begin{DoxyParams}{Parameters}
+{\em parameters} & Structure containing advanced parameters for the creation of the device. See \hyperlink{structirr_1_1SIrrlichtCreationParameters}{irr\+::\+S\+Irrlicht\+Creation\+Parameters} for details. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns pointer to the created \hyperlink{classirr_1_1IrrlichtDevice}{Irrlicht\+Device} or null if the device could not be created. 
+\end{DoxyReturn}

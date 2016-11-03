@@ -1,0 +1,62 @@
+\hypertarget{classirr_1_1core_1_1ICPUBuffer}{}\section{irr\+:\+:core\+:\+:I\+C\+P\+U\+Buffer Class Reference}
+\label{classirr_1_1core_1_1ICPUBuffer}\index{irr\+::core\+::\+I\+C\+P\+U\+Buffer@{irr\+::core\+::\+I\+C\+P\+U\+Buffer}}
+
+
+Persistently Mapped buffer.  
+
+
+
+
+{\ttfamily \#include $<$I\+C\+P\+U\+Buffer.\+h$>$}
+
+Inheritance diagram for irr\+:\+:core\+:\+:I\+C\+P\+U\+Buffer\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classirr_1_1core_1_1ICPUBuffer}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries I\+C\+P\+U\+Buffer} (const size\+\_\+t \&size\+In\+Bytes)\hypertarget{classirr_1_1core_1_1ICPUBuffer_a6747a9dd7d4c2a42cd1fb910d629f4d2}{}\label{classirr_1_1core_1_1ICPUBuffer_a6747a9dd7d4c2a42cd1fb910d629f4d2}
+
+\item 
+virtual E\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+T\+Y\+PE {\bfseries get\+Buffer\+Type} () const \hypertarget{classirr_1_1core_1_1ICPUBuffer_aa590d78d044e599618e936702ad3c151}{}\label{classirr_1_1core_1_1ICPUBuffer_aa590d78d044e599618e936702ad3c151}
+
+\item 
+virtual const uint64\+\_\+t \& \hyperlink{classirr_1_1core_1_1ICPUBuffer_addfd5f5b83f7ff9614d80b8679082897}{get\+Size} () const \hypertarget{classirr_1_1core_1_1ICPUBuffer_addfd5f5b83f7ff9614d80b8679082897}{}\label{classirr_1_1core_1_1ICPUBuffer_addfd5f5b83f7ff9614d80b8679082897}
+
+\begin{DoxyCompactList}\small\item\em size in B\+Y\+T\+ES \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classirr_1_1core_1_1ICPUBuffer_ae223eb80a29ac3993b0bfa3e515ef5ce}{reallocate} (const size\+\_\+t \&new\+Size, const bool \&force\+Retention\+Of\+Data=false, const bool \&reallocate\+If\+Shrink=false)
+\item 
+virtual const void $\ast$ \hyperlink{classirr_1_1core_1_1ICPUBuffer_af4202485ff6630611fa9045c9f8018da}{get\+Pointer} () const \hypertarget{classirr_1_1core_1_1ICPUBuffer_af4202485ff6630611fa9045c9f8018da}{}\label{classirr_1_1core_1_1ICPUBuffer_af4202485ff6630611fa9045c9f8018da}
+
+\begin{DoxyCompactList}\small\item\em W\+A\+R\+N\+I\+NG\+: R\+E\+S\+I\+ZE will invalidate pointer. \end{DoxyCompactList}\item 
+virtual void $\ast$ {\bfseries get\+Pointer} ()\hypertarget{classirr_1_1core_1_1ICPUBuffer_aa63952d75dd3273a2a36feff79e9cf3d}{}\label{classirr_1_1core_1_1ICPUBuffer_aa63952d75dd3273a2a36feff79e9cf3d}
+
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Persistently Mapped buffer. 
+
+\subsection{Member Function Documentation}
+\index{irr\+::core\+::\+I\+C\+P\+U\+Buffer@{irr\+::core\+::\+I\+C\+P\+U\+Buffer}!reallocate@{reallocate}}
+\index{reallocate@{reallocate}!irr\+::core\+::\+I\+C\+P\+U\+Buffer@{irr\+::core\+::\+I\+C\+P\+U\+Buffer}}
+\subsubsection[{\texorpdfstring{reallocate(const size\+\_\+t \&new\+Size, const bool \&force\+Retention\+Of\+Data=false, const bool \&reallocate\+If\+Shrink=false)}{reallocate(const size\_t \&newSize, const bool \&forceRetentionOfData=false, const bool \&reallocateIfShrink=false)}}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool irr\+::core\+::\+I\+C\+P\+U\+Buffer\+::reallocate (
+\begin{DoxyParamCaption}
+\item[{const size\+\_\+t \&}]{new\+Size, }
+\item[{const bool \&}]{force\+Retention\+Of\+Data = {\ttfamily false}, }
+\item[{const bool \&}]{reallocate\+If\+Shrink = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}\hypertarget{classirr_1_1core_1_1ICPUBuffer_ae223eb80a29ac3993b0bfa3e515ef5ce}{}\label{classirr_1_1core_1_1ICPUBuffer_ae223eb80a29ac3993b0bfa3e515ef5ce}
+returns true on success (some types always return false since they dont support resize) This function will invalidate any sizes, pointers etc. returned before! 
+
+Implements \hyperlink{classirr_1_1core_1_1IBuffer_a725232c3869f003574d73707f40d7412}{irr\+::core\+::\+I\+Buffer}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/I\+C\+P\+U\+Buffer.\+h\end{DoxyCompactItemize}
