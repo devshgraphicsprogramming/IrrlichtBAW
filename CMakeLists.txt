@@ -24,8 +24,8 @@ cmake_policy(VERSION 2.6)
 
 PROJECT(Irrlicht)
 
-SET(CMAKE_MODULE_PATH 
-	${CMAKE_MODULE_PATH} 
+SET(CMAKE_MODULE_PATH
+	${CMAKE_MODULE_PATH}
 	${CMAKE_SOURCE_DIR}/CMake
 	${CMAKE_SOURCE_DIR}/CMake/Dependencies
 	${CMAKE_SOURCE_DIR}/CMake/Compiler
@@ -58,7 +58,7 @@ INCLUDE(OptionBuildExamples)
 INCLUDE(OptionInstallMediaFiles)
 
 # Generic definitions for all compilers and operating systems...
-ADD_DEFINITIONS(	
+ADD_DEFINITIONS(
 	-DPNG_THREAD_UNSAFE_OK
 	-DPNG_NO_MMX_CODE
 	-DPNG_NO_MNG_FEATURES
@@ -76,7 +76,7 @@ INCLUDE(WriteSettings)
 # Target settings
 SET_SOURCE_FILES_PROPERTIES(ALL_HEADER_FILES
                             PROPERTIES HEADER_FILE_ONLY TRUE)
-							
+
 LIST(APPEND ALL_SOURCE_FILES ${ALL_HEADER_FILES})
 
 # Cache back the flags (seems to be an error of cmake for msys makefile generator)
@@ -127,7 +127,7 @@ if (IRRLICHT_BUILD_EXAMPLES)
 	if (IRRLICHT_BUILD_EXAMPLES)
 		ADD_SUBDIRECTORY(examples)
 	endif ()
-	
+
 	if 	(ZZZ_EXAMPLE_SINGLE_COMPILE)
 		message(SEND_ERROR "The variable ZZZ_EXAMPLE_SINGLE_COMPILE must not be set when compiling the irrlicht library!")
 	endif ()

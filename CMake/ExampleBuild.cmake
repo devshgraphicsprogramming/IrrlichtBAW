@@ -19,8 +19,8 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
-SET(CMAKE_MODULE_PATH 
-	${CMAKE_MODULE_PATH} 
+SET(CMAKE_MODULE_PATH
+	${CMAKE_MODULE_PATH}
 	${CMAKE_CURRENT_LIST_DIR}/Dependencies
 	${CMAKE_CURRENT_LIST_DIR}/Compiler
 	${CMAKE_CURRENT_LIST_DIR}/OperatingSystems
@@ -29,7 +29,7 @@ SET(CMAKE_MODULE_PATH
 )
 
 FUNCTION(BUILD_APP_GENERIC APP_NAME APP_SOURCE_FILES APP_HEADER_FILES APP_INSTALL_FILES, APP_INSTALL_DIRS APP_IS_WIN32 APP_INSTALL_PATH)
-	
+
 	message(STATUS "    * Configure: ${APP_NAME}...")
 	project(${APP_NAME})
 
@@ -66,7 +66,7 @@ FUNCTION(BUILD_APP_GENERIC APP_NAME APP_SOURCE_FILES APP_HEADER_FILES APP_INSTAL
 			${ALL_APP_SOURCE_FILES}
 		)
 	endif ()
-	
+
 	# When the examples are build without irrlicht library, we need to apply the same settings like for irrlicht
 	if (ZZZ_EXAMPLE_SINGLE_COMPILE)
 		# Load compiler dependent settings...
@@ -86,7 +86,7 @@ FUNCTION(BUILD_APP_GENERIC APP_NAME APP_SOURCE_FILES APP_HEADER_FILES APP_INSTAL
 		INCLUDE(OptionInstallMediaFiles)
 
 		# Generic definitions for all compilers and operating systems...
-		ADD_DEFINITIONS(	
+		ADD_DEFINITIONS(
 			-DPNG_THREAD_UNSAFE_OK
 			-DPNG_NO_MMX_CODE
 			-DPNG_NO_MNG_FEATURES
@@ -96,11 +96,11 @@ FUNCTION(BUILD_APP_GENERIC APP_NAME APP_SOURCE_FILES APP_HEADER_FILES APP_INSTAL
 		INCLUDE(DependencyOpenGL)
 		INCLUDE(DependencyDirectX9)
 		INCLUDE(DependencyFontConfig)
-		INCLUDE(DependencyX11)		
-		INCLUDE(DependencyFreeType)		
-		
+		INCLUDE(DependencyX11)
+		INCLUDE(DependencyFreeType)
+
 	endif ()
-	
+
 	# Cache back the flags (seems to be an error of cmake for msys makefile generator)
 	if (NOT CFLAG_WRITE_BACK)
 		SET(CFLAG_WRITE_BACK TRUE CACHE BOOL "(do not change!)" FORCE)
@@ -108,30 +108,31 @@ FUNCTION(BUILD_APP_GENERIC APP_NAME APP_SOURCE_FILES APP_HEADER_FILES APP_INSTAL
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE STRING "compile flags" FORCE)
 		SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" CACHE STRING "compile flags" FORCE)
 	endif ()
-	
+
 	# Create target
 	if (APP_IS_WIN32)
 		ADD_EXECUTABLE(${APP_NAME} WIN32 ${ALL_APP_SOURCE_FILES})
 	else ()
 		ADD_EXECUTABLE(${APP_NAME} ${ALL_APP_SOURCE_FILES})
 	endif ()
-	TARGET_LINK_LIBRARIES(${APP_NAME} ${IRRLICHT_LIBRARY} ${IRRLICHT_DEPENDENCY_LIBRARIES} ${OS_DEPENDENT_LIBRARIES})
+	#TARGET_LINK_LIBRARIES(${APP_NAME} ${IRRLICHT_LIBRARY} ${IRRLICHT_DEPENDENCY_LIBRARIES} ${OS_DEPENDENT_LIBRARIES})
+    TARGET_LINK_LIBRARIES(${APP_NAME} Irrlicht ${IRRLICHT_DEPENDENCY_LIBRARIES} ${OS_DEPENDENT_LIBRARIES})
 
 	# Target installation
 	INSTALL(TARGETS ${APP_NAME}
 		RUNTIME DESTINATION  "${APP_INSTALL_PATH}" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
 	)
-	
+
 	# Install additional files
 	if (NOT "${APP_INSTALL_FILES}" STREQUAL "")
 		INSTALL(FILES ${APP_INSTALL_FILES} DESTINATION "${APP_INSTALL_PATH}")
 	endif ()
-	
+
 	# Install additional directories
 	if (NOT "${APP_INSTALL_DIRS}" STREQUAL "")
 		INSTALL(DIRECTORY ${APP_INSTALL_DIRS} DESTINATION "${APP_INSTALL_PATH}")
 	endif ()
-	
+
 	# Install shared library
 	if (NOT IRRLICHT_STATIC_LIBRARY)
 		INSTALL(FILES ${IRRLICHT_SHARED_BIN} DESTINATION  "${APP_INSTALL_PATH}")
@@ -146,7 +147,7 @@ FUNCTION(BUILD_APP_GENERIC APP_NAME APP_SOURCE_FILES APP_HEADER_FILES APP_INSTAL
 
 	# Basic settings check, in case the example is build as stand-alone
 	if (ZZZ_EXAMPLE_SINGLE_COMPILE)
-	
+
 		# check irrlicht include directory
 		if (NOT EXISTS "${IRRLICHT_INCLUDE_DIR}/")
 			message(SEND_ERROR "Irrlicht include path ${IRRLICHT_INCLUDE_DIR} does not exist. Build example might not be possible...")
@@ -170,7 +171,7 @@ FUNCTION(BUILD_APP_GENERIC APP_NAME APP_SOURCE_FILES APP_HEADER_FILES APP_INSTAL
 				message(WARNING "Irrlicht media path ${IRRLICHT_MEDIA_DIR} does not exist. Build example will not run without media files...")
 			endif ()
 		endif ()
-		
+
 	endif ()
 
 ENDFUNCTION()
