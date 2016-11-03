@@ -1,9 +1,9 @@
 #include <irrlicht.h>
 #include "driverChoice.h"
 
-#include "../source/Irrlicht/CGeometryCreator.h"
-#include "../source/Irrlicht/COpenGLExtensionHandler.h"
-#include "../source/Irrlicht/COpenGLBuffer.h"
+#include "CGeometryCreator.h"
+#include "COpenGLExtensionHandler.h"
+#include "COpenGLBuffer.h"
 
 using namespace irr;
 using namespace core;

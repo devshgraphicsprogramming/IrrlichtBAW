@@ -28,7 +28,6 @@ nothing fancy, just to show that Irrlicht links fine
 **/
 using namespace irr;
 
-
 /*
 The start of the main function starts like in most other example. We ask the
 user for the desired renderer and start it up.

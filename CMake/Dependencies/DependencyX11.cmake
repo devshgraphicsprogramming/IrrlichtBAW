@@ -25,6 +25,24 @@ if ((UNIX) OR ((APPLE) AND (IRRLICHT_ENABLE_X11_SUPPORT)))
 	message(STATUS "Looking for X11 library...")
 
 	find_package(X11)
+        find_package(XRandR)
+
+	if (X11_FOUND)
+	  MESSAGE(STATUS "XRandR library correctly Found:")
+	  MESSAGE(STATUS " * Include-Dir: ${X11_INCLUDE_DIR}")
+	  MESSAGE(STATUS " * Libraries: ${X11_LIBRARIES}")	
+
+	  INCLUDE_DIRECTORIES(
+	    ${XRANDR_INCLUDE_DIR}
+	    )
+	  
+	  SET(IRRLICHT_DEPENDENCY_LIBRARIES
+	    ${IRRLICHT_DEPENDENCY_LIBRARIES}
+	    ${XRANDR_LIBRARIES}
+	    )
+        else()
+	  MESSAGE(ERROR "XRandR library is missing. Please install it before start compiling.")
+        endif()
 
 	if (X11_FOUND)
 		MESSAGE(STATUS "X11 library correctly Found:")
