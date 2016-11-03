@@ -10,4 +10,4 @@ IrrlichtBAW is a fork of the free 3D engine Irrlicht, maintained by Build A Worl
 Contributors
 ============
 - devsh and BAW for the development of IrrlichtBAW and maintenance
-- André Netzeband and Brigham Keys wrote the CMake build
+- André Netzeband, Nicolas Ortega and Brigham Keys wrote the CMake build
