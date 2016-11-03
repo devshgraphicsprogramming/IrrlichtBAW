@@ -48,6 +48,10 @@ SET (IRRLICHT_PUBLIC_HEADER_FILES
   )
 
 SET (IRRMAIN_SOURCE_FILES
+  src/COpenGLTransformFeedback.cpp
+  src/COpenGLTransformFeedback.h
+  src/COpenGLQuery.cpp
+  src/COpenGLQuery.h
   src/C3DSMeshFileLoader.cpp
   src/CAnimatedMeshHalfLife.cpp
   src/CAnimatedMeshSceneNode.cpp
@@ -140,6 +144,8 @@ SET (IRRMAIN_SOURCE_FILES
   src/CSceneNodeAnimatorRotation.cpp
   src/CSceneNodeAnimatorTexture.cpp
   src/CSkinnedMesh.cpp
+  src/CSkinnedMeshSceneNode.cpp
+  src/CSkinnedMeshSceneNode.h
   src/CSkyBoxSceneNode.cpp
   src/CSkyDomeSceneNode.cpp
   src/CSMFMeshFileLoader.cpp
@@ -473,6 +479,8 @@ SET (LIBPNG_HEADER_FILES
   src/libpng/pngstruct.h
   )
 
+
+
 SET (LIBAESGM_SOURCE_FILES
   src/aesGladman/aescrypt.cpp
   src/aesGladman/aeskey.cpp
@@ -483,18 +491,19 @@ SET (LIBAESGM_SOURCE_FILES
   src/aesGladman/pwd2key.cpp
   src/aesGladman/sha1.cpp
   src/aesGladman/sha2.cpp
-)
+
+  )
 
 SET (LIBAESGM_HEADER_FILES
+  src/aesGladman/pwd2key.h
+  src/aesGladman/sha1.h
+  src/aesGladman/sha2.h
   src/aesGladman/aes.h
   src/aesGladman/aesopt.h
   src/aesGladman/fileenc.h
   src/aesGladman/hmac.h
   src/aesGladman/prng.h
-  src/aesGladman/pwd2key.h
-  src/aesGladman/sha1.h
-  src/aesGladman/sha2.h
-)
+  )
 
 SET (BZIP2_SOURCE_FILES
   src/bzip2/blocksort.c
@@ -513,6 +522,15 @@ SET (BZIP2_HEADER_FILES
   src/bzip2/bzlib_private.h
 )
 
+SET (LZMA_HEADER_FILES
+  src/lzma/LzmaDec.c
+  )
+
+SET (LZMA_SOURCE_FILES
+  src/lzma/LzmaDec.h
+  src/lzma/Types.h
+  )
+
 SET (ALL_SOURCE_FILES
 	${IRRMAIN_SOURCE_FILES}
         ${JPEGLIB_SOURCE_FILES}
@@ -520,6 +538,7 @@ SET (ALL_SOURCE_FILES
 	${LIBPNG_SOURCE_FILES}
 	${LIBAESGM_SOURCE_FILES}
         ${BZIP2_SOURCE_FILES}
+        ${LZMA_SOURCE_FILES}
 )
 
 SET (ALL_HEADER_FILES
@@ -530,4 +549,5 @@ SET (ALL_HEADER_FILES
 	${LIBPNG_HEADER_FILES}
 	${LIBAESGM_HEADER_FILES}
         ${BZIP2_HEADER_FILES}
+        ${LZMA_HEADER_FILES}
 )
