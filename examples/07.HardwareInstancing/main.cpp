@@ -2,7 +2,7 @@
 #include <irrlicht.h>
 #include "driverChoice.h"
 
-#include "../source/Irrlicht/CGeometryCreator.h"
+#include "CGeometryCreator.h"
 
 using namespace irr;
 using namespace core;

@@ -374,12 +374,6 @@ SET (ZLIB_HEADER_FILES
   )
 
 SET (JPEGLIB_SOURCE_FILES
-  src/jpeglib/ansi2knr.c
-  src/jpeglib/cdjpeg.c
-  src/jpeglib/cjpeg.c
-  src/jpeglib/ckconfig.c
-  src/jpeglib/djpeg.c
-  src/jpeglib/example.c
   src/jpeglib/jaricom.c
   src/jpeglib/jcapimin.c
   src/jpeglib/jcapistd.c
@@ -421,50 +415,28 @@ SET (JPEGLIB_SOURCE_FILES
   src/jpeglib/jidctflt.c
   src/jpeglib/jidctfst.c
   src/jpeglib/jidctint.c
-  src/jpeglib/jmemansi.c
-  src/jpeglib/jmemdos.c
-  src/jpeglib/jmemmac.c
   src/jpeglib/jmemmgr.c
-  src/jpeglib/jmemname.c
   src/jpeglib/jmemnobs.c
-  src/jpeglib/jpegtran.c
   src/jpeglib/jquant1.c
   src/jpeglib/jquant2.c
   src/jpeglib/jutils.c
-  src/jpeglib/rdbmp.c
-  src/jpeglib/rdcolmap.c
-  src/jpeglib/rdgif.c
-  src/jpeglib/rdjpgcom.c
-  src/jpeglib/rdppm.c
-  src/jpeglib/rdrle.c
-  src/jpeglib/rdswitch.c
-  src/jpeglib/rdtarga.c
-  src/jpeglib/transupp.c
-  src/jpeglib/wrbmp.c
-  src/jpeglib/wrgif.c
-  src/jpeglib/wrjpgcom.c
-  src/jpeglib/wrppm.c
-  src/jpeglib/wrrle.c
-  src/jpeglib/wrtarga.c
   )
 
 INCLUDE_DIRECTORIES(
-  source/Irrlicht/jpeglib 
+  src/jpeglib 
   )
 
 SET (JPEGLIB_HEADER_FILES
-  src/jpeglib/cderror.h
-  src/jpeglib/cdjpeg.h
-  src/jpeglib/jconfig.h
-  src/jpeglib/jdct.h
-  src/jpeglib/jerror.h
-  src/jpeglib/jinclude.h
-  src/jpeglib/jmemsys.h
-  src/jpeglib/jmorecfg.h
-  src/jpeglib/jpegint.h
-  src/jpeglib/jpeglib.h
-  src/jpeglib/jversion.h
-  src/jpeglib/transupp.h
+  src/jpeglib/cderror.h 
+  src/jpeglib/jmemsys.h 
+  src/jpeglib/jmorecfg.h 
+  src/jpeglib/jconfig.h 
+  src/jpeglib/jdct.h 
+  src/jpeglib/jerror.h 
+  src/jpeglib/jinclude.h 
+  src/jpeglib/jpegint.h 
+  src/jpeglib/jpeglib.h 
+  src/jpeglib/jversion.h 
   )
 
 SET (LIBPNG_SOURCE_FILES
@@ -527,18 +499,14 @@ SET (LIBAESGM_HEADER_FILES
 SET (BZIP2_SOURCE_FILES
   src/bzip2/blocksort.c
   src/bzip2/bzcompress.c
-  src/bzip2/bzip2.c
-  src/bzip2/bzip2recover.c
   src/bzip2/bzlib.c
+  src/bzip2/bzlib.h
+  src/bzip2/bzlib_private.h
   src/bzip2/crctable.c
   src/bzip2/decompress.c
-  src/bzip2/dlltest.c
   src/bzip2/huffman.c
-  src/bzip2/mk251.c
   src/bzip2/randtable.c
-  src/bzip2/spewG.c
-  src/bzip2/unzcrash.c
-)
+  )
 
 SET (BZIP2_HEADER_FILES
   src/bzip2/bzlib.h
@@ -547,15 +515,19 @@ SET (BZIP2_HEADER_FILES
 
 SET (ALL_SOURCE_FILES
 	${IRRMAIN_SOURCE_FILES}
+        ${JPEGLIB_SOURCE_FILES}
 	${ZLIB_SOURCE_FILES}
 	${LIBPNG_SOURCE_FILES}
 	${LIBAESGM_SOURCE_FILES}
+        ${BZIP2_SOURCE_FILES}
 )
 
 SET (ALL_HEADER_FILES
+        ${JPEGLIB_HEADER_FILES}
 	${IRRLICHT_PUBLIC_HEADER_FILES}
 	${IRRLICHT_PRIVATE_HEADER_FILES}
 	${ZLIB_HEADER_FILES}
 	${LIBPNG_HEADER_FILES}
 	${LIBAESGM_HEADER_FILES}
+        ${BZIP2_HEADER_FILES}
 )
