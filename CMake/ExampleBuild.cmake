@@ -99,10 +99,6 @@ FUNCTION(BUILD_APP_GENERIC APP_NAME APP_SOURCE_FILES APP_HEADER_FILES APP_INSTAL
 		INCLUDE(DependencyX11)		
 		INCLUDE(DependencyFreeType)		
 		
-		# Print all settings
-		#INCLUDE(PrintSettings)
-		#INCLUDE(WriteSettings)
-
 	endif ()
 	
 	# Cache back the flags (seems to be an error of cmake for msys makefile generator)
