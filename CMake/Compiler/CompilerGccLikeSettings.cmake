@@ -36,7 +36,7 @@ endif ()
 
 if (GCC_LIKE_COMPILER)
 	SET (CMAKE_CXX_FLAGS
-		"${CMAKE_CXX_FLAGS} -pipe -fno-exceptions -fstrict-aliasing -std=gnu++98 -g -fstack-protector-all -fno-omit-frame-pointer -fno-exceptions -fuse-ld=gold -msse3 -ggdb3 -D_IRR_STATIC_LIB_ -D_DEBUG -w"
+		"${CMAKE_CXX_FLAGS} -pipe -fno-exceptions -fstrict-aliasing -std=gnu++98 -g -fstack-protector-all -fno-omit-frame-pointer -fno-exceptions -fuse-ld=gold -msse3 -ggdb3 -D_IRR_STATIC_LIB_ -D_DEBUG -w -pthread"
 #		"${CMAKE_CXX_FLAGS} -pipe -fno-exceptions -fno-rtti -fstrict-aliasing -std=gnu++98 -g -fstack-protector-all -fno-omit-frame-pointer -fno-exceptions -fuse-ld=gold -msse3 -ggdb3 -D_IRR_STATIC_LIB_ -D_DEBUG -w"
 #		"${CMAKE_CXX_FLAGS} -Wall -pipe -fno-exceptions -fno-rtti -fstrict-aliasing -std=gnu++98 -Wextra -Wall -g -W -fstack-protector-all -Wno-unused-parameter -fno-omit-frame-pointer -fno-exceptions -fuse-ld=gold -msse3 -ggdb3 -D_IRR_STATIC_LIB_ -D_DEBUG"
 

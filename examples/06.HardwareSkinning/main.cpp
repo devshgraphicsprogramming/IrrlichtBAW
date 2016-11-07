@@ -135,7 +135,7 @@ int main()
 	MyEventReceiver receiver;
 	device->setEventReceiver(&receiver);
 
-        #define kInstanceSquareSize 10
+        unsigned int kInstanceSquareSize = 20;
 	scene::ISceneNode* instancesToRemove[kInstanceSquareSize*kInstanceSquareSize];
 
 	//! Test Loading of Obj

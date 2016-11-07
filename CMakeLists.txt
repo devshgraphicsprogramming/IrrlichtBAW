@@ -51,7 +51,6 @@ INCLUDE(WindowsSettings)
 
 # Load option depending settings...
 INCLUDE(OptionProfiling)
-INCLUDE(OptionDirectX9)
 INCLUDE(OptionX11Support)
 INCLUDE(OptionStaticLib)
 INCLUDE(OptionBuildExamples)
@@ -66,7 +65,6 @@ ADD_DEFINITIONS(
 
 # Add dependency definitions
 INCLUDE(DependencyOpenGL)
-INCLUDE(DependencyDirectX9)
 INCLUDE(DependencyX11)
 
 # Print all settings
