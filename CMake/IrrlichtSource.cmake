@@ -333,7 +333,7 @@ SET (IRRLICHT_PRIVATE_HEADER_FILES
   src/ISceneNodeAnimatorFinishing.h
   src/ITriangleRenderer.h
   src/IZBuffer.h
-  src/os.h
+  include/os.h
   src/resource.h
   src/S2DVertex.h
   src/S4DVertex.h

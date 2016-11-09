@@ -85,7 +85,7 @@
 #include <stdlib.h>     /* for _lrotr with VC++     */
 
 #include "sha2.h"
-#include "../os.h"
+#include "os.h"
 
 /*  BYTE ORDER IN 32-BIT WORDS
 
