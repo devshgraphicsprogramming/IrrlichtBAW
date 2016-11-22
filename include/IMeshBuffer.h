@@ -23,7 +23,7 @@ namespace scene
 
     enum E_VERTEX_ATTRIBUTE_ID
     {
-        EVAI_ATTR0=0,
+        EVAI_ATTR0=0, //!< Individual vertex values in the mesh
         EVAI_ATTR1,
         EVAI_ATTR2,
         EVAI_ATTR3,
