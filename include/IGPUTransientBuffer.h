@@ -10,7 +10,7 @@
 #include "IVideoDriver.h"
 #include "IDriverFence.h"
 #include <vector>
-#include "../source/Irrlicht/os.h"
+#include "os.h"
 
 class FW_Mutex;
 class FW_ConditionVariable;
