@@ -262,7 +262,7 @@ int main()
 			str += " PrimitvesDrawn:";
 			str += driver->getPrimitiveCountDrawn();
 
-			device->setWindowCaption(str.c_str());
+			device->setWindowCaption(str.c_str());;
 			lastFPSTime = time;
 		}
 	}
