@@ -12,74 +12,74 @@ namespace scene
 
 //! constructor
 CSceneNodeAnimatorFlyStraight::CSceneNodeAnimatorFlyStraight(const core::vector3df& startPoint,
-				const core::vector3df& endPoint, uint32_t timeForWay,
-				bool loop, uint32_t now, bool pingpong)
+                const core::vector3df& endPoint, uint32_t timeForWay,
+                bool loop, uint32_t now, bool pingpong)
 : ISceneNodeAnimatorFinishing(now + timeForWay),
-	Start(startPoint), End(endPoint), TimeFactor(0.0f), StartTime(now),
-	TimeForWay(timeForWay), Loop(loop), PingPong(pingpong)
+    Start(startPoint), End(endPoint), TimeFactor(0.0f), StartTime(now),
+    TimeForWay(timeForWay), Loop(loop), PingPong(pingpong)
 {
-	#ifdef _DEBUG
-	setDebugName("CSceneNodeAnimatorFlyStraight");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CSceneNodeAnimatorFlyStraight");
+    #endif
 
-	recalculateIntermediateValues();
+    recalculateIntermediateValues();
 }
 
 
 void CSceneNodeAnimatorFlyStraight::recalculateIntermediateValues()
 {
-	Vector = End - Start;
-	TimeFactor = (float)Vector.getLength() / TimeForWay;
-	Vector.normalize();
+    Vector = End - Start;
+    TimeFactor = (float)Vector.getLength() / TimeForWay;
+    Vector.normalize();
 }
 
 
 //! animates a scene node
 void CSceneNodeAnimatorFlyStraight::animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs)
 {
-	if (!node)
-		return;
+    if (!node)
+        return;
 
-	uint32_t t = (timeMs-StartTime);
+    uint32_t t = (timeMs-StartTime);
 
-	core::vector3df pos;
+    core::vector3df pos;
 
-	if (!Loop && !PingPong && t >= TimeForWay)
-	{
-		pos = End;
-		HasFinished = true;
-	}
-	else if (!Loop && PingPong && t >= TimeForWay * 2.f )
-	{
-		pos = Start;
-		HasFinished = true;
-	}
-	else
-	{
-		float phase = fmodf( (float) t, (float) TimeForWay );
-		core::vector3df rel = Vector * phase * TimeFactor;
-		const bool pong = PingPong && fmodf( (float) t, (float) TimeForWay*2.f ) >= TimeForWay;
+    if (!Loop && !PingPong && t >= TimeForWay)
+    {
+        pos = End;
+        HasFinished = true;
+    }
+    else if (!Loop && PingPong && t >= TimeForWay * 2.f )
+    {
+        pos = Start;
+        HasFinished = true;
+    }
+    else
+    {
+        float phase = fmodf( (float) t, (float) TimeForWay );
+        core::vector3df rel = Vector * phase * TimeFactor;
+        const bool pong = PingPong && fmodf( (float) t, (float) TimeForWay*2.f ) >= TimeForWay;
 
-		if ( !pong )
-		{
-			pos += Start + rel;
-		}
-		else
-		{
-			pos = End - rel;
-		}
-	}
+        if ( !pong )
+        {
+            pos += Start + rel;
+        }
+        else
+        {
+            pos = End - rel;
+        }
+    }
 
-	node->setPosition(pos);
+    node->setPosition(pos);
 }
 
 
 ISceneNodeAnimator* CSceneNodeAnimatorFlyStraight::createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager)
 {
-	CSceneNodeAnimatorFlyStraight * newAnimator =
-		new CSceneNodeAnimatorFlyStraight(Start, End, TimeForWay, Loop, StartTime, PingPong);
+    CSceneNodeAnimatorFlyStraight * newAnimator =
+        new CSceneNodeAnimatorFlyStraight(Start, End, TimeForWay, Loop, StartTime, PingPong);
 
-	return newAnimator;
+    return newAnimator;
 }
 
 

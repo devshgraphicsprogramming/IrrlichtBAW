@@ -17,27 +17,27 @@ namespace irr
 //! ask user for driver
 static irr::video::E_DRIVER_TYPE driverChoiceConsole(bool allDrivers=true)
 {
-	const char* const names[] = {"NullDriver","Software Renderer","Burning's Video","Direct3D 8.1","Direct3D 9.0c","OpenGL 1.x/2.x/3.x"};
-	printf("Please select the driver you want:\n");
-	uint32_t i=0;
-	for (i=irr::video::EDT_COUNT; i>0; --i)
-	{
-		if (allDrivers || (irr::IrrlichtDevice::isDriverSupported(irr::video::E_DRIVER_TYPE(i-1))))
-			printf(" (%c) %s\n", 'a'+irr::video::EDT_COUNT-i, names[i-1]);
-	}
+    const char* const names[] = {"NullDriver","Software Renderer","Burning's Video","Direct3D 8.1","Direct3D 9.0c","OpenGL 1.x/2.x/3.x"};
+    printf("Please select the driver you want:\n");
+    uint32_t i=0;
+    for (i=irr::video::EDT_COUNT; i>0; --i)
+    {
+        if (allDrivers || (irr::IrrlichtDevice::isDriverSupported(irr::video::E_DRIVER_TYPE(i-1))))
+            printf(" (%c) %s\n", 'a'+irr::video::EDT_COUNT-i, names[i-1]);
+    }
 
-	char c;
-	std::cin >> c;
-	c = irr::video::EDT_COUNT+'a'-c;
+    char c;
+    std::cin >> c;
+    c = irr::video::EDT_COUNT+'a'-c;
 
-	for (i=irr::video::EDT_COUNT; i>0; --i)
-	{
-		if (!(allDrivers || (irr::IrrlichtDevice::isDriverSupported(irr::video::E_DRIVER_TYPE(i-1)))))
-			--c;
-		if ((char)i==c)
-			return irr::video::E_DRIVER_TYPE(i-1);
-	}
-	return irr::video::EDT_COUNT;
+    for (i=irr::video::EDT_COUNT; i>0; --i)
+    {
+        if (!(allDrivers || (irr::IrrlichtDevice::isDriverSupported(irr::video::E_DRIVER_TYPE(i-1)))))
+            --c;
+        if ((char)i==c)
+            return irr::video::E_DRIVER_TYPE(i-1);
+    }
+    return irr::video::EDT_COUNT;
 }
 
 } // end namespace irr

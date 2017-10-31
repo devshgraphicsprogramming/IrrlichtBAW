@@ -287,7 +287,7 @@ PFNGLSTENCILFUNCSEPARATEPROC COpenGLExtensionHandler::pGlStencilFuncSeparate = N
 PFNGLSTENCILOPSEPARATEPROC COpenGLExtensionHandler::pGlStencilOpSeparate = NULL;
 PFNGLSTENCILFUNCSEPARATEATIPROC COpenGLExtensionHandler::pGlStencilFuncSeparateATI = NULL;
 PFNGLSTENCILOPSEPARATEATIPROC COpenGLExtensionHandler::pGlStencilOpSeparateATI = NULL;
-		// ARB framebuffer object
+        // ARB framebuffer object
 PFNGLBLITNAMEDFRAMEBUFFERPROC COpenGLExtensionHandler::pGlBlitNamedFramebuffer = NULL;
 PFNGLBLITFRAMEBUFFERPROC COpenGLExtensionHandler::pGlBlitFramebuffer = NULL;
 PFNGLDELETEFRAMEBUFFERSPROC COpenGLExtensionHandler::pGlDeleteFramebuffers = NULL;
@@ -313,7 +313,7 @@ PFNGLNAMEDRENDERBUFFERSTORAGEEXTPROC COpenGLExtensionHandler::pGlNamedRenderbuff
 PFNGLFRAMEBUFFERRENDERBUFFERPROC COpenGLExtensionHandler::pGlFramebufferRenderbuffer = NULL;
 PFNGLNAMEDFRAMEBUFFERRENDERBUFFERPROC COpenGLExtensionHandler::pGlNamedFramebufferRenderbuffer = NULL;
 PFNGLNAMEDFRAMEBUFFERRENDERBUFFEREXTPROC COpenGLExtensionHandler::pGlNamedFramebufferRenderbufferEXT = NULL;
-		// EXT framebuffer object
+        // EXT framebuffer object
 PFNGLACTIVESTENCILFACEEXTPROC COpenGLExtensionHandler::pGlActiveStencilFaceEXT = NULL;
 PFNGLNAMEDFRAMEBUFFERREADBUFFERPROC COpenGLExtensionHandler::pGlNamedFramebufferReadBuffer = NULL;
 PFNGLFRAMEBUFFERREADBUFFEREXTPROC COpenGLExtensionHandler::pGlFramebufferReadBufferEXT = NULL;
@@ -481,21 +481,21 @@ core::LeakDebugger COpenGLExtensionHandler::textureLeaker("GLTex");
 
 
 COpenGLExtensionHandler::COpenGLExtensionHandler() :
-		StencilBuffer(false),
-		TextureCompressionExtension(false),
-		MaxTextureUnits(1), MaxLights(1),
-		MaxAnisotropy(1), MaxUserClipPlanes(0), MaxAuxBuffers(0),
-		MaxMultipleRenderTargets(1),
-		MaxTextureLODBias(0.f), ShaderLanguageVersion(0)
+        StencilBuffer(false),
+        TextureCompressionExtension(false),
+        MaxTextureUnits(1), MaxLights(1),
+        MaxAnisotropy(1), MaxUserClipPlanes(0), MaxAuxBuffers(0),
+        MaxMultipleRenderTargets(1),
+        MaxTextureLODBias(0.f), ShaderLanguageVersion(0)
 {
-	DimAliasedLine[0]=1.f;
-	DimAliasedLine[1]=1.f;
-	DimAliasedPoint[0]=1.f;
-	DimAliasedPoint[1]=1.f;
-	DimSmoothedLine[0]=1.f;
-	DimSmoothedLine[1]=1.f;
-	DimSmoothedPoint[0]=1.f;
-	DimSmoothedPoint[1]=1.f;
+    DimAliasedLine[0]=1.f;
+    DimAliasedLine[1]=1.f;
+    DimAliasedPoint[0]=1.f;
+    DimAliasedPoint[1]=1.f;
+    DimSmoothedLine[0]=1.f;
+    DimSmoothedLine[1]=1.f;
+    DimSmoothedPoint[0]=1.f;
+    DimSmoothedPoint[1]=1.f;
 }
 
 
@@ -536,211 +536,211 @@ void COpenGLExtensionHandler::dump(std::string* outStr, bool onlyAvailable) cons
 void COpenGLExtensionHandler::dumpFramebufferFormats() const
 {
 #ifdef _IRR_WINDOWS_API_
-	HDC hdc=wglGetCurrentDC();
-	std::string wglExtensions;
+    HDC hdc=wglGetCurrentDC();
+    std::string wglExtensions;
 #ifdef WGL_ARB_extensions_string
-	PFNWGLGETEXTENSIONSSTRINGARBPROC irrGetExtensionsString = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
-	if (irrGetExtensionsString)
-		wglExtensions = irrGetExtensionsString(hdc);
+    PFNWGLGETEXTENSIONSSTRINGARBPROC irrGetExtensionsString = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
+    if (irrGetExtensionsString)
+        wglExtensions = irrGetExtensionsString(hdc);
 #elif defined(WGL_EXT_extensions_string)
-	PFNWGLGETEXTENSIONSSTRINGEXTPROC irrGetExtensionsString = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
-	if (irrGetExtensionsString)
-		wglExtensions = irrGetExtensionsString(hdc);
+    PFNWGLGETEXTENSIONSSTRINGEXTPROC irrGetExtensionsString = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
+    if (irrGetExtensionsString)
+        wglExtensions = irrGetExtensionsString(hdc);
 #endif
-	const bool pixel_format_supported = (wglExtensions.find("WGL_ARB_pixel_format") != std::string::npos);
-	const bool multi_sample_supported = ((wglExtensions.find("WGL_ARB_multisample") != std::string::npos) ||
-		(wglExtensions.find("WGL_EXT_multisample") != std::string::npos) || (wglExtensions.find("WGL_3DFX_multisample") != std::string::npos) );
+    const bool pixel_format_supported = (wglExtensions.find("WGL_ARB_pixel_format") != std::string::npos);
+    const bool multi_sample_supported = ((wglExtensions.find("WGL_ARB_multisample") != std::string::npos) ||
+        (wglExtensions.find("WGL_EXT_multisample") != std::string::npos) || (wglExtensions.find("WGL_3DFX_multisample") != std::string::npos) );
 #ifdef _DEBUG
-	os::Printer::log("WGL_extensions", wglExtensions);
+    os::Printer::log("WGL_extensions", wglExtensions);
 #endif
 
 #ifdef WGL_ARB_pixel_format
-	PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormat_ARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
-	if (pixel_format_supported && wglChoosePixelFormat_ARB)
-	{
-		// This value determines the number of samples used for antialiasing
-		// My experience is that 8 does not show a big
-		// improvement over 4, but 4 shows a big improvement
-		// over 2.
+    PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormat_ARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+    if (pixel_format_supported && wglChoosePixelFormat_ARB)
+    {
+        // This value determines the number of samples used for antialiasing
+        // My experience is that 8 does not show a big
+        // improvement over 4, but 4 shows a big improvement
+        // over 2.
 
-		PFNWGLGETPIXELFORMATATTRIBIVARBPROC wglGetPixelFormatAttribiv_ARB = (PFNWGLGETPIXELFORMATATTRIBIVARBPROC)wglGetProcAddress("wglGetPixelFormatAttribivARB");
-		if (wglGetPixelFormatAttribiv_ARB)
-		{
-			int vals[128];
-			int atts[] = {
-				WGL_NUMBER_PIXEL_FORMATS_ARB,
-				WGL_DRAW_TO_BITMAP_ARB,
-				WGL_ACCELERATION_ARB,
-				WGL_NEED_PALETTE_ARB,
-				WGL_NEED_SYSTEM_PALETTE_ARB,
-				WGL_SWAP_LAYER_BUFFERS_ARB,
-				WGL_SWAP_METHOD_ARB,
-				WGL_NUMBER_OVERLAYS_ARB,
-				WGL_NUMBER_UNDERLAYS_ARB,
-				WGL_TRANSPARENT_ARB,
-				WGL_TRANSPARENT_RED_VALUE_ARB,
-				WGL_TRANSPARENT_GREEN_VALUE_ARB,
-				WGL_TRANSPARENT_BLUE_VALUE_ARB,
-				WGL_TRANSPARENT_ALPHA_VALUE_ARB,
-				WGL_TRANSPARENT_INDEX_VALUE_ARB,
-				WGL_SHARE_DEPTH_ARB,
-				WGL_SHARE_STENCIL_ARB,
-				WGL_SHARE_ACCUM_ARB,
-				WGL_SUPPORT_GDI_ARB,
-				WGL_SUPPORT_OPENGL_ARB,
-				WGL_DOUBLE_BUFFER_ARB,
-				WGL_STEREO_ARB,
-				WGL_PIXEL_TYPE_ARB,
-				WGL_COLOR_BITS_ARB,
-				WGL_RED_BITS_ARB,
-				WGL_RED_SHIFT_ARB,
-				WGL_GREEN_BITS_ARB,
-				WGL_GREEN_SHIFT_ARB,
-				WGL_BLUE_BITS_ARB,
-				WGL_BLUE_SHIFT_ARB,
-				WGL_ALPHA_BITS_ARB,
-				WGL_ALPHA_SHIFT_ARB,
-				WGL_ACCUM_BITS_ARB,
-				WGL_ACCUM_RED_BITS_ARB,
-				WGL_ACCUM_GREEN_BITS_ARB,
-				WGL_ACCUM_BLUE_BITS_ARB,
-				WGL_ACCUM_ALPHA_BITS_ARB,
-				WGL_DEPTH_BITS_ARB,
-				WGL_STENCIL_BITS_ARB,
-				WGL_AUX_BUFFERS_ARB
+        PFNWGLGETPIXELFORMATATTRIBIVARBPROC wglGetPixelFormatAttribiv_ARB = (PFNWGLGETPIXELFORMATATTRIBIVARBPROC)wglGetProcAddress("wglGetPixelFormatAttribivARB");
+        if (wglGetPixelFormatAttribiv_ARB)
+        {
+            int vals[128];
+            int atts[] = {
+                WGL_NUMBER_PIXEL_FORMATS_ARB,
+                WGL_DRAW_TO_BITMAP_ARB,
+                WGL_ACCELERATION_ARB,
+                WGL_NEED_PALETTE_ARB,
+                WGL_NEED_SYSTEM_PALETTE_ARB,
+                WGL_SWAP_LAYER_BUFFERS_ARB,
+                WGL_SWAP_METHOD_ARB,
+                WGL_NUMBER_OVERLAYS_ARB,
+                WGL_NUMBER_UNDERLAYS_ARB,
+                WGL_TRANSPARENT_ARB,
+                WGL_TRANSPARENT_RED_VALUE_ARB,
+                WGL_TRANSPARENT_GREEN_VALUE_ARB,
+                WGL_TRANSPARENT_BLUE_VALUE_ARB,
+                WGL_TRANSPARENT_ALPHA_VALUE_ARB,
+                WGL_TRANSPARENT_INDEX_VALUE_ARB,
+                WGL_SHARE_DEPTH_ARB,
+                WGL_SHARE_STENCIL_ARB,
+                WGL_SHARE_ACCUM_ARB,
+                WGL_SUPPORT_GDI_ARB,
+                WGL_SUPPORT_OPENGL_ARB,
+                WGL_DOUBLE_BUFFER_ARB,
+                WGL_STEREO_ARB,
+                WGL_PIXEL_TYPE_ARB,
+                WGL_COLOR_BITS_ARB,
+                WGL_RED_BITS_ARB,
+                WGL_RED_SHIFT_ARB,
+                WGL_GREEN_BITS_ARB,
+                WGL_GREEN_SHIFT_ARB,
+                WGL_BLUE_BITS_ARB,
+                WGL_BLUE_SHIFT_ARB,
+                WGL_ALPHA_BITS_ARB,
+                WGL_ALPHA_SHIFT_ARB,
+                WGL_ACCUM_BITS_ARB,
+                WGL_ACCUM_RED_BITS_ARB,
+                WGL_ACCUM_GREEN_BITS_ARB,
+                WGL_ACCUM_BLUE_BITS_ARB,
+                WGL_ACCUM_ALPHA_BITS_ARB,
+                WGL_DEPTH_BITS_ARB,
+                WGL_STENCIL_BITS_ARB,
+                WGL_AUX_BUFFERS_ARB
 #ifdef WGL_ARB_render_texture
-				,WGL_BIND_TO_TEXTURE_RGB_ARB //40
-				,WGL_BIND_TO_TEXTURE_RGBA_ARB
+                ,WGL_BIND_TO_TEXTURE_RGB_ARB //40
+                ,WGL_BIND_TO_TEXTURE_RGBA_ARB
 #endif
 #ifdef WGL_ARB_pbuffer
-				,WGL_DRAW_TO_PBUFFER_ARB //42
-				,WGL_MAX_PBUFFER_PIXELS_ARB
-				,WGL_MAX_PBUFFER_WIDTH_ARB
-				,WGL_MAX_PBUFFER_HEIGHT_ARB
+                ,WGL_DRAW_TO_PBUFFER_ARB //42
+                ,WGL_MAX_PBUFFER_PIXELS_ARB
+                ,WGL_MAX_PBUFFER_WIDTH_ARB
+                ,WGL_MAX_PBUFFER_HEIGHT_ARB
 #endif
 #ifdef WGL_ARB_framebuffer_sRGB
-				,WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB //46
+                ,WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB //46
 #endif
 #ifdef WGL_ARB_multisample
-				,WGL_SAMPLES_ARB //47
-				,WGL_SAMPLE_BUFFERS_ARB
+                ,WGL_SAMPLES_ARB //47
+                ,WGL_SAMPLE_BUFFERS_ARB
 #endif
 #ifdef WGL_EXT_depth_float
-				,WGL_DEPTH_FLOAT_EXT //49
+                ,WGL_DEPTH_FLOAT_EXT //49
 #endif
-				,0,0,0,0
-			};
-			size_t nums = sizeof(atts)/sizeof(int);
-			const bool depth_float_supported= (wglExtensions.find("WGL_EXT_depth_float") != std::string::npos);
-			if (!depth_float_supported)
-			{
-				memmove(&atts[49], &atts[50], (nums-50)*sizeof(int));
-				nums -= 1;
-			}
-			if (!multi_sample_supported)
-			{
-				memmove(&atts[47], &atts[49], (nums-49)*sizeof(int));
-				nums -= 2;
-			}
-			const bool framebuffer_sRGB_supported= (wglExtensions.find("WGL_ARB_framebuffer_sRGB") != std::string::npos);
-			if (!framebuffer_sRGB_supported)
-			{
-				memmove(&atts[46], &atts[47], (nums-47)*sizeof(int));
-				nums -= 1;
-			}
-			const bool pbuffer_supported = (wglExtensions.find("WGL_ARB_pbuffer") != std::string::npos);
-			if (!pbuffer_supported)
-			{
-				memmove(&atts[42], &atts[46], (nums-46)*sizeof(int));
-				nums -= 4;
-			}
-			const bool render_texture_supported = (wglExtensions.find("WGL_ARB_render_texture") != std::string::npos);
-			if (!render_texture_supported)
-			{
-				memmove(&atts[40], &atts[42], (nums-42)*sizeof(int));
-				nums -= 2;
-			}
-			wglGetPixelFormatAttribiv_ARB(hdc,0,0,1,atts,vals);
-			const int count = vals[0];
-			atts[0]=WGL_DRAW_TO_WINDOW_ARB;
-			for (int i=1; i<count; ++i)
-			{
-				memset(vals,0,sizeof(vals));
+                ,0,0,0,0
+            };
+            size_t nums = sizeof(atts)/sizeof(int);
+            const bool depth_float_supported= (wglExtensions.find("WGL_EXT_depth_float") != std::string::npos);
+            if (!depth_float_supported)
+            {
+                memmove(&atts[49], &atts[50], (nums-50)*sizeof(int));
+                nums -= 1;
+            }
+            if (!multi_sample_supported)
+            {
+                memmove(&atts[47], &atts[49], (nums-49)*sizeof(int));
+                nums -= 2;
+            }
+            const bool framebuffer_sRGB_supported= (wglExtensions.find("WGL_ARB_framebuffer_sRGB") != std::string::npos);
+            if (!framebuffer_sRGB_supported)
+            {
+                memmove(&atts[46], &atts[47], (nums-47)*sizeof(int));
+                nums -= 1;
+            }
+            const bool pbuffer_supported = (wglExtensions.find("WGL_ARB_pbuffer") != std::string::npos);
+            if (!pbuffer_supported)
+            {
+                memmove(&atts[42], &atts[46], (nums-46)*sizeof(int));
+                nums -= 4;
+            }
+            const bool render_texture_supported = (wglExtensions.find("WGL_ARB_render_texture") != std::string::npos);
+            if (!render_texture_supported)
+            {
+                memmove(&atts[40], &atts[42], (nums-42)*sizeof(int));
+                nums -= 2;
+            }
+            wglGetPixelFormatAttribiv_ARB(hdc,0,0,1,atts,vals);
+            const int count = vals[0];
+            atts[0]=WGL_DRAW_TO_WINDOW_ARB;
+            for (int i=1; i<count; ++i)
+            {
+                memset(vals,0,sizeof(vals));
 #define tmplog(x,y) os::Printer::log(x, core::longlongtoa(y))
-				const BOOL res = wglGetPixelFormatAttribiv_ARB(hdc,i,0,nums,atts,vals);
-				if (FALSE==res)
-					continue;
-				tmplog("Pixel format ",i);
-				uint32_t j=0;
-				tmplog("Draw to window " , vals[j]);
-				tmplog("Draw to bitmap " , vals[++j]);
-				++j;
-				os::Printer::log("Acceleration " , (vals[j]==WGL_NO_ACCELERATION_ARB?"No":
-					vals[j]==WGL_GENERIC_ACCELERATION_ARB?"Generic":vals[j]==WGL_FULL_ACCELERATION_ARB?"Full":"ERROR"));
-				tmplog("Need palette " , vals[++j]);
-				tmplog("Need system palette " , vals[++j]);
-				tmplog("Swap layer buffers " , vals[++j]);
-				++j;
-				os::Printer::log("Swap method " , (vals[j]==WGL_SWAP_EXCHANGE_ARB?"Exchange":
-					vals[j]==WGL_SWAP_COPY_ARB?"Copy":vals[j]==WGL_SWAP_UNDEFINED_ARB?"Undefined":"ERROR"));
-				tmplog("Number of overlays " , vals[++j]);
-				tmplog("Number of underlays " , vals[++j]);
-				tmplog("Transparent " , vals[++j]);
-				tmplog("Transparent red value " , vals[++j]);
-				tmplog("Transparent green value " , vals[++j]);
-				tmplog("Transparent blue value " , vals[++j]);
-				tmplog("Transparent alpha value " , vals[++j]);
-				tmplog("Transparent index value " , vals[++j]);
-				tmplog("Share depth " , vals[++j]);
-				tmplog("Share stencil " , vals[++j]);
-				tmplog("Share accum " , vals[++j]);
-				tmplog("Support GDI " , vals[++j]);
-				tmplog("Support OpenGL " , vals[++j]);
-				tmplog("Double Buffer " , vals[++j]);
-				tmplog("Stereo Buffer " , vals[++j]);
-				tmplog("Pixel type " , vals[++j]);
-				tmplog("Color bits" , vals[++j]);
-				tmplog("Red bits " , vals[++j]);
-				tmplog("Red shift " , vals[++j]);
-				tmplog("Green bits " , vals[++j]);
-				tmplog("Green shift " , vals[++j]);
-				tmplog("Blue bits " , vals[++j]);
-				tmplog("Blue shift " , vals[++j]);
-				tmplog("Alpha bits " , vals[++j]);
-				tmplog("Alpha Shift " , vals[++j]);
-				tmplog("Accum bits " , vals[++j]);
-				tmplog("Accum red bits " , vals[++j]);
-				tmplog("Accum green bits " , vals[++j]);
-				tmplog("Accum blue bits " , vals[++j]);
-				tmplog("Accum alpha bits " , vals[++j]);
-				tmplog("Depth bits " , vals[++j]);
-				tmplog("Stencil bits " , vals[++j]);
-				tmplog("Aux buffers " , vals[++j]);
-				if (render_texture_supported)
-				{
-					tmplog("Bind to texture RGB" , vals[++j]);
-					tmplog("Bind to texture RGBA" , vals[++j]);
-				}
-				if (pbuffer_supported)
-				{
-					tmplog("Draw to pbuffer" , vals[++j]);
-					tmplog("Max pbuffer pixels " , vals[++j]);
-					tmplog("Max pbuffer width" , vals[++j]);
-					tmplog("Max pbuffer height" , vals[++j]);
-				}
-				if (framebuffer_sRGB_supported)
-					tmplog("Framebuffer sRBG capable" , vals[++j]);
-				if (multi_sample_supported)
-				{
-					tmplog("Samples " , vals[++j]);
-					tmplog("Sample buffers " , vals[++j]);
-				}
-				if (depth_float_supported)
-					tmplog("Depth float" , vals[++j]);
+                const BOOL res = wglGetPixelFormatAttribiv_ARB(hdc,i,0,nums,atts,vals);
+                if (FALSE==res)
+                    continue;
+                tmplog("Pixel format ",i);
+                uint32_t j=0;
+                tmplog("Draw to window " , vals[j]);
+                tmplog("Draw to bitmap " , vals[++j]);
+                ++j;
+                os::Printer::log("Acceleration " , (vals[j]==WGL_NO_ACCELERATION_ARB?"No":
+                    vals[j]==WGL_GENERIC_ACCELERATION_ARB?"Generic":vals[j]==WGL_FULL_ACCELERATION_ARB?"Full":"ERROR"));
+                tmplog("Need palette " , vals[++j]);
+                tmplog("Need system palette " , vals[++j]);
+                tmplog("Swap layer buffers " , vals[++j]);
+                ++j;
+                os::Printer::log("Swap method " , (vals[j]==WGL_SWAP_EXCHANGE_ARB?"Exchange":
+                    vals[j]==WGL_SWAP_COPY_ARB?"Copy":vals[j]==WGL_SWAP_UNDEFINED_ARB?"Undefined":"ERROR"));
+                tmplog("Number of overlays " , vals[++j]);
+                tmplog("Number of underlays " , vals[++j]);
+                tmplog("Transparent " , vals[++j]);
+                tmplog("Transparent red value " , vals[++j]);
+                tmplog("Transparent green value " , vals[++j]);
+                tmplog("Transparent blue value " , vals[++j]);
+                tmplog("Transparent alpha value " , vals[++j]);
+                tmplog("Transparent index value " , vals[++j]);
+                tmplog("Share depth " , vals[++j]);
+                tmplog("Share stencil " , vals[++j]);
+                tmplog("Share accum " , vals[++j]);
+                tmplog("Support GDI " , vals[++j]);
+                tmplog("Support OpenGL " , vals[++j]);
+                tmplog("Double Buffer " , vals[++j]);
+                tmplog("Stereo Buffer " , vals[++j]);
+                tmplog("Pixel type " , vals[++j]);
+                tmplog("Color bits" , vals[++j]);
+                tmplog("Red bits " , vals[++j]);
+                tmplog("Red shift " , vals[++j]);
+                tmplog("Green bits " , vals[++j]);
+                tmplog("Green shift " , vals[++j]);
+                tmplog("Blue bits " , vals[++j]);
+                tmplog("Blue shift " , vals[++j]);
+                tmplog("Alpha bits " , vals[++j]);
+                tmplog("Alpha Shift " , vals[++j]);
+                tmplog("Accum bits " , vals[++j]);
+                tmplog("Accum red bits " , vals[++j]);
+                tmplog("Accum green bits " , vals[++j]);
+                tmplog("Accum blue bits " , vals[++j]);
+                tmplog("Accum alpha bits " , vals[++j]);
+                tmplog("Depth bits " , vals[++j]);
+                tmplog("Stencil bits " , vals[++j]);
+                tmplog("Aux buffers " , vals[++j]);
+                if (render_texture_supported)
+                {
+                    tmplog("Bind to texture RGB" , vals[++j]);
+                    tmplog("Bind to texture RGBA" , vals[++j]);
+                }
+                if (pbuffer_supported)
+                {
+                    tmplog("Draw to pbuffer" , vals[++j]);
+                    tmplog("Max pbuffer pixels " , vals[++j]);
+                    tmplog("Max pbuffer width" , vals[++j]);
+                    tmplog("Max pbuffer height" , vals[++j]);
+                }
+                if (framebuffer_sRGB_supported)
+                    tmplog("Framebuffer sRBG capable" , vals[++j]);
+                if (multi_sample_supported)
+                {
+                    tmplog("Samples " , vals[++j]);
+                    tmplog("Sample buffers " , vals[++j]);
+                }
+                if (depth_float_supported)
+                    tmplog("Depth float" , vals[++j]);
 #undef tmplog
-			}
-		}
-	}
+            }
+        }
+    }
 #endif
 #elif defined(IRR_LINUX_DEVICE)
 #endif
@@ -751,53 +751,53 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 {
     core::stringc vendorString = (char*)glGetString(GL_VENDOR);
     if (vendorString.find("Intel")!=-1 || vendorString.find("INTEL")!=-1)
-	    IsIntelGPU = true;
+        IsIntelGPU = true;
 
 
-	loadFunctions();
+    loadFunctions();
 
 
-	TextureCompressionExtension = FeatureAvailable[IRR_ARB_texture_compression];
-	StencilBuffer=stencilBuffer;
+    TextureCompressionExtension = FeatureAvailable[IRR_ARB_texture_compression];
+    StencilBuffer=stencilBuffer;
 
 
-	GLint num=0;
+    GLint num=0;
 
-	MaxLights=0;
+    MaxLights=0;
 
-	glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS,&num);
-	MaxArrayTextureLayers = num;
+    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS,&num);
+    MaxArrayTextureLayers = num;
 
-	if (FeatureAvailable[IRR_EXT_texture_filter_anisotropic])
-	{
-		glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &num);
-		MaxAnisotropy=static_cast<uint8_t>(num);
-	}
+    if (FeatureAvailable[IRR_EXT_texture_filter_anisotropic])
+    {
+        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &num);
+        MaxAnisotropy=static_cast<uint8_t>(num);
+    }
 
 
-	if (queryFeature(EVDF_GEOMETRY_SHADER))
-	{
-		if (FeatureAvailable[IRR_ARB_geometry_shader4]||FeatureAvailable[IRR_EXT_geometry_shader4])
+    if (queryFeature(EVDF_GEOMETRY_SHADER))
+    {
+        if (FeatureAvailable[IRR_ARB_geometry_shader4]||FeatureAvailable[IRR_EXT_geometry_shader4])
         {
             glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &num);
             MaxGeometryVerticesOut=static_cast<uint32_t>(num);
         }
-	}
-	if (FeatureAvailable[IRR_EXT_texture_lod_bias])
-		glGetFloatv(GL_MAX_TEXTURE_LOD_BIAS_EXT, &MaxTextureLODBias);
+    }
+    if (FeatureAvailable[IRR_EXT_texture_lod_bias])
+        glGetFloatv(GL_MAX_TEXTURE_LOD_BIAS_EXT, &MaxTextureLODBias);
 
 
-	glGetIntegerv(GL_MAX_CLIP_DISTANCES, &num);
-	MaxUserClipPlanes=static_cast<uint8_t>(num);
-	glGetIntegerv(GL_AUX_BUFFERS, &num);
-	MaxAuxBuffers=static_cast<uint8_t>(num);
+    glGetIntegerv(GL_MAX_CLIP_DISTANCES, &num);
+    MaxUserClipPlanes=static_cast<uint8_t>(num);
+    glGetIntegerv(GL_AUX_BUFFERS, &num);
+    MaxAuxBuffers=static_cast<uint8_t>(num);
     glGetIntegerv(GL_MAX_DRAW_BUFFERS_ARB, &num);
     MaxMultipleRenderTargets = static_cast<uint8_t>(num);
 
-	glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, DimAliasedLine);
-	glGetFloatv(GL_ALIASED_POINT_SIZE_RANGE, DimAliasedPoint);
-	glGetFloatv(GL_SMOOTH_LINE_WIDTH_RANGE, DimSmoothedLine);
-	glGetFloatv(GL_SMOOTH_POINT_SIZE_RANGE, DimSmoothedPoint);
+    glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, DimAliasedLine);
+    glGetFloatv(GL_ALIASED_POINT_SIZE_RANGE, DimAliasedPoint);
+    glGetFloatv(GL_SMOOTH_LINE_WIDTH_RANGE, DimSmoothedLine);
+    glGetFloatv(GL_SMOOTH_POINT_SIZE_RANGE, DimSmoothedPoint);
 
     const GLubyte* shaderVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
     float sl_ver;
@@ -912,34 +912,34 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 
     num=0;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &num);
-	MaxTextureUnits = core::min_(static_cast<uint8_t>(num), static_cast<uint8_t>(MATERIAL_MAX_TEXTURES));
+    MaxTextureUnits = core::min_(static_cast<uint8_t>(num), static_cast<uint8_t>(MATERIAL_MAX_TEXTURES));
 
     //num=100000000u;
-	//glGetIntegerv(GL_MAX_ELEMENTS_INDICES,&num);
+    //glGetIntegerv(GL_MAX_ELEMENTS_INDICES,&num);
 
 #ifdef _DEBUG
-	if (FeatureAvailable[IRR_NVX_gpu_memory_info])
-	{
-		// undocumented flags, so use the RAW values
-		GLint val;
-		glGetIntegerv(0x9047, &val);
-		os::Printer::log("Dedicated video memory (kB)", core::longlongtoa(val));
-		glGetIntegerv(0x9048, &val);
-		os::Printer::log("Total video memory (kB)", core::longlongtoa(val));
-		glGetIntegerv(0x9049, &val);
-		os::Printer::log("Available video memory (kB)", core::longlongtoa(val));
-	}
+    if (FeatureAvailable[IRR_NVX_gpu_memory_info])
+    {
+        // undocumented flags, so use the RAW values
+        GLint val;
+        glGetIntegerv(0x9047, &val);
+        os::Printer::log("Dedicated video memory (kB)", core::longlongtoa(val));
+        glGetIntegerv(0x9048, &val);
+        os::Printer::log("Total video memory (kB)", core::longlongtoa(val));
+        glGetIntegerv(0x9049, &val);
+        os::Printer::log("Available video memory (kB)", core::longlongtoa(val));
+    }
 #ifdef GL_ATI_meminfo
-	if (FeatureAvailable[IRR_ATI_meminfo])
-	{
-		GLint val[4];
-		glGetIntegerv(GL_TEXTURE_FREE_MEMORY_ATI, val);
-		os::Printer::log("Free texture memory (kB)", core::longlongtoa(val[0]));
-		glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, val);
-		os::Printer::log("Free VBO memory (kB)", core::longlongtoa(val[0]));
-		glGetIntegerv(GL_RENDERBUFFER_FREE_MEMORY_ATI, val);
-		os::Printer::log("Free render buffer memory (kB)", core::longlongtoa(val[0]));
-	}
+    if (FeatureAvailable[IRR_ATI_meminfo])
+    {
+        GLint val[4];
+        glGetIntegerv(GL_TEXTURE_FREE_MEMORY_ATI, val);
+        os::Printer::log("Free texture memory (kB)", core::longlongtoa(val[0]));
+        glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, val);
+        os::Printer::log("Free VBO memory (kB)", core::longlongtoa(val[0]));
+        glGetIntegerv(GL_RENDERBUFFER_FREE_MEMORY_ATI, val);
+        os::Printer::log("Free render buffer memory (kB)", core::longlongtoa(val[0]));
+    }
 #endif
 #endif
 }
@@ -949,16 +949,16 @@ void COpenGLExtensionHandler::loadFunctions()
     if (functionsAlreadyLoaded)
         return;
 
-	for (uint32_t i=0; i<IRR_OpenGL_Feature_Count; ++i)
-		FeatureAvailable[i]=false;
+    for (uint32_t i=0; i<IRR_OpenGL_Feature_Count; ++i)
+        FeatureAvailable[i]=false;
 
 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
 
 #ifdef _IRR_WINDOWS_API_
-	#define IRR_OGL_LOAD_EXTENSION(x) wglGetProcAddress(reinterpret_cast<const char*>(x))
+    #define IRR_OGL_LOAD_EXTENSION(x) wglGetProcAddress(reinterpret_cast<const char*>(x))
 #elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-	#define IRR_OGL_LOAD_EXTENSION(x) SDL_GL_GetProcAddress(reinterpret_cast<const char*>(x))
+    #define IRR_OGL_LOAD_EXTENSION(x) SDL_GL_GetProcAddress(reinterpret_cast<const char*>(x))
 #else
     #define IRR_OGL_LOAD_EXTENSION(X) glXGetProcAddress(reinterpret_cast<const GLubyte*>(X))
 #endif // Windows, SDL, or Linux
@@ -989,20 +989,20 @@ void COpenGLExtensionHandler::loadFunctions()
 
 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
-	float ogl_ver;
-	sscanf(reinterpret_cast<const char*>(glGetString(GL_VERSION)),"%f",&ogl_ver);
-	Version = static_cast<uint16_t>(core::round32(ogl_ver*100.0f));
+    float ogl_ver;
+    sscanf(reinterpret_cast<const char*>(glGetString(GL_VERSION)),"%f",&ogl_ver);
+    Version = static_cast<uint16_t>(core::round32(ogl_ver*100.0f));
 
-	GLint num=0;
-	glGetIntegerv(GL_MAX_ELEMENTS_INDICES, &num);
+    GLint num=0;
+    glGetIntegerv(GL_MAX_ELEMENTS_INDICES, &num);
     MaxIndices=num;
-	glGetIntegerv(GL_MAX_ELEMENTS_VERTICES, &num);
+    glGetIntegerv(GL_MAX_ELEMENTS_VERTICES, &num);
     MaxVertices=num;
-	glGetIntegerv(GL_MAX_VERTEX_STREAMS, &num);
+    glGetIntegerv(GL_MAX_VERTEX_STREAMS, &num);
     MaxVertexStreams=num;
-	glGetIntegerv(GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS, &num);
+    glGetIntegerv(GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS, &num);
     MaxXFormFeedbackComponents = num;
-	glGetIntegerv(GL_MAX_SERVER_WAIT_TIMEOUT, &num);
+    glGetIntegerv(GL_MAX_SERVER_WAIT_TIMEOUT, &num);
     MaxGPUWaitTimeout = reinterpret_cast<const uint32_t&>(num);
 
     //fences
@@ -1011,10 +1011,10 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlClientWaitSync = (PFNGLCLIENTWAITSYNCPROC) IRR_OGL_LOAD_EXTENSION("glClientWaitSync");
     pGlWaitSync = (PFNGLWAITSYNCPROC) IRR_OGL_LOAD_EXTENSION("glWaitSync");
 
-	// get multitexturing function pointers
+    // get multitexturing function pointers
     pGlActiveTexture = (PFNGLACTIVETEXTUREPROC) IRR_OGL_LOAD_EXTENSION("glActiveTexture");
-	pGlBindTextureUnit = (PFNGLBINDTEXTUREUNITPROC) IRR_OGL_LOAD_EXTENSION("glBindTextureUnit");
-	pGlBindMultiTextureEXT = (PFNGLBINDMULTITEXTUREEXTPROC) IRR_OGL_LOAD_EXTENSION("glBindMultiTextureEXT");
+    pGlBindTextureUnit = (PFNGLBINDTEXTUREUNITPROC) IRR_OGL_LOAD_EXTENSION("glBindTextureUnit");
+    pGlBindMultiTextureEXT = (PFNGLBINDMULTITEXTUREEXTPROC) IRR_OGL_LOAD_EXTENSION("glBindMultiTextureEXT");
     pGlCreateTextures = (PFNGLCREATETEXTURESPROC) IRR_OGL_LOAD_EXTENSION("glCreateTextures");
     pGlTexStorage1D = (PFNGLTEXSTORAGE1DPROC) IRR_OGL_LOAD_EXTENSION( "glTexStorage1D");
     pGlTexStorage2D = (PFNGLTEXSTORAGE2DPROC) IRR_OGL_LOAD_EXTENSION( "glTexStorage2D");
@@ -1074,89 +1074,89 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlBindBufferBase = (PFNGLBINDBUFFERBASEPROC) IRR_OGL_LOAD_EXTENSION("glBindBufferBase");
     pGlBindBufferRange = (PFNGLBINDBUFFERRANGEPROC) IRR_OGL_LOAD_EXTENSION("glBindBufferRange");
 
-	// get fragment and vertex program function pointers
-	pGlCreateShader = (PFNGLCREATESHADERPROC) IRR_OGL_LOAD_EXTENSION("glCreateShader");
-	pGlShaderSource = (PFNGLSHADERSOURCEPROC) IRR_OGL_LOAD_EXTENSION("glShaderSource");
-	pGlCompileShader = (PFNGLCOMPILESHADERPROC) IRR_OGL_LOAD_EXTENSION("glCompileShader");
-	pGlCreateProgram = (PFNGLCREATEPROGRAMPROC) IRR_OGL_LOAD_EXTENSION("glCreateProgram");
-	pGlAttachShader = (PFNGLATTACHSHADERPROC) IRR_OGL_LOAD_EXTENSION("glAttachShader");
-	pGlTransformFeedbackVaryings = (PFNGLTRANSFORMFEEDBACKVARYINGSPROC) IRR_OGL_LOAD_EXTENSION("glTransformFeedbackVaryings");
-	pGlLinkProgram = (PFNGLLINKPROGRAMPROC) IRR_OGL_LOAD_EXTENSION("glLinkProgram");
-	pGlUseProgram = (PFNGLUSEPROGRAMPROC) IRR_OGL_LOAD_EXTENSION("glUseProgram");
-	pGlDeleteProgram = (PFNGLDELETEPROGRAMPROC) IRR_OGL_LOAD_EXTENSION("glDeleteProgram");
-	pGlDeleteShader = (PFNGLDELETESHADERPROC) IRR_OGL_LOAD_EXTENSION("glDeleteShader");
-	pGlGetAttachedShaders = (PFNGLGETATTACHEDSHADERSPROC) IRR_OGL_LOAD_EXTENSION("glGetAttachedShaders");
-	pGlGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC) IRR_OGL_LOAD_EXTENSION("glGetShaderInfoLog");
-	pGlGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC) IRR_OGL_LOAD_EXTENSION("glGetProgramInfoLog");
-	pGlGetShaderiv = (PFNGLGETSHADERIVPROC) IRR_OGL_LOAD_EXTENSION("glGetShaderiv");
-	pGlGetProgramiv = (PFNGLGETPROGRAMIVPROC) IRR_OGL_LOAD_EXTENSION("glGetProgramiv");
-	pGlGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC) IRR_OGL_LOAD_EXTENSION("glGetUniformLocation");
-	pGlProgramUniform1fv = (PFNGLPROGRAMUNIFORM1FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform1fv");
-	pGlProgramUniform2fv = (PFNGLPROGRAMUNIFORM2FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform2fv");
-	pGlProgramUniform3fv = (PFNGLPROGRAMUNIFORM3FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform3fv");
-	pGlProgramUniform4fv = (PFNGLPROGRAMUNIFORM4FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform4fv");
-	pGlProgramUniform1iv = (PFNGLPROGRAMUNIFORM1IVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform1iv");
-	pGlProgramUniform2iv = (PFNGLPROGRAMUNIFORM2IVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform2iv");
-	pGlProgramUniform3iv = (PFNGLPROGRAMUNIFORM3IVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform3iv");
-	pGlProgramUniform4iv = (PFNGLPROGRAMUNIFORM4IVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform4iv");
-	pGlProgramUniform1uiv = (PFNGLPROGRAMUNIFORM1UIVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform1uiv");
-	pGlProgramUniform2uiv = (PFNGLPROGRAMUNIFORM2UIVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform2uiv");
-	pGlProgramUniform3uiv = (PFNGLPROGRAMUNIFORM3UIVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform3uiv");
-	pGlProgramUniform4uiv = (PFNGLPROGRAMUNIFORM4UIVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform4uiv");
-	pGlProgramUniformMatrix2fv = (PFNGLPROGRAMUNIFORMMATRIX2FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix2fv");
-	pGlProgramUniformMatrix3fv = (PFNGLPROGRAMUNIFORMMATRIX3FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix3fv");
-	pGlProgramUniformMatrix4fv = (PFNGLPROGRAMUNIFORMMATRIX4FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix4fv");
-	pGlProgramUniformMatrix2x3fv = (PFNGLPROGRAMUNIFORMMATRIX2X3FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix2x3fv");
-	pGlProgramUniformMatrix3x2fv = (PFNGLPROGRAMUNIFORMMATRIX3X2FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix3x2fv");
-	pGlProgramUniformMatrix4x2fv = (PFNGLPROGRAMUNIFORMMATRIX4X2FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix4x2fv");
-	pGlProgramUniformMatrix2x4fv = (PFNGLPROGRAMUNIFORMMATRIX2X4FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix2x4fv");
-	pGlProgramUniformMatrix3x4fv = (PFNGLPROGRAMUNIFORMMATRIX3X4FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix3x4fv");
-	pGlProgramUniformMatrix4x3fv = (PFNGLPROGRAMUNIFORMMATRIX4X3FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix4x3fv");
-	pGlGetActiveUniform = (PFNGLGETACTIVEUNIFORMPROC) IRR_OGL_LOAD_EXTENSION("glGetActiveUniform");
+    // get fragment and vertex program function pointers
+    pGlCreateShader = (PFNGLCREATESHADERPROC) IRR_OGL_LOAD_EXTENSION("glCreateShader");
+    pGlShaderSource = (PFNGLSHADERSOURCEPROC) IRR_OGL_LOAD_EXTENSION("glShaderSource");
+    pGlCompileShader = (PFNGLCOMPILESHADERPROC) IRR_OGL_LOAD_EXTENSION("glCompileShader");
+    pGlCreateProgram = (PFNGLCREATEPROGRAMPROC) IRR_OGL_LOAD_EXTENSION("glCreateProgram");
+    pGlAttachShader = (PFNGLATTACHSHADERPROC) IRR_OGL_LOAD_EXTENSION("glAttachShader");
+    pGlTransformFeedbackVaryings = (PFNGLTRANSFORMFEEDBACKVARYINGSPROC) IRR_OGL_LOAD_EXTENSION("glTransformFeedbackVaryings");
+    pGlLinkProgram = (PFNGLLINKPROGRAMPROC) IRR_OGL_LOAD_EXTENSION("glLinkProgram");
+    pGlUseProgram = (PFNGLUSEPROGRAMPROC) IRR_OGL_LOAD_EXTENSION("glUseProgram");
+    pGlDeleteProgram = (PFNGLDELETEPROGRAMPROC) IRR_OGL_LOAD_EXTENSION("glDeleteProgram");
+    pGlDeleteShader = (PFNGLDELETESHADERPROC) IRR_OGL_LOAD_EXTENSION("glDeleteShader");
+    pGlGetAttachedShaders = (PFNGLGETATTACHEDSHADERSPROC) IRR_OGL_LOAD_EXTENSION("glGetAttachedShaders");
+    pGlGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC) IRR_OGL_LOAD_EXTENSION("glGetShaderInfoLog");
+    pGlGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC) IRR_OGL_LOAD_EXTENSION("glGetProgramInfoLog");
+    pGlGetShaderiv = (PFNGLGETSHADERIVPROC) IRR_OGL_LOAD_EXTENSION("glGetShaderiv");
+    pGlGetProgramiv = (PFNGLGETPROGRAMIVPROC) IRR_OGL_LOAD_EXTENSION("glGetProgramiv");
+    pGlGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC) IRR_OGL_LOAD_EXTENSION("glGetUniformLocation");
+    pGlProgramUniform1fv = (PFNGLPROGRAMUNIFORM1FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform1fv");
+    pGlProgramUniform2fv = (PFNGLPROGRAMUNIFORM2FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform2fv");
+    pGlProgramUniform3fv = (PFNGLPROGRAMUNIFORM3FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform3fv");
+    pGlProgramUniform4fv = (PFNGLPROGRAMUNIFORM4FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform4fv");
+    pGlProgramUniform1iv = (PFNGLPROGRAMUNIFORM1IVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform1iv");
+    pGlProgramUniform2iv = (PFNGLPROGRAMUNIFORM2IVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform2iv");
+    pGlProgramUniform3iv = (PFNGLPROGRAMUNIFORM3IVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform3iv");
+    pGlProgramUniform4iv = (PFNGLPROGRAMUNIFORM4IVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform4iv");
+    pGlProgramUniform1uiv = (PFNGLPROGRAMUNIFORM1UIVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform1uiv");
+    pGlProgramUniform2uiv = (PFNGLPROGRAMUNIFORM2UIVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform2uiv");
+    pGlProgramUniform3uiv = (PFNGLPROGRAMUNIFORM3UIVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform3uiv");
+    pGlProgramUniform4uiv = (PFNGLPROGRAMUNIFORM4UIVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniform4uiv");
+    pGlProgramUniformMatrix2fv = (PFNGLPROGRAMUNIFORMMATRIX2FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix2fv");
+    pGlProgramUniformMatrix3fv = (PFNGLPROGRAMUNIFORMMATRIX3FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix3fv");
+    pGlProgramUniformMatrix4fv = (PFNGLPROGRAMUNIFORMMATRIX4FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix4fv");
+    pGlProgramUniformMatrix2x3fv = (PFNGLPROGRAMUNIFORMMATRIX2X3FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix2x3fv");
+    pGlProgramUniformMatrix3x2fv = (PFNGLPROGRAMUNIFORMMATRIX3X2FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix3x2fv");
+    pGlProgramUniformMatrix4x2fv = (PFNGLPROGRAMUNIFORMMATRIX4X2FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix4x2fv");
+    pGlProgramUniformMatrix2x4fv = (PFNGLPROGRAMUNIFORMMATRIX2X4FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix2x4fv");
+    pGlProgramUniformMatrix3x4fv = (PFNGLPROGRAMUNIFORMMATRIX3X4FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix3x4fv");
+    pGlProgramUniformMatrix4x3fv = (PFNGLPROGRAMUNIFORMMATRIX4X3FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix4x3fv");
+    pGlGetActiveUniform = (PFNGLGETACTIVEUNIFORMPROC) IRR_OGL_LOAD_EXTENSION("glGetActiveUniform");
 
-	// get point parameter extension
-	pGlPointParameterf = (PFNGLPOINTPARAMETERFARBPROC) IRR_OGL_LOAD_EXTENSION("glPointParameterf");
-	pGlPointParameterfv = (PFNGLPOINTPARAMETERFVARBPROC) IRR_OGL_LOAD_EXTENSION("glPointParameterfv");
+    // get point parameter extension
+    pGlPointParameterf = (PFNGLPOINTPARAMETERFARBPROC) IRR_OGL_LOAD_EXTENSION("glPointParameterf");
+    pGlPointParameterfv = (PFNGLPOINTPARAMETERFVARBPROC) IRR_OGL_LOAD_EXTENSION("glPointParameterfv");
 
-	// get stencil extension
-	pGlStencilFuncSeparate = (PFNGLSTENCILFUNCSEPARATEPROC) IRR_OGL_LOAD_EXTENSION("glStencilFuncSeparate");
-	pGlStencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC) IRR_OGL_LOAD_EXTENSION("glStencilOpSeparate");
-	pGlStencilFuncSeparateATI = (PFNGLSTENCILFUNCSEPARATEATIPROC) IRR_OGL_LOAD_EXTENSION("glStencilFuncSeparateATI");
-	pGlStencilOpSeparateATI = (PFNGLSTENCILOPSEPARATEATIPROC) IRR_OGL_LOAD_EXTENSION("glStencilOpSeparateATI");
+    // get stencil extension
+    pGlStencilFuncSeparate = (PFNGLSTENCILFUNCSEPARATEPROC) IRR_OGL_LOAD_EXTENSION("glStencilFuncSeparate");
+    pGlStencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC) IRR_OGL_LOAD_EXTENSION("glStencilOpSeparate");
+    pGlStencilFuncSeparateATI = (PFNGLSTENCILFUNCSEPARATEATIPROC) IRR_OGL_LOAD_EXTENSION("glStencilFuncSeparateATI");
+    pGlStencilOpSeparateATI = (PFNGLSTENCILOPSEPARATEATIPROC) IRR_OGL_LOAD_EXTENSION("glStencilOpSeparateATI");
 
-	// ARB FrameBufferObjects
-	pGlBlitNamedFramebuffer = (PFNGLBLITNAMEDFRAMEBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glBlitNamedFramebuffer");
-	pGlBlitFramebuffer = (PFNGLBLITFRAMEBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glBlitFramebuffer");
-	pGlDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glDeleteFramebuffers");
-	pGlCreateFramebuffers = (PFNGLCREATEFRAMEBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glCreateFramebuffers");
-	pGlGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glGenFramebuffers");
-	pGlBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glBindFramebuffer");
-	pGlCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSPROC) IRR_OGL_LOAD_EXTENSION("glCheckFramebufferStatus");
-	pGlCheckNamedFramebufferStatus = (PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC) IRR_OGL_LOAD_EXTENSION("glCheckNamedFramebufferStatus");
-	pGlCheckNamedFramebufferStatusEXT = (PFNGLCHECKNAMEDFRAMEBUFFERSTATUSEXTPROC) IRR_OGL_LOAD_EXTENSION("glCheckNamedFramebufferStatusEXT");
-	pGlFramebufferTexture = (PFNGLFRAMEBUFFERTEXTUREPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferTexture");
-	pGlNamedFramebufferTexture = (PFNGLNAMEDFRAMEBUFFERTEXTUREPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTexture");
-	pGlNamedFramebufferTextureEXT = (PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTextureEXT");
-	pGlFramebufferTextureLayer = (PFNGLFRAMEBUFFERTEXTURELAYERPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferTextureLayer");
-	pGlNamedFramebufferTextureLayer = (PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTextureLayer");
-	pGlNamedFramebufferTextureLayerEXT = (PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTextureLayerEXT");
-	pGlDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glDeleteRenderbuffers");
-	pGlGenRenderbuffers = (PFNGLGENRENDERBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glGenRenderbuffers");
-	pGlCreateRenderbuffers = (PFNGLCREATERENDERBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glCreateRenderbuffers");
-	pGlBindRenderbuffer = (PFNGLBINDRENDERBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glBindRenderbuffer");
-	pGlRenderbufferStorage = (PFNGLRENDERBUFFERSTORAGEPROC) IRR_OGL_LOAD_EXTENSION("glRenderbufferStorage");
-	pGlNamedRenderbufferStorage = (PFNGLNAMEDRENDERBUFFERSTORAGEPROC) IRR_OGL_LOAD_EXTENSION("glNamedRenderbufferStorage");
-	pGlNamedRenderbufferStorageEXT = (PFNGLNAMEDRENDERBUFFERSTORAGEEXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedRenderbufferStorageEXT");
-	pGlFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferRenderbuffer");
-	pGlNamedFramebufferRenderbuffer = (PFNGLNAMEDFRAMEBUFFERRENDERBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferRenderbuffer");
-	pGlNamedFramebufferRenderbufferEXT = (PFNGLNAMEDFRAMEBUFFERRENDERBUFFEREXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferRenderbufferEXT");
-	pGlDrawBuffers = (PFNGLDRAWBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glDrawBuffers");
-	pGlNamedFramebufferDrawBuffers = (PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferDrawBuffers");
-	pGlFramebufferDrawBuffersEXT = (PFNGLFRAMEBUFFERDRAWBUFFERSEXTPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferDrawBuffersEXT");
-	pGlNamedFramebufferDrawBuffer = (PFNGLNAMEDFRAMEBUFFERDRAWBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferDrawBuffer");
-	pGlFramebufferDrawBufferEXT = (PFNGLFRAMEBUFFERDRAWBUFFEREXTPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferDrawBufferEXT");
-	pGlNamedFramebufferReadBuffer = (PFNGLNAMEDFRAMEBUFFERREADBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferReadBuffer");
-	pGlFramebufferReadBufferEXT = (PFNGLFRAMEBUFFERREADBUFFEREXTPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferReadBufferEXT");
+    // ARB FrameBufferObjects
+    pGlBlitNamedFramebuffer = (PFNGLBLITNAMEDFRAMEBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glBlitNamedFramebuffer");
+    pGlBlitFramebuffer = (PFNGLBLITFRAMEBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glBlitFramebuffer");
+    pGlDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glDeleteFramebuffers");
+    pGlCreateFramebuffers = (PFNGLCREATEFRAMEBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glCreateFramebuffers");
+    pGlGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glGenFramebuffers");
+    pGlBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glBindFramebuffer");
+    pGlCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSPROC) IRR_OGL_LOAD_EXTENSION("glCheckFramebufferStatus");
+    pGlCheckNamedFramebufferStatus = (PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC) IRR_OGL_LOAD_EXTENSION("glCheckNamedFramebufferStatus");
+    pGlCheckNamedFramebufferStatusEXT = (PFNGLCHECKNAMEDFRAMEBUFFERSTATUSEXTPROC) IRR_OGL_LOAD_EXTENSION("glCheckNamedFramebufferStatusEXT");
+    pGlFramebufferTexture = (PFNGLFRAMEBUFFERTEXTUREPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferTexture");
+    pGlNamedFramebufferTexture = (PFNGLNAMEDFRAMEBUFFERTEXTUREPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTexture");
+    pGlNamedFramebufferTextureEXT = (PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTextureEXT");
+    pGlFramebufferTextureLayer = (PFNGLFRAMEBUFFERTEXTURELAYERPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferTextureLayer");
+    pGlNamedFramebufferTextureLayer = (PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTextureLayer");
+    pGlNamedFramebufferTextureLayerEXT = (PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTextureLayerEXT");
+    pGlDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glDeleteRenderbuffers");
+    pGlGenRenderbuffers = (PFNGLGENRENDERBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glGenRenderbuffers");
+    pGlCreateRenderbuffers = (PFNGLCREATERENDERBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glCreateRenderbuffers");
+    pGlBindRenderbuffer = (PFNGLBINDRENDERBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glBindRenderbuffer");
+    pGlRenderbufferStorage = (PFNGLRENDERBUFFERSTORAGEPROC) IRR_OGL_LOAD_EXTENSION("glRenderbufferStorage");
+    pGlNamedRenderbufferStorage = (PFNGLNAMEDRENDERBUFFERSTORAGEPROC) IRR_OGL_LOAD_EXTENSION("glNamedRenderbufferStorage");
+    pGlNamedRenderbufferStorageEXT = (PFNGLNAMEDRENDERBUFFERSTORAGEEXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedRenderbufferStorageEXT");
+    pGlFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferRenderbuffer");
+    pGlNamedFramebufferRenderbuffer = (PFNGLNAMEDFRAMEBUFFERRENDERBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferRenderbuffer");
+    pGlNamedFramebufferRenderbufferEXT = (PFNGLNAMEDFRAMEBUFFERRENDERBUFFEREXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferRenderbufferEXT");
+    pGlDrawBuffers = (PFNGLDRAWBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glDrawBuffers");
+    pGlNamedFramebufferDrawBuffers = (PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferDrawBuffers");
+    pGlFramebufferDrawBuffersEXT = (PFNGLFRAMEBUFFERDRAWBUFFERSEXTPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferDrawBuffersEXT");
+    pGlNamedFramebufferDrawBuffer = (PFNGLNAMEDFRAMEBUFFERDRAWBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferDrawBuffer");
+    pGlFramebufferDrawBufferEXT = (PFNGLFRAMEBUFFERDRAWBUFFEREXTPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferDrawBufferEXT");
+    pGlNamedFramebufferReadBuffer = (PFNGLNAMEDFRAMEBUFFERREADBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferReadBuffer");
+    pGlFramebufferReadBufferEXT = (PFNGLFRAMEBUFFERREADBUFFEREXTPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferReadBufferEXT");
     pGlClearNamedFramebufferiv = (PFNGLCLEARNAMEDFRAMEBUFFERIVPROC) IRR_OGL_LOAD_EXTENSION("glClearNamedFramebufferiv");
     pGlClearNamedFramebufferuiv = (PFNGLCLEARNAMEDFRAMEBUFFERUIVPROC) IRR_OGL_LOAD_EXTENSION("glClearNamedFramebufferuiv");
     pGlClearNamedFramebufferfv = (PFNGLCLEARNAMEDFRAMEBUFFERFVPROC) IRR_OGL_LOAD_EXTENSION("glClearNamedFramebufferfv");
@@ -1166,11 +1166,11 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlClearBufferfv = (PFNGLCLEARBUFFERFVPROC) IRR_OGL_LOAD_EXTENSION("glClearBufferfv");
     pGlClearBufferfi = (PFNGLCLEARBUFFERFIPROC) IRR_OGL_LOAD_EXTENSION("glClearBufferfi");
 
-	// get vertex buffer extension
-	pGlGenBuffers = (PFNGLGENBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glGenBuffers");
+    // get vertex buffer extension
+    pGlGenBuffers = (PFNGLGENBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glGenBuffers");
     pGlCreateBuffers = (PFNGLCREATEBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glCreateBuffers");
-	pGlBindBuffer = (PFNGLBINDBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glBindBuffer");
-	pGlDeleteBuffers = (PFNGLDELETEBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glDeleteBuffers");
+    pGlBindBuffer = (PFNGLBINDBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glBindBuffer");
+    pGlDeleteBuffers = (PFNGLDELETEBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glDeleteBuffers");
     pGlBufferStorage = (PFNGLBUFFERSTORAGEPROC) IRR_OGL_LOAD_EXTENSION("glBufferStorage");
     pGlNamedBufferStorage = (PFNGLNAMEDBUFFERSTORAGEPROC) IRR_OGL_LOAD_EXTENSION("glNamedBufferStorage");
     pGlNamedBufferStorageEXT = (PFNGLNAMEDBUFFERSTORAGEEXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedBufferStorageEXT");
@@ -1201,8 +1201,8 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlCopyBufferSubData = (PFNGLCOPYBUFFERSUBDATAPROC) IRR_OGL_LOAD_EXTENSION("glCopyBufferSubData");
     pGlCopyNamedBufferSubData = (PFNGLCOPYNAMEDBUFFERSUBDATAPROC) IRR_OGL_LOAD_EXTENSION("glCopyNamedBufferSubData");
     pGlNamedCopyBufferSubDataEXT = (PFNGLNAMEDCOPYBUFFERSUBDATAEXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedCopyBufferSubDataEXT");
-	pGlIsBuffer= (PFNGLISBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glIsBuffer");
-	//vao
+    pGlIsBuffer= (PFNGLISBUFFERPROC) IRR_OGL_LOAD_EXTENSION("glIsBuffer");
+    //vao
     pGlGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC) IRR_OGL_LOAD_EXTENSION("glGenVertexArrays");
     pGlCreateVertexArrays = (PFNGLCREATEVERTEXARRAYSPROC) IRR_OGL_LOAD_EXTENSION("glCreateVertexArrays");
     pGlDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC) IRR_OGL_LOAD_EXTENSION("glDeleteVertexArrays");
@@ -1246,46 +1246,46 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlMultiDrawArraysIndirect = (PFNGLMULTIDRAWARRAYSINDIRECTPROC) IRR_OGL_LOAD_EXTENSION("glMultiDrawArraysIndirect");
     pGlMultiDrawElementsIndirect = (PFNGLMULTIDRAWELEMENTSINDIRECTPROC) IRR_OGL_LOAD_EXTENSION("glMultiDrawElementsIndirect");
     //
-	pGlCreateTransformFeedbacks = (PFNGLCREATETRANSFORMFEEDBACKSPROC) IRR_OGL_LOAD_EXTENSION("glCreateTransformFeedbacks");
-	pGlGenTransformFeedbacks = (PFNGLGENTRANSFORMFEEDBACKSPROC) IRR_OGL_LOAD_EXTENSION("glGenTransformFeedbacks");
-	pGlDeleteTransformFeedbacks = (PFNGLDELETETRANSFORMFEEDBACKSPROC) IRR_OGL_LOAD_EXTENSION("glDeleteTransformFeedbacks");
-	pGlBindTransformFeedback = (PFNGLBINDTRANSFORMFEEDBACKPROC) IRR_OGL_LOAD_EXTENSION("glBindTransformFeedback");
-	pGlBeginTransformFeedback = (PFNGLBEGINTRANSFORMFEEDBACKPROC) IRR_OGL_LOAD_EXTENSION("glBeginTransformFeedback");
-	pGlPauseTransformFeedback = (PFNGLPAUSETRANSFORMFEEDBACKPROC) IRR_OGL_LOAD_EXTENSION("glPauseTransformFeedback");
-	pGlResumeTransformFeedback = (PFNGLRESUMETRANSFORMFEEDBACKPROC) IRR_OGL_LOAD_EXTENSION("glResumeTransformFeedback");
-	pGlEndTransformFeedback = (PFNGLENDTRANSFORMFEEDBACKPROC) IRR_OGL_LOAD_EXTENSION("glEndTransformFeedback");
-	pGlTransformFeedbackBufferBase = (PFNGLTRANSFORMFEEDBACKBUFFERBASEPROC) IRR_OGL_LOAD_EXTENSION("glTransformFeedbackBufferBase");
-	pGlTransformFeedbackBufferRange = (PFNGLTRANSFORMFEEDBACKBUFFERRANGEPROC) IRR_OGL_LOAD_EXTENSION("glTransformFeedbackBufferRange");
-	//
-	pGlBlendFuncSeparate = (PFNGLBLENDFUNCSEPARATEPROC) IRR_OGL_LOAD_EXTENSION("glBlendFuncSeparate");
-	pGlProvokingVertex = (PFNGLPROVOKINGVERTEXPROC) IRR_OGL_LOAD_EXTENSION("glProvokingVertex");
-	pGlColorMaski= (PFNGLCOLORMASKIPROC) IRR_OGL_LOAD_EXTENSION("glColorMaski");
-	pGlEnablei = (PFNGLENABLEIPROC) IRR_OGL_LOAD_EXTENSION("glEnablei");
-	pGlDisablei = (PFNGLDISABLEIPROC) IRR_OGL_LOAD_EXTENSION("glDisablei");
-	pGlBlendFuncIndexedAMD= (PFNGLBLENDFUNCINDEXEDAMDPROC) IRR_OGL_LOAD_EXTENSION("glBlendFuncIndexedAMD");
-	pGlBlendFunciARB= (PFNGLBLENDFUNCIPROC) IRR_OGL_LOAD_EXTENSION("glBlendFunciARB");
-	pGlBlendEquationIndexedAMD= (PFNGLBLENDEQUATIONINDEXEDAMDPROC) IRR_OGL_LOAD_EXTENSION("glBlendEquationIndexedAMD");
-	pGlBlendEquationiARB= (PFNGLBLENDEQUATIONIPROC) IRR_OGL_LOAD_EXTENSION("glBlendEquationiARB");
-	pGlProgramParameteri= (PFNGLPROGRAMPARAMETERIPROC) IRR_OGL_LOAD_EXTENSION("glProgramParameteri");
-	pGlPatchParameterfv = (PFNGLPATCHPARAMETERFVPROC) IRR_OGL_LOAD_EXTENSION("glPatchParameterfv");
-	pGlPatchParameteri = (PFNGLPATCHPARAMETERIPROC) IRR_OGL_LOAD_EXTENSION("glPatchParameteri");
+    pGlCreateTransformFeedbacks = (PFNGLCREATETRANSFORMFEEDBACKSPROC) IRR_OGL_LOAD_EXTENSION("glCreateTransformFeedbacks");
+    pGlGenTransformFeedbacks = (PFNGLGENTRANSFORMFEEDBACKSPROC) IRR_OGL_LOAD_EXTENSION("glGenTransformFeedbacks");
+    pGlDeleteTransformFeedbacks = (PFNGLDELETETRANSFORMFEEDBACKSPROC) IRR_OGL_LOAD_EXTENSION("glDeleteTransformFeedbacks");
+    pGlBindTransformFeedback = (PFNGLBINDTRANSFORMFEEDBACKPROC) IRR_OGL_LOAD_EXTENSION("glBindTransformFeedback");
+    pGlBeginTransformFeedback = (PFNGLBEGINTRANSFORMFEEDBACKPROC) IRR_OGL_LOAD_EXTENSION("glBeginTransformFeedback");
+    pGlPauseTransformFeedback = (PFNGLPAUSETRANSFORMFEEDBACKPROC) IRR_OGL_LOAD_EXTENSION("glPauseTransformFeedback");
+    pGlResumeTransformFeedback = (PFNGLRESUMETRANSFORMFEEDBACKPROC) IRR_OGL_LOAD_EXTENSION("glResumeTransformFeedback");
+    pGlEndTransformFeedback = (PFNGLENDTRANSFORMFEEDBACKPROC) IRR_OGL_LOAD_EXTENSION("glEndTransformFeedback");
+    pGlTransformFeedbackBufferBase = (PFNGLTRANSFORMFEEDBACKBUFFERBASEPROC) IRR_OGL_LOAD_EXTENSION("glTransformFeedbackBufferBase");
+    pGlTransformFeedbackBufferRange = (PFNGLTRANSFORMFEEDBACKBUFFERRANGEPROC) IRR_OGL_LOAD_EXTENSION("glTransformFeedbackBufferRange");
+    //
+    pGlBlendFuncSeparate = (PFNGLBLENDFUNCSEPARATEPROC) IRR_OGL_LOAD_EXTENSION("glBlendFuncSeparate");
+    pGlProvokingVertex = (PFNGLPROVOKINGVERTEXPROC) IRR_OGL_LOAD_EXTENSION("glProvokingVertex");
+    pGlColorMaski= (PFNGLCOLORMASKIPROC) IRR_OGL_LOAD_EXTENSION("glColorMaski");
+    pGlEnablei = (PFNGLENABLEIPROC) IRR_OGL_LOAD_EXTENSION("glEnablei");
+    pGlDisablei = (PFNGLDISABLEIPROC) IRR_OGL_LOAD_EXTENSION("glDisablei");
+    pGlBlendFuncIndexedAMD= (PFNGLBLENDFUNCINDEXEDAMDPROC) IRR_OGL_LOAD_EXTENSION("glBlendFuncIndexedAMD");
+    pGlBlendFunciARB= (PFNGLBLENDFUNCIPROC) IRR_OGL_LOAD_EXTENSION("glBlendFunciARB");
+    pGlBlendEquationIndexedAMD= (PFNGLBLENDEQUATIONINDEXEDAMDPROC) IRR_OGL_LOAD_EXTENSION("glBlendEquationIndexedAMD");
+    pGlBlendEquationiARB= (PFNGLBLENDEQUATIONIPROC) IRR_OGL_LOAD_EXTENSION("glBlendEquationiARB");
+    pGlProgramParameteri= (PFNGLPROGRAMPARAMETERIPROC) IRR_OGL_LOAD_EXTENSION("glProgramParameteri");
+    pGlPatchParameterfv = (PFNGLPATCHPARAMETERFVPROC) IRR_OGL_LOAD_EXTENSION("glPatchParameterfv");
+    pGlPatchParameteri = (PFNGLPATCHPARAMETERIPROC) IRR_OGL_LOAD_EXTENSION("glPatchParameteri");
 
-	// occlusion query
-	pGlCreateQueries = (PFNGLCREATEQUERIESPROC) IRR_OGL_LOAD_EXTENSION("glCreateQueries");
-	pGlGenQueries = (PFNGLGENQUERIESPROC) IRR_OGL_LOAD_EXTENSION("glGenQueries");
-	pGlDeleteQueries = (PFNGLDELETEQUERIESPROC) IRR_OGL_LOAD_EXTENSION("glDeleteQueries");
-	pGlIsQuery = (PFNGLISQUERYPROC) IRR_OGL_LOAD_EXTENSION("glIsQuery");
-	pGlBeginQuery = (PFNGLBEGINQUERYPROC) IRR_OGL_LOAD_EXTENSION("glBeginQuery");
-	pGlEndQuery = (PFNGLENDQUERYPROC) IRR_OGL_LOAD_EXTENSION("glEndQuery");
-	pGlBeginQueryIndexed = (PFNGLBEGINQUERYINDEXEDPROC) IRR_OGL_LOAD_EXTENSION("glBeginQueryIndexed");
-	pGlEndQueryIndexed = (PFNGLENDQUERYINDEXEDPROC) IRR_OGL_LOAD_EXTENSION("glEndQueryIndexed");
-	pGlGetQueryiv = (PFNGLGETQUERYIVPROC) IRR_OGL_LOAD_EXTENSION("glGetQueryiv");
-	pGlGetQueryObjectuiv = (PFNGLGETQUERYOBJECTUIVPROC) IRR_OGL_LOAD_EXTENSION("glGetQueryObjectuiv");
-	pGlGetQueryObjectui64v = (PFNGLGETQUERYOBJECTUI64VPROC) IRR_OGL_LOAD_EXTENSION("glGetQueryObjectui64v");
+    // occlusion query
+    pGlCreateQueries = (PFNGLCREATEQUERIESPROC) IRR_OGL_LOAD_EXTENSION("glCreateQueries");
+    pGlGenQueries = (PFNGLGENQUERIESPROC) IRR_OGL_LOAD_EXTENSION("glGenQueries");
+    pGlDeleteQueries = (PFNGLDELETEQUERIESPROC) IRR_OGL_LOAD_EXTENSION("glDeleteQueries");
+    pGlIsQuery = (PFNGLISQUERYPROC) IRR_OGL_LOAD_EXTENSION("glIsQuery");
+    pGlBeginQuery = (PFNGLBEGINQUERYPROC) IRR_OGL_LOAD_EXTENSION("glBeginQuery");
+    pGlEndQuery = (PFNGLENDQUERYPROC) IRR_OGL_LOAD_EXTENSION("glEndQuery");
+    pGlBeginQueryIndexed = (PFNGLBEGINQUERYINDEXEDPROC) IRR_OGL_LOAD_EXTENSION("glBeginQueryIndexed");
+    pGlEndQueryIndexed = (PFNGLENDQUERYINDEXEDPROC) IRR_OGL_LOAD_EXTENSION("glEndQueryIndexed");
+    pGlGetQueryiv = (PFNGLGETQUERYIVPROC) IRR_OGL_LOAD_EXTENSION("glGetQueryiv");
+    pGlGetQueryObjectuiv = (PFNGLGETQUERYOBJECTUIVPROC) IRR_OGL_LOAD_EXTENSION("glGetQueryObjectuiv");
+    pGlGetQueryObjectui64v = (PFNGLGETQUERYOBJECTUI64VPROC) IRR_OGL_LOAD_EXTENSION("glGetQueryObjectui64v");
     pGlGetQueryBufferObjectuiv = (PFNGLGETQUERYBUFFEROBJECTUIVPROC) IRR_OGL_LOAD_EXTENSION("glGetQueryBufferObjectuiv");
     pGlGetQueryBufferObjectui64v = (PFNGLGETQUERYBUFFEROBJECTUI64VPROC) IRR_OGL_LOAD_EXTENSION("glGetQueryBufferObjectui64v");
-	pGlQueryCounter = (PFNGLQUERYCOUNTERPROC) IRR_OGL_LOAD_EXTENSION("glQueryCounter");
-	pGlBeginConditionalRender = (PFNGLBEGINCONDITIONALRENDERPROC) IRR_OGL_LOAD_EXTENSION("glBeginConditionalRender");
+    pGlQueryCounter = (PFNGLQUERYCOUNTERPROC) IRR_OGL_LOAD_EXTENSION("glQueryCounter");
+    pGlBeginConditionalRender = (PFNGLBEGINCONDITIONALRENDERPROC) IRR_OGL_LOAD_EXTENSION("glBeginConditionalRender");
     pGlEndConditionalRender = (PFNGLENDCONDITIONALRENDERPROC) IRR_OGL_LOAD_EXTENSION("glEndConditionalRender");
 
 
@@ -1295,52 +1295,52 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlDebugMessageCallback = (PFNGLDEBUGMESSAGECALLBACKPROC) IRR_OGL_LOAD_EXTENSION("glDebugMessageCallback");
     pGlDebugMessageCallbackARB = (PFNGLDEBUGMESSAGECALLBACKARBPROC) IRR_OGL_LOAD_EXTENSION("glDebugMessageCallbackARB");
 
-	// blend equation
-	pGlBlendEquationEXT = (PFNGLBLENDEQUATIONEXTPROC) IRR_OGL_LOAD_EXTENSION("glBlendEquationEXT");
-	pGlBlendEquation = (PFNGLBLENDEQUATIONPROC) IRR_OGL_LOAD_EXTENSION("glBlendEquation");
+    // blend equation
+    pGlBlendEquationEXT = (PFNGLBLENDEQUATIONEXTPROC) IRR_OGL_LOAD_EXTENSION("glBlendEquationEXT");
+    pGlBlendEquation = (PFNGLBLENDEQUATIONPROC) IRR_OGL_LOAD_EXTENSION("glBlendEquation");
 
-	// get vsync extension
-	#if defined(WGL_EXT_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-		pWglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) IRR_OGL_LOAD_EXTENSION("wglSwapIntervalEXT");
-	#endif
-	#if defined(GLX_SGI_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-		pGlxSwapIntervalSGI = (PFNGLXSWAPINTERVALSGIPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalSGI");
-	#endif
-	#if defined(GLX_EXT_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-		pGlxSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalEXT");
-	#endif
-	#if defined(GLX_MESA_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-		pGlxSwapIntervalMESA = (PFNGLXSWAPINTERVALMESAPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalMESA");
-	#endif
+    // get vsync extension
+    #if defined(WGL_EXT_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+        pWglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) IRR_OGL_LOAD_EXTENSION("wglSwapIntervalEXT");
+    #endif
+    #if defined(GLX_SGI_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+        pGlxSwapIntervalSGI = (PFNGLXSWAPINTERVALSGIPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalSGI");
+    #endif
+    #if defined(GLX_EXT_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+        pGlxSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalEXT");
+    #endif
+    #if defined(GLX_MESA_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+        pGlxSwapIntervalMESA = (PFNGLXSWAPINTERVALMESAPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalMESA");
+    #endif
 
-	functionsAlreadyLoaded = true;
+    functionsAlreadyLoaded = true;
 #endif // use extension pointer
 }
 
 bool COpenGLExtensionHandler::queryFeature(const E_VIDEO_DRIVER_FEATURE &feature)
 {
-	switch (feature)
-	{
-	case EVDF_STENCIL_BUFFER:
-	case EVDF_ARB_GLSL:
-	case EVDF_COLOR_MASK:
-		return true;
-	case EVDF_ALPHA_TO_COVERAGE:
-		return FeatureAvailable[IRR_ARB_multisample];
-	case EVDF_GEOMETRY_SHADER:
-		return true;
-	case EVDF_MRT_BLEND:
-	case EVDF_MRT_COLOR_MASK:
-		return FeatureAvailable[IRR_EXT_draw_buffers2] || FeatureAvailable[IRR_ARB_draw_buffers_blend];
-	case EVDF_MRT_BLEND_FUNC:
-		return FeatureAvailable[IRR_ARB_draw_buffers_blend] || FeatureAvailable[IRR_AMD_draw_buffers_blend];
-	case EVDF_OCCLUSION_QUERY:
-	case EVDF_POLYGON_OFFSET:
-	case EVDF_BLEND_OPERATIONS:
-		return true;
-	default:
-		return false;
-	};
+    switch (feature)
+    {
+    case EVDF_STENCIL_BUFFER:
+    case EVDF_ARB_GLSL:
+    case EVDF_COLOR_MASK:
+        return true;
+    case EVDF_ALPHA_TO_COVERAGE:
+        return FeatureAvailable[IRR_ARB_multisample];
+    case EVDF_GEOMETRY_SHADER:
+        return true;
+    case EVDF_MRT_BLEND:
+    case EVDF_MRT_COLOR_MASK:
+        return FeatureAvailable[IRR_EXT_draw_buffers2] || FeatureAvailable[IRR_ARB_draw_buffers_blend];
+    case EVDF_MRT_BLEND_FUNC:
+        return FeatureAvailable[IRR_ARB_draw_buffers_blend] || FeatureAvailable[IRR_AMD_draw_buffers_blend];
+    case EVDF_OCCLUSION_QUERY:
+    case EVDF_POLYGON_OFFSET:
+    case EVDF_BLEND_OPERATIONS:
+        return true;
+    default:
+        return false;
+    };
 }
 
 

@@ -19,13 +19,13 @@ static const io::SNamedPath emptyNamedPath;
 template<class T>
 void CMeshCache<T>::addMesh(const io::path& filename, T* mesh)
 {
-	mesh->grab();
+    mesh->grab();
 
-	MeshEntry<T> e ( filename );
-	e.Mesh = mesh;
+    MeshEntry<T> e ( filename );
+    e.Mesh = mesh;
 
-	Meshes.push_back(e);
-	Meshes.sort();
+    Meshes.push_back(e);
+    Meshes.sort();
 }
 
 
@@ -33,19 +33,19 @@ void CMeshCache<T>::addMesh(const io::path& filename, T* mesh)
 template<class T>
 void CMeshCache<T>::removeMesh(const T* const mesh)
 {
-	if ( !mesh )
-		return;
+    if ( !mesh )
+        return;
 
 
-	for (uint32_t i=0; i<Meshes.size(); ++i)
-	{
-		if (Meshes[i].Mesh == mesh)
-		{
-			Meshes[i].Mesh->drop();
-			Meshes.erase(i);
-			return;
-		}
-	}
+    for (uint32_t i=0; i<Meshes.size(); ++i)
+    {
+        if (Meshes[i].Mesh == mesh)
+        {
+            Meshes[i].Mesh->drop();
+            Meshes.erase(i);
+            return;
+        }
+    }
 }
 
 
@@ -53,7 +53,7 @@ void CMeshCache<T>::removeMesh(const T* const mesh)
 template<class T>
 uint32_t CMeshCache<T>::getMeshCount() const
 {
-	return Meshes.size();
+    return Meshes.size();
 }
 
 
@@ -61,13 +61,13 @@ uint32_t CMeshCache<T>::getMeshCount() const
 template<class T>
 int32_t CMeshCache<T>::getMeshIndex(const T* const mesh) const
 {
-	for (uint32_t i=0; i<Meshes.size(); ++i)
-	{
-		if (Meshes[i].Mesh == mesh)
-			return (int32_t)i;
-	}
+    for (uint32_t i=0; i<Meshes.size(); ++i)
+    {
+        if (Meshes[i].Mesh == mesh)
+            return (int32_t)i;
+    }
 
-	return -1;
+    return -1;
 }
 
 
@@ -75,10 +75,10 @@ int32_t CMeshCache<T>::getMeshIndex(const T* const mesh) const
 template<class T>
 T* CMeshCache<T>::getMeshByIndex(uint32_t number)
 {
-	if (number >= Meshes.size())
-		return 0;
+    if (number >= Meshes.size())
+        return 0;
 
-	return Meshes[number].Mesh;
+    return Meshes[number].Mesh;
 }
 
 
@@ -86,9 +86,9 @@ T* CMeshCache<T>::getMeshByIndex(uint32_t number)
 template<class T>
 T* CMeshCache<T>::getMeshByName(const io::path& name)
 {
-	MeshEntry<T> e ( name );
-	int32_t id = Meshes.binary_search(e);
-	return (id != -1) ? Meshes[id].Mesh : 0;
+    MeshEntry<T> e ( name );
+    int32_t id = Meshes.binary_search(e);
+    return (id != -1) ? Meshes[id].Mesh : 0;
 }
 
 
@@ -96,10 +96,10 @@ T* CMeshCache<T>::getMeshByName(const io::path& name)
 template<class T>
 const io::SNamedPath& CMeshCache<T>::getMeshName(uint32_t index) const
 {
-	if (index >= Meshes.size())
-		return emptyNamedPath;
+    if (index >= Meshes.size())
+        return emptyNamedPath;
 
-	return Meshes[index].NamedPath;
+    return Meshes[index].NamedPath;
 }
 
 
@@ -107,28 +107,28 @@ const io::SNamedPath& CMeshCache<T>::getMeshName(uint32_t index) const
 template<class T>
 const io::SNamedPath& CMeshCache<T>::getMeshName(const T* const mesh) const
 {
-	if (!mesh)
-		return emptyNamedPath;
+    if (!mesh)
+        return emptyNamedPath;
 
-	for (uint32_t i=0; i<Meshes.size(); ++i)
-	{
-		if (Meshes[i].Mesh == mesh)
-			return Meshes[i].NamedPath;
-	}
+    for (uint32_t i=0; i<Meshes.size(); ++i)
+    {
+        if (Meshes[i].Mesh == mesh)
+            return Meshes[i].NamedPath;
+    }
 
-	return emptyNamedPath;
+    return emptyNamedPath;
 }
 
 //! Renames a loaded mesh.
 template<class T>
 bool CMeshCache<T>::renameMesh(uint32_t index, const io::path& name)
 {
-	if (index >= Meshes.size())
-		return false;
+    if (index >= Meshes.size())
+        return false;
 
-	Meshes[index].NamedPath.setPath(name);
-	Meshes.sort();
-	return true;
+    Meshes[index].NamedPath.setPath(name);
+    Meshes.sort();
+    return true;
 }
 
 
@@ -136,17 +136,17 @@ bool CMeshCache<T>::renameMesh(uint32_t index, const io::path& name)
 template<class T>
 bool CMeshCache<T>::renameMesh(const T* const mesh, const io::path& name)
 {
-	for (uint32_t i=0; i<Meshes.size(); ++i)
-	{
-		if (Meshes[i].Mesh == mesh)
-		{
-			Meshes[i].NamedPath.setPath(name);
-			Meshes.sort();
-			return true;
-		}
-	}
+    for (uint32_t i=0; i<Meshes.size(); ++i)
+    {
+        if (Meshes[i].Mesh == mesh)
+        {
+            Meshes[i].NamedPath.setPath(name);
+            Meshes.sort();
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 
@@ -154,7 +154,7 @@ bool CMeshCache<T>::renameMesh(const T* const mesh, const io::path& name)
 template<class T>
 bool CMeshCache<T>::isMeshLoaded(const io::path& name)
 {
-	return getMeshByName(name) != 0;
+    return getMeshByName(name) != 0;
 }
 
 
@@ -162,25 +162,25 @@ bool CMeshCache<T>::isMeshLoaded(const io::path& name)
 template<class T>
 void CMeshCache<T>::clear()
 {
-	for (uint32_t i=0; i<Meshes.size(); ++i)
-		Meshes[i].Mesh->drop();
+    for (uint32_t i=0; i<Meshes.size(); ++i)
+        Meshes[i].Mesh->drop();
 
-	Meshes.clear();
+    Meshes.clear();
 }
 
 //! Clears all meshes that are held in the mesh cache but not used anywhere else.
 template<class T>
 void CMeshCache<T>::clearUnusedMeshes()
 {
-	for (uint32_t i=0; i<Meshes.size(); ++i)
-	{
-		if (Meshes[i].Mesh->getReferenceCount() == 1)
-		{
-			Meshes[i].Mesh->drop();
-			Meshes.erase(i);
-			--i;
-		}
-	}
+    for (uint32_t i=0; i<Meshes.size(); ++i)
+    {
+        if (Meshes[i].Mesh->getReferenceCount() == 1)
+        {
+            Meshes[i].Mesh->drop();
+            Meshes.erase(i);
+            --i;
+        }
+    }
 }
 // Instantiate CMeshCache for the supported template type parameters
 template class CMeshCache<ICPUMesh>;

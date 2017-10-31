@@ -76,7 +76,7 @@ class COpenGLBuffer : public virtual IGPUBuffer
     public:
         COpenGLBuffer(const size_t &size, const void* data, const GLbitfield &flags) : BufferName(0), BufferSize(0), cachedFlags(0)
         {
-			lastTimeReallocated = 0;
+            lastTimeReallocated = 0;
             COpenGLExtensionHandler::extGlCreateBuffers(1,&BufferName);
             if (BufferName==0)
                 return;

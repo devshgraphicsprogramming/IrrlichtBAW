@@ -26,54 +26,54 @@ class COpenGLTextureBufferObject : public COpenGLTexture
 {
 public:
 
-	//! constructor
-	COpenGLTextureBufferObject(COpenGLBuffer* buffer, GLenum internalFormat, video::COpenGLDriver* driver, const size_t& offset=0, const size_t& length=0, const io::path& name="", core::LeakDebugger* dbgr=NULL)
+    //! constructor
+    COpenGLTextureBufferObject(COpenGLBuffer* buffer, GLenum internalFormat, video::COpenGLDriver* driver, const size_t& offset=0, const size_t& length=0, const io::path& name="", core::LeakDebugger* dbgr=NULL)
                                 : COpenGLTexture(name,driver),  lastValidated(0), currentBuffer(NULL), Offset(0), Length(0), leakTracker(dbgr)
-	{
-	    if (leakTracker)
+    {
+        if (leakTracker)
             leakTracker->registerObj(this);
 
-	    HasMipMaps = false;
-	    MipLevelsStored = 1;
+        HasMipMaps = false;
+        MipLevelsStored = 1;
         COpenGLExtensionHandler::extGlCreateTextures(GL_TEXTURE_BUFFER,1,&TextureName);
 
         InternalFormat = internalFormat;
 
         bind(buffer,internalFormat,offset,length);
-	}
+    }
 
-	virtual ~COpenGLTextureBufferObject()
-	{
-	    if (leakTracker)
+    virtual ~COpenGLTextureBufferObject()
+    {
+        if (leakTracker)
             leakTracker->deregisterObj(this);
 
-	    if (currentBuffer)
+        if (currentBuffer)
             currentBuffer->drop();
-	}
+    }
 
-	//! Returns size of the texture.
-	virtual const E_DIMENSION_COUNT getDimensionality() const {return EDC_ONE;}
+    //! Returns size of the texture.
+    virtual const E_DIMENSION_COUNT getDimensionality() const {return EDC_ONE;}
 
     virtual const E_TEXTURE_TYPE getTextureType() const {return ETT_TEXTURE_BUFFER;}
 
 
     virtual core::dimension2du getRenderableSize() const {return core::dimension2du(0,0);}
 
-	//! returns pitch of texture (in bytes)
-	virtual uint32_t getPitch() const {return Length;}
+    //! returns pitch of texture (in bytes)
+    virtual uint32_t getPitch() const {return Length;}
 
-	GLint getOpenGLInternalFormat() const {return InternalFormat;}
+    GLint getOpenGLInternalFormat() const {return InternalFormat;}
 
-	//! returns the opengl texture type
-	virtual GLenum getOpenGLTextureType() const {return GL_TEXTURE_BUFFER;}
+    //! returns the opengl texture type
+    virtual GLenum getOpenGLTextureType() const {return GL_TEXTURE_BUFFER;}
 
-	//! return whether this texture has mipmaps
-	virtual bool hasMipMaps() const {return false;}
+    //! return whether this texture has mipmaps
+    virtual bool hasMipMaps() const {return false;}
 
-	//! Regenerates the mip map levels of the texture.
-	/** Useful after locking and modifying the texture
-	\param mipmapData Pointer to raw mipmap data, including all necessary mip levels, in the same format as the main texture image. If not set the mipmaps are derived from the main image. */
-	virtual void regenerateMipMapLevels() {}
+    //! Regenerates the mip map levels of the texture.
+    /** Useful after locking and modifying the texture
+    \param mipmapData Pointer to raw mipmap data, including all necessary mip levels, in the same format as the main texture image. If not set the mipmaps are derived from the main image. */
+    virtual void regenerateMipMapLevels() {}
 
 
     virtual bool updateSubRegion(const ECOLOR_FORMAT &inDataColorFormat, const void* data, const uint32_t* minimum, const uint32_t* maximum, int32_t mipmap=0) {return false;}

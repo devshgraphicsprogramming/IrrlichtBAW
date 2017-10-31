@@ -24,24 +24,24 @@ class COpenGLFrameBuffer : public IFrameBuffer
 {
 public:
 
-	//! constructor
-	COpenGLFrameBuffer(COpenGLDriver* driver);
+    //! constructor
+    COpenGLFrameBuffer(COpenGLDriver* driver);
 
-	//! destructor
-	virtual ~COpenGLFrameBuffer();
+    //! destructor
+    virtual ~COpenGLFrameBuffer();
 
     virtual bool attach(const E_FBO_ATTACHMENT_POINT &attachmenPoint, ITexture* tex, const uint32_t &mipMapLayer=0, const int32_t &layer=-1);
 
     virtual bool attach(const E_FBO_ATTACHMENT_POINT &attachmenPoint, IRenderBuffer* rbf);
 
-	virtual bool rebindRevalidate();
+    virtual bool rebindRevalidate();
 
-	const GLuint getOpenGLName() const {return frameBuffer;}
+    const GLuint getOpenGLName() const {return frameBuffer;}
 
     virtual const IRenderable* getAttachment(const size_t &ix) const {return ix<EFAP_MAX_ATTACHMENTS ? attachments[ix]:NULL;}
 
 protected:
-	COpenGLDriver* Driver;
+    COpenGLDriver* Driver;
 
     GLuint frameBuffer;
     uint64_t lastValidated;

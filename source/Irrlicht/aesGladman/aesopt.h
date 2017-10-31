@@ -149,11 +149,11 @@
 /*  BYTE ORDER IN 32-BIT WORDS
 
     To obtain the highest speed on processors with 32-bit words, this code
-    needs to determine the byte order of the target machine. The following 
-    block of code is an attempt to capture the most obvious ways in which 
-    various environemnts define byte order. It may well fail, in which case 
-    the definitions will need to be set by editing at the points marked 
-    **** EDIT HERE IF NECESSARY **** below.  My thanks to Peter Gutmann for 
+    needs to determine the byte order of the target machine. The following
+    block of code is an attempt to capture the most obvious ways in which
+    various environemnts define byte order. It may well fail, in which case
+    the definitions will need to be set by editing at the points marked
+    **** EDIT HERE IF NECESSARY **** below.  My thanks to Peter Gutmann for
     some of these defines (from cryptlib).
 */
 
@@ -343,7 +343,7 @@
 
     On some systems speed will be improved by aligning the AES large lookup
     tables on particular boundaries. This define should be set to a power of
-    two giving the desired alignment. It can be left undefined if alignment 
+    two giving the desired alignment. It can be left undefined if alignment
     is not needed.  This option is specific to the Microsft VC++ compiler -
     it seems to sometimes cause trouble for the VC++ version 6 compiler.
 */
@@ -644,17 +644,17 @@
 #endif
 
 /*  If there are no global variables, the definitions here can be
-    used to put the AES tables in a structure so that a pointer 
+    used to put the AES tables in a structure so that a pointer
     can then be added to the AES context to pass them to the AES
-    routines that need them.  If this facility is used, the calling 
-    program has to ensure that this pointer is managed appropriately. 
-    In particular, the value of the t_dec(in,it) item in the table 
-    structure must be set to zero in order to ensure that the tables 
-    are initialised. In practice the three code sequences in aeskey.c 
-    that control the calls to gen_tabs() and the gen_tabs() routine 
-    itself will have to be changed for a specific implementation. If 
-    global variables are available it will generally be preferable to 
-    use them with the precomputed FIXED_TABLES option that uses static 
+    routines that need them.  If this facility is used, the calling
+    program has to ensure that this pointer is managed appropriately.
+    In particular, the value of the t_dec(in,it) item in the table
+    structure must be set to zero in order to ensure that the tables
+    are initialised. In practice the three code sequences in aeskey.c
+    that control the calls to gen_tabs() and the gen_tabs() routine
+    itself will have to be changed for a specific implementation. If
+    global variables are available it will generally be preferable to
+    use them with the precomputed FIXED_TABLES option that uses static
     global tables.
 
     The following defines can be used to control the way the tables
@@ -852,8 +852,8 @@ const aes_32t t_dec(r,c)[RC_LENGTH] =
     #define d_1(t,n,b,v) const t n[256]    =   { b(concat(v,0)) }
     #define d_4(t,n,b,v) const t n[4][256] = { { b(concat(v,0)) }, { b(concat(v,1)) }, { b(concat(v,2)) }, { b(concat(v,3)) } }
 #else
-	#define d_1(t,n,b,v) const t n[256]    =   { b(v##0) }
-	#define d_4(t,n,b,v) const t n[4][256] = { { b(v##0) }, { b(v##1) }, { b(v##2) }, { b(v##3) } }
+    #define d_1(t,n,b,v) const t n[256]    =   { b(v##0) }
+    #define d_4(t,n,b,v) const t n[4][256] = { { b(v##0) }, { b(v##1) }, { b(v##2) }, { b(v##3) } }
 #endif
 
 #else   /* declare and instantiate tables for dynamic value generation in in tab.c  */

@@ -20,11 +20,11 @@ namespace
 
 inline bool isHeaderValid(const SPAKFileHeader& header)
 {
-	const char* tag = header.tag;
-	return tag[0] == 'P' &&
-		   tag[1] == 'A' &&
-		   tag[2] == 'C' &&
-		   tag[3] == 'K';
+    const char* tag = header.tag;
+    return tag[0] == 'P' &&
+           tag[1] == 'A' &&
+           tag[2] == 'C' &&
+           tag[3] == 'K';
 }
 
 } // end namespace
@@ -34,7 +34,7 @@ CArchiveLoaderPAK::CArchiveLoaderPAK( io::IFileSystem* fs)
 : FileSystem(fs)
 {
 #ifdef _DEBUG
-	setDebugName("CArchiveLoaderPAK");
+    setDebugName("CArchiveLoaderPAK");
 #endif
 }
 
@@ -42,13 +42,13 @@ CArchiveLoaderPAK::CArchiveLoaderPAK( io::IFileSystem* fs)
 //! returns true if the file maybe is able to be loaded by this class
 bool CArchiveLoaderPAK::isALoadableFileFormat(const io::path& filename) const
 {
-	return core::hasFileExtension(filename, "pak");
+    return core::hasFileExtension(filename, "pak");
 }
 
 //! Check to see if the loader can create archives of this type.
 bool CArchiveLoaderPAK::isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const
 {
-	return fileType == EFAT_PAK;
+    return fileType == EFAT_PAK;
 }
 
 //! Creates an archive from the filename
@@ -56,29 +56,29 @@ bool CArchiveLoaderPAK::isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) cons
 \return Pointer to newly created archive, or 0 upon error. */
 IFileArchive* CArchiveLoaderPAK::createArchive(const io::path& filename, bool ignoreCase, bool ignorePaths) const
 {
-	IFileArchive *archive = 0;
-	io::IReadFile* file = FileSystem->createAndOpenFile(filename);
+    IFileArchive *archive = 0;
+    io::IReadFile* file = FileSystem->createAndOpenFile(filename);
 
-	if (file)
-	{
-		archive = createArchive(file, ignoreCase, ignorePaths);
-		file->drop ();
-	}
+    if (file)
+    {
+        archive = createArchive(file, ignoreCase, ignorePaths);
+        file->drop ();
+    }
 
-	return archive;
+    return archive;
 }
 
 //! creates/loads an archive from the file.
 //! \return Pointer to the created archive. Returns 0 if loading failed.
 IFileArchive* CArchiveLoaderPAK::createArchive(io::IReadFile* file, bool ignoreCase, bool ignorePaths) const
 {
-	IFileArchive *archive = 0;
-	if ( file )
-	{
-		file->seek ( 0 );
-		archive = new CPakReader(file, ignoreCase, ignorePaths);
-	}
-	return archive;
+    IFileArchive *archive = 0;
+    if ( file )
+    {
+        file->seek ( 0 );
+        archive = new CPakReader(file, ignoreCase, ignorePaths);
+    }
+    return archive;
 }
 
 
@@ -88,105 +88,105 @@ IFileArchive* CArchiveLoaderPAK::createArchive(io::IReadFile* file, bool ignoreC
 \return True if file seems to be loadable. */
 bool CArchiveLoaderPAK::isALoadableFileFormat(io::IReadFile* file) const
 {
-	SPAKFileHeader header;
+    SPAKFileHeader header;
 
-	file->read(&header, sizeof(header));
+    file->read(&header, sizeof(header));
 
-	return isHeaderValid(header);
+    return isHeaderValid(header);
 }
 
 
 /*!
-	PAK Reader
+    PAK Reader
 */
 CPakReader::CPakReader(IReadFile* file, bool ignoreCase, bool ignorePaths)
 : CFileList((file ? file->getFileName() : io::path("")), ignoreCase, ignorePaths), File(file)
 {
 #ifdef _DEBUG
-	setDebugName("CPakReader");
+    setDebugName("CPakReader");
 #endif
 
-	if (File)
-	{
-		File->grab();
-		scanLocalHeader();
-		sort();
-	}
+    if (File)
+    {
+        File->grab();
+        scanLocalHeader();
+        sort();
+    }
 }
 
 
 CPakReader::~CPakReader()
 {
-	if (File)
-		File->drop();
+    if (File)
+        File->drop();
 }
 
 
 const IFileList* CPakReader::getFileList() const
 {
-	return this;
+    return this;
 }
 
 bool CPakReader::scanLocalHeader()
 {
-	SPAKFileHeader header;
+    SPAKFileHeader header;
 
-	// Read and validate the header
-	File->read(&header, sizeof(header));
-	if (!isHeaderValid(header))
-		return false;
+    // Read and validate the header
+    File->read(&header, sizeof(header));
+    if (!isHeaderValid(header))
+        return false;
 
-	// Seek to the table of contents
+    // Seek to the table of contents
 #ifdef __BIG_ENDIAN__
-	header.offset = os::Byteswap::byteswap(header.offset);
-	header.length = os::Byteswap::byteswap(header.length);
+    header.offset = os::Byteswap::byteswap(header.offset);
+    header.length = os::Byteswap::byteswap(header.length);
 #endif
-	File->seek(header.offset);
+    File->seek(header.offset);
 
-	const int numberOfFiles = header.length / sizeof(SPAKFileEntry);
+    const int numberOfFiles = header.length / sizeof(SPAKFileEntry);
 
-	// Loop through each entry in the table of contents
-	for(int i = 0; i < numberOfFiles; i++)
-	{
-		// read an entry
-		SPAKFileEntry entry;
-		File->read(&entry, sizeof(entry));
+    // Loop through each entry in the table of contents
+    for(int i = 0; i < numberOfFiles; i++)
+    {
+        // read an entry
+        SPAKFileEntry entry;
+        File->read(&entry, sizeof(entry));
 
 #ifdef _DEBUG
-		os::Printer::log(entry.name);
+        os::Printer::log(entry.name);
 #endif
 
 #ifdef __BIG_ENDIAN__
-		entry.offset = os::Byteswap::byteswap(entry.offset);
-		entry.length = os::Byteswap::byteswap(entry.length);
+        entry.offset = os::Byteswap::byteswap(entry.offset);
+        entry.length = os::Byteswap::byteswap(entry.length);
 #endif
 
-		addItem(io::path(entry.name), entry.offset, entry.length, false );
-	}
-	return true;
+        addItem(io::path(entry.name), entry.offset, entry.length, false );
+    }
+    return true;
 }
 
 
 //! opens a file by file name
 IReadFile* CPakReader::createAndOpenFile(const io::path& filename)
 {
-	int32_t index = findFile(filename, false);
+    int32_t index = findFile(filename, false);
 
-	if (index != -1)
-		return createAndOpenFile(index);
+    if (index != -1)
+        return createAndOpenFile(index);
 
-	return 0;
+    return 0;
 }
 
 
 //! opens a file by index
 IReadFile* CPakReader::createAndOpenFile(uint32_t index)
 {
-	if (index >= Files.size() )
-		return 0;
+    if (index >= Files.size() )
+        return 0;
 
-	const SFileListEntry &entry = Files[index];
-	return createLimitReadFile( entry.FullName, File, entry.Offset, entry.Size );
+    const SFileListEntry &entry = Files[index];
+    return createLimitReadFile( entry.FullName, File, entry.Offset, entry.Size );
 }
 
 } // end namespace io

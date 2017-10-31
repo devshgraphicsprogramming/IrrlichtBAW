@@ -4,13 +4,13 @@
 
 
 /*
-	Author:	Gary Conway (Viper) - co-author of the ZIP file format, Feb 1989,
-						 see the story at http://www.idcnet.us/ziphistory.html
-	Website:	http://idcnet.us
-	Email:		codeslinger@vipergc.com
-	Created:	March 1, 2009
-	Version:	1.0
-	Updated:
+    Author:    Gary Conway (Viper) - co-author of the ZIP file format, Feb 1989,
+                         see the story at http://www.idcnet.us/ziphistory.html
+    Website:    http://idcnet.us
+    Email:        codeslinger@vipergc.com
+    Created:    March 1, 2009
+    Version:    1.0
+    Updated:
 */
 
 #ifndef __C_IMAGE_LOADER_RGB_H_INCLUDED__
@@ -34,99 +34,99 @@ namespace video
 // byte-align structures
 #include "irrpack.h"
 
-	// the RGB image file header structure
+    // the RGB image file header structure
 
-	struct SRGBHeader
-	{
-		uint16_t Magic;	// IRIS image file magic number
-		uint8_t  Storage;	// Storage format
-		uint8_t  BPC;	// Number of bytes per pixel channel
-		uint16_t Dimension;	// Number of dimensions
-		uint16_t Xsize;	// X size in pixels
-		uint16_t Ysize;	// Y size in pixels
-		uint16_t Zsize;	// Z size in pixels
-		uint32_t Pixmin;	// Minimum pixel value
-		uint32_t Pixmax;	// Maximum pixel value
-		uint32_t Dummy1;	// ignored
-		char Imagename[80];// Image name
-		uint32_t Colormap;	// Colormap ID
-//		char Dummy2[404];// Ignored
-	} PACK_STRUCT;
+    struct SRGBHeader
+    {
+        uint16_t Magic;    // IRIS image file magic number
+        uint8_t  Storage;    // Storage format
+        uint8_t  BPC;    // Number of bytes per pixel channel
+        uint16_t Dimension;    // Number of dimensions
+        uint16_t Xsize;    // X size in pixels
+        uint16_t Ysize;    // Y size in pixels
+        uint16_t Zsize;    // Z size in pixels
+        uint32_t Pixmin;    // Minimum pixel value
+        uint32_t Pixmax;    // Maximum pixel value
+        uint32_t Dummy1;    // ignored
+        char Imagename[80];// Image name
+        uint32_t Colormap;    // Colormap ID
+//        char Dummy2[404];// Ignored
+    } PACK_STRUCT;
 
 // Default alignment
 #include "irrunpack.h"
 
-	// this structure holds context specific data about the file being loaded.
+    // this structure holds context specific data about the file being loaded.
 
-	typedef struct _RGBdata
-	{
-		uint8_t *tmp,
-		   *tmpR,
-		   *tmpG,
-		   *tmpB,
-		   *tmpA;
+    typedef struct _RGBdata
+    {
+        uint8_t *tmp,
+           *tmpR,
+           *tmpG,
+           *tmpB,
+           *tmpA;
 
 
-		uint32_t *StartTable;	// compressed data table, holds file offsets
-		uint32_t *LengthTable;	// length for the above data, hold lengths for above
-		uint32_t TableLen;		// len of above tables
+        uint32_t *StartTable;    // compressed data table, holds file offsets
+        uint32_t *LengthTable;    // length for the above data, hold lengths for above
+        uint32_t TableLen;        // len of above tables
 
-		SRGBHeader Header;	// define the .rgb file header
-		uint32_t ImageSize;
-		uint8_t *rgbData;
+        SRGBHeader Header;    // define the .rgb file header
+        uint32_t ImageSize;
+        uint8_t *rgbData;
 
-	public:
-		_RGBdata() : tmp(0), tmpR(0), tmpG(0), tmpB(0), tmpA(0),
-			StartTable(0), LengthTable(0), TableLen(0), ImageSize(0), rgbData(0)
-		{
-		}
+    public:
+        _RGBdata() : tmp(0), tmpR(0), tmpG(0), tmpB(0), tmpA(0),
+            StartTable(0), LengthTable(0), TableLen(0), ImageSize(0), rgbData(0)
+        {
+        }
 
-		~_RGBdata()
-		{
-			delete [] tmp;
-			delete [] tmpR;
-			delete [] tmpG;
-			delete [] tmpB;
-			delete [] tmpA;
-			delete [] StartTable;
-			delete [] LengthTable;
-			delete [] rgbData;
-		}
+        ~_RGBdata()
+        {
+            delete [] tmp;
+            delete [] tmpR;
+            delete [] tmpG;
+            delete [] tmpB;
+            delete [] tmpA;
+            delete [] StartTable;
+            delete [] LengthTable;
+            delete [] rgbData;
+        }
 
-		bool allocateTemps()
-		{
-			tmp = tmpR = tmpG = tmpB = tmpA = 0;
-			tmp = new uint8_t [Header.Xsize * 256 * Header.BPC];
-			if (!tmp)
-				return false;
+        bool allocateTemps()
+        {
+            tmp = tmpR = tmpG = tmpB = tmpA = 0;
+            tmp = new uint8_t [Header.Xsize * 256 * Header.BPC];
+            if (!tmp)
+                return false;
 
-			if (Header.Zsize >= 1)
-			{
-				tmpR = new uint8_t[Header.Xsize * Header.BPC];
-				if (!tmpR)
-					return false;
-			}
-			if (Header.Zsize >= 2)
-			{
-				tmpG = new uint8_t[Header.Xsize * Header.BPC];
-				if (!tmpG)
-					return false;
-			}
-			if (Header.Zsize >= 3)
-			{
-				tmpB = new uint8_t[Header.Xsize * Header.BPC];
-				if (!tmpB)
-					return false;
-			}
-			if (Header.Zsize >= 4)
-			{
-				tmpA = new uint8_t[Header.Xsize * Header.BPC];
-				if (!tmpA)
-					return false;
-			}
-			return true;
-		}
-	} rgbStruct;
+            if (Header.Zsize >= 1)
+            {
+                tmpR = new uint8_t[Header.Xsize * Header.BPC];
+                if (!tmpR)
+                    return false;
+            }
+            if (Header.Zsize >= 2)
+            {
+                tmpG = new uint8_t[Header.Xsize * Header.BPC];
+                if (!tmpG)
+                    return false;
+            }
+            if (Header.Zsize >= 3)
+            {
+                tmpB = new uint8_t[Header.Xsize * Header.BPC];
+                if (!tmpB)
+                    return false;
+            }
+            if (Header.Zsize >= 4)
+            {
+                tmpA = new uint8_t[Header.Xsize * Header.BPC];
+                if (!tmpA)
+                    return false;
+            }
+            return true;
+        }
+    } rgbStruct;
 
 
 //! Surface Loader for Silicon Graphics RGB files
@@ -134,27 +134,27 @@ class CImageLoaderRGB : public IImageLoader
 {
 public:
 
-	//! constructor
-	CImageLoaderRGB();
+    //! constructor
+    CImageLoaderRGB();
 
-	//! returns true if the file maybe is able to be loaded by this class
-	//! based on the file extension (e.g. ".tga")
-	virtual bool isALoadableFileExtension(const io::path& filename) const;
+    //! returns true if the file maybe is able to be loaded by this class
+    //! based on the file extension (e.g. ".tga")
+    virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-	//! returns true if the file maybe is able to be loaded by this class
-	virtual bool isALoadableFileFormat(io::IReadFile* file) const;
+    //! returns true if the file maybe is able to be loaded by this class
+    virtual bool isALoadableFileFormat(io::IReadFile* file) const;
 
-	//! creates a surface from the file
-	virtual IImage* loadImage(io::IReadFile* file) const;
+    //! creates a surface from the file
+    virtual IImage* loadImage(io::IReadFile* file) const;
 
 private:
 
-	bool readHeader(io::IReadFile* file, rgbStruct& rgb) const;
-	void readRGBrow(uint8_t *buf, int y, int z, io::IReadFile* file, rgbStruct& rgb) const;
-	void processFile(io::IReadFile *file, rgbStruct& rgb) const;
-	bool checkFormat(io::IReadFile *file, rgbStruct& rgb) const;
-	bool readOffsetTables(io::IReadFile* file, rgbStruct& rgb) const;
-	void converttoARGB(uint32_t* in, const uint32_t size) const;
+    bool readHeader(io::IReadFile* file, rgbStruct& rgb) const;
+    void readRGBrow(uint8_t *buf, int y, int z, io::IReadFile* file, rgbStruct& rgb) const;
+    void processFile(io::IReadFile *file, rgbStruct& rgb) const;
+    bool checkFormat(io::IReadFile *file, rgbStruct& rgb) const;
+    bool readOffsetTables(io::IReadFile* file, rgbStruct& rgb) const;
+    void converttoARGB(uint32_t* in, const uint32_t size) const;
 };
 
 } // end namespace video

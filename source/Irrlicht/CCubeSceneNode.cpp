@@ -13,7 +13,7 @@ namespace scene
 {
 
 
-	/*
+    /*
         011         111
           /6,8------/5        y
          /  |      / |        ^  z
@@ -24,42 +24,42 @@ namespace scene
         |/        | /
         0------11,1/
        000       100
-	*/
+    */
 
 //! constructor
 CCubeSceneNode::CCubeSceneNode(float size, IDummyTransformationSceneNode* parent, ISceneManager* mgr,
-		int32_t id, const core::vector3df& position,
-		const core::vector3df& rotation, const core::vector3df& scale)
-	: IMeshSceneNode(parent, mgr, id, position, rotation, scale),
-	Mesh(0), Size(size)
+        int32_t id, const core::vector3df& position,
+        const core::vector3df& rotation, const core::vector3df& scale)
+    : IMeshSceneNode(parent, mgr, id, position, rotation, scale),
+    Mesh(0), Size(size)
 {
-	#ifdef _DEBUG
-	setDebugName("CCubeSceneNode");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CCubeSceneNode");
+    #endif
 
-	setSize();
+    setSize();
 }
 
 
 CCubeSceneNode::~CCubeSceneNode()
 {
-	if (Mesh)
-		Mesh->drop();
+    if (Mesh)
+        Mesh->drop();
 }
 
 
 void CCubeSceneNode::setSize()
 {
-	if (Mesh)
-		Mesh->drop();
-	Mesh = SceneManager->getGeometryCreator()->createCubeMeshGPU(SceneManager->getVideoDriver(),core::vector3df(Size));
+    if (Mesh)
+        Mesh->drop();
+    Mesh = SceneManager->getGeometryCreator()->createCubeMeshGPU(SceneManager->getVideoDriver(),core::vector3df(Size));
 }
 
 
 //! renders the node.
 void CCubeSceneNode::render()
 {
-	video::IVideoDriver* driver = SceneManager->getVideoDriver();
+    video::IVideoDriver* driver = SceneManager->getVideoDriver();
 
     if (canProceedPastFence())
     {
@@ -75,82 +75,82 @@ void CCubeSceneNode::render()
     else if (DebugDataVisible)
         driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
 
-	// for debug purposes only:
-	if (DebugDataVisible)
-	{
-		video::SMaterial m;
-		m.AntiAliasing=0;
-		driver->setMaterial(m);
+    // for debug purposes only:
+    if (DebugDataVisible)
+    {
+        video::SMaterial m;
+        m.AntiAliasing=0;
+        driver->setMaterial(m);
 
-		if (DebugDataVisible & scene::EDS_BBOX)
-		{
-			driver->draw3DBox(Mesh->getMeshBuffer(0)->getBoundingBox(), video::SColor(255,255,255,255));
-		}
-		if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
-		{
-			driver->draw3DBox(Mesh->getMeshBuffer(0)->getBoundingBox(),
-					video::SColor(255,190,128,128));
-		}
+        if (DebugDataVisible & scene::EDS_BBOX)
+        {
+            driver->draw3DBox(Mesh->getMeshBuffer(0)->getBoundingBox(), video::SColor(255,255,255,255));
+        }
+        if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
+        {
+            driver->draw3DBox(Mesh->getMeshBuffer(0)->getBoundingBox(),
+                    video::SColor(255,190,128,128));
+        }
 
-		// show mesh
-		if (DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY)
-		{
-			m.Wireframe = true;
-			driver->setMaterial(m);
+        // show mesh
+        if (DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY)
+        {
+            m.Wireframe = true;
+            driver->setMaterial(m);
 
-			driver->drawMeshBuffer(Mesh->getMeshBuffer(0), (AutomaticCullingState & scene::EAC_COND_RENDER) ? query:NULL);
-		}
-	}
+            driver->drawMeshBuffer(Mesh->getMeshBuffer(0), (AutomaticCullingState & scene::EAC_COND_RENDER) ? query:NULL);
+        }
+    }
 }
 
 
 //! returns the axis aligned bounding box of this node
 const core::aabbox3d<float>& CCubeSceneNode::getBoundingBox()
 {
-	return Mesh->getMeshBuffer(0)->getBoundingBox();
+    return Mesh->getMeshBuffer(0)->getBoundingBox();
 }
 
 
 
 void CCubeSceneNode::OnRegisterSceneNode()
 {
-	if (IsVisible)
-		SceneManager->registerNodeForRendering(this);
-	ISceneNode::OnRegisterSceneNode();
+    if (IsVisible)
+        SceneManager->registerNodeForRendering(this);
+    ISceneNode::OnRegisterSceneNode();
 }
 
 
 //! returns the material based on the zero based index i.
 video::SMaterial& CCubeSceneNode::getMaterial(uint32_t i)
 {
-	return Mesh->getMeshBuffer(0)->getMaterial();
+    return Mesh->getMeshBuffer(0)->getMaterial();
 }
 
 
 //! returns amount of materials used by this scene node.
 uint32_t CCubeSceneNode::getMaterialCount() const
 {
-	return 1;
+    return 1;
 }
 
 
 //! Creates a clone of this scene node and its children.
 ISceneNode* CCubeSceneNode::clone(IDummyTransformationSceneNode* newParent, ISceneManager* newManager)
 {
-	if (!newParent)
-		newParent = Parent;
-	if (!newManager)
-		newManager = SceneManager;
+    if (!newParent)
+        newParent = Parent;
+    if (!newManager)
+        newManager = SceneManager;
 
-	CCubeSceneNode* nb = new CCubeSceneNode(Size, newParent,
-		newManager, ID, RelativeTranslation);
+    CCubeSceneNode* nb = new CCubeSceneNode(Size, newParent,
+        newManager, ID, RelativeTranslation);
 
-	nb->cloneMembers(this, newManager);
-	nb->getMaterial(0) = getMaterial(0);
+    nb->cloneMembers(this, newManager);
+    nb->getMaterial(0) = getMaterial(0);
 
-	if ( newParent )
-		nb->drop();
-	return nb;
+    if ( newParent )
+        nb->drop();
+    return nb;
 }
 
 } // end namespace scene

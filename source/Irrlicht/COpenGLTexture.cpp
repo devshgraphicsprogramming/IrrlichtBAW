@@ -21,15 +21,15 @@ namespace video
 
 //! constructor for usual textures
 COpenGLTexture::COpenGLTexture(IImage* origImage, const io::path& name, void* mipmapData, COpenGLDriver* driver, uint32_t mipmapLevels)
-	: ITexture(name), ColorFormat(ECF_A8R8G8B8), Driver(driver),
-	TextureName(0), InternalFormat(GL_RGBA), MipLevelsStored(0x1),
-	TextureNameHasChanged(0)
+    : ITexture(name), ColorFormat(ECF_A8R8G8B8), Driver(driver),
+    TextureName(0), InternalFormat(GL_RGBA), MipLevelsStored(0x1),
+    TextureNameHasChanged(0)
 {
     TextureSize[2] = 1;
-	#ifdef _DEBUG
-	setDebugName("COpenGLTexture");
-	#endif
-	core::dimension2du ImageSize2 = getImageValues(origImage);
+    #ifdef _DEBUG
+    setDebugName("COpenGLTexture");
+    #endif
+    core::dimension2du ImageSize2 = getImageValues(origImage);
 
     uint32_t defaultMipMapCount = 1u+uint32_t(floorf(log2(float(core::min_(core::max_(TextureSize[0],TextureSize[1]),Driver->getMaxTextureSize(ETT_2D)[0])))));
     if (mipmapLevels==0)
@@ -48,17 +48,17 @@ COpenGLTexture::COpenGLTexture(IImage* origImage, const io::path& name, void* mi
 
     GLenum PixelFormat = GL_BGRA;
     GLenum PixelType = GL_UNSIGNED_BYTE;
-	InternalFormat = getOpenGLFormatAndParametersFromColorFormat(ColorFormat, PixelFormat, PixelType);
+    InternalFormat = getOpenGLFormatAndParametersFromColorFormat(ColorFormat, PixelFormat, PixelType);
     IImage* Image = 0;
 
-	if (ImageSize2!=*reinterpret_cast<core::dimension2du*>(TextureSize)||ColorFormat!=origImage->getColorFormat())
-	{
-		Image = Driver->createImage(ColorFormat, *reinterpret_cast<core::dimension2du*>(TextureSize));
-		// scale texture
-		origImage->copyToScaling(Image);
-		os::Printer::log("DevSH is very disappointed with you for creating a weird size texture.", ELL_ERROR);
-	}
-	void* data = Image ? Image->lock():origImage->lock();
+    if (ImageSize2!=*reinterpret_cast<core::dimension2du*>(TextureSize)||ColorFormat!=origImage->getColorFormat())
+    {
+        Image = Driver->createImage(ColorFormat, *reinterpret_cast<core::dimension2du*>(TextureSize));
+        // scale texture
+        origImage->copyToScaling(Image);
+        os::Printer::log("DevSH is very disappointed with you for creating a weird size texture.", ELL_ERROR);
+    }
+    void* data = Image ? Image->lock():origImage->lock();
     //! we're going to have problems with uploading lower mip levels
     uint32_t bpp = IImage::getBitsPerPixelFromFormat(ColorFormat);
 
@@ -111,10 +111,10 @@ COpenGLTexture::COpenGLTexture(IImage* origImage, const io::path& name, void* mi
         COpenGLExtensionHandler::extGlGenerateTextureMipmap(TextureName,GL_TEXTURE_2D);
     }
 
-	if (Image)
-	{
-		Image->drop();
-	}
+    if (Image)
+    {
+        Image->drop();
+    }
 
 #ifdef OPENGL_LEAK_DEBUG
     COpenGLExtensionHandler::textureLeaker.registerObj(this);
@@ -122,16 +122,16 @@ COpenGLTexture::COpenGLTexture(IImage* origImage, const io::path& name, void* mi
 }
 
 COpenGLTexture::COpenGLTexture(GLenum internalFormat, core::dimension2du size, const void* data, GLenum inDataFmt, GLenum inDataTpe, const io::path& name, void* mipmapData, COpenGLDriver* driver, uint32_t mipmapLevels)
-	: ITexture(name), Driver(driver), TextureName(0),
-	InternalFormat(internalFormat),
-	TextureNameHasChanged(0)
+    : ITexture(name), Driver(driver), TextureName(0),
+    InternalFormat(internalFormat),
+    TextureNameHasChanged(0)
 {
     TextureSize[0] = size.Width;
     TextureSize[1] = size.Height;
     TextureSize[2] = 1;
-	#ifdef _DEBUG
-	setDebugName("COpenGLTexture");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("COpenGLTexture");
+    #endif
 
     uint32_t defaultMipMapCount = 1u+uint32_t(floorf(log2(float(core::min_(core::max_(size.Width,size.Height),Driver->getMaxTextureSize(ETT_2D)[0])))));
     if (mipmapLevels==0)
@@ -206,16 +206,16 @@ COpenGLTexture::COpenGLTexture(GLenum internalFormat, core::dimension2du size, c
 
 //! constructor for basic setup (only for derived classes)
 COpenGLTexture::COpenGLTexture(const io::path& name, COpenGLDriver* driver)
-	: ITexture(name), ColorFormat(ECF_UNKNOWN), Driver(driver),
-	TextureName(0), InternalFormat(GL_RGBA), MipLevelsStored(0), HasMipMaps(false),
-	TextureNameHasChanged(0)
+    : ITexture(name), ColorFormat(ECF_UNKNOWN), Driver(driver),
+    TextureName(0), InternalFormat(GL_RGBA), MipLevelsStored(0), HasMipMaps(false),
+    TextureNameHasChanged(0)
 {
     TextureSize[0] = 1;
     TextureSize[1] = 1;
     TextureSize[2] = 1;
-	#ifdef _DEBUG
-	setDebugName("COpenGLTexture");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("COpenGLTexture");
+    #endif
 
 #ifdef OPENGL_LEAK_DEBUG
     COpenGLExtensionHandler::textureLeaker.registerObj(this);
@@ -226,8 +226,8 @@ COpenGLTexture::COpenGLTexture(const io::path& name, COpenGLDriver* driver)
 //! destructor
 COpenGLTexture::~COpenGLTexture()
 {
-	if (TextureName)
-		glDeleteTextures(1, &TextureName);
+    if (TextureName)
+        glDeleteTextures(1, &TextureName);
 
 #ifdef OPENGL_LEAK_DEBUG
     COpenGLExtensionHandler::textureLeaker.deregisterObj(this);
@@ -238,50 +238,50 @@ COpenGLTexture::~COpenGLTexture()
 //! Choose best matching color format, based on texture creation flags
 ECOLOR_FORMAT COpenGLTexture::getBestColorFormat(ECOLOR_FORMAT format)
 {
-	ECOLOR_FORMAT destFormat = ECF_A8R8G8B8;
-	switch (format)
-	{
-		case ECF_A1R5G5B5:
-			if (!Driver->getTextureCreationFlag(ETCF_ALWAYS_32_BIT))
-				destFormat = ECF_A1R5G5B5;
-		break;
-		case ECF_R5G6B5:
-			if (!Driver->getTextureCreationFlag(ETCF_ALWAYS_32_BIT))
-				destFormat = ECF_R5G6B5;
-		break;
-		//! NO IRRLICHT, JUST NO - you will strip the ALPHA CHANNEL!
-		/*
-		case ECF_A8R8G8B8:
-			if (Driver->getTextureCreationFlag(ETCF_ALWAYS_16_BIT) ||
-					Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
-				destFormat = ECF_A1R5G5B5;
-		break;*/
-		case ECF_R8G8B8:
-			if (Driver->getTextureCreationFlag(ETCF_ALWAYS_16_BIT) ||
-					Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
-				destFormat = ECF_R5G6B5;
+    ECOLOR_FORMAT destFormat = ECF_A8R8G8B8;
+    switch (format)
+    {
+        case ECF_A1R5G5B5:
+            if (!Driver->getTextureCreationFlag(ETCF_ALWAYS_32_BIT))
+                destFormat = ECF_A1R5G5B5;
+        break;
+        case ECF_R5G6B5:
+            if (!Driver->getTextureCreationFlag(ETCF_ALWAYS_32_BIT))
+                destFormat = ECF_R5G6B5;
+        break;
+        //! NO IRRLICHT, JUST NO - you will strip the ALPHA CHANNEL!
+        /*
+        case ECF_A8R8G8B8:
+            if (Driver->getTextureCreationFlag(ETCF_ALWAYS_16_BIT) ||
+                    Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
+                destFormat = ECF_A1R5G5B5;
+        break;*/
+        case ECF_R8G8B8:
+            if (Driver->getTextureCreationFlag(ETCF_ALWAYS_16_BIT) ||
+                    Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
+                destFormat = ECF_R5G6B5;
             else
                 destFormat = ECF_R8G8B8;
-		default:
+        default:
             destFormat = format;
-		break;
-	}
-	if (Driver->getTextureCreationFlag(ETCF_NO_ALPHA_CHANNEL))
-	{
-		switch (destFormat)
-		{
-			case ECF_A1R5G5B5:
-				destFormat = ECF_R5G6B5;
-			break;
-			case ECF_A8R8G8B8:
-			case ECF_R8G8B8A8:
-				destFormat = ECF_R8G8B8;
-			break;
-			default:
-			break;
-		}
-	}
-	return destFormat;
+        break;
+    }
+    if (Driver->getTextureCreationFlag(ETCF_NO_ALPHA_CHANNEL))
+    {
+        switch (destFormat)
+        {
+            case ECF_A1R5G5B5:
+                destFormat = ECF_R5G6B5;
+            break;
+            case ECF_A8R8G8B8:
+            case ECF_R8G8B8A8:
+                destFormat = ECF_R8G8B8;
+            break;
+            default:
+            break;
+        }
+    }
+    return destFormat;
 }
 
 uint32_t COpenGLTexture::getOpenGLFormatBpp(const GLenum& colorformat) const
@@ -486,308 +486,308 @@ bool COpenGLTexture::isInternalFormatCompressed(GLenum format)
 
 //! Get opengl values for the GPU texture storage
 GLint COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(const ECOLOR_FORMAT &format,
-				GLenum& colorformat,
-				GLenum& type)
+                GLenum& colorformat,
+                GLenum& type)
 {
-	// default
-	colorformat = GL_RGBA;
-	type = GL_UNSIGNED_BYTE;
-	GLenum internalformat = GL_RGBA;
+    // default
+    colorformat = GL_RGBA;
+    type = GL_UNSIGNED_BYTE;
+    GLenum internalformat = GL_RGBA;
 
-	switch(format)
-	{
-		case ECF_A1R5G5B5:
-			colorformat=GL_BGRA_EXT;
-			type=GL_UNSIGNED_SHORT_1_5_5_5_REV;
-			internalformat =  GL_RGB5_A1;
-			break;
-		case ECF_R5G6B5:
-			colorformat=GL_RGB;
-			type=GL_UNSIGNED_SHORT_5_6_5;
-			internalformat =  GL_RGB565;
-			break;
-		case ECF_R8G8B8:
-			colorformat=GL_RGB;
-			type=GL_UNSIGNED_BYTE;
-			internalformat =  GL_RGB8;
-			break;
-		case ECF_A8R8G8B8:
-			colorformat=GL_BGRA_EXT;
-            type=GL_UNSIGNED_INT_8_8_8_8_REV;
-			internalformat =  GL_RGBA8;
-			break;
-		case ECF_R8G8B8A8:
-			colorformat=GL_RGBA;
+    switch(format)
+    {
+        case ECF_A1R5G5B5:
+            colorformat=GL_BGRA_EXT;
+            type=GL_UNSIGNED_SHORT_1_5_5_5_REV;
+            internalformat =  GL_RGB5_A1;
+            break;
+        case ECF_R5G6B5:
+            colorformat=GL_RGB;
+            type=GL_UNSIGNED_SHORT_5_6_5;
+            internalformat =  GL_RGB565;
+            break;
+        case ECF_R8G8B8:
+            colorformat=GL_RGB;
             type=GL_UNSIGNED_BYTE;
-			internalformat =  GL_RGBA8;
-			break;
-		// Floating Point texture formats. Thanks to Patryk "Nadro" Nadrowski.
-		case ECF_R16F:
-		{
-			colorformat = GL_RED;
-			type = GL_FLOAT;
+            internalformat =  GL_RGB8;
+            break;
+        case ECF_A8R8G8B8:
+            colorformat=GL_BGRA_EXT;
+            type=GL_UNSIGNED_INT_8_8_8_8_REV;
+            internalformat =  GL_RGBA8;
+            break;
+        case ECF_R8G8B8A8:
+            colorformat=GL_RGBA;
+            type=GL_UNSIGNED_BYTE;
+            internalformat =  GL_RGBA8;
+            break;
+        // Floating Point texture formats. Thanks to Patryk "Nadro" Nadrowski.
+        case ECF_R16F:
+        {
+            colorformat = GL_RED;
+            type = GL_FLOAT;
 
-			internalformat =  GL_R16F;
-		}
-			break;
-		case ECF_G16R16F:
-		{
-			colorformat = GL_RG;
-			type = GL_FLOAT;
+            internalformat =  GL_R16F;
+        }
+            break;
+        case ECF_G16R16F:
+        {
+            colorformat = GL_RG;
+            type = GL_FLOAT;
 
-			internalformat =  GL_RG16F;
-		}
-			break;
-		case ECF_A16B16G16R16F:
-		{
-			colorformat = GL_RGBA;
-			type = GL_FLOAT;
+            internalformat =  GL_RG16F;
+        }
+            break;
+        case ECF_A16B16G16R16F:
+        {
+            colorformat = GL_RGBA;
+            type = GL_FLOAT;
 
-			internalformat =  GL_RGBA16F_ARB;
-		}
-			break;
-		case ECF_R32F:
-		{
-			colorformat = GL_RED;
-			type = GL_FLOAT;
+            internalformat =  GL_RGBA16F_ARB;
+        }
+            break;
+        case ECF_R32F:
+        {
+            colorformat = GL_RED;
+            type = GL_FLOAT;
 
-			internalformat =  GL_R32F;
-		}
-			break;
-		case ECF_G32R32F:
-		{
-			colorformat = GL_RG;
-			type = GL_FLOAT;
+            internalformat =  GL_R32F;
+        }
+            break;
+        case ECF_G32R32F:
+        {
+            colorformat = GL_RG;
+            type = GL_FLOAT;
 
-			internalformat =  GL_RG32F;
-		}
-			break;
-		case ECF_A32B32G32R32F:
-		{
-			colorformat = GL_RGBA;
-			type = GL_FLOAT;
+            internalformat =  GL_RG32F;
+        }
+            break;
+        case ECF_A32B32G32R32F:
+        {
+            colorformat = GL_RGBA;
+            type = GL_FLOAT;
 
-			internalformat =  GL_RGBA32F_ARB;
-		}
-			break;
-		case ECF_R8:
-		{
-			colorformat = GL_RED;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_RGBA32F_ARB;
+        }
+            break;
+        case ECF_R8:
+        {
+            colorformat = GL_RED;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_R8;
-		}
-			break;
-		case ECF_R8G8:
-		{
-			colorformat = GL_RG;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_R8;
+        }
+            break;
+        case ECF_R8G8:
+        {
+            colorformat = GL_RG;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_RGB8;
-		}
-			break;
-		case ECF_RGB_BC1:
-		{
-			colorformat = GL_RGB;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_RGB8;
+        }
+            break;
+        case ECF_RGB_BC1:
+        {
+            colorformat = GL_RGB;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-		}
-			break;
-		case ECF_RGBA_BC1:
-		{
-			colorformat = GL_RGBA;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+        }
+            break;
+        case ECF_RGBA_BC1:
+        {
+            colorformat = GL_RGBA;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-		}
-			break;
-		case ECF_RGBA_BC2:
-		{
-			colorformat = GL_RGBA;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+        }
+            break;
+        case ECF_RGBA_BC2:
+        {
+            colorformat = GL_RGBA;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-		}
-			break;
-		case ECF_RGBA_BC3:
-		{
-			colorformat = GL_RGBA;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+        }
+            break;
+        case ECF_RGBA_BC3:
+        {
+            colorformat = GL_RGBA;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-		}
-			break;
-		case ECF_R_BC4:
-		{
-			colorformat = GL_RED;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+        }
+            break;
+        case ECF_R_BC4:
+        {
+            colorformat = GL_RED;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_COMPRESSED_RED_RGTC1_EXT;
-		}
-			break;
-		case ECF_RG_BC5:
-		{
-			colorformat = GL_RG;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_COMPRESSED_RED_RGTC1_EXT;
+        }
+            break;
+        case ECF_RG_BC5:
+        {
+            colorformat = GL_RG;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_COMPRESSED_RED_GREEN_RGTC2_EXT;
-		}
-			break;
-		case ECF_8BIT_PIX:
-		{
-			colorformat = GL_RED;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_COMPRESSED_RED_GREEN_RGTC2_EXT;
+        }
+            break;
+        case ECF_8BIT_PIX:
+        {
+            colorformat = GL_RED;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_R8;
-		}
-			break;
-		case ECF_16BIT_PIX:
-		{
-			colorformat = GL_RG;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_R8;
+        }
+            break;
+        case ECF_16BIT_PIX:
+        {
+            colorformat = GL_RG;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_RG8;
-		}
-			break;
-		case ECF_24BIT_PIX:
-		{
-			colorformat = GL_RGB;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_RG8;
+        }
+            break;
+        case ECF_24BIT_PIX:
+        {
+            colorformat = GL_RGB;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_RGB8;
-		}
-			break;
-		case ECF_32BIT_PIX:
-		{
-			colorformat = GL_RGBA;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_RGB8;
+        }
+            break;
+        case ECF_32BIT_PIX:
+        {
+            colorformat = GL_RGBA;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_RGBA8;
-		}
-			break;
-		case ECF_48BIT_PIX:
-		{
-			colorformat = GL_RGB;
-			type = GL_UNSIGNED_SHORT;
+            internalformat =  GL_RGBA8;
+        }
+            break;
+        case ECF_48BIT_PIX:
+        {
+            colorformat = GL_RGB;
+            type = GL_UNSIGNED_SHORT;
 
-			internalformat =  GL_RGB16;
-		}
-			break;
-		case ECF_64BIT_PIX:
-		{
-			colorformat = GL_RGBA;
-			type = GL_UNSIGNED_SHORT;
+            internalformat =  GL_RGB16;
+        }
+            break;
+        case ECF_64BIT_PIX:
+        {
+            colorformat = GL_RGBA;
+            type = GL_UNSIGNED_SHORT;
 
-			internalformat =  GL_RGBA16;
-		}
-			break;
-		case ECF_96BIT_PIX:
-		{
-			colorformat = GL_RGB;
-			type = GL_FLOAT;
+            internalformat =  GL_RGBA16;
+        }
+            break;
+        case ECF_96BIT_PIX:
+        {
+            colorformat = GL_RGB;
+            type = GL_FLOAT;
 
-			internalformat =  GL_RGB32F;
-		}
-			break;
-		case ECF_128BIT_PIX:
-		{
-			colorformat = GL_RGBA;
-			type = GL_FLOAT;
+            internalformat =  GL_RGB32F;
+        }
+            break;
+        case ECF_128BIT_PIX:
+        {
+            colorformat = GL_RGBA;
+            type = GL_FLOAT;
 
-			internalformat =  GL_RGBA32F;
-		}
-			break;
+            internalformat =  GL_RGBA32F;
+        }
+            break;
         /// this is totally wrong but safe - most probs have to reupload
-		case ECF_DEPTH16:
-		{
-			colorformat = GL_DEPTH;
-			type = GL_UNSIGNED_SHORT;
+        case ECF_DEPTH16:
+        {
+            colorformat = GL_DEPTH;
+            type = GL_UNSIGNED_SHORT;
 
-			internalformat =  GL_DEPTH_COMPONENT16;
-		}
-			break;
-		case ECF_DEPTH24:
-		{
-			colorformat = GL_DEPTH;
-			type = GL_UNSIGNED_SHORT;
+            internalformat =  GL_DEPTH_COMPONENT16;
+        }
+            break;
+        case ECF_DEPTH24:
+        {
+            colorformat = GL_DEPTH;
+            type = GL_UNSIGNED_SHORT;
 
-			internalformat =  GL_DEPTH_COMPONENT24;
-		}
-			break;
-		case ECF_DEPTH24_STENCIL8:
-		{
-			colorformat = GL_DEPTH_STENCIL;
-			type = GL_UNSIGNED_INT_24_8_EXT;
+            internalformat =  GL_DEPTH_COMPONENT24;
+        }
+            break;
+        case ECF_DEPTH24_STENCIL8:
+        {
+            colorformat = GL_DEPTH_STENCIL;
+            type = GL_UNSIGNED_INT_24_8_EXT;
 
-			internalformat =  GL_DEPTH24_STENCIL8;
-		}
-			break;
-		case ECF_DEPTH32F:
-		{
-			colorformat = GL_DEPTH;
-			type = GL_FLOAT;
+            internalformat =  GL_DEPTH24_STENCIL8;
+        }
+            break;
+        case ECF_DEPTH32F:
+        {
+            colorformat = GL_DEPTH;
+            type = GL_FLOAT;
 
-			internalformat =  GL_DEPTH_COMPONENT32F;
-		}
-			break;
-		case ECF_DEPTH32F_STENCIL8:
-		{
-			colorformat = GL_DEPTH_STENCIL;
-			type = GL_UNSIGNED_BYTE;
+            internalformat =  GL_DEPTH_COMPONENT32F;
+        }
+            break;
+        case ECF_DEPTH32F_STENCIL8:
+        {
+            colorformat = GL_DEPTH_STENCIL;
+            type = GL_UNSIGNED_BYTE;
 
-			internalformat =  GL_DEPTH32F_STENCIL8;
-		}
-			break;
-		default:
-		{
-			os::Printer::log("Unsupported texture format", ELL_ERROR);
-			internalformat =  GL_RGBA8;
-		}
-	}
+            internalformat =  GL_DEPTH32F_STENCIL8;
+        }
+            break;
+        default:
+        {
+            os::Printer::log("Unsupported texture format", ELL_ERROR);
+            internalformat =  GL_RGBA8;
+        }
+    }
 
 #ifndef GL_ARB_texture_rg
     os::Printer::log("DevSH recommends you send this machine to a museum, GL_ARB_texture_rg unsupported.", ELL_ERROR);
 #endif
 
-	return internalformat;
+    return internalformat;
 }
 
 
 // prepare values ImageSize, TextureSize, and ColorFormat based on image
 core::dimension2du COpenGLTexture::getImageValues(IImage* image)
 {
-	if (!image)
-	{
-		os::Printer::log("No image for OpenGL texture.", ELL_ERROR);
-		return core::dimension2du(0,0);
-	}
+    if (!image)
+    {
+        os::Printer::log("No image for OpenGL texture.", ELL_ERROR);
+        return core::dimension2du(0,0);
+    }
 
-	core::dimension2du ImageSize = image->getDimension();
+    core::dimension2du ImageSize = image->getDimension();
 
-	if ( !ImageSize.Width || !ImageSize.Height)
-	{
-		os::Printer::log("Invalid size of image for OpenGL Texture.", ELL_ERROR);
-		return ImageSize;
-	}
+    if ( !ImageSize.Width || !ImageSize.Height)
+    {
+        os::Printer::log("Invalid size of image for OpenGL Texture.", ELL_ERROR);
+        return ImageSize;
+    }
 
-	const float ratio = (float)ImageSize.Width/(float)ImageSize.Height;
-	if ((ImageSize.Width>Driver->getMaxTextureSize(ETT_2D)[0]) && (ratio >= 1.0f))
-	{
-		ImageSize.Width = Driver->getMaxTextureSize(ETT_2D)[0];
-		ImageSize.Height = (uint32_t)(Driver->getMaxTextureSize(ETT_2D)[1]/ratio);
-	}
-	else if (ImageSize.Height>Driver->getMaxTextureSize(ETT_2D)[1])
-	{
-		ImageSize.Height = Driver->getMaxTextureSize(ETT_2D)[1];
-		ImageSize.Width = (uint32_t)(Driver->getMaxTextureSize(ETT_2D)[0]*ratio);
-	}
-	TextureSize[0] = ImageSize.Width;
-	TextureSize[1] = ImageSize.Height;
+    const float ratio = (float)ImageSize.Width/(float)ImageSize.Height;
+    if ((ImageSize.Width>Driver->getMaxTextureSize(ETT_2D)[0]) && (ratio >= 1.0f))
+    {
+        ImageSize.Width = Driver->getMaxTextureSize(ETT_2D)[0];
+        ImageSize.Height = (uint32_t)(Driver->getMaxTextureSize(ETT_2D)[1]/ratio);
+    }
+    else if (ImageSize.Height>Driver->getMaxTextureSize(ETT_2D)[1])
+    {
+        ImageSize.Height = Driver->getMaxTextureSize(ETT_2D)[1];
+        ImageSize.Width = (uint32_t)(Driver->getMaxTextureSize(ETT_2D)[0]*ratio);
+    }
+    TextureSize[0] = ImageSize.Width;
+    TextureSize[1] = ImageSize.Height;
 
-	ColorFormat = getBestColorFormat(image->getColorFormat());
+    ColorFormat = getBestColorFormat(image->getColorFormat());
 
-	return ImageSize;
+    return ImageSize;
 }
 
 
@@ -795,14 +795,14 @@ core::dimension2du COpenGLTexture::getImageValues(IImage* image)
 //! returns color format of texture
 ECOLOR_FORMAT COpenGLTexture::getColorFormat() const
 {
-	return ColorFormat;
+    return ColorFormat;
 }
 
 
 //! returns pitch of texture (in bytes)
 uint32_t COpenGLTexture::getPitch() const
 {
-	return IImage::getBitsPerPixelFromFormat(ColorFormat)*TextureSize[0]/8;
+    return IImage::getBitsPerPixelFromFormat(ColorFormat)*TextureSize[0]/8;
 }
 
 /**
@@ -819,7 +819,7 @@ GLenum COpenGLTexture::getOpenGLPixelType() const
 //! Returns whether this texture has mipmaps
 bool COpenGLTexture::hasMipMaps() const
 {
-	return HasMipMaps;
+    return HasMipMaps;
 }
 
 
@@ -827,8 +827,8 @@ bool COpenGLTexture::hasMipMaps() const
 //! modifying the texture
 void COpenGLTexture::regenerateMipMapLevels()
 {
-	if (!HasMipMaps)
-		return;
+    if (!HasMipMaps)
+        return;
 
     COpenGLExtensionHandler::extGlGenerateTextureMipmap(TextureName,getOpenGLTextureType());
 }
@@ -841,7 +841,7 @@ bool COpenGLTexture::updateSubRegion(const ECOLOR_FORMAT &inDataColorFormat, con
         return false;
 
     GLenum pixFmt,pixType;
-	getOpenGLFormatAndParametersFromColorFormat(inDataColorFormat, pixFmt, pixType);
+    getOpenGLFormatAndParametersFromColorFormat(inDataColorFormat, pixFmt, pixType);
 
     if (compressed)
     {
@@ -878,10 +878,10 @@ bool COpenGLTexture::resize(const uint32_t* size, const uint32_t &mipLevels)
     }
     else
         MipLevelsStored = 1;
-	COpenGLExtensionHandler::extGlTextureStorage2D(TextureName,getOpenGLTextureType(), MipLevelsStored, InternalFormat, TextureSize[0], TextureSize[1]);
+    COpenGLExtensionHandler::extGlTextureStorage2D(TextureName,getOpenGLTextureType(), MipLevelsStored, InternalFormat, TextureSize[0], TextureSize[1]);
 
-	TextureNameHasChanged = CNullDriver::incrementAndFetchReallocCounter();
-	return true;
+    TextureNameHasChanged = CNullDriver::incrementAndFetchReallocCounter();
+    return true;
 }
 
 

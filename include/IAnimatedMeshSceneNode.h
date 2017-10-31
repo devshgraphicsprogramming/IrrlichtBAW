@@ -14,21 +14,21 @@ namespace scene
 {
 
 
-	//! Callback interface for catching events of ended animations.
-	/** Implement this interface to be able to
-	be notified if an animation playback has ended.
-	**/
-	template<class T>
-	class IAnimationEndCallBack : public virtual IReferenceCounted
-	{
-	public:
+    //! Callback interface for catching events of ended animations.
+    /** Implement this interface to be able to
+    be notified if an animation playback has ended.
+    **/
+    template<class T>
+    class IAnimationEndCallBack : public virtual IReferenceCounted
+    {
+    public:
 
-		//! Will be called when the animation playback has ended.
-		/** See ISkinnedMeshSceneNode::setAnimationEndCallback and
-		IAnimatedMeshSceneNoe::setAnimationEndCallback for more informations.
-		\param node: Node of which the animation has ended. */
-		virtual void OnAnimationEnd(T* node) = 0;
-	};
+        //! Will be called when the animation playback has ended.
+        /** See ISkinnedMeshSceneNode::setAnimationEndCallback and
+        IAnimatedMeshSceneNoe::setAnimationEndCallback for more informations.
+        \param node: Node of which the animation has ended. */
+        virtual void OnAnimationEnd(T* node) = 0;
+    };
 
 } // end namespace scene
 } // end namespace irr

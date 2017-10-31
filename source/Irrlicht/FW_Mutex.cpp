@@ -18,14 +18,14 @@
 using namespace irr;
 
 // ---------------------------------------------------------------------------
-//		* FW_Mutex
+//        * FW_Mutex
 // ---------------------------------------------------------------------------
 
 FW_Mutex::FW_Mutex()
 {
 #if _MSC_VER && !__INTEL_COMPILER
     //maybe have more spins? - currently 1024 before Kernel scheduler sleep
-	bool fail = !InitializeCriticalSectionAndSpinCount(&hMutex,100);
+    bool fail = !InitializeCriticalSectionAndSpinCount(&hMutex,100);
 #else
     bool fail = pthread_mutex_init(&hMutex, NULL) != 0;
 #endif
@@ -38,14 +38,14 @@ FW_Mutex::FW_Mutex()
 
 
 // ---------------------------------------------------------------------------
-//		* ~FW_Mutex
+//        * ~FW_Mutex
 // ---------------------------------------------------------------------------
 
 FW_Mutex::~FW_Mutex()
 {
 #if _MSC_VER && !__INTEL_COMPILER
-//	if (hMutex)
-		DeleteCriticalSection(&hMutex);
+//    if (hMutex)
+        DeleteCriticalSection(&hMutex);
 #else
     pthread_mutex_destroy(&hMutex);
 #endif
@@ -134,12 +134,12 @@ void FW_ConditionVariable::TimedWaitForCondition(FW_Mutex *mutex, const uint64_t
 
 #if _MSC_VER && !__INTEL_COMPILER
     bool fail = !SleepConditionVariableCS(&conditionVar,&mutex->hMutex,(nanosec+999999ull)/1000000ull);
-	if (fail)
-	{
-		DWORD er = GetLastError();
-		if (er == ERROR_TIMEOUT)
-			fail = false;
-	}
+    if (fail)
+    {
+        DWORD er = GetLastError();
+        if (er == ERROR_TIMEOUT)
+            fail = false;
+    }
 #else
     struct timespec ts;
     ts.tv_sec = (time_t) (nanosec / 1000000000ull);

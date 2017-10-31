@@ -14,62 +14,62 @@ namespace irr
 namespace video
 {
 
-	class CVideoModeList : public IVideoModeList
-	{
-	public:
+    class CVideoModeList : public IVideoModeList
+    {
+    public:
 
-		//! constructor
-		CVideoModeList();
+        //! constructor
+        CVideoModeList();
 
-		//! Gets amount of video modes in the list.
-		virtual int32_t getVideoModeCount() const;
+        //! Gets amount of video modes in the list.
+        virtual int32_t getVideoModeCount() const;
 
-		//! Returns the screen size of a video mode in pixels.
-		virtual core::dimension2d<uint32_t> getVideoModeResolution(int32_t modeNumber) const;
+        //! Returns the screen size of a video mode in pixels.
+        virtual core::dimension2d<uint32_t> getVideoModeResolution(int32_t modeNumber) const;
 
-		//! Returns the screen size of an optimal video mode in pixels.
-		virtual core::dimension2d<uint32_t> getVideoModeResolution(const core::dimension2d<uint32_t>& minSize, const core::dimension2d<uint32_t>& maxSize) const;
+        //! Returns the screen size of an optimal video mode in pixels.
+        virtual core::dimension2d<uint32_t> getVideoModeResolution(const core::dimension2d<uint32_t>& minSize, const core::dimension2d<uint32_t>& maxSize) const;
 
-		//! Returns the pixel depth of a video mode in bits.
-		virtual int32_t getVideoModeDepth(int32_t modeNumber) const;
+        //! Returns the pixel depth of a video mode in bits.
+        virtual int32_t getVideoModeDepth(int32_t modeNumber) const;
 
-		//! Returns current desktop screen resolution.
-		virtual const core::dimension2d<uint32_t>& getDesktopResolution() const;
+        //! Returns current desktop screen resolution.
+        virtual const core::dimension2d<uint32_t>& getDesktopResolution() const;
 
-		//! Returns the pixel depth of a video mode in bits.
-		virtual int32_t getDesktopDepth() const;
+        //! Returns the pixel depth of a video mode in bits.
+        virtual int32_t getDesktopDepth() const;
 
-		//! adds a new mode to the list
-		void addMode(const core::dimension2d<uint32_t>& size, int32_t depth);
+        //! adds a new mode to the list
+        void addMode(const core::dimension2d<uint32_t>& size, int32_t depth);
 
-		void setDesktop(int32_t desktopDepth, const core::dimension2d<uint32_t>& desktopSize);
+        void setDesktop(int32_t desktopDepth, const core::dimension2d<uint32_t>& desktopSize);
 
-	private:
+    private:
 
-		struct SVideoMode
-		{
-			core::dimension2d<uint32_t> size;
-			int32_t depth;
+        struct SVideoMode
+        {
+            core::dimension2d<uint32_t> size;
+            int32_t depth;
 
-			bool operator==(const SVideoMode& other) const
-			{
-				return size == other.size && depth == other.depth;
-			}
+            bool operator==(const SVideoMode& other) const
+            {
+                return size == other.size && depth == other.depth;
+            }
 
-			bool operator <(const SVideoMode& other) const
-			{
-				return (size.Width < other.size.Width ||
-					(size.Width == other.size.Width &&
-					size.Height < other.size.Height) ||
-					(size.Width == other.size.Width &&
-					size.Height == other.size.Height &&
-					depth < other.depth));
-			}
-		};
+            bool operator <(const SVideoMode& other) const
+            {
+                return (size.Width < other.size.Width ||
+                    (size.Width == other.size.Width &&
+                    size.Height < other.size.Height) ||
+                    (size.Width == other.size.Width &&
+                    size.Height == other.size.Height &&
+                    depth < other.depth));
+            }
+        };
 
-		core::array<SVideoMode> VideoModes;
-		SVideoMode Desktop;
-	};
+        core::array<SVideoMode> VideoModes;
+        SVideoMode Desktop;
+    };
 
 } // end namespace video
 } // end namespace irr

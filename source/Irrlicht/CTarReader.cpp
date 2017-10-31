@@ -23,22 +23,22 @@ namespace io
 CArchiveLoaderTAR::CArchiveLoaderTAR(io::IFileSystem* fs)
 : FileSystem(fs)
 {
-	#ifdef _DEBUG
-	setDebugName("CArchiveLoaderTAR");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CArchiveLoaderTAR");
+    #endif
 }
 
 
 //! returns true if the file maybe is able to be loaded by this class
 bool CArchiveLoaderTAR::isALoadableFileFormat(const io::path& filename) const
 {
-	return core::hasFileExtension(filename, "tar");
+    return core::hasFileExtension(filename, "tar");
 }
 
 //! Check to see if the loader can create archives of this type.
 bool CArchiveLoaderTAR::isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const
 {
-	return fileType == EFAT_TAR;
+    return fileType == EFAT_TAR;
 }
 
 //! Creates an archive from the filename
@@ -46,16 +46,16 @@ bool CArchiveLoaderTAR::isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) cons
 \return Pointer to newly created archive, or 0 upon error. */
 IFileArchive* CArchiveLoaderTAR::createArchive(const io::path& filename, bool ignoreCase, bool ignorePaths) const
 {
-	IFileArchive *archive = 0;
-	io::IReadFile* file = FileSystem->createAndOpenFile(filename);
+    IFileArchive *archive = 0;
+    io::IReadFile* file = FileSystem->createAndOpenFile(filename);
 
-	if (file)
-	{
-		archive = createArchive(file, ignoreCase, ignorePaths);
-		file->drop();
-	}
+    if (file)
+    {
+        archive = createArchive(file, ignoreCase, ignorePaths);
+        file->drop();
+    }
 
-	return archive;
+    return archive;
 }
 
 
@@ -63,13 +63,13 @@ IFileArchive* CArchiveLoaderTAR::createArchive(const io::path& filename, bool ig
 //! \return Pointer to the created archive. Returns 0 if loading failed.
 IFileArchive* CArchiveLoaderTAR::createArchive(io::IReadFile* file, bool ignoreCase, bool ignorePaths) const
 {
-	IFileArchive *archive = 0;
-	if (file)
-	{
-		file->seek(0);
-		archive = new CTarReader(file, ignoreCase, ignorePaths);
-	}
-	return archive;
+    IFileArchive *archive = 0;
+    if (file)
+    {
+        file->seek(0);
+        archive = new CTarReader(file, ignoreCase, ignorePaths);
+    }
+    return archive;
 }
 
 //! Check if the file might be loaded by this class
@@ -78,178 +78,178 @@ IFileArchive* CArchiveLoaderTAR::createArchive(io::IReadFile* file, bool ignoreC
 \return True if file seems to be loadable. */
 bool CArchiveLoaderTAR::isALoadableFileFormat(io::IReadFile* file) const
 {
-	// TAR files consist of blocks of 512 bytes
-	// if it isn't a multiple of 512 then it's not a TAR file.
-	if (file->getSize() % 512)
-		return false;
+    // TAR files consist of blocks of 512 bytes
+    // if it isn't a multiple of 512 then it's not a TAR file.
+    if (file->getSize() % 512)
+        return false;
 
-	file->seek(0);
+    file->seek(0);
 
-	// read header of first file
-	STarHeader fHead;
-	file->read(&fHead, sizeof(STarHeader));
+    // read header of first file
+    STarHeader fHead;
+    file->read(&fHead, sizeof(STarHeader));
 
-	uint32_t checksum = 0;
-	sscanf(fHead.Checksum, "%o", &checksum);
+    uint32_t checksum = 0;
+    sscanf(fHead.Checksum, "%o", &checksum);
 
-	// verify checksum
+    // verify checksum
 
-	// some old TAR writers assume that chars are signed, others assume unsigned
-	// USTAR archives have a longer header, old TAR archives end after linkname
+    // some old TAR writers assume that chars are signed, others assume unsigned
+    // USTAR archives have a longer header, old TAR archives end after linkname
 
-	uint32_t checksum1=0;
-	int32_t checksum2=0;
+    uint32_t checksum1=0;
+    int32_t checksum2=0;
 
-	// remember to blank the checksum field!
-	memset(fHead.Checksum, ' ', 8);
+    // remember to blank the checksum field!
+    memset(fHead.Checksum, ' ', 8);
 
-	// old header
-	for (uint8_t* p = (uint8_t*)(&fHead); p < (uint8_t*)(&fHead.Magic[0]); ++p)
-	{
-		checksum1 += *p;
-		checksum2 += char(*p);
-	}
+    // old header
+    for (uint8_t* p = (uint8_t*)(&fHead); p < (uint8_t*)(&fHead.Magic[0]); ++p)
+    {
+        checksum1 += *p;
+        checksum2 += char(*p);
+    }
 
-	if (!strncmp(fHead.Magic, "ustar", 5))
-	{
-		for (uint8_t* p = (uint8_t*)(&fHead.Magic[0]); p < (uint8_t*)(&fHead) + sizeof(fHead); ++p)
-		{
-			checksum1 += *p;
-			checksum2 += char(*p);
-		}
-	}
-	return checksum1 == checksum || checksum2 == (int32_t)checksum;
+    if (!strncmp(fHead.Magic, "ustar", 5))
+    {
+        for (uint8_t* p = (uint8_t*)(&fHead.Magic[0]); p < (uint8_t*)(&fHead) + sizeof(fHead); ++p)
+        {
+            checksum1 += *p;
+            checksum2 += char(*p);
+        }
+    }
+    return checksum1 == checksum || checksum2 == (int32_t)checksum;
 }
 
 /*
-	TAR Archive
+    TAR Archive
 */
 CTarReader::CTarReader(IReadFile* file, bool ignoreCase, bool ignorePaths)
  : CFileList((file ? file->getFileName() : io::path("")), ignoreCase, ignorePaths), File(file)
 {
-	#ifdef _DEBUG
-	setDebugName("CTarReader");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CTarReader");
+    #endif
 
-	if (File)
-	{
-		File->grab();
+    if (File)
+    {
+        File->grab();
 
-		// fill the file list
-		populateFileList();
+        // fill the file list
+        populateFileList();
 
-		sort();
-	}
+        sort();
+    }
 }
 
 
 CTarReader::~CTarReader()
 {
-	if (File)
-		File->drop();
+    if (File)
+        File->drop();
 }
 
 const IFileList* CTarReader::getFileList() const
 {
-	return this;
+    return this;
 }
 
 
 uint32_t CTarReader::populateFileList()
 {
-	STarHeader fHead;
-	Files.clear();
+    STarHeader fHead;
+    Files.clear();
 
-	uint32_t pos = 0;
-	while ( int32_t(pos + sizeof(STarHeader)) < File->getSize())
-	{
-		// seek to next file header
-		File->seek(pos);
+    uint32_t pos = 0;
+    while ( int32_t(pos + sizeof(STarHeader)) < File->getSize())
+    {
+        // seek to next file header
+        File->seek(pos);
 
-		// read the header
-		File->read(&fHead, sizeof(fHead));
+        // read the header
+        File->read(&fHead, sizeof(fHead));
 
-		// only add standard files for now
-		if (fHead.Link == ETLI_REGULAR_FILE || ETLI_REGULAR_FILE_OLD)
-		{
-			io::path fullPath = "";
-			fullPath.reserve(255);
+        // only add standard files for now
+        if (fHead.Link == ETLI_REGULAR_FILE || ETLI_REGULAR_FILE_OLD)
+        {
+            io::path fullPath = "";
+            fullPath.reserve(255);
 
-			// USTAR archives have a filename prefix
-			// may not be null terminated, copy carefully!
-			if (!strncmp(fHead.Magic, "ustar", 5))
-			{
-				char* np = fHead.FileNamePrefix;
-				while(*np && (np - fHead.FileNamePrefix) < 155)
-					fullPath.append(*np);
-				np++;
-			}
+            // USTAR archives have a filename prefix
+            // may not be null terminated, copy carefully!
+            if (!strncmp(fHead.Magic, "ustar", 5))
+            {
+                char* np = fHead.FileNamePrefix;
+                while(*np && (np - fHead.FileNamePrefix) < 155)
+                    fullPath.append(*np);
+                np++;
+            }
 
-			// append the file name
-			char* np = fHead.FileName;
-			while(*np && (np - fHead.FileName) < 100)
-			{
-				fullPath.append(*np);
-				np++;
-			}
+            // append the file name
+            char* np = fHead.FileName;
+            while(*np && (np - fHead.FileName) < 100)
+            {
+                fullPath.append(*np);
+                np++;
+            }
 
-			// get size
-			core::stringc sSize = "";
-			sSize.reserve(12);
-			np = fHead.Size;
-			while(*np && (np - fHead.Size) < 12)
-			{
-				sSize.append(*np);
-				np++;
-			}
+            // get size
+            core::stringc sSize = "";
+            sSize.reserve(12);
+            np = fHead.Size;
+            while(*np && (np - fHead.Size) < 12)
+            {
+                sSize.append(*np);
+                np++;
+            }
 
-			uint32_t size = strtoul(sSize.c_str(), NULL, 8);
+            uint32_t size = strtoul(sSize.c_str(), NULL, 8);
 #if !defined(_IRR_WINDOWS_CE_PLATFORM_)
-			if (errno == ERANGE)
-				os::Printer::log("File too large", fullPath.c_str(), ELL_WARNING);
+            if (errno == ERANGE)
+                os::Printer::log("File too large", fullPath.c_str(), ELL_WARNING);
 #endif
 
-			// save start position
-			uint32_t offset = pos + 512;
+            // save start position
+            uint32_t offset = pos + 512;
 
-			// move to next file header block
-			pos = offset + (size / 512) * 512 + ((size % 512) ? 512 : 0);
+            // move to next file header block
+            pos = offset + (size / 512) * 512 + ((size % 512) ? 512 : 0);
 
-			// add file to list
-			addItem(fullPath, offset, size, false );
-		}
-		else
-		{
-			// todo: ETLI_DIRECTORY, ETLI_LINK_TO_ARCHIVED_FILE
+            // add file to list
+            addItem(fullPath, offset, size, false );
+        }
+        else
+        {
+            // todo: ETLI_DIRECTORY, ETLI_LINK_TO_ARCHIVED_FILE
 
-			// move to next block
-			pos += 512;
-		}
+            // move to next block
+            pos += 512;
+        }
 
-	}
+    }
 
-	return Files.size();
+    return Files.size();
 }
 
 //! opens a file by file name
 IReadFile* CTarReader::createAndOpenFile(const io::path& filename)
 {
-	const int32_t index = findFile(filename, false);
+    const int32_t index = findFile(filename, false);
 
-	if (index != -1)
-		return createAndOpenFile(index);
+    if (index != -1)
+        return createAndOpenFile(index);
 
-	return 0;
+    return 0;
 }
 
 //! opens a file by index
 IReadFile* CTarReader::createAndOpenFile(uint32_t index)
 {
-	if (index >= Files.size() )
-		return 0;
+    if (index >= Files.size() )
+        return 0;
 
-	const SFileListEntry &entry = Files[index];
-	return createLimitReadFile( entry.FullName, File, entry.Offset, entry.Size );
+    const SFileListEntry &entry = Files[index];
+    return createLimitReadFile( entry.FullName, File, entry.Offset, entry.Size );
 }
 
 } // end namespace io

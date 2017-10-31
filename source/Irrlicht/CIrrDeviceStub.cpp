@@ -18,71 +18,71 @@ namespace irr
 //! constructor
 CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters& params)
 : IrrlichtDevice(), VideoDriver(0), SceneManager(0),
-	Timer(0), CursorControl(0), UserReceiver(params.EventReceiver),
-	Logger(0), Operator(0), Randomizer(0), FileSystem(0),
-	InputReceivingSceneManager(0), VideoModeList(0),
-	CreationParams(params), Close(false)
+    Timer(0), CursorControl(0), UserReceiver(params.EventReceiver),
+    Logger(0), Operator(0), Randomizer(0), FileSystem(0),
+    InputReceivingSceneManager(0), VideoModeList(0),
+    CreationParams(params), Close(false)
 {
-	Timer = new CTimer(params.UsePerformanceTimer);
-	if (os::Printer::Logger)
-	{
-		os::Printer::Logger->grab();
-		Logger = (CLogger*)os::Printer::Logger;
-		Logger->setReceiver(UserReceiver);
-	}
-	else
-	{
-		Logger = new CLogger(UserReceiver);
-		os::Printer::Logger = Logger;
-	}
-	Logger->setLogLevel(CreationParams.LoggingLevel);
+    Timer = new CTimer(params.UsePerformanceTimer);
+    if (os::Printer::Logger)
+    {
+        os::Printer::Logger->grab();
+        Logger = (CLogger*)os::Printer::Logger;
+        Logger->setReceiver(UserReceiver);
+    }
+    else
+    {
+        Logger = new CLogger(UserReceiver);
+        os::Printer::Logger = Logger;
+    }
+    Logger->setLogLevel(CreationParams.LoggingLevel);
 
-	os::Printer::Logger = Logger;
-	Randomizer = createDefaultRandomizer();
+    os::Printer::Logger = Logger;
+    Randomizer = createDefaultRandomizer();
 
-	FileSystem = io::createFileSystem();
-	VideoModeList = new video::CVideoModeList();
+    FileSystem = io::createFileSystem();
+    VideoModeList = new video::CVideoModeList();
 
-	core::stringc s = "Irrlicht Engine version ";
-	s.append(getVersion());
-	os::Printer::log(s.c_str(), ELL_INFORMATION);
+    core::stringc s = "Irrlicht Engine version ";
+    s.append(getVersion());
+    os::Printer::log(s.c_str(), ELL_INFORMATION);
 
-	checkVersion(params.SDK_version_do_not_use);
+    checkVersion(params.SDK_version_do_not_use);
 }
 
 
 CIrrDeviceStub::~CIrrDeviceStub()
 {
-	VideoModeList->drop();
-	FileSystem->drop();
+    VideoModeList->drop();
+    FileSystem->drop();
 
-	if (Operator)
-		Operator->drop();
+    if (Operator)
+        Operator->drop();
 
-	if (Randomizer)
-		Randomizer->drop();
+    if (Randomizer)
+        Randomizer->drop();
 
-	if (Timer)
-		Timer->drop();
+    if (Timer)
+        Timer->drop();
 
-	if (Logger->drop())
-		os::Printer::Logger = 0;
+    if (Logger->drop())
+        os::Printer::Logger = 0;
 }
 
 
 void CIrrDeviceStub::createGUIAndScene()
 {
-	// create Scene manager
-	SceneManager = scene::createSceneManager(VideoDriver, FileSystem, CursorControl);
+    // create Scene manager
+    SceneManager = scene::createSceneManager(VideoDriver, FileSystem, CursorControl);
 
-	setEventReceiver(UserReceiver);
+    setEventReceiver(UserReceiver);
 }
 
 
 //! returns the video driver
 video::IVideoDriver* CIrrDeviceStub::getVideoDriver()
 {
-	return VideoDriver;
+    return VideoDriver;
 }
 
 
@@ -90,7 +90,7 @@ video::IVideoDriver* CIrrDeviceStub::getVideoDriver()
 //! return file system
 io::IFileSystem* CIrrDeviceStub::getFileSystem()
 {
-	return FileSystem;
+    return FileSystem;
 }
 
 
@@ -99,7 +99,7 @@ io::IFileSystem* CIrrDeviceStub::getFileSystem()
 //! returns the scene manager
 scene::ISceneManager* CIrrDeviceStub::getSceneManager()
 {
-	return SceneManager;
+    return SceneManager;
 }
 
 
@@ -107,20 +107,20 @@ scene::ISceneManager* CIrrDeviceStub::getSceneManager()
 //! current Time can be received.
 ITimer* CIrrDeviceStub::getTimer()
 {
-	return Timer;
+    return Timer;
 }
 
 
 //! Returns the version of the engine.
 const char* CIrrDeviceStub::getVersion() const
 {
-	return IRRLICHT_SDK_VERSION;
+    return IRRLICHT_SDK_VERSION;
 }
 
 //! \return Returns a pointer to the mouse cursor control interface.
 gui::ICursorControl* CIrrDeviceStub::getCursorControl()
 {
-	return CursorControl;
+    return CursorControl;
 }
 
 
@@ -128,159 +128,159 @@ gui::ICursorControl* CIrrDeviceStub::getCursorControl()
 //! by the gfx adapter.
 video::IVideoModeList* CIrrDeviceStub::getVideoModeList()
 {
-	return VideoModeList;
+    return VideoModeList;
 }
 
 
 //! checks version of sdk and prints warning if there might be a problem
 bool CIrrDeviceStub::checkVersion(const char* version)
 {
-	if (strcmp(getVersion(), version))
-	{
-		core::stringc w;
-		w = "Warning: The library version of the Irrlicht Engine (";
-		w += getVersion();
-		w += ") does not match the version the application was compiled with (";
-		w += version;
-		w += "). This may cause problems.";
-		os::Printer::log(w.c_str(), ELL_WARNING);
-		return false;
-	}
+    if (strcmp(getVersion(), version))
+    {
+        core::stringc w;
+        w = "Warning: The library version of the Irrlicht Engine (";
+        w += getVersion();
+        w += ") does not match the version the application was compiled with (";
+        w += version;
+        w += "). This may cause problems.";
+        os::Printer::log(w.c_str(), ELL_WARNING);
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 
 //! Compares to the last call of this function to return double and triple clicks.
 uint32_t CIrrDeviceStub::checkSuccessiveClicks(int32_t mouseX, int32_t mouseY, EMOUSE_INPUT_EVENT inputEvent )
 {
-	const int32_t MAX_MOUSEMOVE = 3;
+    const int32_t MAX_MOUSEMOVE = 3;
 
-	uint32_t clickTime = getTimer()->getRealTime();
+    uint32_t clickTime = getTimer()->getRealTime();
 
-	if ( (clickTime-MouseMultiClicks.LastClickTime) < MouseMultiClicks.DoubleClickTime
-		&& core::abs_(MouseMultiClicks.LastClick.X - mouseX ) <= MAX_MOUSEMOVE
-		&& core::abs_(MouseMultiClicks.LastClick.Y - mouseY ) <= MAX_MOUSEMOVE
-		&& MouseMultiClicks.CountSuccessiveClicks < 3
-		&& MouseMultiClicks.LastMouseInputEvent == inputEvent
-	   )
-	{
-		++MouseMultiClicks.CountSuccessiveClicks;
-	}
-	else
-	{
-		MouseMultiClicks.CountSuccessiveClicks = 1;
-	}
+    if ( (clickTime-MouseMultiClicks.LastClickTime) < MouseMultiClicks.DoubleClickTime
+        && core::abs_(MouseMultiClicks.LastClick.X - mouseX ) <= MAX_MOUSEMOVE
+        && core::abs_(MouseMultiClicks.LastClick.Y - mouseY ) <= MAX_MOUSEMOVE
+        && MouseMultiClicks.CountSuccessiveClicks < 3
+        && MouseMultiClicks.LastMouseInputEvent == inputEvent
+       )
+    {
+        ++MouseMultiClicks.CountSuccessiveClicks;
+    }
+    else
+    {
+        MouseMultiClicks.CountSuccessiveClicks = 1;
+    }
 
-	MouseMultiClicks.LastMouseInputEvent = inputEvent;
-	MouseMultiClicks.LastClickTime = clickTime;
-	MouseMultiClicks.LastClick.X = mouseX;
-	MouseMultiClicks.LastClick.Y = mouseY;
+    MouseMultiClicks.LastMouseInputEvent = inputEvent;
+    MouseMultiClicks.LastClickTime = clickTime;
+    MouseMultiClicks.LastClick.X = mouseX;
+    MouseMultiClicks.LastClick.Y = mouseY;
 
-	return MouseMultiClicks.CountSuccessiveClicks;
+    return MouseMultiClicks.CountSuccessiveClicks;
 }
 
 
 //! send the event to the right receiver
 bool CIrrDeviceStub::postEventFromUser(const SEvent& event)
 {
-	bool absorbed = false;
+    bool absorbed = false;
 
-	if (UserReceiver)
-		absorbed = UserReceiver->OnEvent(event);
+    if (UserReceiver)
+        absorbed = UserReceiver->OnEvent(event);
 
-	scene::ISceneManager* inputReceiver = InputReceivingSceneManager;
-	if (!inputReceiver)
-		inputReceiver = SceneManager;
+    scene::ISceneManager* inputReceiver = InputReceivingSceneManager;
+    if (!inputReceiver)
+        inputReceiver = SceneManager;
 
-	if (!absorbed && inputReceiver)
-		absorbed = inputReceiver->postEventFromUser(event);
+    if (!absorbed && inputReceiver)
+        absorbed = inputReceiver->postEventFromUser(event);
 
-	return absorbed;
+    return absorbed;
 }
 
 
 //! Sets a new event receiver to receive events
 void CIrrDeviceStub::setEventReceiver(IEventReceiver* receiver)
 {
-	UserReceiver = receiver;
-	Logger->setReceiver(receiver);
+    UserReceiver = receiver;
+    Logger->setReceiver(receiver);
 }
 
 
 //! Returns poinhter to the current event receiver. Returns 0 if there is none.
 IEventReceiver* CIrrDeviceStub::getEventReceiver()
 {
-	return UserReceiver;
+    return UserReceiver;
 }
 
 
 //! \return Returns a pointer to the logger.
 ILogger* CIrrDeviceStub::getLogger()
 {
-	return Logger;
+    return Logger;
 }
 
 
 //! Returns the operation system opertator object.
 IOSOperator* CIrrDeviceStub::getOSOperator()
 {
-	return Operator;
+    return Operator;
 }
 
 
 //! Provides access to the engine's currently set randomizer.
 IRandomizer* CIrrDeviceStub::getRandomizer() const
 {
-	return Randomizer;
+    return Randomizer;
 }
 
 //! Sets a new randomizer.
 void CIrrDeviceStub::setRandomizer(IRandomizer* r)
 {
-	if (r!=Randomizer)
-	{
-		if (Randomizer)
-			Randomizer->drop();
-		Randomizer=r;
-		if (Randomizer)
-			Randomizer->grab();
-	}
+    if (r!=Randomizer)
+    {
+        if (Randomizer)
+            Randomizer->drop();
+        Randomizer=r;
+        if (Randomizer)
+            Randomizer->grab();
+    }
 }
 
 namespace
 {
-	struct SDefaultRandomizer : public IRandomizer
-	{
-		virtual void reset(int32_t value=0x0f0f0f0f)
-		{
-			os::Randomizer::reset(value);
-		}
+    struct SDefaultRandomizer : public IRandomizer
+    {
+        virtual void reset(int32_t value=0x0f0f0f0f)
+        {
+            os::Randomizer::reset(value);
+        }
 
-		virtual int32_t rand() const
-		{
-			return os::Randomizer::rand();
-		}
+        virtual int32_t rand() const
+        {
+            return os::Randomizer::rand();
+        }
 
-		virtual float frand() const
-		{
-			return os::Randomizer::frand();
-		}
+        virtual float frand() const
+        {
+            return os::Randomizer::frand();
+        }
 
-		virtual int32_t randMax() const
-		{
-			return os::Randomizer::randMax();
-		}
-	};
+        virtual int32_t randMax() const
+        {
+            return os::Randomizer::randMax();
+        }
+    };
 }
 
 //! Creates a new default randomizer.
 IRandomizer* CIrrDeviceStub::createDefaultRandomizer() const
 {
-	IRandomizer* r = new SDefaultRandomizer();
-	if (r)
-		r->reset();
-	return r;
+    IRandomizer* r = new SDefaultRandomizer();
+    if (r)
+        r->reset();
+    return r;
 }
 
 
@@ -289,71 +289,71 @@ void CIrrDeviceStub::setInputReceivingSceneManager(scene::ISceneManager* sceneMa
 {
     if (sceneManager)
         sceneManager->grab();
-	if (InputReceivingSceneManager)
-		InputReceivingSceneManager->drop();
+    if (InputReceivingSceneManager)
+        InputReceivingSceneManager->drop();
 
-	InputReceivingSceneManager = sceneManager;
+    InputReceivingSceneManager = sceneManager;
 }
 
 
 //! Checks if the window is running in fullscreen mode
 bool CIrrDeviceStub::isFullscreen() const
 {
-	return CreationParams.Fullscreen;
+    return CreationParams.Fullscreen;
 }
 
 
 //! returns color format
 video::ECOLOR_FORMAT CIrrDeviceStub::getColorFormat() const
 {
-	return video::ECF_R5G6B5;
+    return video::ECF_R5G6B5;
 }
 
 //! No-op in this implementation
 bool CIrrDeviceStub::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
 {
-	return false;
+    return false;
 }
 
 /*!
 */
 void CIrrDeviceStub::calculateGammaRamp ( uint16_t *ramp, float gamma, float relativebrightness, float relativecontrast )
 {
-	int32_t i;
-	int32_t value;
-	int32_t rbright = (int32_t) ( relativebrightness * (65535.f / 4 ) );
-	float rcontrast = 1.f / (255.f - ( relativecontrast * 127.5f ) );
+    int32_t i;
+    int32_t value;
+    int32_t rbright = (int32_t) ( relativebrightness * (65535.f / 4 ) );
+    float rcontrast = 1.f / (255.f - ( relativecontrast * 127.5f ) );
 
-	gamma = gamma > 0.f ? 1.0f / gamma : 0.f;
+    gamma = gamma > 0.f ? 1.0f / gamma : 0.f;
 
-	for ( i = 0; i < 256; ++i )
-	{
-		value = (int32_t)(pow( rcontrast * i, gamma)*65535.f + 0.5f );
-		ramp[i] = (uint16_t) core::s32_clamp ( value + rbright, 0, 65535 );
-	}
+    for ( i = 0; i < 256; ++i )
+    {
+        value = (int32_t)(pow( rcontrast * i, gamma)*65535.f + 0.5f );
+        ramp[i] = (uint16_t) core::s32_clamp ( value + rbright, 0, 65535 );
+    }
 
 }
 
 void CIrrDeviceStub::calculateGammaFromRamp ( float &gamma, const uint16_t *ramp )
 {
-	/* The following is adapted from a post by Garrett Bass on OpenGL
-	Gamedev list, March 4, 2000.
-	*/
-	float sum = 0.0;
-	int32_t i, count = 0;
+    /* The following is adapted from a post by Garrett Bass on OpenGL
+    Gamedev list, March 4, 2000.
+    */
+    float sum = 0.0;
+    int32_t i, count = 0;
 
-	gamma = 1.0;
-	for ( i = 1; i < 256; ++i ) {
-		if ( (ramp[i] != 0) && (ramp[i] != 65535) ) {
-			float B = (float)i / 256.f;
-			float A = ramp[i] / 65535.f;
-			sum += (float) ( logf(A) / logf(B) );
-			count++;
-		}
-	}
-	if ( count && sum ) {
-		gamma = 1.0f / (sum / count);
-	}
+    gamma = 1.0;
+    for ( i = 1; i < 256; ++i ) {
+        if ( (ramp[i] != 0) && (ramp[i] != 65535) ) {
+            float B = (float)i / 256.f;
+            float A = ramp[i] / 65535.f;
+            sum += (float) ( logf(A) / logf(B) );
+            count++;
+        }
+    }
+    if ( count && sum ) {
+        gamma = 1.0f / (sum / count);
+    }
 
 }
 
@@ -361,13 +361,13 @@ void CIrrDeviceStub::calculateGammaFromRamp ( float &gamma, const uint16_t *ramp
 //! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
 void CIrrDeviceStub::setDoubleClickTime( uint32_t timeMs )
 {
-	MouseMultiClicks.DoubleClickTime = timeMs;
+    MouseMultiClicks.DoubleClickTime = timeMs;
 }
 
 //! Get the maximal elapsed time between 2 clicks to generate double- and tripleclicks for the mouse.
 uint32_t CIrrDeviceStub::getDoubleClickTime() const
 {
-	return MouseMultiClicks.DoubleClickTime;
+    return MouseMultiClicks.DoubleClickTime;
 }
 
 //! Remove all messages pending in the system message loop

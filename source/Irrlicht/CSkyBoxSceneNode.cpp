@@ -17,31 +17,31 @@ namespace scene
 
 //! constructor
 CSkyBoxSceneNode::CSkyBoxSceneNode(video::ITexture* top, video::ITexture* bottom, video::ITexture* left,
-			video::ITexture* right, video::ITexture* front, video::ITexture* back,
-			video::IGPUBuffer* vertPositions, size_t positionsOffsetInBuf,
-			IDummyTransformationSceneNode* parent, ISceneManager* mgr, int32_t id)
+            video::ITexture* right, video::ITexture* front, video::ITexture* back,
+            video::IGPUBuffer* vertPositions, size_t positionsOffsetInBuf,
+            IDummyTransformationSceneNode* parent, ISceneManager* mgr, int32_t id)
 : ISceneNode(parent, mgr, id)
 {
-	#ifdef _DEBUG
-	setDebugName("CSkyBoxSceneNode");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CSkyBoxSceneNode");
+    #endif
 
-	setAutomaticCulling(scene::EAC_OFF);
-	Box.MaxEdge.set(0,0,0);
-	Box.MinEdge.set(0,0,0);
+    setAutomaticCulling(scene::EAC_OFF);
+    Box.MaxEdge.set(0,0,0);
+    Box.MinEdge.set(0,0,0);
 
 
-	// create material
+    // create material
 
-	video::SMaterial mat;
-	mat.ZBuffer = video::ECFN_NEVER;
-	mat.ZWriteEnable = false;
-	mat.AntiAliasing=0;
-	mat.TextureLayer[0].SamplingParams.TextureWrapU = video::ETC_CLAMP_TO_EDGE;
-	mat.TextureLayer[0].SamplingParams.TextureWrapV = video::ETC_CLAMP_TO_EDGE;
+    video::SMaterial mat;
+    mat.ZBuffer = video::ECFN_NEVER;
+    mat.ZWriteEnable = false;
+    mat.AntiAliasing=0;
+    mat.TextureLayer[0].SamplingParams.TextureWrapU = video::ETC_CLAMP_TO_EDGE;
+    mat.TextureLayer[0].SamplingParams.TextureWrapV = video::ETC_CLAMP_TO_EDGE;
 
-	/* Hey, I am no artist, but look at that
-	   cool ASCII art I made! ;)
+    /* Hey, I am no artist, but look at that
+       cool ASCII art I made! ;)
 
        -111         111
           /6--------/5        y
@@ -53,66 +53,66 @@ CSkyBoxSceneNode::CSkyBoxSceneNode(video::ITexture* top, video::ITexture* bottom
         |/        | /         |    //|
         0---------1/          |  //  |
      -1-1-1     1-1-1         |//    |
-	                     0--------1
-	*/
+                         0--------1
+    */
 
-	video::ITexture* tex = front;
-	if (!tex) tex = left;
-	if (!tex) tex = back;
-	if (!tex) tex = right;
-	if (!tex) tex = top;
-	if (!tex) tex = bottom;
+    video::ITexture* tex = front;
+    if (!tex) tex = left;
+    if (!tex) tex = back;
+    if (!tex) tex = right;
+    if (!tex) tex = top;
+    if (!tex) tex = bottom;
 
-	const float onepixel = tex?(1.0f / (tex->getSize()[0] * 1.5f)) : 0.0f;
-	const float t = 1.0f - onepixel;
-	const float o = 0.0f + onepixel;
+    const float onepixel = tex?(1.0f / (tex->getSize()[0] * 1.5f)) : 0.0f;
+    const float t = 1.0f - onepixel;
+    const float o = 0.0f + onepixel;
 
-	video::IVideoDriver* driver = SceneManager->getVideoDriver();
-	// create front side
-	Material[0] = mat;
-	Material[0].setTexture(0, front);
-	float texcoords[2*4*2];
-	texcoords[0] = t;
-	texcoords[1] = t;
-	texcoords[2] = o;
-	texcoords[3] = t;
-	texcoords[4] = o;
-	texcoords[5] = o;
-	texcoords[6] = t;
-	texcoords[7] = o;
-	// one odd side
-	texcoords[8] = o;
-	texcoords[9] = o;
-	texcoords[10] = t;
-	texcoords[11] = o;
-	texcoords[12] = t;
-	texcoords[13] = t;
-	texcoords[14] = o;
-	texcoords[15] = t;
-	video::IGPUBuffer* texcoordBuf = driver->createGPUBuffer(sizeof(texcoords),texcoords);
+    video::IVideoDriver* driver = SceneManager->getVideoDriver();
+    // create front side
+    Material[0] = mat;
+    Material[0].setTexture(0, front);
+    float texcoords[2*4*2];
+    texcoords[0] = t;
+    texcoords[1] = t;
+    texcoords[2] = o;
+    texcoords[3] = t;
+    texcoords[4] = o;
+    texcoords[5] = o;
+    texcoords[6] = t;
+    texcoords[7] = o;
+    // one odd side
+    texcoords[8] = o;
+    texcoords[9] = o;
+    texcoords[10] = t;
+    texcoords[11] = o;
+    texcoords[12] = t;
+    texcoords[13] = t;
+    texcoords[14] = o;
+    texcoords[15] = t;
+    video::IGPUBuffer* texcoordBuf = driver->createGPUBuffer(sizeof(texcoords),texcoords);
 
-	// create left side
-	Material[1] = mat;
-	Material[1].setTexture(0, left);
+    // create left side
+    Material[1] = mat;
+    Material[1].setTexture(0, left);
 
-	// create back side
-	Material[2] = mat;
-	Material[2].setTexture(0, back);
+    // create back side
+    Material[2] = mat;
+    Material[2].setTexture(0, back);
 
-	// create right side
-	Material[3] = mat;
-	Material[3].setTexture(0, right);
+    // create right side
+    Material[3] = mat;
+    Material[3].setTexture(0, right);
 
-	// create top side
-	Material[4] = mat;
-	Material[4].setTexture(0, top);
+    // create top side
+    Material[4] = mat;
+    Material[4].setTexture(0, top);
 
-	// create bottom side
-	Material[5] = mat;
-	Material[5].setTexture(0, bottom);
+    // create bottom side
+    Material[5] = mat;
+    Material[5].setTexture(0, bottom);
 
 
-	for (size_t i=0; i<6; i++)
+    for (size_t i=0; i<6; i++)
     {
         sides[i] = new IGPUMeshBuffer();
         sides[i]->setPrimitiveType(EPT_TRIANGLE_FAN);
@@ -137,23 +137,23 @@ CSkyBoxSceneNode::CSkyBoxSceneNode(video::ITexture* top, video::ITexture* bottom
 }
 
 CSkyBoxSceneNode::CSkyBoxSceneNode(CSkyBoxSceneNode* other,
-			IDummyTransformationSceneNode* parent, ISceneManager* mgr, int32_t id)
+            IDummyTransformationSceneNode* parent, ISceneManager* mgr, int32_t id)
 : ISceneNode(parent, mgr, id)
 {
-	#ifdef _DEBUG
-	setDebugName("CSkyBoxSceneNode");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CSkyBoxSceneNode");
+    #endif
 
-	setAutomaticCulling(scene::EAC_OFF);
-	Box.MaxEdge.set(0,0,0);
-	Box.MinEdge.set(0,0,0);
+    setAutomaticCulling(scene::EAC_OFF);
+    Box.MaxEdge.set(0,0,0);
+    Box.MinEdge.set(0,0,0);
 
 
-	for (size_t i=0; i<6; i++)
+    for (size_t i=0; i<6; i++)
     {
         other->sides[i]->grab();
         sides[i] = other->sides[i];
-		Material[i] = other->Material[i];
+        Material[i] = other->Material[i];
     }
 }
 
@@ -161,76 +161,76 @@ CSkyBoxSceneNode::CSkyBoxSceneNode(CSkyBoxSceneNode* other,
 //! renders the node.
 void CSkyBoxSceneNode::render()
 {
-	video::IVideoDriver* driver = SceneManager->getVideoDriver();
-	scene::ICameraSceneNode* camera = SceneManager->getActiveCamera();
+    video::IVideoDriver* driver = SceneManager->getVideoDriver();
+    scene::ICameraSceneNode* camera = SceneManager->getActiveCamera();
 
-	if (!camera || !driver || !canProceedPastFence())
-		return;
+    if (!camera || !driver || !canProceedPastFence())
+        return;
 
-	if ( !camera->isOrthogonal() )
-	{
-		// draw perspective skybox
+    if ( !camera->isOrthogonal() )
+    {
+        // draw perspective skybox
 
-		core::matrix4x3 translate(AbsoluteTransformation);
-		translate.setTranslation(camera->getAbsolutePosition());
+        core::matrix4x3 translate(AbsoluteTransformation);
+        translate.setTranslation(camera->getAbsolutePosition());
 
-		// Draw the sky box between the near and far clip plane
-		const float viewDistance = (camera->getNearValue() + camera->getFarValue()) * 0.5f;
-		core::matrix4x3 scale;
-		scale.setScale(core::vector3df(viewDistance, viewDistance, viewDistance));
+        // Draw the sky box between the near and far clip plane
+        const float viewDistance = (camera->getNearValue() + camera->getFarValue()) * 0.5f;
+        core::matrix4x3 scale;
+        scale.setScale(core::vector3df(viewDistance, viewDistance, viewDistance));
 
-		driver->setTransform(video::E4X3TS_WORLD, concatenateBFollowedByA(translate,scale));
+        driver->setTransform(video::E4X3TS_WORLD, concatenateBFollowedByA(translate,scale));
 
-		for (int32_t i=0; i<6; ++i)
-		{
-			driver->setMaterial(Material[i]);
-			driver->drawMeshBuffer(sides[i]);
-		}
-	}
-	else
-	{
-		// draw orthogonal skybox,
-		// simply choose one texture and draw it as 2d picture.
-		// there could be better ways to do this, but currently I think this is ok.
+        for (int32_t i=0; i<6; ++i)
+        {
+            driver->setMaterial(Material[i]);
+            driver->drawMeshBuffer(sides[i]);
+        }
+    }
+    else
+    {
+        // draw orthogonal skybox,
+        // simply choose one texture and draw it as 2d picture.
+        // there could be better ways to do this, but currently I think this is ok.
 
-		core::vector3df lookVect = camera->getTarget() - camera->getAbsolutePosition();
-		lookVect.normalize();
-		core::vector3df absVect( core::abs_(lookVect.X),
-					 core::abs_(lookVect.Y),
-					 core::abs_(lookVect.Z));
+        core::vector3df lookVect = camera->getTarget() - camera->getAbsolutePosition();
+        lookVect.normalize();
+        core::vector3df absVect( core::abs_(lookVect.X),
+                     core::abs_(lookVect.Y),
+                     core::abs_(lookVect.Z));
 
-		int idx = 0;
+        int idx = 0;
 
-		if ( absVect.X >= absVect.Y && absVect.X >= absVect.Z )
-		{
-			// x direction
-			idx = lookVect.X > 0 ? 0 : 2;
-		}
-		else
-		if ( absVect.Y >= absVect.X && absVect.Y >= absVect.Z )
-		{
-			// y direction
-			idx = lookVect.Y > 0 ? 4 : 5;
-		}
-		else
-		if ( absVect.Z >= absVect.X && absVect.Z >= absVect.Y )
-		{
-			// z direction
-			idx = lookVect.Z > 0 ? 1 : 3;
-		}
+        if ( absVect.X >= absVect.Y && absVect.X >= absVect.Z )
+        {
+            // x direction
+            idx = lookVect.X > 0 ? 0 : 2;
+        }
+        else
+        if ( absVect.Y >= absVect.X && absVect.Y >= absVect.Z )
+        {
+            // y direction
+            idx = lookVect.Y > 0 ? 4 : 5;
+        }
+        else
+        if ( absVect.Z >= absVect.X && absVect.Z >= absVect.Y )
+        {
+            // z direction
+            idx = lookVect.Z > 0 ? 1 : 3;
+        }
 
-		video::ITexture* tex = Material[idx].getTexture(0);
+        video::ITexture* tex = Material[idx].getTexture(0);
 
-		if ( tex )
-		{
-			core::rect<int32_t> rctDest(core::position2d<int32_t>(-1,0),
-									core::dimension2di(driver->getCurrentRenderTargetSize()));
-			core::rect<int32_t> rctSrc(core::position2d<int32_t>(0,0),
-									core::dimension2di(*reinterpret_cast<const core::dimension2du*>(tex->getSize())));
+        if ( tex )
+        {
+            core::rect<int32_t> rctDest(core::position2d<int32_t>(-1,0),
+                                    core::dimension2di(driver->getCurrentRenderTargetSize()));
+            core::rect<int32_t> rctSrc(core::position2d<int32_t>(0,0),
+                                    core::dimension2di(*reinterpret_cast<const core::dimension2du*>(tex->getSize())));
 
-			driver->draw2DImage(tex, rctDest, rctSrc);
-		}
-	}
+            driver->draw2DImage(tex, rctDest, rctSrc);
+        }
+    }
 }
 
 
@@ -238,16 +238,16 @@ void CSkyBoxSceneNode::render()
 //! returns the axis aligned bounding box of this node
 const core::aabbox3d<float>& CSkyBoxSceneNode::getBoundingBox()
 {
-	return Box;
+    return Box;
 }
 
 
 void CSkyBoxSceneNode::OnRegisterSceneNode()
 {
-	if (IsVisible)
-		SceneManager->registerNodeForRendering(this, ESNRP_SKY_BOX);
+    if (IsVisible)
+        SceneManager->registerNodeForRendering(this, ESNRP_SKY_BOX);
 
-	ISceneNode::OnRegisterSceneNode();
+    ISceneNode::OnRegisterSceneNode();
 }
 
 
@@ -258,31 +258,31 @@ void CSkyBoxSceneNode::OnRegisterSceneNode()
 //! to directly modify the material of a scene node.
 video::SMaterial& CSkyBoxSceneNode::getMaterial(uint32_t i)
 {
-	return Material[i];
+    return Material[i];
 }
 
 
 //! returns amount of materials used by this scene node.
 uint32_t CSkyBoxSceneNode::getMaterialCount() const
 {
-	return 6;
+    return 6;
 }
 
 
 //! Creates a clone of this scene node and its children.
 ISceneNode* CSkyBoxSceneNode::clone(IDummyTransformationSceneNode* newParent, ISceneManager* newManager)
 {
-	if (!newParent) newParent = Parent;
-	if (!newManager) newManager = SceneManager;
+    if (!newParent) newParent = Parent;
+    if (!newManager) newManager = SceneManager;
 
-	CSkyBoxSceneNode* nb = new CSkyBoxSceneNode(this, newParent,
-		newManager, ID);
+    CSkyBoxSceneNode* nb = new CSkyBoxSceneNode(this, newParent,
+        newManager, ID);
 
-	nb->cloneMembers(this, newManager);
+    nb->cloneMembers(this, newManager);
 
-	if ( newParent )
-		nb->drop();
-	return nb;
+    if ( newParent )
+        nb->drop();
+    return nb;
 }
 
 } // end namespace scene

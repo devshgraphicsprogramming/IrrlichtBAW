@@ -14,9 +14,9 @@ namespace video
 {
 enum E_INDEX_TYPE
 {
-	EIT_16BIT = 0,
-	EIT_32BIT,
-	EIT_UNKNOWN
+    EIT_16BIT = 0,
+    EIT_32BIT,
+    EIT_UNKNOWN
 };
 
 

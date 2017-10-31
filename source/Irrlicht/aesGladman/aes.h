@@ -56,7 +56,7 @@ typedef uint32_t aes_32t;
 #define AES_BLOCK_SIZE  16  /* the AES block size in bytes          */
 #define N_COLS           4  /* the number of columns in the state   */
 
-/* a maximum of 60 32-bit words are needed for the key schedule		*/
+/* a maximum of 60 32-bit words are needed for the key schedule        */
 #define KS_LENGTH       64
 
 #ifdef  AES_ERR_CHK
@@ -85,7 +85,7 @@ void gen_tabs(void);
 
 typedef struct
 {
-	aes_32t ks[KS_LENGTH];
+    aes_32t ks[KS_LENGTH];
 } aes_encrypt_ctx;
 
 #if defined(AES_128) || defined(AES_VAR)
@@ -111,7 +111,7 @@ aes_rval aes_encrypt(const void *in_blk, void *out_blk, const aes_encrypt_ctx cx
 
 typedef struct
 {
-	aes_32t ks[KS_LENGTH];
+    aes_32t ks[KS_LENGTH];
 } aes_decrypt_ctx;
 
 #if defined(AES_128) || defined(AES_VAR)

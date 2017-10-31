@@ -46,14 +46,14 @@ public:
     typedef scene::IGPUMeshDataFormatDesc* (*VaoSetupOverrideFunc)(ISceneManager*,video::IGPUBuffer*,const size_t&,const scene::IGPUMeshDataFormatDesc*, void* userData);
     typedef void (*CPUCullingFunc)(uint8_t**,const size_t&,const core::aabbox3df&,const size_t&,const core::matrix4x3&,const uint8_t*,const size_t&,scene::ISceneManager*,void*);
 
-	//! Constructor
-	/** Use setMesh() to set the mesh to display.
-	*/
-	IMeshSceneNodeInstanced(IDummyTransformationSceneNode* parent, ISceneManager* mgr, int32_t id,
-			const core::vector3df& position = core::vector3df(0,0,0),
-			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1,1,1))
-		: ISceneNode(parent, mgr, id, position, rotation, scale), wantBBoxUpdate(false), cpuCullingUserData(NULL)
+    //! Constructor
+    /** Use setMesh() to set the mesh to display.
+    */
+    IMeshSceneNodeInstanced(IDummyTransformationSceneNode* parent, ISceneManager* mgr, int32_t id,
+            const core::vector3df& position = core::vector3df(0,0,0),
+            const core::vector3df& rotation = core::vector3df(0,0,0),
+            const core::vector3df& scale = core::vector3df(1,1,1))
+        : ISceneNode(parent, mgr, id, position, rotation, scale), wantBBoxUpdate(false), cpuCullingUserData(NULL)
     {
         setAutomaticCulling(EAC_OFF);
     }
@@ -62,7 +62,7 @@ public:
     virtual const uint32_t& getGPUCullingThreshold() const =0;
     virtual void setGPUCullingThresholdMultiplier(const double& multiplier) =0;
 
-	//! Sets a new mesh to display
+    //! Sets a new mesh to display
     /** Extra Per-Instance input data is passed along as floating point components filling attribute slot 5 yzw components, and all components slots in attribute 6 and up
     Any remaining data after attribute 15 W component will not be passed as vertex attribute but will be retained in the input array which can be accessed by
     creating a Texture Buffer Object and grabbing the data with texelFetch inside the "lodSelectionShader"
@@ -70,22 +70,22 @@ public:
     together they give the first LoD index and the last LoD index in the LoD range currently having its buffers filled.
     FUTURE:
     The compute shader mode can compute ALL LoDs at once and possibly all IMeshSceneNodeInstanced' nodes' culling and instance data at once.
-	\param mesh Mesh to display. */
-	virtual bool setLoDMeshes(std::vector<MeshLoD> levelsOfDetail, const size_t& dataSizePerInstanceOutput, const video::SMaterial& lodSelectionShader, VaoSetupOverrideFunc vaoSetupOverride, const size_t shaderLoDsPerPass=1, void* overrideUserData=NULL, const size_t& extraDataSizePerInstanceInput=0, CPUCullingFunc cpuCullFunc=NULL) = 0;
+    \param mesh Mesh to display. */
+    virtual bool setLoDMeshes(std::vector<MeshLoD> levelsOfDetail, const size_t& dataSizePerInstanceOutput, const video::SMaterial& lodSelectionShader, VaoSetupOverrideFunc vaoSetupOverride, const size_t shaderLoDsPerPass=1, void* overrideUserData=NULL, const size_t& extraDataSizePerInstanceInput=0, CPUCullingFunc cpuCullFunc=NULL) = 0;
 
-	//! Get the currently defined mesh for display.
-	/** \return Pointer to mesh which is displayed by this node. */
-	virtual SGPUMesh* getLoDMesh(const size_t &lod) = 0;
+    //! Get the currently defined mesh for display.
+    /** \return Pointer to mesh which is displayed by this node. */
+    virtual SGPUMesh* getLoDMesh(const size_t &lod) = 0;
 
-	//!
-	virtual void setUserCPUCullingData(void* data)
-	{
-	    cpuCullingUserData = data;
-	}
+    //!
+    virtual void setUserCPUCullingData(void* data)
+    {
+        cpuCullingUserData = data;
+    }
 
-	virtual const size_t& getInstanceCount() const = 0;
+    virtual const size_t& getInstanceCount() const = 0;
 
-	virtual const core::aabbox3df& getLoDInvariantBBox() const = 0;
+    virtual const core::aabbox3df& getLoDInvariantBBox() const = 0;
 
 
     inline void setBBoxUpdateEnabled() {wantBBoxUpdate = true;}

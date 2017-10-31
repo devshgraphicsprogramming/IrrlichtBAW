@@ -23,37 +23,37 @@ class COpenGLRenderBuffer : public IRenderBuffer
 {
 public:
 
-	//! constructor
-	COpenGLRenderBuffer(GLenum internalFormat, core::dimension2du size, COpenGLDriver* driver=0);
+    //! constructor
+    COpenGLRenderBuffer(GLenum internalFormat, core::dimension2du size, COpenGLDriver* driver=0);
 
-	//! destructor
-	virtual ~COpenGLRenderBuffer();
+    //! destructor
+    virtual ~COpenGLRenderBuffer();
 
-	//! Returns size of the texture.
-	virtual const core::dimension2d<uint32_t>& getSize() const {return RenderBufferSize;}
+    //! Returns size of the texture.
+    virtual const core::dimension2d<uint32_t>& getSize() const {return RenderBufferSize;}
     virtual core::dimension2du getRenderableSize() const {return RenderBufferSize;}
 
-	//! returns driver type of texture (=the driver, that created it)
-	virtual const E_DRIVER_TYPE getDriverType() const {return EDT_OPENGL;}
+    //! returns driver type of texture (=the driver, that created it)
+    virtual const E_DRIVER_TYPE getDriverType() const {return EDT_OPENGL;}
 
-	//! return open gl texture name
-	const GLuint& getOpenGLName() const {return RenderBufferName;}
-	GLuint* getOpenGLNamePtr() {return &RenderBufferName;}
+    //! return open gl texture name
+    const GLuint& getOpenGLName() const {return RenderBufferName;}
+    GLuint* getOpenGLNamePtr() {return &RenderBufferName;}
 
-	GLint getOpenGLInternalFormat() const {return InternalFormat;}
+    GLint getOpenGLInternalFormat() const {return InternalFormat;}
 
-	virtual void resize(const core::dimension2du &newSize);
+    virtual void resize(const core::dimension2du &newSize);
 
-	const uint64_t& hasOpenGLNameChanged() const {return RenderBufferNameHasChanged;}
+    const uint64_t& hasOpenGLNameChanged() const {return RenderBufferNameHasChanged;}
 
 
 protected:
-	core::dimension2d<uint32_t> RenderBufferSize;
-	COpenGLDriver* Driver;
+    core::dimension2d<uint32_t> RenderBufferSize;
+    COpenGLDriver* Driver;
 
-	GLuint RenderBufferName;
-	uint64_t RenderBufferNameHasChanged;
-	GLint InternalFormat;
+    GLuint RenderBufferName;
+    uint64_t RenderBufferNameHasChanged;
+    GLint InternalFormat;
 };
 
 

@@ -13,41 +13,41 @@ namespace irr
 {
 namespace scene
 {
-	//! Scene node animator based free code Matthias Gall wrote and sent in. (Most of
-	//! this code is written by him, I only modified bits.)
-	class CSceneNodeAnimatorFollowSpline : public ISceneNodeAnimatorFinishing
-	{
-	public:
+    //! Scene node animator based free code Matthias Gall wrote and sent in. (Most of
+    //! this code is written by him, I only modified bits.)
+    class CSceneNodeAnimatorFollowSpline : public ISceneNodeAnimatorFinishing
+    {
+    public:
 
-		//! constructor
-		CSceneNodeAnimatorFollowSpline(uint32_t startTime,
-			const core::array< core::vector3df >& points,
-			float speed = 1.0f, float tightness = 0.5f, bool loop=true, bool pingpong=false);
+        //! constructor
+        CSceneNodeAnimatorFollowSpline(uint32_t startTime,
+            const core::array< core::vector3df >& points,
+            float speed = 1.0f, float tightness = 0.5f, bool loop=true, bool pingpong=false);
 
-		//! animates a scene node
-		virtual void animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs);
+        //! animates a scene node
+        virtual void animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs);
 
-		//! Returns type of the scene node animator
-		virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_FOLLOW_SPLINE; }
+        //! Returns type of the scene node animator
+        virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_FOLLOW_SPLINE; }
 
-		//! Creates a clone of this animator.
-		/** Please note that you will have to drop
-		(IReferenceCounted::drop()) the returned pointer after calling
-		this. */
-		virtual ISceneNodeAnimator* createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager=0);
+        //! Creates a clone of this animator.
+        /** Please note that you will have to drop
+        (IReferenceCounted::drop()) the returned pointer after calling
+        this. */
+        virtual ISceneNodeAnimator* createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager=0);
 
-	protected:
+    protected:
 
-		//! clamps a the value idx to fit into range 0..size-1
-		int32_t clamp(int32_t idx, int32_t size);
+        //! clamps a the value idx to fit into range 0..size-1
+        int32_t clamp(int32_t idx, int32_t size);
 
-		core::array< core::vector3df > Points;
-		float Speed;
-		float Tightness;
-		uint32_t StartTime;
-		bool Loop;
-		bool PingPong;
-	};
+        core::array< core::vector3df > Points;
+        float Speed;
+        float Tightness;
+        uint32_t StartTime;
+        bool Loop;
+        bool PingPong;
+    };
 
 
 } // end namespace scene

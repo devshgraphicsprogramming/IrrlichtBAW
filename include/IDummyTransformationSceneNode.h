@@ -22,10 +22,10 @@ class IDummyTransformationSceneNode;
 
 
 
-	//! Typedef for array of scene nodes
-	typedef std::vector<IDummyTransformationSceneNode*> IDummyTransformationSceneNodeArray;
-	//! Typedef for array of scene node animators
-	typedef std::vector<ISceneNodeAnimator*> ISceneNodeAnimatorArray;
+    //! Typedef for array of scene nodes
+    typedef std::vector<IDummyTransformationSceneNode*> IDummyTransformationSceneNodeArray;
+    //! Typedef for array of scene node animators
+    typedef std::vector<ISceneNodeAnimator*> ISceneNodeAnimatorArray;
 
 //! Dummy scene node for adding additional transformations to the scene graph.
 /** This scene node does not render itself, and does not respond to set/getPosition,
@@ -46,28 +46,28 @@ class IDummyTransformationSceneNode : public virtual IReferenceCounted
 
         //! Constructor
         IDummyTransformationSceneNode(IDummyTransformationSceneNode* parent,
-				const core::vector3df& position = core::vector3df(0,0,0),
-				const core::vector3df& rotation = core::vector3df(0,0,0),
-				const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)) :
+                const core::vector3df& position = core::vector3df(0,0,0),
+                const core::vector3df& rotation = core::vector3df(0,0,0),
+                const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)) :
                 RelativeTranslation(position), RelativeRotation(rotation), RelativeScale(scale),
-				Parent(0),  relativeTransChanged(1), relativeTransNeedsUpdate(true)
+                Parent(0),  relativeTransChanged(1), relativeTransNeedsUpdate(true)
         {
             memset(lastTimeRelativeTransRead,0,sizeof(uint64_t)*5);
 
-			if (parent)
-				parent->addChild(this);
+            if (parent)
+                parent->addChild(this);
 
-			updateAbsolutePosition();
+            updateAbsolutePosition();
         }
 
         virtual ~IDummyTransformationSceneNode()
         {
             removeAll();
 
-			// delete all animators
-			ISceneNodeAnimatorArray::iterator ait = Animators.begin();
-			for (; ait != Animators.end(); ++ait)
-				(*ait)->drop();
+            // delete all animators
+            ISceneNodeAnimatorArray::iterator ait = Animators.begin();
+            for (; ait != Animators.end(); ++ait)
+                (*ait)->drop();
         }
 
         virtual const bool isISceneNode() const {return false;}
@@ -207,25 +207,25 @@ class IDummyTransformationSceneNode : public virtual IReferenceCounted
             return AbsoluteTransformation;
         }
 
-		//! Gets the absolute position of the node in world coordinates.
-		/** If you want the position of the node relative to its parent,
-		use getPosition() instead.
-		NOTE: For speed reasons the absolute position is not
-		automatically recalculated on each change of the relative
-		position or by a position change of an parent. Instead the
-		update usually happens once per frame in OnAnimate. You can enforce
-		an update with updateAbsolutePosition().
-		\return The current absolute position of the scene node (updated on last call of updateAbsolutePosition). */
-		inline core::vector3df getAbsolutePosition() const
-		{
-			return AbsoluteTransformation.getTranslation();
-		}
+        //! Gets the absolute position of the node in world coordinates.
+        /** If you want the position of the node relative to its parent,
+        use getPosition() instead.
+        NOTE: For speed reasons the absolute position is not
+        automatically recalculated on each change of the relative
+        position or by a position change of an parent. Instead the
+        update usually happens once per frame in OnAnimate. You can enforce
+        an update with updateAbsolutePosition().
+        \return The current absolute position of the scene node (updated on last call of updateAbsolutePosition). */
+        inline core::vector3df getAbsolutePosition() const
+        {
+            return AbsoluteTransformation.getTranslation();
+        }
 
-		//! Updates the absolute position based on the relative and the parents position
-		/** Note: This does not recursively update the parents absolute positions, so if you have a deeper
-			hierarchy you might want to update the parents first.*/
-		inline virtual void updateAbsolutePosition()
-		{
+        //! Updates the absolute position based on the relative and the parents position
+        /** Note: This does not recursively update the parents absolute positions, so if you have a deeper
+            hierarchy you might want to update the parents first.*/
+        inline virtual void updateAbsolutePosition()
+        {
             bool recompute = relativeTransNeedsUpdate||lastTimeRelativeTransRead[3]<relativeTransChanged;
 
             if (Parent)
@@ -250,49 +250,49 @@ class IDummyTransformationSceneNode : public virtual IReferenceCounted
                 AbsoluteTransformation = getRelativeTransformationMatrix();
                 lastTimeRelativeTransRead[3] = relativeTransChanged;
             }
-		}
+        }
 
 
 
-		//! Returns a const reference to the list of all children.
-		/** \return The list of all children of this node. */
-		inline const IDummyTransformationSceneNodeArray& getChildren() const
-		{
-			return Children;
-		}
+        //! Returns a const reference to the list of all children.
+        /** \return The list of all children of this node. */
+        inline const IDummyTransformationSceneNodeArray& getChildren() const
+        {
+            return Children;
+        }
 
 
-		//! Changes the parent of the scene node.
-		/** \param newParent The new parent to be used. */
-		virtual void setParent(IDummyTransformationSceneNode* newParent)
-		{
-		    if (newParent==Parent)
+        //! Changes the parent of the scene node.
+        /** \param newParent The new parent to be used. */
+        virtual void setParent(IDummyTransformationSceneNode* newParent)
+        {
+            if (newParent==Parent)
                 return;
 
-			if (newParent)
+            if (newParent)
             {
-				newParent->addChild(this);
-				lastTimeRelativeTransRead[4] = 0;
+                newParent->addChild(this);
+                lastTimeRelativeTransRead[4] = 0;
             }
             else
                 remove();
-		}
+        }
 
 
-		//! Returns the parent of this scene node
-		/** \return A pointer to the parent. */
-		inline IDummyTransformationSceneNode* getParent() const
-		{
-			return Parent;
-		}
+        //! Returns the parent of this scene node
+        /** \return A pointer to the parent. */
+        inline IDummyTransformationSceneNode* getParent() const
+        {
+            return Parent;
+        }
 
-		//! Adds a child to this scene node.
-		/** If the scene node already has a parent it is first removed
-		from the other parent.
-		\param child A pointer to the new child. */
-		virtual void addChild(IDummyTransformationSceneNode* child)
-		{
-			if (!child || child == this || child->getParent() == this)
+        //! Adds a child to this scene node.
+        /** If the scene node already has a parent it is first removed
+        from the other parent.
+        \param child A pointer to the new child. */
+        virtual void addChild(IDummyTransformationSceneNode* child)
+        {
+            if (!child || child == this || child->getParent() == this)
                 return;
 
             child->grab();
@@ -301,106 +301,106 @@ class IDummyTransformationSceneNode : public virtual IReferenceCounted
             Children.insert(insertionPoint,child);
             child->Parent = this;
             child->lastTimeRelativeTransRead[4] = 0;
-		}
+        }
 
 
-		//! Removes a child from this scene node.
-		/** If found in the children list, the child pointer is also
-		dropped and might be deleted if no other grab exists.
-		\param child A pointer to the child which shall be removed.
-		\return True if the child was removed, and false if not,
-		e.g. because it couldn't be found in the children list. */
-		virtual bool removeChild(IDummyTransformationSceneNode* child)
-		{
+        //! Removes a child from this scene node.
+        /** If found in the children list, the child pointer is also
+        dropped and might be deleted if no other grab exists.
+        \param child A pointer to the child which shall be removed.
+        \return True if the child was removed, and false if not,
+        e.g. because it couldn't be found in the children list. */
+        virtual bool removeChild(IDummyTransformationSceneNode* child)
+        {
             IDummyTransformationSceneNodeArray::iterator found = std::lower_bound(Children.begin(),Children.end(),child);
             if (found==Children.end() || *found!=child)
                 return false;
 
-			(*found)->Parent = 0;
+            (*found)->Parent = 0;
             (*found)->drop();
             Children.erase(found);
             return true;
-		}
+        }
 
 
-		//! Removes all children of this scene node
-		/** The scene nodes found in the children list are also dropped
-		and might be deleted if no other grab exists on them.
-		*/
-		virtual void removeAll()
-		{
-			IDummyTransformationSceneNodeArray::iterator it = Children.begin();
-			for (; it != Children.end(); ++it)
-			{
-				(*it)->Parent = 0;
-				(*it)->drop();
-			}
+        //! Removes all children of this scene node
+        /** The scene nodes found in the children list are also dropped
+        and might be deleted if no other grab exists on them.
+        */
+        virtual void removeAll()
+        {
+            IDummyTransformationSceneNodeArray::iterator it = Children.begin();
+            for (; it != Children.end(); ++it)
+            {
+                (*it)->Parent = 0;
+                (*it)->drop();
+            }
 
-			Children.clear();
-		}
-
-
-		//! Removes this scene node from the scene
-		/** If no other grab exists for this node, it will be deleted.
-		*/
-		virtual void remove()
-		{
-			if (Parent)
-				Parent->removeChild(this);
-		}
+            Children.clear();
+        }
 
 
-		//! Adds an animator which should animate this node.
-		/** \param animator A pointer to the new animator. */
-		virtual void addAnimator(ISceneNodeAnimator* animator)
-		{
-			if (!animator)
-				return;
+        //! Removes this scene node from the scene
+        /** If no other grab exists for this node, it will be deleted.
+        */
+        virtual void remove()
+        {
+            if (Parent)
+                Parent->removeChild(this);
+        }
 
-			ISceneNodeAnimatorArray::iterator found = std::lower_bound(Animators.begin(),Animators.end(),animator);
+
+        //! Adds an animator which should animate this node.
+        /** \param animator A pointer to the new animator. */
+        virtual void addAnimator(ISceneNodeAnimator* animator)
+        {
+            if (!animator)
+                return;
+
+            ISceneNodeAnimatorArray::iterator found = std::lower_bound(Animators.begin(),Animators.end(),animator);
             ///if (found!=Animators.end() && *found==animator) //already in there
                 ///return;
 
             animator->grab();
             Animators.insert(found,animator);
-		}
+        }
 
 
-		//! Get a list of all scene node animators.
-		/** \return The list of animators attached to this node. */
-		const ISceneNodeAnimatorArray& getAnimators() const
-		{
-			return Animators;
-		}
+        //! Get a list of all scene node animators.
+        /** \return The list of animators attached to this node. */
+        const ISceneNodeAnimatorArray& getAnimators() const
+        {
+            return Animators;
+        }
 
 
-		//! Removes an animator from this scene node.
-		/** If the animator is found, it is also dropped and might be
-		deleted if not other grab exists for it.
-		\param animator A pointer to the animator to be deleted. */
-		virtual void removeAnimator(ISceneNodeAnimator* animator)
-		{
-			ISceneNodeAnimatorArray::iterator found = std::lower_bound(Animators.begin(),Animators.end(),animator);
+        //! Removes an animator from this scene node.
+        /** If the animator is found, it is also dropped and might be
+        deleted if not other grab exists for it.
+        \param animator A pointer to the animator to be deleted. */
+        virtual void removeAnimator(ISceneNodeAnimator* animator)
+        {
+            ISceneNodeAnimatorArray::iterator found = std::lower_bound(Animators.begin(),Animators.end(),animator);
             if (found==Animators.end() || *found!=animator)
                 return;
 
             (*found)->drop();
             Animators.erase(found);
             return;
-		}
+        }
 
 
-		//! Removes all animators from this scene node.
-		/** The animators might also be deleted if no other grab exists
-		for them. */
-		virtual void removeAnimators()
-		{
-			ISceneNodeAnimatorArray::iterator it = Animators.begin();
-			for (; it != Animators.end(); ++it)
-				(*it)->drop();
+        //! Removes all animators from this scene node.
+        /** The animators might also be deleted if no other grab exists
+        for them. */
+        virtual void removeAnimators()
+        {
+            ISceneNodeAnimatorArray::iterator it = Animators.begin();
+            for (; it != Animators.end(); ++it)
+                (*it)->drop();
 
-			Animators.clear();
-		}
+            Animators.clear();
+        }
 
         //! Returns type of the scene node
         virtual ESCENE_NODE_TYPE getType() const { return ESNT_DUMMY_TRANSFORMATION; }
@@ -421,60 +421,60 @@ class IDummyTransformationSceneNode : public virtual IReferenceCounted
             return nb;
         }
 
-	protected:
-		//! Pointer to the parent
-		IDummyTransformationSceneNode* Parent;
+    protected:
+        //! Pointer to the parent
+        IDummyTransformationSceneNode* Parent;
 
-		//! List of all children of this node
-		IDummyTransformationSceneNodeArray Children;
+        //! List of all children of this node
+        IDummyTransformationSceneNodeArray Children;
 
-		//! List of all animator nodes
-		ISceneNodeAnimatorArray Animators;
+        //! List of all animator nodes
+        ISceneNodeAnimatorArray Animators;
 
-		//! Absolute transformation of the node.
-		core::matrix4x3 AbsoluteTransformation;
+        //! Absolute transformation of the node.
+        core::matrix4x3 AbsoluteTransformation;
 
         //! Relative transformation of the node.
         core::matrix4x3 RelativeTransformation;
 
-		//! Relative translation of the scene node.
-		core::vector3df RelativeTranslation;
+        //! Relative translation of the scene node.
+        core::vector3df RelativeTranslation;
 
-		//! Relative rotation of the scene node.
-		core::vector3df RelativeRotation;
+        //! Relative rotation of the scene node.
+        core::vector3df RelativeRotation;
 
-		//! Relative scale of the scene node.
-		core::vector3df RelativeScale;
+        //! Relative scale of the scene node.
+        core::vector3df RelativeScale;
 
-		//! A clone function for the IDummy... members.
-		/** This method can be used by clone() implementations of
-		derived classes
-		\param toCopyFrom The node from which the values are copied */
-		virtual void cloneMembers(IDummyTransformationSceneNode* toCopyFrom, ISceneManager* newManager)
-		{
-			AbsoluteTransformation = toCopyFrom->AbsoluteTransformation;
-			RelativeTranslation = toCopyFrom->RelativeTranslation;
-			RelativeTranslation = toCopyFrom->RelativeTranslation;
-			RelativeRotation = toCopyFrom->RelativeRotation;
-			RelativeScale = toCopyFrom->RelativeScale;
+        //! A clone function for the IDummy... members.
+        /** This method can be used by clone() implementations of
+        derived classes
+        \param toCopyFrom The node from which the values are copied */
+        virtual void cloneMembers(IDummyTransformationSceneNode* toCopyFrom, ISceneManager* newManager)
+        {
+            AbsoluteTransformation = toCopyFrom->AbsoluteTransformation;
+            RelativeTranslation = toCopyFrom->RelativeTranslation;
+            RelativeTranslation = toCopyFrom->RelativeTranslation;
+            RelativeRotation = toCopyFrom->RelativeRotation;
+            RelativeScale = toCopyFrom->RelativeScale;
 
-			// clone children
-			IDummyTransformationSceneNodeArray::iterator it = toCopyFrom->Children.begin();
-			for (; it != toCopyFrom->Children.end(); ++it)
-				(*it)->clone(this, newManager);
+            // clone children
+            IDummyTransformationSceneNodeArray::iterator it = toCopyFrom->Children.begin();
+            for (; it != toCopyFrom->Children.end(); ++it)
+                (*it)->clone(this, newManager);
 
-			// clone animators
-			ISceneNodeAnimatorArray::iterator ait = toCopyFrom->Animators.begin();
-			for (; ait != toCopyFrom->Animators.end(); ++ait)
-			{
-				ISceneNodeAnimator* anim = (*ait)->createClone(this, newManager);
-				if (anim)
-				{
-					addAnimator(anim);
-					anim->drop();
-				}
-			}
-		}
+            // clone animators
+            ISceneNodeAnimatorArray::iterator ait = toCopyFrom->Animators.begin();
+            for (; ait != toCopyFrom->Animators.end(); ++ait)
+            {
+                ISceneNodeAnimator* anim = (*ait)->createClone(this, newManager);
+                if (anim)
+                {
+                    addAnimator(anim);
+                    anim->drop();
+                }
+            }
+        }
 };
 
 } // end namespace scene

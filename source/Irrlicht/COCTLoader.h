@@ -52,87 +52,87 @@ namespace irr
 {
 namespace io
 {
-	class IFileSystem;
+    class IFileSystem;
 } // end namespace io
 namespace scene
 {
-	class ISceneManager;
-	class ISceneNode;
+    class ISceneManager;
+    class ISceneNode;
 
-	class COCTLoader : public IMeshLoader
-	{
-	public:
-		//! constructor
-		COCTLoader(ISceneManager* smgr, io::IFileSystem* fs);
+    class COCTLoader : public IMeshLoader
+    {
+    public:
+        //! constructor
+        COCTLoader(ISceneManager* smgr, io::IFileSystem* fs);
 
-		//! destructor
-		virtual ~COCTLoader();
+        //! destructor
+        virtual ~COCTLoader();
 
-		//! returns true if the file maybe is able to be loaded by this class
-		//! based on the file extension (e.g. ".cob")
-		virtual bool isALoadableFileExtension(const io::path& filename) const;
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".cob")
+        virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-		//! creates/loads an animated mesh from the file.
-		//! \return Pointer to the created mesh. Returns 0 if loading failed.
-		//! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-		//! See IReferenceCounted::drop() for more information.
-		virtual IAnimatedMesh* createMesh(io::IReadFile* file);
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
+        virtual IAnimatedMesh* createMesh(io::IReadFile* file);
 
-		void OCTLoadLights(io::IReadFile* file,
-				ISceneNode * parent = 0, float radius = 500.0f,
-				float intensityScale = 0.0000001f*2.5,
-				bool rewind = true);
+        void OCTLoadLights(io::IReadFile* file,
+                ISceneNode * parent = 0, float radius = 500.0f,
+                float intensityScale = 0.0000001f*2.5,
+                bool rewind = true);
 
-	private:
-		struct octHeader {
-			uint32_t numVerts;
-			uint32_t numFaces;
-			uint32_t numTextures;
-			uint32_t numLightmaps;
-			uint32_t numLights;
-		};
+    private:
+        struct octHeader {
+            uint32_t numVerts;
+            uint32_t numFaces;
+            uint32_t numTextures;
+            uint32_t numLightmaps;
+            uint32_t numLights;
+        };
 
-		struct octHeaderEx {
-			uint32_t magic; // 'OCTX' - 0x4F435458L
-			uint32_t numLightmaps;
-			uint32_t lightmapWidth;
-			uint32_t lightmapHeight;
-			uint32_t containsVertexNormals;
-		};
+        struct octHeaderEx {
+            uint32_t magic; // 'OCTX' - 0x4F435458L
+            uint32_t numLightmaps;
+            uint32_t lightmapWidth;
+            uint32_t lightmapHeight;
+            uint32_t containsVertexNormals;
+        };
 
-		struct octFace {
-			uint32_t firstVert;
-			uint32_t numVerts;
-			uint32_t textureID;
-			uint32_t lightmapID;
-			float plane[4];
-		};
+        struct octFace {
+            uint32_t firstVert;
+            uint32_t numVerts;
+            uint32_t textureID;
+            uint32_t lightmapID;
+            float plane[4];
+        };
 
-		struct octVert {
-			float tc[2];
-			float lc[2];
-			float pos[3];
-		};
+        struct octVert {
+            float tc[2];
+            float lc[2];
+            float pos[3];
+        };
 
-		struct octTexture {
-			uint32_t id;
-			char fileName[64];
-		};
+        struct octTexture {
+            uint32_t id;
+            char fileName[64];
+        };
 
-		struct octLightmap {
-			uint32_t id;
-			uint8_t data[128][128][3];
-		};
+        struct octLightmap {
+            uint32_t id;
+            uint8_t data[128][128][3];
+        };
 
-		struct octLight {
-			float pos[3];
-			float color[3];
-			uint32_t intensity;
-		};
+        struct octLight {
+            float pos[3];
+            float color[3];
+            uint32_t intensity;
+        };
 
-		ISceneManager* SceneManager;
-		io::IFileSystem* FileSystem;
-	};
+        ISceneManager* SceneManager;
+        io::IFileSystem* FileSystem;
+    };
 
 } // end namespace scene
 } // end namespace irr

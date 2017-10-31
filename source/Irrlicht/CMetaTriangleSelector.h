@@ -18,54 +18,54 @@ class CMetaTriangleSelector : public IMetaTriangleSelector
 {
 public:
 
-	//! constructor
-	CMetaTriangleSelector();
+    //! constructor
+    CMetaTriangleSelector();
 
-	//! destructor
-	virtual ~CMetaTriangleSelector();
+    //! destructor
+    virtual ~CMetaTriangleSelector();
 
-	//! Get amount of all available triangles in this selector
-	virtual s32 getTriangleCount() const;
+    //! Get amount of all available triangles in this selector
+    virtual s32 getTriangleCount() const;
 
-	//! Gets all triangles.
-	virtual void getTriangles(core::triangle3df* triangles, s32 arraySize,
-		s32& outTriangleCount, const core::matrix4* transform=0) const;
+    //! Gets all triangles.
+    virtual void getTriangles(core::triangle3df* triangles, s32 arraySize,
+        s32& outTriangleCount, const core::matrix4* transform=0) const;
 
-	//! Gets all triangles which lie within a specific bounding box.
-	virtual void getTriangles(core::triangle3df* triangles, s32 arraySize,
-		s32& outTriangleCount, const core::aabbox3d<f32>& box,
-		const core::matrix4* transform=0) const;
+    //! Gets all triangles which lie within a specific bounding box.
+    virtual void getTriangles(core::triangle3df* triangles, s32 arraySize,
+        s32& outTriangleCount, const core::aabbox3d<f32>& box,
+        const core::matrix4* transform=0) const;
 
-	//! Gets all triangles which have or may have contact with a 3d line.
-	virtual void getTriangles(core::triangle3df* triangles, s32 arraySize,
-		s32& outTriangleCount, const core::line3d<f32>& line,
-		const core::matrix4* transform=0) const;
+    //! Gets all triangles which have or may have contact with a 3d line.
+    virtual void getTriangles(core::triangle3df* triangles, s32 arraySize,
+        s32& outTriangleCount, const core::line3d<f32>& line,
+        const core::matrix4* transform=0) const;
 
-	//! Adds a triangle selector to the collection of triangle selectors
-	//! in this metaTriangleSelector.
-	virtual void addTriangleSelector(ITriangleSelector* toAdd);
+    //! Adds a triangle selector to the collection of triangle selectors
+    //! in this metaTriangleSelector.
+    virtual void addTriangleSelector(ITriangleSelector* toAdd);
 
-	//! Removes a specific triangle selector which was added before	from the collection.
-	virtual bool removeTriangleSelector(ITriangleSelector* toRemove);
+    //! Removes a specific triangle selector which was added before    from the collection.
+    virtual bool removeTriangleSelector(ITriangleSelector* toRemove);
 
-	//! Removes all triangle selectors from the collection.
-	virtual void removeAllTriangleSelectors();
+    //! Removes all triangle selectors from the collection.
+    virtual void removeAllTriangleSelectors();
 
-	//! Get the scene node associated with a given triangle.
-	virtual ISceneNode* getSceneNodeForTriangle(u32 triangleIndex) const;
+    //! Get the scene node associated with a given triangle.
+    virtual ISceneNode* getSceneNodeForTriangle(u32 triangleIndex) const;
 
-	// Get the number of TriangleSelectors that are part of this one
-	virtual u32 getSelectorCount() const;
+    // Get the number of TriangleSelectors that are part of this one
+    virtual u32 getSelectorCount() const;
 
-	// Get the TriangleSelector based on index based on getSelectorCount
-	virtual ITriangleSelector* getSelector(u32 index);
+    // Get the TriangleSelector based on index based on getSelectorCount
+    virtual ITriangleSelector* getSelector(u32 index);
 
-	// Get the TriangleSelector based on index based on getSelectorCount
-	virtual const ITriangleSelector* getSelector(u32 index) const;
+    // Get the TriangleSelector based on index based on getSelectorCount
+    virtual const ITriangleSelector* getSelector(u32 index) const;
 
 private:
 
-	core::array<ITriangleSelector*> TriangleSelectors;
+    core::array<ITriangleSelector*> TriangleSelectors;
 };
 
 } // end namespace scene

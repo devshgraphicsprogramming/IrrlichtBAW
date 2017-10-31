@@ -21,25 +21,25 @@ namespace scene
 CCPUSkinnedMesh::CCPUSkinnedMesh()
 : referenceHierarchy(NULL), HasAnimation(false)
 {
-	#ifdef _DEBUG
-	setDebugName("CCPUSkinnedMesh");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CCPUSkinnedMesh");
+    #endif
 }
 
 
 //! destructor
 CCPUSkinnedMesh::~CCPUSkinnedMesh()
 {
-	for (uint32_t i=0; i<AllJoints.size(); ++i)
-		delete AllJoints[i];
+    for (uint32_t i=0; i<AllJoints.size(); ++i)
+        delete AllJoints[i];
 
-	for (uint32_t j=0; j<LocalBuffers.size(); ++j)
-	{
-		if (LocalBuffers[j])
-			LocalBuffers[j]->drop();
-	}
+    for (uint32_t j=0; j<LocalBuffers.size(); ++j)
+    {
+        if (LocalBuffers[j])
+            LocalBuffers[j]->drop();
+    }
 
-	if (referenceHierarchy)
+    if (referenceHierarchy)
         referenceHierarchy->drop();
 }
 
@@ -48,68 +48,68 @@ CCPUSkinnedMesh::~CCPUSkinnedMesh()
 //! returns amount of mesh buffers.
 uint32_t CCPUSkinnedMesh::getMeshBufferCount() const
 {
-	return LocalBuffers.size();
+    return LocalBuffers.size();
 }
 
 
 //! returns pointer to a mesh buffer
 ICPUMeshBuffer* CCPUSkinnedMesh::getMeshBuffer(uint32_t nr) const
 {
-	if (nr < LocalBuffers.size())
-		return LocalBuffers[nr];
-	else
-		return 0;
+    if (nr < LocalBuffers.size())
+        return LocalBuffers[nr];
+    else
+        return 0;
 }
 
 //! returns an axis aligned bounding box
 const core::aabbox3d<float>& CCPUSkinnedMesh::getBoundingBox() const
 {
-	return BoundingBox;
+    return BoundingBox;
 }
 
 
 //! set user axis aligned bounding box
 void CCPUSkinnedMesh::setBoundingBox( const core::aabbox3df& box)
 {
-	BoundingBox = box;
+    BoundingBox = box;
 }
 
 
 //! sets a flag of all contained materials to a new value
 void CCPUSkinnedMesh::setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue)
 {
-	for (uint32_t i=0; i<LocalBuffers.size(); ++i)
-		LocalBuffers[i]->getMaterial().setFlag(flag,newvalue);
+    for (uint32_t i=0; i<LocalBuffers.size(); ++i)
+        LocalBuffers[i]->getMaterial().setFlag(flag,newvalue);
 }
 
 
 
 core::array<scene::SCPUSkinMeshBuffer*> &CCPUSkinnedMesh::getMeshBuffers()
 {
-	return LocalBuffers;
+    return LocalBuffers;
 }
 
 
 std::vector<CCPUSkinnedMesh::SJoint*> &CCPUSkinnedMesh::getAllJoints()
 {
-	return AllJoints;
+    return AllJoints;
 }
 
 
 const std::vector<CCPUSkinnedMesh::SJoint*> &CCPUSkinnedMesh::getAllJoints() const
 {
-	return AllJoints;
+    return AllJoints;
 }
 
 
 
 void CCPUSkinnedMesh::checkForAnimation()
 {
-	uint32_t i,j;
-	//Check for animation...
-	HasAnimation = false;
-	for(i=0;i<AllJoints.size();++i)
-	{
+    uint32_t i,j;
+    //Check for animation...
+    HasAnimation = false;
+    for(i=0;i<AllJoints.size();++i)
+    {
         if (AllJoints[i]->PositionKeys.size() ||
             AllJoints[i]->ScaleKeys.size() ||
             AllJoints[i]->RotationKeys.size() )
@@ -117,18 +117,18 @@ void CCPUSkinnedMesh::checkForAnimation()
             HasAnimation = true;
             break;
         }
-	}
+    }
 
-	//meshes with weights, are still counted as animated for ragdolls, etc
-	if (!HasAnimation && AllJoints.size())
-	{
-		for(i=0;i<LocalBuffers.size();++i)
-		{
-		    if (!LocalBuffers[i])
+    //meshes with weights, are still counted as animated for ragdolls, etc
+    if (!HasAnimation && AllJoints.size())
+    {
+        for(i=0;i<LocalBuffers.size();++i)
+        {
+            if (!LocalBuffers[i])
                 continue;
 
-			scene::IMeshDataFormatDesc<core::ICPUBuffer>* desc = LocalBuffers[i]->getMeshDataAndFormat();
-			if (!desc)
+            scene::IMeshDataFormatDesc<core::ICPUBuffer>* desc = LocalBuffers[i]->getMeshDataAndFormat();
+            if (!desc)
                 continue;
 
             if (desc->getMappedBuffer(scene::EVAI_ATTR5)&&desc->getMappedBuffer(scene::EVAI_ATTR6))
@@ -136,8 +136,8 @@ void CCPUSkinnedMesh::checkForAnimation()
                 HasAnimation = true;
                 break;
             }
-		}
-	}
+        }
+    }
 }
 
 void PrintDebugBoneHierarchy(ICPUSkinnedMesh::SJoint* joint, std::string indent="", ICPUSkinnedMesh::SJoint* parentJoint=NULL)
@@ -167,36 +167,36 @@ void PrintDebugBoneHierarchy(ICPUSkinnedMesh::SJoint* joint, std::string indent=
 //! called by loader after populating with mesh and bone data
 void CCPUSkinnedMesh::finalize()
 {
-	for (size_t i=0; i<LocalBuffers.size(); ++i)
-	{
-	    if (!LocalBuffers[i]||LocalBuffers[i]->getIndexCount()==0)
+    for (size_t i=0; i<LocalBuffers.size(); ++i)
+    {
+        if (!LocalBuffers[i]||LocalBuffers[i]->getIndexCount()==0)
         {
             LocalBuffers[i]->drop();
             LocalBuffers.erase(i);
             i--;
             continue;
         }
-	}
+    }
 
-	//calculate bounding box
-	bool* firstTouch = NULL;
-	if (AllJoints.size())
-	{
+    //calculate bounding box
+    bool* firstTouch = NULL;
+    if (AllJoints.size())
+    {
         firstTouch = new bool[AllJoints.size()];
         for (size_t i=0; i<AllJoints.size(); i++)
         {
             AllJoints[i]->bbox.reset(core::vector3df(0.f));
             firstTouch[i] = true;
         }
-	}
+    }
 
-	//
-	BoundingBox.reset(0,0,0);
+    //
+    BoundingBox.reset(0,0,0);
 
-	bool firstStaticMesh = true;
-	for (size_t i=0; i<LocalBuffers.size(); ++i)
-	{
-	    IMeshDataFormatDesc<core::ICPUBuffer>* desc = LocalBuffers[i]->getMeshDataAndFormat();
+    bool firstStaticMesh = true;
+    for (size_t i=0; i<LocalBuffers.size(); ++i)
+    {
+        IMeshDataFormatDesc<core::ICPUBuffer>* desc = LocalBuffers[i]->getMeshDataAndFormat();
 
         if (!desc->getMappedBuffer(scene::EVAI_ATTR5) || !desc->getMappedBuffer(scene::EVAI_ATTR6))
         {
@@ -254,29 +254,29 @@ void CCPUSkinnedMesh::finalize()
 
             LocalBuffers[i]->setMaxVertexBoneInfluences(maxVertexInfluences);
         }
-	}
-	if (firstTouch)
+    }
+    if (firstTouch)
         delete [] firstTouch;
 
     std::vector<size_t> JointIxLevelEnd;
 
-	if (AllJoints.size())
-	{
-	    std::vector<SJoint*> jointsReorderedByLevel;
-	    std::vector<uint8_t> reorderIndexRedirect;
-	    reorderIndexRedirect.resize(AllJoints.size());
+    if (AllJoints.size())
+    {
+        std::vector<SJoint*> jointsReorderedByLevel;
+        std::vector<uint8_t> reorderIndexRedirect;
+        reorderIndexRedirect.resize(AllJoints.size());
 
-		//fix parents
-		for(size_t CheckingIdx=0; CheckingIdx < AllJoints.size(); ++CheckingIdx)
+        //fix parents
+        for(size_t CheckingIdx=0; CheckingIdx < AllJoints.size(); ++CheckingIdx)
         for(size_t n=0; n < AllJoints[CheckingIdx]->Children.size(); n++)
-		{
-		    assert(!AllJoints[CheckingIdx]->Children[n]->Parent || AllJoints[CheckingIdx]->Children[n]->Parent==AllJoints[CheckingIdx]);
-		    AllJoints[CheckingIdx]->Children[n]->Parent = AllJoints[CheckingIdx];
-		}
+        {
+            assert(!AllJoints[CheckingIdx]->Children[n]->Parent || AllJoints[CheckingIdx]->Children[n]->Parent==AllJoints[CheckingIdx]);
+            AllJoints[CheckingIdx]->Children[n]->Parent = AllJoints[CheckingIdx];
+        }
 
-		for(size_t CheckingIdx=0; CheckingIdx < AllJoints.size(); ++CheckingIdx)
-		{
-			if (!AllJoints[CheckingIdx]->Parent)
+        for(size_t CheckingIdx=0; CheckingIdx < AllJoints.size(); ++CheckingIdx)
+        {
+            if (!AllJoints[CheckingIdx]->Parent)
             {
                 reorderIndexRedirect[CheckingIdx] = jointsReorderedByLevel.size();
                 jointsReorderedByLevel.push_back(AllJoints[CheckingIdx]);
@@ -285,8 +285,8 @@ void CCPUSkinnedMesh::finalize()
         assert(jointsReorderedByLevel.size());
 
 
-	    JointIxLevelEnd.push_back(jointsReorderedByLevel.size());
-	    for (size_t ix = 0; jointsReorderedByLevel.size()<AllJoints.size();)
+        JointIxLevelEnd.push_back(jointsReorderedByLevel.size());
+        for (size_t ix = 0; jointsReorderedByLevel.size()<AllJoints.size();)
         {
             for (; ix<JointIxLevelEnd.back(); ix++)
             for(size_t n=0; n < jointsReorderedByLevel[ix]->Children.size(); n++)
@@ -331,7 +331,7 @@ void CCPUSkinnedMesh::finalize()
                 LocalBuffers[i]->setAttribute(newBoneIDs,scene::EVAI_ATTR5,j);
             }
         }
-	}
+    }
 
 
     //--- optimize and check keyframes ---
@@ -385,11 +385,11 @@ void CCPUSkinnedMesh::finalize()
     checkForAnimation();
 
 
-	if (!HasAnimation)
+    if (!HasAnimation)
     {
         for (size_t i=0; i<LocalBuffers.size(); ++i)
             LocalBuffers[i]->setMaxVertexBoneInfluences(0);
-	}
+    }
     else
     {
         //Needed for animation and skinning...
@@ -427,35 +427,35 @@ void CCPUSkinnedMesh::finalize()
 
 scene::SCPUSkinMeshBuffer *CCPUSkinnedMesh::addMeshBuffer()
 {
-	scene::SCPUSkinMeshBuffer *buffer=new scene::SCPUSkinMeshBuffer();
-	LocalBuffers.push_back(buffer);
-	return buffer;
+    scene::SCPUSkinMeshBuffer *buffer=new scene::SCPUSkinMeshBuffer();
+    LocalBuffers.push_back(buffer);
+    return buffer;
 }
 
 
 CCPUSkinnedMesh::SJoint *CCPUSkinnedMesh::addJoint(SJoint *parent)
 {
-	SJoint *joint=new SJoint;
+    SJoint *joint=new SJoint;
 
-	AllJoints.push_back(joint);
-	if (!parent)
-	{
-		//Add root joints to array in finalize()
-		joint->Parent = NULL;
-	}
-	else
-	{
-		//Set parent (Be careful of the mesh loader also setting the parent)
-		parent->Children.push_back(joint);
-		joint->Parent = parent;
-	}
+    AllJoints.push_back(joint);
+    if (!parent)
+    {
+        //Add root joints to array in finalize()
+        joint->Parent = NULL;
+    }
+    else
+    {
+        //Set parent (Be careful of the mesh loader also setting the parent)
+        parent->Children.push_back(joint);
+        joint->Parent = parent;
+    }
 
-	return joint;
+    return joint;
 }
 
 bool CCPUSkinnedMesh::isStatic()
 {
-	return !HasAnimation;
+    return !HasAnimation;
 }
 
 

@@ -8,43 +8,43 @@
 #include "irrMath.h"
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	#include <SDL/SDL_endian.h>
-	#define bswap_16(X) SDL_Swap16(X)
-	#define bswap_32(X) SDL_Swap32(X)
+    #include <SDL/SDL_endian.h>
+    #define bswap_16(X) SDL_Swap16(X)
+    #define bswap_32(X) SDL_Swap32(X)
 #elif defined(_IRR_WINDOWS_API_) && defined(_MSC_VER) && (_MSC_VER > 1298)
-	#include <stdlib.h>
-	#define bswap_16(X) _byteswap_ushort(X)
-	#define bswap_32(X) _byteswap_ulong(X)
+    #include <stdlib.h>
+    #define bswap_16(X) _byteswap_ushort(X)
+    #define bswap_32(X) _byteswap_ulong(X)
 #if (_MSC_VER >= 1400)
-	#define localtime _localtime_s
+    #define localtime _localtime_s
 #endif
 #elif defined(_IRR_OSX_PLATFORM_)
-	#include <libkern/OSByteOrder.h>
-	#define bswap_16(X) OSReadSwapInt16(&X,0)
-	#define bswap_32(X) OSReadSwapInt32(&X,0)
+    #include <libkern/OSByteOrder.h>
+    #define bswap_16(X) OSReadSwapInt16(&X,0)
+    #define bswap_32(X) OSReadSwapInt32(&X,0)
 #elif defined(__FreeBSD__) || defined(__OpenBSD__)
-	#include <sys/endian.h>
-	#define bswap_16(X) bswap16(X)
-	#define bswap_32(X) bswap32(X)
+    #include <sys/endian.h>
+    #define bswap_16(X) bswap16(X)
+    #define bswap_32(X) bswap32(X)
 #elif !defined(_IRR_SOLARIS_PLATFORM_) && !defined(__PPC__) && !defined(_IRR_WINDOWS_API_)
-	#include <byteswap.h>
+    #include <byteswap.h>
 #else
-	#define bswap_16(X) ((((X)&0xFF) << 8) | (((X)&0xFF00) >> 8))
-	#define bswap_32(X) ( (((X)&0x000000FF)<<24) | (((X)&0xFF000000) >> 24) | (((X)&0x0000FF00) << 8) | (((X) &0x00FF0000) >> 8))
+    #define bswap_16(X) ((((X)&0xFF) << 8) | (((X)&0xFF00) >> 8))
+    #define bswap_32(X) ( (((X)&0x000000FF)<<24) | (((X)&0xFF000000) >> 24) | (((X)&0x0000FF00) << 8) | (((X) &0x00FF0000) >> 8))
 #endif
 
 namespace irr
 {
 namespace os
 {
-	uint16_t Byteswap::byteswap(uint16_t num) {return bswap_16(num);}
-	int16_t Byteswap::byteswap(int16_t num) {return bswap_16(num);}
-	uint32_t Byteswap::byteswap(uint32_t num) {return bswap_32(num);}
-	int32_t Byteswap::byteswap(int32_t num) {return bswap_32(num);}
-	float Byteswap::byteswap(float num) {uint32_t tmp=IR(num); tmp=bswap_32(tmp); return (FR(tmp));}
-	// prevent accidental byte swapping of chars
-	uint8_t  Byteswap::byteswap(uint8_t num)  {return num;}
-	int8_t  Byteswap::byteswap(int8_t num)  {return num;}
+    uint16_t Byteswap::byteswap(uint16_t num) {return bswap_16(num);}
+    int16_t Byteswap::byteswap(int16_t num) {return bswap_16(num);}
+    uint32_t Byteswap::byteswap(uint32_t num) {return bswap_32(num);}
+    int32_t Byteswap::byteswap(int32_t num) {return bswap_32(num);}
+    float Byteswap::byteswap(float num) {uint32_t tmp=IR(num); tmp=bswap_32(tmp); return (FR(tmp));}
+    // prevent accidental byte swapping of chars
+    uint8_t  Byteswap::byteswap(uint8_t num)  {return num;}
+    int8_t  Byteswap::byteswap(int8_t num)  {return num;}
 }
 }
 
@@ -65,99 +65,99 @@ namespace irr
 {
 namespace os
 {
-	//! prints a debuginfo string
-	void Printer::print(const std::string& message)
-	{
+    //! prints a debuginfo string
+    void Printer::print(const std::string& message)
+    {
 #if defined (_WIN32_WCE )
-		core::stringw tmp(message);
-		tmp += L"\n";
-		OutputDebugStringW(tmp.c_str());
+        core::stringw tmp(message);
+        tmp += L"\n";
+        OutputDebugStringW(tmp.c_str());
 #else
-		std::string tmp(message);
-		tmp += "\n";
-		OutputDebugStringA(tmp.c_str());
-		printf("%s", tmp.c_str());
+        std::string tmp(message);
+        tmp += "\n";
+        OutputDebugStringA(tmp.c_str());
+        printf("%s", tmp.c_str());
 #endif
-	}
+    }
 
-	static LARGE_INTEGER HighPerformanceFreq;
-	static BOOL HighPerformanceTimerSupport = FALSE;
-	static BOOL MultiCore = FALSE;
+    static LARGE_INTEGER HighPerformanceFreq;
+    static BOOL HighPerformanceTimerSupport = FALSE;
+    static BOOL MultiCore = FALSE;
 
-	void Timer::initTimer(bool usePerformanceTimer)
-	{
+    void Timer::initTimer(bool usePerformanceTimer)
+    {
 #if !defined(_WIN32_WCE) && !defined (_IRR_XBOX_PLATFORM_)
-		// workaround for hires timer on multiple core systems, bios bugs result in bad hires timers.
-		SYSTEM_INFO sysinfo;
-		GetSystemInfo(&sysinfo);
-		MultiCore = (sysinfo.dwNumberOfProcessors > 1);
+        // workaround for hires timer on multiple core systems, bios bugs result in bad hires timers.
+        SYSTEM_INFO sysinfo;
+        GetSystemInfo(&sysinfo);
+        MultiCore = (sysinfo.dwNumberOfProcessors > 1);
 #endif
-		if (usePerformanceTimer)
-			HighPerformanceTimerSupport = QueryPerformanceFrequency(&HighPerformanceFreq);
-		else
-			HighPerformanceTimerSupport = FALSE;
-		initVirtualTimer();
-	}
+        if (usePerformanceTimer)
+            HighPerformanceTimerSupport = QueryPerformanceFrequency(&HighPerformanceFreq);
+        else
+            HighPerformanceTimerSupport = FALSE;
+        initVirtualTimer();
+    }
 
-	uint32_t Timer::getRealTime()
-	{
-		if (HighPerformanceTimerSupport)
-		{
+    uint32_t Timer::getRealTime()
+    {
+        if (HighPerformanceTimerSupport)
+        {
 #if !defined(_WIN32_WCE) && !defined (_IRR_XBOX_PLATFORM_)
-			// Avoid potential timing inaccuracies across multiple cores by
-			// temporarily setting the affinity of this process to one core.
-//			DWORD_PTR affinityMask=0;
-//			if(MultiCore)
-//				affinityMask = SetThreadAffinityMask(GetCurrentThread(), 1);
+            // Avoid potential timing inaccuracies across multiple cores by
+            // temporarily setting the affinity of this process to one core.
+//            DWORD_PTR affinityMask=0;
+//            if(MultiCore)
+//                affinityMask = SetThreadAffinityMask(GetCurrentThread(), 1);
 #endif
-			LARGE_INTEGER nTime;
-			BOOL queriedOK = QueryPerformanceCounter(&nTime);
+            LARGE_INTEGER nTime;
+            BOOL queriedOK = QueryPerformanceCounter(&nTime);
 
 #if !defined(_WIN32_WCE)  && !defined (_IRR_XBOX_PLATFORM_)
-			// Restore the true affinity.
-//			if(MultiCore)
-//				(void)SetThreadAffinityMask(GetCurrentThread(), affinityMask);
+            // Restore the true affinity.
+//            if(MultiCore)
+//                (void)SetThreadAffinityMask(GetCurrentThread(), affinityMask);
 #endif
-			if(queriedOK)
-				return uint32_t((nTime.QuadPart) * 1000 / HighPerformanceFreq.QuadPart);
+            if(queriedOK)
+                return uint32_t((nTime.QuadPart) * 1000 / HighPerformanceFreq.QuadPart);
 
-		}
+        }
 
-		return GetTickCount();
-	}
+        return GetTickCount();
+    }
 
-	uint64_t Timer::getRealTime64()
-	{
-		if (HighPerformanceTimerSupport)
-		{
+    uint64_t Timer::getRealTime64()
+    {
+        if (HighPerformanceTimerSupport)
+        {
 #if !defined(_WIN32_WCE) && !defined (_IRR_XBOX_PLATFORM_)
-			// Avoid potential timing inaccuracies across multiple cores by
-			// temporarily setting the affinity of this process to one core.
-			DWORD_PTR affinityMask=0;
-//			if(MultiCore)
-//				affinityMask = SetThreadAffinityMask(GetCurrentThread(), 1);
+            // Avoid potential timing inaccuracies across multiple cores by
+            // temporarily setting the affinity of this process to one core.
+            DWORD_PTR affinityMask=0;
+//            if(MultiCore)
+//                affinityMask = SetThreadAffinityMask(GetCurrentThread(), 1);
 #endif
-			LARGE_INTEGER nTime;
-			BOOL queriedOK = QueryPerformanceCounter(&nTime);
+            LARGE_INTEGER nTime;
+            BOOL queriedOK = QueryPerformanceCounter(&nTime);
 
 #if !defined(_WIN32_WCE)  && !defined (_IRR_XBOX_PLATFORM_)
-			// Restore the true affinity.
-//			if(MultiCore)
-//				(void)SetThreadAffinityMask(GetCurrentThread(), affinityMask);
+            // Restore the true affinity.
+//            if(MultiCore)
+//                (void)SetThreadAffinityMask(GetCurrentThread(), affinityMask);
 #endif
-			if(queriedOK)
-			{
-				uint64_t r = nTime.QuadPart;
-				r *= 1000;
-				r /= HighPerformanceFreq.QuadPart;
-				return r;
-//				return uint64_t((nTime.QuadPart) * 1000 / HighPerformanceFreq.QuadPart);
-			}
+            if(queriedOK)
+            {
+                uint64_t r = nTime.QuadPart;
+                r *= 1000;
+                r /= HighPerformanceFreq.QuadPart;
+                return r;
+//                return uint64_t((nTime.QuadPart) * 1000 / HighPerformanceFreq.QuadPart);
+            }
 
-		}
+        }
 
-		return GetTickCount();
-	}
+        return GetTickCount();
+    }
 
 } // end namespace os
 
@@ -177,203 +177,203 @@ namespace irr
 namespace os
 {
 
-	//! prints a debuginfo string
-	void Printer::print(const std::string& message)
-	{
-		printf("%s\n", message.c_str());
-	}
+    //! prints a debuginfo string
+    void Printer::print(const std::string& message)
+    {
+        printf("%s\n", message.c_str());
+    }
 
-	void Timer::initTimer(bool usePerformanceTimer)
-	{
-		initVirtualTimer();
-	}
+    void Timer::initTimer(bool usePerformanceTimer)
+    {
+        initVirtualTimer();
+    }
 
-	uint32_t Timer::getRealTime()
-	{
-		timeval tv;
-		gettimeofday(&tv, 0);
-		return (uint32_t)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-	}
-	uint64_t Timer::getRealTime64()
-	{
-		timeval tv;
-		gettimeofday(&tv, 0);
-		return (uint64_t)(tv.tv_sec)*1000ull + (uint64_t)(tv.tv_usec / 1000);
-	}
+    uint32_t Timer::getRealTime()
+    {
+        timeval tv;
+        gettimeofday(&tv, 0);
+        return (uint32_t)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+    }
+    uint64_t Timer::getRealTime64()
+    {
+        timeval tv;
+        gettimeofday(&tv, 0);
+        return (uint64_t)(tv.tv_sec)*1000ull + (uint64_t)(tv.tv_usec / 1000);
+    }
 } // end namespace os
 
 #endif // end linux / windows
 
 namespace os
 {
-	// The platform independent implementation of the printer
-	ILogger* Printer::Logger = 0;
+    // The platform independent implementation of the printer
+    ILogger* Printer::Logger = 0;
 
-	void Printer::log(const std::string& message, ELOG_LEVEL ll)
-	{
-		if (Logger)
-			Logger->log(message, ll);
-	}
+    void Printer::log(const std::string& message, ELOG_LEVEL ll)
+    {
+        if (Logger)
+            Logger->log(message, ll);
+    }
 
-	void Printer::log(const std::wstring& message, ELOG_LEVEL ll)
-	{
-		if (Logger)
-			Logger->log(message, ll);
-	}
+    void Printer::log(const std::wstring& message, ELOG_LEVEL ll)
+    {
+        if (Logger)
+            Logger->log(message, ll);
+    }
 
-	void Printer::log(const std::string& message, const std::string& hint, ELOG_LEVEL ll)
-	{
-		if (Logger)
-			Logger->log(message, hint, ll);
-	}
+    void Printer::log(const std::string& message, const std::string& hint, ELOG_LEVEL ll)
+    {
+        if (Logger)
+            Logger->log(message, hint, ll);
+    }
 
-	// our Randomizer is not really os specific, so we
-	// code one for all, which should work on every platform the same,
-	// which is desireable.
+    // our Randomizer is not really os specific, so we
+    // code one for all, which should work on every platform the same,
+    // which is desireable.
 
-	int32_t Randomizer::seed = 0x0f0f0f0f;
+    int32_t Randomizer::seed = 0x0f0f0f0f;
 
-	//! generates a pseudo random number
-	int32_t Randomizer::rand()
-	{
-		// (a*seed)%m with Schrage's method
-		seed = a * (seed%q) - r* (seed/q);
-		if (seed<0)
-			seed += m;
+    //! generates a pseudo random number
+    int32_t Randomizer::rand()
+    {
+        // (a*seed)%m with Schrage's method
+        seed = a * (seed%q) - r* (seed/q);
+        if (seed<0)
+            seed += m;
 
-		return seed;
-	}
+        return seed;
+    }
 
-	//! generates a pseudo random number
-	float Randomizer::frand()
-	{
-		return rand()*(1.f/rMax);
-	}
+    //! generates a pseudo random number
+    float Randomizer::frand()
+    {
+        return rand()*(1.f/rMax);
+    }
 
-	int32_t Randomizer::randMax()
-	{
-		return rMax;
-	}
+    int32_t Randomizer::randMax()
+    {
+        return rMax;
+    }
 
-	//! resets the randomizer
-	void Randomizer::reset(int32_t value)
-	{
-		seed = value;
-	}
+    //! resets the randomizer
+    void Randomizer::reset(int32_t value)
+    {
+        seed = value;
+    }
 
 
-	// ------------------------------------------------------
-	// virtual timer implementation
+    // ------------------------------------------------------
+    // virtual timer implementation
 
 // this shit aint here, then win32 wont compile
-	float Timer::VirtualTimerSpeed = 1.0f;
-	int32_t Timer::VirtualTimerStopCounter = 0;
-	uint32_t Timer::LastVirtualTime = 0;
-	uint32_t Timer::StartRealTime = 0;
-	uint32_t Timer::StaticTime = 0;
+    float Timer::VirtualTimerSpeed = 1.0f;
+    int32_t Timer::VirtualTimerStopCounter = 0;
+    uint32_t Timer::LastVirtualTime = 0;
+    uint32_t Timer::StartRealTime = 0;
+    uint32_t Timer::StaticTime = 0;
 
-	//! Get real time and date in calendar form
-	ITimer::RealTimeDate Timer::getRealTimeAndDate()
-	{
-		time_t rawtime;
-		time(&rawtime);
+    //! Get real time and date in calendar form
+    ITimer::RealTimeDate Timer::getRealTimeAndDate()
+    {
+        time_t rawtime;
+        time(&rawtime);
 
-		struct tm * timeinfo;
-		timeinfo = localtime(&rawtime);
+        struct tm * timeinfo;
+        timeinfo = localtime(&rawtime);
 
-		// init with all 0 to indicate error
-		ITimer::RealTimeDate date={0};
-		// at least Windows returns NULL on some illegal dates
-		if (timeinfo)
-		{
-			// set useful values if succeeded
-			date.Hour=(uint32_t)timeinfo->tm_hour;
-			date.Minute=(uint32_t)timeinfo->tm_min;
-			date.Second=(uint32_t)timeinfo->tm_sec;
-			date.Day=(uint32_t)timeinfo->tm_mday;
-			date.Month=(uint32_t)timeinfo->tm_mon+1;
-			date.Year=(uint32_t)timeinfo->tm_year+1900;
-			date.Weekday=(ITimer::EWeekday)timeinfo->tm_wday;
-			date.Yearday=(uint32_t)timeinfo->tm_yday+1;
-			date.IsDST=timeinfo->tm_isdst != 0;
-		}
-		return date;
-	}
+        // init with all 0 to indicate error
+        ITimer::RealTimeDate date={0};
+        // at least Windows returns NULL on some illegal dates
+        if (timeinfo)
+        {
+            // set useful values if succeeded
+            date.Hour=(uint32_t)timeinfo->tm_hour;
+            date.Minute=(uint32_t)timeinfo->tm_min;
+            date.Second=(uint32_t)timeinfo->tm_sec;
+            date.Day=(uint32_t)timeinfo->tm_mday;
+            date.Month=(uint32_t)timeinfo->tm_mon+1;
+            date.Year=(uint32_t)timeinfo->tm_year+1900;
+            date.Weekday=(ITimer::EWeekday)timeinfo->tm_wday;
+            date.Yearday=(uint32_t)timeinfo->tm_yday+1;
+            date.IsDST=timeinfo->tm_isdst != 0;
+        }
+        return date;
+    }
 
-	//! returns current virtual time
-	uint32_t Timer::getTime()
-	{
-		if (isStopped())
-			return LastVirtualTime;
+    //! returns current virtual time
+    uint32_t Timer::getTime()
+    {
+        if (isStopped())
+            return LastVirtualTime;
 
-		return LastVirtualTime + (uint32_t)((StaticTime - StartRealTime) * VirtualTimerSpeed);
-	}
+        return LastVirtualTime + (uint32_t)((StaticTime - StartRealTime) * VirtualTimerSpeed);
+    }
 
-	//! ticks, advances the virtual timer
-	void Timer::tick()
-	{
-		StaticTime = getRealTime();
-	}
+    //! ticks, advances the virtual timer
+    void Timer::tick()
+    {
+        StaticTime = getRealTime();
+    }
 
-	//! sets the current virtual time
-	void Timer::setTime(uint32_t time)
-	{
-		StaticTime = getRealTime();
-		LastVirtualTime = time;
-		StartRealTime = StaticTime;
-	}
+    //! sets the current virtual time
+    void Timer::setTime(uint32_t time)
+    {
+        StaticTime = getRealTime();
+        LastVirtualTime = time;
+        StartRealTime = StaticTime;
+    }
 
-	//! stops the virtual timer
-	void Timer::stopTimer()
-	{
-		if (!isStopped())
-		{
-			// stop the virtual timer
-			LastVirtualTime = getTime();
-		}
+    //! stops the virtual timer
+    void Timer::stopTimer()
+    {
+        if (!isStopped())
+        {
+            // stop the virtual timer
+            LastVirtualTime = getTime();
+        }
 
-		--VirtualTimerStopCounter;
-	}
+        --VirtualTimerStopCounter;
+    }
 
-	//! starts the virtual timer
-	void Timer::startTimer()
-	{
-		++VirtualTimerStopCounter;
+    //! starts the virtual timer
+    void Timer::startTimer()
+    {
+        ++VirtualTimerStopCounter;
 
-		if (!isStopped())
-		{
-			// restart virtual timer
-			setTime(LastVirtualTime);
-		}
-	}
+        if (!isStopped())
+        {
+            // restart virtual timer
+            setTime(LastVirtualTime);
+        }
+    }
 
-	//! sets the speed of the virtual timer
-	void Timer::setSpeed(float speed)
-	{
-		setTime(getTime());
+    //! sets the speed of the virtual timer
+    void Timer::setSpeed(float speed)
+    {
+        setTime(getTime());
 
-		VirtualTimerSpeed = speed;
-		if (VirtualTimerSpeed < 0.0f)
-			VirtualTimerSpeed = 0.0f;
-	}
+        VirtualTimerSpeed = speed;
+        if (VirtualTimerSpeed < 0.0f)
+            VirtualTimerSpeed = 0.0f;
+    }
 
-	//! gets the speed of the virtual timer
-	float Timer::getSpeed()
-	{
-		return VirtualTimerSpeed;
-	}
+    //! gets the speed of the virtual timer
+    float Timer::getSpeed()
+    {
+        return VirtualTimerSpeed;
+    }
 
-	//! returns if the timer currently is stopped
-	bool Timer::isStopped()
-	{
-		return VirtualTimerStopCounter < 0;
-	}
+    //! returns if the timer currently is stopped
+    bool Timer::isStopped()
+    {
+        return VirtualTimerStopCounter < 0;
+    }
 
-	void Timer::initVirtualTimer()
-	{
-		StaticTime = getRealTime();
-		StartRealTime = StaticTime;
-	}
+    void Timer::initVirtualTimer()
+    {
+        StaticTime = getRealTime();
+        StartRealTime = StaticTime;
+    }
 
 } // end namespace os
 } // end namespace irr

@@ -54,7 +54,7 @@ bool COpenGLTransformFeedback::rebindRevalidate()
 
     lastValidated = highestRevalidateStamp;
 
-	return true;
+    return true;
 }
 
 bool COpenGLTransformFeedback::bindOutputBuffer(const size_t& index, IGPUBuffer* buffer, const size_t& offset, const size_t& length)

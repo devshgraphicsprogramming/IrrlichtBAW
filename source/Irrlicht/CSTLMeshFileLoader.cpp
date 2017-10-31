@@ -34,7 +34,7 @@ struct STLVertex
 //! based on the file extension (e.g. ".bsp")
 bool CSTLMeshFileLoader::isALoadableFileExtension(const io::path& filename) const
 {
-	return core::hasFileExtension ( filename, "stl" );
+    return core::hasFileExtension ( filename, "stl" );
 }
 
 
@@ -57,206 +57,206 @@ inline void addTriangleToMesh(std::vector<STLVertex> &verticesOut, const core::v
 //! See IReferenceCounted::drop() for more information.
 ICPUMesh* CSTLMeshFileLoader::createMesh(io::IReadFile* file)
 {
-	const long filesize = file->getSize();
-	if (filesize < 6) // we need a header
-		return 0;
+    const long filesize = file->getSize();
+    if (filesize < 6) // we need a header
+        return 0;
 
-	ICPUMeshDataFormatDesc* desc = new ICPUMeshDataFormatDesc();
-	ICPUMeshBuffer* meshbuffer = new ICPUMeshBuffer();
-	meshbuffer->setMeshDataAndFormat(desc);
-	desc->drop();
+    ICPUMeshDataFormatDesc* desc = new ICPUMeshDataFormatDesc();
+    ICPUMeshBuffer* meshbuffer = new ICPUMeshBuffer();
+    meshbuffer->setMeshDataAndFormat(desc);
+    desc->drop();
 
-	SCPUMesh* mesh = new SCPUMesh();
-	mesh->addMeshBuffer(meshbuffer);
-	meshbuffer->drop();
+    SCPUMesh* mesh = new SCPUMesh();
+    mesh->addMeshBuffer(meshbuffer);
+    meshbuffer->drop();
 
-	core::vectorSIMDf vertex[3];
-	core::vectorSIMDf normal;
+    core::vectorSIMDf vertex[3];
+    core::vectorSIMDf normal;
 
-	bool binary = false;
-	core::stringc token;
-	if (getNextToken(file, token) != "solid")
-		binary = true;
-	// read/skip header
-	uint32_t binFaceCount = 0;
-	std::vector<STLVertex> vertices;
-	if (binary)
-	{
-		file->seek(80);
-		file->read(&binFaceCount, 4);
+    bool binary = false;
+    core::stringc token;
+    if (getNextToken(file, token) != "solid")
+        binary = true;
+    // read/skip header
+    uint32_t binFaceCount = 0;
+    std::vector<STLVertex> vertices;
+    if (binary)
+    {
+        file->seek(80);
+        file->read(&binFaceCount, 4);
 #ifdef __BIG_ENDIAN__
-		binFaceCount = os::Byteswap::byteswap(binFaceCount);
+        binFaceCount = os::Byteswap::byteswap(binFaceCount);
 #endif
         vertices.reserve(binFaceCount);
-	}
-	else
-		goNextLine(file);
+    }
+    else
+        goNextLine(file);
 
 
-	uint16_t attrib=0;
-	token.reserve(32);
-	while (file->getPos() < filesize)
-	{
-		if (!binary)
-		{
-			if (getNextToken(file, token) != "facet")
-			{
-				if (token=="endsolid")
-					break;
-				mesh->drop();
-				return 0;
-			}
-			if (getNextToken(file, token) != "normal")
-			{
-				mesh->drop();
-				return 0;
-			}
-		}
-		getNextVector(file, normal, binary);
-		if (!binary)
-		{
-			if (getNextToken(file, token) != "outer")
-			{
-				mesh->drop();
-				return 0;
-			}
-			if (getNextToken(file, token) != "loop")
-			{
-				mesh->drop();
-				return 0;
-			}
-		}
-		for (uint32_t i=0; i<3; ++i)
-		{
-			if (!binary)
-			{
-				if (getNextToken(file, token) != "vertex")
-				{
-					mesh->drop();
-					return 0;
-				}
-			}
-			getNextVector(file, vertex[i], binary);
-		}
-		if (!binary)
-		{
-			if (getNextToken(file, token) != "endloop")
-			{
-				mesh->drop();
-				return 0;
-			}
-			if (getNextToken(file, token) != "endfacet")
-			{
-				mesh->drop();
-				return 0;
-			}
-		}
-		else
-		{
-			file->read(&attrib, 2);
+    uint16_t attrib=0;
+    token.reserve(32);
+    while (file->getPos() < filesize)
+    {
+        if (!binary)
+        {
+            if (getNextToken(file, token) != "facet")
+            {
+                if (token=="endsolid")
+                    break;
+                mesh->drop();
+                return 0;
+            }
+            if (getNextToken(file, token) != "normal")
+            {
+                mesh->drop();
+                return 0;
+            }
+        }
+        getNextVector(file, normal, binary);
+        if (!binary)
+        {
+            if (getNextToken(file, token) != "outer")
+            {
+                mesh->drop();
+                return 0;
+            }
+            if (getNextToken(file, token) != "loop")
+            {
+                mesh->drop();
+                return 0;
+            }
+        }
+        for (uint32_t i=0; i<3; ++i)
+        {
+            if (!binary)
+            {
+                if (getNextToken(file, token) != "vertex")
+                {
+                    mesh->drop();
+                    return 0;
+                }
+            }
+            getNextVector(file, vertex[i], binary);
+        }
+        if (!binary)
+        {
+            if (getNextToken(file, token) != "endloop")
+            {
+                mesh->drop();
+                return 0;
+            }
+            if (getNextToken(file, token) != "endfacet")
+            {
+                mesh->drop();
+                return 0;
+            }
+        }
+        else
+        {
+            file->read(&attrib, 2);
 #ifdef __BIG_ENDIAN__
-			attrib = os::Byteswap::byteswap(attrib);
+            attrib = os::Byteswap::byteswap(attrib);
 #endif
-		}
+        }
 
-		video::SColor color(0xffffffff);
-		if (attrib & 0x8000)
-			color = video::A1R5G5B5toA8R8G8B8(attrib);
-		if ((normal==core::vectorSIMDf()).all())
-			normal.set(core::plane3df(vertex[2].getAsVector3df(),vertex[1].getAsVector3df(),vertex[0].getAsVector3df()).Normal);
+        video::SColor color(0xffffffff);
+        if (attrib & 0x8000)
+            color = video::A1R5G5B5toA8R8G8B8(attrib);
+        if ((normal==core::vectorSIMDf()).all())
+            normal.set(core::plane3df(vertex[2].getAsVector3df(),vertex[1].getAsVector3df(),vertex[0].getAsVector3df()).Normal);
         //
        addTriangleToMesh(vertices,vertex,normal,color);
-	}	// end while (file->getPos() < filesize)
-	core::ICPUBuffer* vertexBuf = new core::ICPUBuffer(sizeof(STLVertex)*vertices.size());
-	std::copy( vertices.begin(), vertices.end(), (STLVertex*)vertexBuf->getPointer() );
-	desc->mapVertexAttrBuffer(vertexBuf,EVAI_ATTR0,ECPA_THREE,ECT_FLOAT,sizeof(STLVertex),0);
-	desc->mapVertexAttrBuffer(vertexBuf,EVAI_ATTR3,ECPA_FOUR,ECT_INT_2_10_10_10_REV,sizeof(STLVertex),12);
-	desc->mapVertexAttrBuffer(vertexBuf,EVAI_ATTR1,ECPA_REVERSED_OR_BGRA,ECT_NORMALIZED_UNSIGNED_BYTE,sizeof(STLVertex),16);
-	vertexBuf->drop();
-	meshbuffer->setIndexCount(vertices.size());
-	mesh->recalculateBoundingBox(true);
+    }    // end while (file->getPos() < filesize)
+    core::ICPUBuffer* vertexBuf = new core::ICPUBuffer(sizeof(STLVertex)*vertices.size());
+    std::copy( vertices.begin(), vertices.end(), (STLVertex*)vertexBuf->getPointer() );
+    desc->mapVertexAttrBuffer(vertexBuf,EVAI_ATTR0,ECPA_THREE,ECT_FLOAT,sizeof(STLVertex),0);
+    desc->mapVertexAttrBuffer(vertexBuf,EVAI_ATTR3,ECPA_FOUR,ECT_INT_2_10_10_10_REV,sizeof(STLVertex),12);
+    desc->mapVertexAttrBuffer(vertexBuf,EVAI_ATTR1,ECPA_REVERSED_OR_BGRA,ECT_NORMALIZED_UNSIGNED_BYTE,sizeof(STLVertex),16);
+    vertexBuf->drop();
+    meshbuffer->setIndexCount(vertices.size());
+    mesh->recalculateBoundingBox(true);
 
-	return mesh;
+    return mesh;
 }
 
 
 //! Read 3d vector of floats
 void CSTLMeshFileLoader::getNextVector(io::IReadFile* file, core::vectorSIMDf& vec, bool binary) const
 {
-	if (binary)
-	{
-		file->read(&vec.X, 4);
-		file->read(&vec.Y, 4);
-		file->read(&vec.Z, 4);
+    if (binary)
+    {
+        file->read(&vec.X, 4);
+        file->read(&vec.Y, 4);
+        file->read(&vec.Z, 4);
 #ifdef __BIG_ENDIAN__
-		vec.X = os::Byteswap::byteswap(vec.X);
-		vec.Y = os::Byteswap::byteswap(vec.Y);
-		vec.Z = os::Byteswap::byteswap(vec.Z);
+        vec.X = os::Byteswap::byteswap(vec.X);
+        vec.Y = os::Byteswap::byteswap(vec.Y);
+        vec.Z = os::Byteswap::byteswap(vec.Z);
 #endif
-	}
-	else
-	{
-		goNextWord(file);
-		core::stringc tmp;
+    }
+    else
+    {
+        goNextWord(file);
+        core::stringc tmp;
 
-		getNextToken(file, tmp);
-		sscanf(tmp.c_str(),"%f",&vec.X);
-		getNextToken(file, tmp);
-		sscanf(tmp.c_str(),"%f",&vec.Y);
-		getNextToken(file, tmp);
-		sscanf(tmp.c_str(),"%f",&vec.Z);
-	}
-	vec.X=-vec.X;
+        getNextToken(file, tmp);
+        sscanf(tmp.c_str(),"%f",&vec.X);
+        getNextToken(file, tmp);
+        sscanf(tmp.c_str(),"%f",&vec.Y);
+        getNextToken(file, tmp);
+        sscanf(tmp.c_str(),"%f",&vec.Z);
+    }
+    vec.X=-vec.X;
 }
 
 
 //! Read next word
 const core::stringc& CSTLMeshFileLoader::getNextToken(io::IReadFile* file, core::stringc& token) const
 {
-	goNextWord(file);
-	uint8_t c;
-	token = "";
-	while(file->getPos() != file->getSize())
-	{
-		file->read(&c, 1);
-		// found it, so leave
-		if (core::isspace(c))
-			break;
-		token.append(c);
-	}
-	return token;
+    goNextWord(file);
+    uint8_t c;
+    token = "";
+    while(file->getPos() != file->getSize())
+    {
+        file->read(&c, 1);
+        // found it, so leave
+        if (core::isspace(c))
+            break;
+        token.append(c);
+    }
+    return token;
 }
 
 
 //! skip to next word
 void CSTLMeshFileLoader::goNextWord(io::IReadFile* file) const
 {
-	uint8_t c;
-	while(file->getPos() != file->getSize())
-	{
-		file->read(&c, 1);
-		// found it, so leave
-		if (!core::isspace(c))
-		{
-			file->seek(-1, true);
-			break;
-		}
-	}
+    uint8_t c;
+    while(file->getPos() != file->getSize())
+    {
+        file->read(&c, 1);
+        // found it, so leave
+        if (!core::isspace(c))
+        {
+            file->seek(-1, true);
+            break;
+        }
+    }
 }
 
 
 //! Read until line break is reached and stop at the next non-space character
 void CSTLMeshFileLoader::goNextLine(io::IReadFile* file) const
 {
-	uint8_t c;
-	// look for newline characters
-	while(file->getPos() != file->getSize())
-	{
-		file->read(&c, 1);
-		// found it, so leave
-		if (c=='\n' || c=='\r')
-			break;
-	}
+    uint8_t c;
+    // look for newline characters
+    while(file->getPos() != file->getSize())
+    {
+        file->read(&c, 1);
+        // found it, so leave
+        if (c=='\n' || c=='\r')
+            break;
+    }
 }
 
 } // end namespace scene

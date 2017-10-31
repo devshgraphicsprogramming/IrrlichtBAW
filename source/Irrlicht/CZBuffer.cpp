@@ -18,11 +18,11 @@ namespace video
 CZBuffer::CZBuffer(const core::dimension2d<uint32_t>& size)
 : Buffer(0), BufferEnd(0), Size(0,0), TotalSize(0)
 {
-	#ifdef _DEBUG
-	setDebugName("CZBuffer");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CZBuffer");
+    #endif
 
-	setSize(size);
+    setSize(size);
 }
 
 
@@ -30,7 +30,7 @@ CZBuffer::CZBuffer(const core::dimension2d<uint32_t>& size)
 //! destructor
 CZBuffer::~CZBuffer()
 {
-	delete [] Buffer;
+    delete [] Buffer;
 }
 
 
@@ -38,7 +38,7 @@ CZBuffer::~CZBuffer()
 //! clears the zbuffer
 void CZBuffer::clear()
 {
-	memset(Buffer, 0, (BufferEnd-Buffer)*sizeof(TZBufferType));
+    memset(Buffer, 0, (BufferEnd-Buffer)*sizeof(TZBufferType));
 }
 
 
@@ -46,16 +46,16 @@ void CZBuffer::clear()
 //! sets the new size of the zbuffer
 void CZBuffer::setSize(const core::dimension2d<uint32_t>& size)
 {
-	if (size == Size)
-		return;
+    if (size == Size)
+        return;
 
-	Size = size;
+    Size = size;
 
-	delete [] Buffer;
+    delete [] Buffer;
 
-	TotalSize = size.Width * size.Height;
-	Buffer = new TZBufferType[TotalSize];
-	BufferEnd = Buffer + TotalSize;
+    TotalSize = size.Width * size.Height;
+    Buffer = new TZBufferType[TotalSize];
+    BufferEnd = Buffer + TotalSize;
 }
 
 
@@ -63,7 +63,7 @@ void CZBuffer::setSize(const core::dimension2d<uint32_t>& size)
 //! returns the size of the zbuffer
 const core::dimension2d<uint32_t>& CZBuffer::getSize() const
 {
-	return Size;
+    return Size;
 }
 
 
@@ -71,7 +71,7 @@ const core::dimension2d<uint32_t>& CZBuffer::getSize() const
 //! locks the zbuffer
 TZBufferType* CZBuffer::lock()
 {
-	return Buffer;
+    return Buffer;
 }
 
 
@@ -94,11 +94,11 @@ namespace video
 //! creates a ZBuffer
 IZBuffer* createZBuffer(const core::dimension2d<uint32_t>& size)
 {
-	#ifdef _IRR_COMPILE_WITH_SOFTWARE_
-	return new CZBuffer(size);
-	#else
-	return 0;
-	#endif // _IRR_COMPILE_WITH_SOFTWARE_
+    #ifdef _IRR_COMPILE_WITH_SOFTWARE_
+    return new CZBuffer(size);
+    #else
+    return 0;
+    #endif // _IRR_COMPILE_WITH_SOFTWARE_
 }
 
 

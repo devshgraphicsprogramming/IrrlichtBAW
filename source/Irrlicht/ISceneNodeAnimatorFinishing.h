@@ -11,22 +11,22 @@ namespace irr
 {
 namespace scene
 {
-	//! This is an abstract base class for animators that have a discrete end time.
-	class ISceneNodeAnimatorFinishing : public ISceneNodeAnimator
-	{
-	public:
+    //! This is an abstract base class for animators that have a discrete end time.
+    class ISceneNodeAnimatorFinishing : public ISceneNodeAnimator
+    {
+    public:
 
-		//! constructor
-		ISceneNodeAnimatorFinishing(uint32_t finishTime)
-			: FinishTime(finishTime), HasFinished(false) { }
+        //! constructor
+        ISceneNodeAnimatorFinishing(uint32_t finishTime)
+            : FinishTime(finishTime), HasFinished(false) { }
 
-		virtual bool hasFinished(void) const { return HasFinished; }
+        virtual bool hasFinished(void) const { return HasFinished; }
 
-	protected:
+    protected:
 
-		uint32_t FinishTime;
-		bool HasFinished;
-	};
+        uint32_t FinishTime;
+        bool HasFinished;
+    };
 
 
 } // end namespace scene

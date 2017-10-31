@@ -11,32 +11,32 @@ namespace irr
 {
 namespace scene
 {
-	class CSceneNodeAnimatorDelete : public ISceneNodeAnimatorFinishing
-	{
-	public:
+    class CSceneNodeAnimatorDelete : public ISceneNodeAnimatorFinishing
+    {
+    public:
 
-		//! constructor
-		CSceneNodeAnimatorDelete(ISceneManager* manager, uint32_t when);
+        //! constructor
+        CSceneNodeAnimatorDelete(ISceneManager* manager, uint32_t when);
 
-		//! animates a scene node
-		virtual void animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs);
+        //! animates a scene node
+        virtual void animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs);
 
-		//! Returns type of the scene node animator
-		virtual ESCENE_NODE_ANIMATOR_TYPE getType() const
-		{
-			return ESNAT_DELETION;
-		}
+        //! Returns type of the scene node animator
+        virtual ESCENE_NODE_ANIMATOR_TYPE getType() const
+        {
+            return ESNAT_DELETION;
+        }
 
-		//! Creates a clone of this animator.
-		/** Please note that you will have to drop
-		(IReferenceCounted::drop()) the returned pointer after calling
-		this. */
-		virtual ISceneNodeAnimator* createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager=0);
+        //! Creates a clone of this animator.
+        /** Please note that you will have to drop
+        (IReferenceCounted::drop()) the returned pointer after calling
+        this. */
+        virtual ISceneNodeAnimator* createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager=0);
 
-	private:
+    private:
 
-		ISceneManager* SceneManager;
-	};
+        ISceneManager* SceneManager;
+    };
 
 
 } // end namespace scene

@@ -21,12 +21,12 @@ class MyEventReceiver : public IEventReceiver
 {
 public:
 
-	MyEventReceiver()
-	{
-	}
+    MyEventReceiver()
+    {
+    }
 
-	bool OnEvent(const SEvent& event)
-	{
+    bool OnEvent(const SEvent& event)
+    {
         if (event.EventType == irr::EET_KEY_INPUT_EVENT && !event.KeyInput.PressedDown)
         {
             switch (event.KeyInput.Key)
@@ -39,8 +39,8 @@ public:
             }
         }
 
-		return false;
-	}
+        return false;
+    }
 
 private:
 };
@@ -49,47 +49,47 @@ private:
 
 int main()
 {
-	// create device with full flexibility over creation parameters
-	// you can add more parameters if desired, check irr::SIrrlichtCreationParameters
-	irr::SIrrlichtCreationParameters params;
-	params.Bits = 24; //may have to set to 32bit for some platforms
-	params.ZBufferBits = 24; //we'd like 32bit here
+    // create device with full flexibility over creation parameters
+    // you can add more parameters if desired, check irr::SIrrlichtCreationParameters
+    irr::SIrrlichtCreationParameters params;
+    params.Bits = 24; //may have to set to 32bit for some platforms
+    params.ZBufferBits = 24; //we'd like 32bit here
     params.AntiAlias = 0; //No AA, yet
-	params.DriverType = video::EDT_OPENGL; //! Only Well functioning driver, software renderer left for sake of 2D image drawing
-	params.WindowSize = dimension2d<uint32_t>(1280, 720);
-	params.Fullscreen = false;
-	params.Vsync = true; //! If supported by target platform
-	params.Doublebuffer = true;
-	params.Stencilbuffer = false; //! This will not even be a choice soon
-	IrrlichtDevice* device = createDeviceEx(params);
+    params.DriverType = video::EDT_OPENGL; //! Only Well functioning driver, software renderer left for sake of 2D image drawing
+    params.WindowSize = dimension2d<uint32_t>(1280, 720);
+    params.Fullscreen = false;
+    params.Vsync = true; //! If supported by target platform
+    params.Doublebuffer = true;
+    params.Stencilbuffer = false; //! This will not even be a choice soon
+    IrrlichtDevice* device = createDeviceEx(params);
 
-	if (device == 0)
-		return 1; // could not create selected driver.
+    if (device == 0)
+        return 1; // could not create selected driver.
 
 
-	video::IVideoDriver* driver = device->getVideoDriver();
+    video::IVideoDriver* driver = device->getVideoDriver();
 
     size_t allocsPerFrame = 10000;
     size_t allocSize = 128;
 
 
 
-	scene::ISceneManager* smgr = device->getSceneManager();
-	MyEventReceiver receiver;
-	device->setEventReceiver(&receiver);
+    scene::ISceneManager* smgr = device->getSceneManager();
+    MyEventReceiver receiver;
+    device->setEventReceiver(&receiver);
 
 
     video::IGPUTransientBuffer* buffer = video::IGPUTransientBuffer::createMappedTransientBuffer(driver,0x1000000u,video::EGBA_WRITE,false,true,true,false);
 
 
-	uint64_t lastFPSTime = 0;
+    uint64_t lastFPSTime = 0;
 
-	while(device->run())
-	//if (device->isWindowActive())
-	{
-		driver->beginScene(true, true, video::SColor(255,0,0,255) );
+    while(device->run())
+    //if (device->isWindowActive())
+    {
+        driver->beginScene(true, true, video::SColor(255,0,0,255) );
 
-		uint64_t startTime = device->getTimer()->getRealTime();
+        uint64_t startTime = device->getTimer()->getRealTime();
         for (size_t i=0; i<allocsPerFrame; i++)
         {
             size_t offset;
@@ -102,24 +102,24 @@ int main()
             }
         }
 
-		driver->endScene();
+        driver->endScene();
 
-		// display frames per second in window title
-		uint64_t time = device->getTimer()->getRealTime();
-		if (time-lastFPSTime > 1000)
-		{
-			stringw str = L"Builtin Nodes Demo - Irrlicht Engine [";
-			str += driver->getName();
-			str += "] FPS:";
-			str += driver->getFPS();
+        // display frames per second in window title
+        uint64_t time = device->getTimer()->getRealTime();
+        if (time-lastFPSTime > 1000)
+        {
+            stringw str = L"Builtin Nodes Demo - Irrlicht Engine [";
+            str += driver->getName();
+            str += "] FPS:";
+            str += driver->getFPS();
 
-			device->setWindowCaption(str.c_str());
-			lastFPSTime = time;
-		}
-	}
-	buffer->drop();
+            device->setWindowCaption(str.c_str());
+            lastFPSTime = time;
+        }
+    }
+    buffer->drop();
 
-	device->drop();
+    device->drop();
 
-	return 0;
+    return 0;
 }

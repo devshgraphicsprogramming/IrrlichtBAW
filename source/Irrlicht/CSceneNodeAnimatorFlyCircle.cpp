@@ -12,47 +12,47 @@ namespace scene
 
 //! constructor
 CSceneNodeAnimatorFlyCircle::CSceneNodeAnimatorFlyCircle(uint32_t time,
-		const core::vector3df& center, float radius, float speed,
-		const core::vector3df& direction, float radiusEllipsoid)
-	: Center(center), Direction(direction), Radius(radius),
-	RadiusEllipsoid(radiusEllipsoid), Speed(speed), StartTime(time)
+        const core::vector3df& center, float radius, float speed,
+        const core::vector3df& direction, float radiusEllipsoid)
+    : Center(center), Direction(direction), Radius(radius),
+    RadiusEllipsoid(radiusEllipsoid), Speed(speed), StartTime(time)
 {
-	#ifdef _DEBUG
-	setDebugName("CSceneNodeAnimatorFlyCircle");
-	#endif
-	init();
+    #ifdef _DEBUG
+    setDebugName("CSceneNodeAnimatorFlyCircle");
+    #endif
+    init();
 }
 
 
 void CSceneNodeAnimatorFlyCircle::init()
 {
-	Direction.normalize();
+    Direction.normalize();
 
-	if (Direction.Y != 0)
-		VecV = core::vector3df(50,0,0).crossProduct(Direction).normalize();
-	else
-		VecV = core::vector3df(0,50,0).crossProduct(Direction).normalize();
-	VecU = VecV.crossProduct(Direction).normalize();
+    if (Direction.Y != 0)
+        VecV = core::vector3df(50,0,0).crossProduct(Direction).normalize();
+    else
+        VecV = core::vector3df(0,50,0).crossProduct(Direction).normalize();
+    VecU = VecV.crossProduct(Direction).normalize();
 }
 
 
 //! animates a scene node
 void CSceneNodeAnimatorFlyCircle::animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs)
 {
-	if ( 0 == node )
-		return;
+    if ( 0 == node )
+        return;
 
-	float time;
+    float time;
 
-	// Check for the condition where the StartTime is in the future.
-	if(StartTime > timeMs)
-		time = ((int32_t)timeMs - (int32_t)StartTime) * Speed;
-	else
-		time = (timeMs-StartTime) * Speed;
+    // Check for the condition where the StartTime is in the future.
+    if(StartTime > timeMs)
+        time = ((int32_t)timeMs - (int32_t)StartTime) * Speed;
+    else
+        time = (timeMs-StartTime) * Speed;
 
-//	node->setPosition(Center + Radius * ((VecU*cosf(time)) + (VecV*sinf(time))));
-	float r2 = RadiusEllipsoid == 0.f ? Radius : RadiusEllipsoid;
-	node->setPosition(Center + (Radius*cosf(time)*VecU) + (r2*sinf(time)*VecV ) );
+//    node->setPosition(Center + Radius * ((VecU*cosf(time)) + (VecV*sinf(time))));
+    float r2 = RadiusEllipsoid == 0.f ? Radius : RadiusEllipsoid;
+    node->setPosition(Center + (Radius*cosf(time)*VecU) + (r2*sinf(time)*VecV ) );
 }
 
 
@@ -60,10 +60,10 @@ void CSceneNodeAnimatorFlyCircle::animateNode(IDummyTransformationSceneNode* nod
 
 ISceneNodeAnimator* CSceneNodeAnimatorFlyCircle::createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager)
 {
-	CSceneNodeAnimatorFlyCircle * newAnimator =
-		new CSceneNodeAnimatorFlyCircle(StartTime, Center, Radius, Speed, Direction, RadiusEllipsoid);
+    CSceneNodeAnimatorFlyCircle * newAnimator =
+        new CSceneNodeAnimatorFlyCircle(StartTime, Center, Radius, Speed, Direction, RadiusEllipsoid);
 
-	return newAnimator;
+    return newAnimator;
 }
 
 

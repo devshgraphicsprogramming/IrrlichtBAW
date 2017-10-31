@@ -14,56 +14,56 @@ namespace irr
 namespace scene
 {
 
-	class CBoneSceneNode : public IBoneSceneNode
-	{
-	public:
+    class CBoneSceneNode : public IBoneSceneNode
+    {
+    public:
 
-		//! constructor
-		CBoneSceneNode(ISceneNode* parent, ISceneManager* mgr,
-			s32 id=-1, u32 boneIndex=0, const c8* boneName=0);
+        //! constructor
+        CBoneSceneNode(ISceneNode* parent, ISceneManager* mgr,
+            s32 id=-1, u32 boneIndex=0, const c8* boneName=0);
 
-		//! Returns the index of the bone
-		virtual u32 getBoneIndex() const;
+        //! Returns the index of the bone
+        virtual u32 getBoneIndex() const;
 
-		//! Sets the animation mode of the bone. Returns true if successful.
-		virtual bool setAnimationMode(E_BONE_ANIMATION_MODE mode);
+        //! Sets the animation mode of the bone. Returns true if successful.
+        virtual bool setAnimationMode(E_BONE_ANIMATION_MODE mode);
 
-		//! Gets the current animation mode of the bone
-		virtual E_BONE_ANIMATION_MODE getAnimationMode() const;
+        //! Gets the current animation mode of the bone
+        virtual E_BONE_ANIMATION_MODE getAnimationMode() const;
 
-		//! returns the axis aligned bounding box of this node
-		virtual const core::aabbox3d<f32>& getBoundingBox() const;
+        //! returns the axis aligned bounding box of this node
+        virtual const core::aabbox3d<f32>& getBoundingBox() const;
 
-		/*
-		//! Returns the relative transformation of the scene node.
-		//virtual core::matrix4 getRelativeTransformation() const;
-		*/
+        /*
+        //! Returns the relative transformation of the scene node.
+        //virtual core::matrix4 getRelativeTransformation() const;
+        */
 
-		virtual void OnAnimate(u32 timeMs);
+        virtual void OnAnimate(u32 timeMs);
 
-		virtual void updateAbsolutePositionOfAllChildren();
+        virtual void updateAbsolutePositionOfAllChildren();
 
-		//! How the relative transformation of the bone is used
-		virtual void setSkinningSpace( E_BONE_SKINNING_SPACE space )
-		{
-			SkinningSpace=space;
-		}
+        //! How the relative transformation of the bone is used
+        virtual void setSkinningSpace( E_BONE_SKINNING_SPACE space )
+        {
+            SkinningSpace=space;
+        }
 
-		virtual E_BONE_SKINNING_SPACE getSkinningSpace() const
-		{
-			return SkinningSpace;
-		}
+        virtual E_BONE_SKINNING_SPACE getSkinningSpace() const
+        {
+            return SkinningSpace;
+        }
 
-	private:
-		void helper_updateAbsolutePositionOfAllChildren(ISceneNode *Node);
+    private:
+        void helper_updateAbsolutePositionOfAllChildren(ISceneNode *Node);
 
-		u32 BoneIndex;
+        u32 BoneIndex;
 
-		core::aabbox3d<f32> Box;
+        core::aabbox3d<f32> Box;
 
-		E_BONE_ANIMATION_MODE AnimationMode;
-		E_BONE_SKINNING_SPACE SkinningSpace;
-	};
+        E_BONE_ANIMATION_MODE AnimationMode;
+        E_BONE_SKINNING_SPACE SkinningSpace;
+    };
 
 
 } // end namespace scene

@@ -17,14 +17,14 @@ namespace scene
 
 ICPUMesh* CGeometryCreator::createCubeMeshCPU(const core::vector3df& size) const
 {
-	ICPUMeshDataFormatDesc* desc = new ICPUMeshDataFormatDesc();
-	ICPUMeshBuffer* buffer = new ICPUMeshBuffer();
-	buffer->setMeshDataAndFormat(desc);
-	desc->drop();
+    ICPUMeshDataFormatDesc* desc = new ICPUMeshDataFormatDesc();
+    ICPUMeshBuffer* buffer = new ICPUMeshBuffer();
+    buffer->setMeshDataAndFormat(desc);
+    desc->drop();
 
     //! This is a baaaad mesh, you dont share vertices in a cube across faces
-	// Create indices
-	const uint16_t u[36] = {   0,2,1,   0,3,2,   1,5,4,   1,2,5,   4,6,7,   4,5,6,
+    // Create indices
+    const uint16_t u[36] = {   0,2,1,   0,3,2,   1,5,4,   1,2,5,   4,6,7,   4,5,6,
             7,3,0,   7,6,3,   9,5,2,   9,8,5,   0,11,10,   0,10,7};
 
     core::ICPUBuffer* indices = new core::ICPUBuffer(sizeof(u));
@@ -36,11 +36,11 @@ ICPUMesh* CGeometryCreator::createCubeMeshCPU(const core::vector3df& size) const
     indices->drop();
 
 
-	// Create vertices
-	size_t vertexSize = 3*4+4+2+3;
+    // Create vertices
+    size_t vertexSize = 3*4+4+2+3;
     core::ICPUBuffer* vertices = new core::ICPUBuffer(12*vertexSize);
-	uint8_t* tmpMem = (uint8_t*)vertices->getPointer();
-	for (size_t i=0; i<12; i++)
+    uint8_t* tmpMem = (uint8_t*)vertices->getPointer();
+    for (size_t i=0; i<12; i++)
     {
         tmpMem[i*vertexSize+3*4+0] = 255;
         tmpMem[i*vertexSize+3*4+1] = 255;
@@ -144,15 +144,15 @@ ICPUMesh* CGeometryCreator::createCubeMeshCPU(const core::vector3df& size) const
     tmpMem[11*vertexSize+3*4+4+2+1] = 0xfu;
     tmpMem[11*vertexSize+3*4+4+2+2] = 0xfu;
 
-	// Recalculate bounding box
-	buffer->setBoundingBox(core::aabbox3df(-size*0.5f,size*0.5f));
+    // Recalculate bounding box
+    buffer->setBoundingBox(core::aabbox3df(-size*0.5f,size*0.5f));
 
-	for (uint32_t i=0; i<12; ++i)
-	{
-	    core::vector3df& Pos = *((core::vector3df*)(tmpMem+i*vertexSize));
-		Pos -= core::vector3df(0.5f, 0.5f, 0.5f);
-		Pos *= size;
-	}
+    for (uint32_t i=0; i<12; ++i)
+    {
+        core::vector3df& Pos = *((core::vector3df*)(tmpMem+i*vertexSize));
+        Pos -= core::vector3df(0.5f, 0.5f, 0.5f);
+        Pos *= size;
+    }
     //mapVertexAttrBuffer(core::ICPUBuffer* attrBuf, const E_VERTEX_ATTRIBUTE_ID& attrId, E_COMPONENTS_PER_ATTRIBUTE components, E_COMPONENT_TYPE type, const size_t &stride=0, size_t offset=0)
     desc->mapVertexAttrBuffer(vertices,scene::EVAI_ATTR0,scene::ECPA_THREE,scene::ECT_FLOAT,vertexSize);
     desc->mapVertexAttrBuffer(vertices,scene::EVAI_ATTR1,scene::ECPA_FOUR,scene::ECT_NORMALIZED_UNSIGNED_BYTE,vertexSize,4*3);
@@ -161,12 +161,12 @@ ICPUMesh* CGeometryCreator::createCubeMeshCPU(const core::vector3df& size) const
     vertices->drop();
 
 
-	SCPUMesh* mesh = new SCPUMesh;
-	mesh->addMeshBuffer(buffer);
-	buffer->drop();
+    SCPUMesh* mesh = new SCPUMesh;
+    mesh->addMeshBuffer(buffer);
+    buffer->drop();
 
-	mesh->recalculateBoundingBox();
-	return mesh;
+    mesh->recalculateBoundingBox();
+    return mesh;
 }
 
 IGPUMesh* CGeometryCreator::createCubeMeshGPU(video::IVideoDriver* driver, const core::vector3df& size) const
@@ -174,249 +174,249 @@ IGPUMesh* CGeometryCreator::createCubeMeshGPU(video::IVideoDriver* driver, const
     if (!driver)
         return NULL;
 
-	SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createCubeMeshCPU(size));
-	IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
-	cpumesh->drop();
+    SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createCubeMeshCPU(size));
+    IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
+    cpumesh->drop();
 
-	return mesh;
+    return mesh;
 }
 
 
 
 ICPUMesh* CGeometryCreator::createTerrainMeshCPU(video::IImage* texture,
-		video::IImage* heightmap, const core::dimension2d<float>& stretchSize,
-		float maxHeight, video::IVideoDriver* driver,
-		const core::dimension2d<uint32_t>& maxVtxBlockSize,
-		bool debugBorders) const
+        video::IImage* heightmap, const core::dimension2d<float>& stretchSize,
+        float maxHeight, video::IVideoDriver* driver,
+        const core::dimension2d<uint32_t>& maxVtxBlockSize,
+        bool debugBorders) const
 {
 #ifdef NEW_MESHES
     return NULL;
 #else
-	if (!texture || !heightmap)
-		return 0;
+    if (!texture || !heightmap)
+        return 0;
 
-	// debug border
-	const int32_t borderSkip = debugBorders ? 0 : 1;
+    // debug border
+    const int32_t borderSkip = debugBorders ? 0 : 1;
 
-	video::S3DVertex vtx;
-	vtx.Color.set(255,255,255,255);
+    video::S3DVertex vtx;
+    vtx.Color.set(255,255,255,255);
 
-	SMesh* mesh = new SMesh();
+    SMesh* mesh = new SMesh();
 
-	const uint32_t tm = os::Timer::getRealTime()/1000;
-	const core::dimension2d<uint32_t> hMapSize= heightmap->getDimension();
-	const core::dimension2d<uint32_t> tMapSize= texture->getDimension();
-	const core::position2d<float> thRel(static_cast<float>(tMapSize.Width) / hMapSize.Width, static_cast<float>(tMapSize.Height) / hMapSize.Height);
-	maxHeight /= 255.0f; // height step per color value
+    const uint32_t tm = os::Timer::getRealTime()/1000;
+    const core::dimension2d<uint32_t> hMapSize= heightmap->getDimension();
+    const core::dimension2d<uint32_t> tMapSize= texture->getDimension();
+    const core::position2d<float> thRel(static_cast<float>(tMapSize.Width) / hMapSize.Width, static_cast<float>(tMapSize.Height) / hMapSize.Height);
+    maxHeight /= 255.0f; // height step per color value
 
-	core::position2d<uint32_t> processed(0,0);
-	while (processed.Y<hMapSize.Height)
-	{
-		while(processed.X<hMapSize.Width)
-		{
-			core::dimension2d<uint32_t> blockSize = maxVtxBlockSize;
-			if (processed.X + blockSize.Width > hMapSize.Width)
-				blockSize.Width = hMapSize.Width - processed.X;
-			if (processed.Y + blockSize.Height > hMapSize.Height)
-				blockSize.Height = hMapSize.Height - processed.Y;
+    core::position2d<uint32_t> processed(0,0);
+    while (processed.Y<hMapSize.Height)
+    {
+        while(processed.X<hMapSize.Width)
+        {
+            core::dimension2d<uint32_t> blockSize = maxVtxBlockSize;
+            if (processed.X + blockSize.Width > hMapSize.Width)
+                blockSize.Width = hMapSize.Width - processed.X;
+            if (processed.Y + blockSize.Height > hMapSize.Height)
+                blockSize.Height = hMapSize.Height - processed.Y;
 
-			SMeshBuffer* buffer = new SMeshBuffer();
-			buffer->Vertices.reallocate(blockSize.getArea());
-			// add vertices of vertex block
-			uint32_t y;
-			core::vector2df pos(0.f, processed.Y*stretchSize.Height);
-			const core::vector2df bs(1.f/blockSize.Width, 1.f/blockSize.Height);
-			core::vector2df tc(0.f, 0.5f*bs.Y);
-			for (y=0; y<blockSize.Height; ++y)
-			{
-				pos.X=processed.X*stretchSize.Width;
-				tc.X=0.5f*bs.X;
-				for (uint32_t x=0; x<blockSize.Width; ++x)
-				{
-					const float height = heightmap->getPixel(x+processed.X, y+processed.Y).getAverage() * maxHeight;
+            SMeshBuffer* buffer = new SMeshBuffer();
+            buffer->Vertices.reallocate(blockSize.getArea());
+            // add vertices of vertex block
+            uint32_t y;
+            core::vector2df pos(0.f, processed.Y*stretchSize.Height);
+            const core::vector2df bs(1.f/blockSize.Width, 1.f/blockSize.Height);
+            core::vector2df tc(0.f, 0.5f*bs.Y);
+            for (y=0; y<blockSize.Height; ++y)
+            {
+                pos.X=processed.X*stretchSize.Width;
+                tc.X=0.5f*bs.X;
+                for (uint32_t x=0; x<blockSize.Width; ++x)
+                {
+                    const float height = heightmap->getPixel(x+processed.X, y+processed.Y).getAverage() * maxHeight;
 
-					vtx.Pos.set(pos.X, height, pos.Y);
-					vtx.TCoords.set(tc);
-					buffer->Vertices.push_back(vtx);
-					pos.X += stretchSize.Width;
-					tc.X += bs.X;
-				}
-				pos.Y += stretchSize.Height;
-				tc.Y += bs.Y;
-			}
+                    vtx.Pos.set(pos.X, height, pos.Y);
+                    vtx.TCoords.set(tc);
+                    buffer->Vertices.push_back(vtx);
+                    pos.X += stretchSize.Width;
+                    tc.X += bs.X;
+                }
+                pos.Y += stretchSize.Height;
+                tc.Y += bs.Y;
+            }
 
-			buffer->Indices.reallocate((blockSize.Height-1)*(blockSize.Width-1)*6);
-			// add indices of vertex block
-			int32_t c1 = 0;
-			for (y=0; y<blockSize.Height-1; ++y)
-			{
-				for (uint32_t x=0; x<blockSize.Width-1; ++x)
-				{
-					const int32_t c = c1 + x;
+            buffer->Indices.reallocate((blockSize.Height-1)*(blockSize.Width-1)*6);
+            // add indices of vertex block
+            int32_t c1 = 0;
+            for (y=0; y<blockSize.Height-1; ++y)
+            {
+                for (uint32_t x=0; x<blockSize.Width-1; ++x)
+                {
+                    const int32_t c = c1 + x;
 
-					indexPtr[indexAddIx++] = c);
-					indexPtr[indexAddIx++] = c + blockSize.Width);
-					indexPtr[indexAddIx++] = c + 1);
+                    indexPtr[indexAddIx++] = c);
+                    indexPtr[indexAddIx++] = c + blockSize.Width);
+                    indexPtr[indexAddIx++] = c + 1);
 
-					indexPtr[indexAddIx++] = c + 1);
-					indexPtr[indexAddIx++] = c + blockSize.Width);
-					indexPtr[indexAddIx++] = c + 1 + blockSize.Width);
-				}
-				c1 += blockSize.Width;
-			}
+                    indexPtr[indexAddIx++] = c + 1);
+                    indexPtr[indexAddIx++] = c + blockSize.Width);
+                    indexPtr[indexAddIx++] = c + 1 + blockSize.Width);
+                }
+                c1 += blockSize.Width;
+            }
 
-			// recalculate normals
-			for (uint32_t i=0; i<buffer->Indices.size(); i+=3)
-			{
-				const core::vector3df normal = core::plane3d<float>(
-					buffer->Vertices[buffer->Indices[i+0]].Pos,
-					buffer->Vertices[buffer->Indices[i+1]].Pos,
-					buffer->Vertices[buffer->Indices[i+2]].Pos).Normal;
+            // recalculate normals
+            for (uint32_t i=0; i<buffer->Indices.size(); i+=3)
+            {
+                const core::vector3df normal = core::plane3d<float>(
+                    buffer->Vertices[buffer->Indices[i+0]].Pos,
+                    buffer->Vertices[buffer->Indices[i+1]].Pos,
+                    buffer->Vertices[buffer->Indices[i+2]].Pos).Normal;
 
-				buffer->Vertices[buffer->Indices[i+0]].Normal = normal;
-				buffer->Vertices[buffer->Indices[i+1]].Normal = normal;
-				buffer->Vertices[buffer->Indices[i+2]].Normal = normal;
-			}
+                buffer->Vertices[buffer->Indices[i+0]].Normal = normal;
+                buffer->Vertices[buffer->Indices[i+1]].Normal = normal;
+                buffer->Vertices[buffer->Indices[i+2]].Normal = normal;
+            }
 
-			if (buffer->Vertices.size())
-			{
-				int8_t textureName[64];
-				// create texture for this block
-				video::IImage* img = driver->createImage(texture->getColorFormat(), core::dimension2d<uint32_t>(core::floor32(blockSize.Width*thRel.X), core::floor32(blockSize.Height*thRel.Y)));
-				texture->copyTo(img, core::position2di(0,0), core::recti(
-					core::position2d<int32_t>(core::floor32(processed.X*thRel.X), core::floor32(processed.Y*thRel.Y)),
-					core::dimension2d<uint32_t>(core::floor32(blockSize.Width*thRel.X), core::floor32(blockSize.Height*thRel.Y))), 0);
+            if (buffer->Vertices.size())
+            {
+                int8_t textureName[64];
+                // create texture for this block
+                video::IImage* img = driver->createImage(texture->getColorFormat(), core::dimension2d<uint32_t>(core::floor32(blockSize.Width*thRel.X), core::floor32(blockSize.Height*thRel.Y)));
+                texture->copyTo(img, core::position2di(0,0), core::recti(
+                    core::position2d<int32_t>(core::floor32(processed.X*thRel.X), core::floor32(processed.Y*thRel.Y)),
+                    core::dimension2d<uint32_t>(core::floor32(blockSize.Width*thRel.X), core::floor32(blockSize.Height*thRel.Y))), 0);
 
-				sprintf(textureName, "terrain%u_%u", tm, mesh->getMeshBufferCount());
+                sprintf(textureName, "terrain%u_%u", tm, mesh->getMeshBufferCount());
 
-				buffer->Material.setTexture(0, driver->addTexture(textureName, img));
+                buffer->Material.setTexture(0, driver->addTexture(textureName, img));
 
-				if (buffer->Material.getTexture(0))
-				{
-					int8_t tmp[255];
-					sprintf(tmp, "Generated terrain texture (%dx%d): %s",
-						buffer->Material.getTexture(0)->getSize().Width,
-						buffer->Material.getTexture(0)->getSize().Height,
-						textureName);
-					os::Printer::log(tmp);
-				}
-				else
-					os::Printer::log("Could not create terrain texture.", textureName, ELL_ERROR);
+                if (buffer->Material.getTexture(0))
+                {
+                    int8_t tmp[255];
+                    sprintf(tmp, "Generated terrain texture (%dx%d): %s",
+                        buffer->Material.getTexture(0)->getSize().Width,
+                        buffer->Material.getTexture(0)->getSize().Height,
+                        textureName);
+                    os::Printer::log(tmp);
+                }
+                else
+                    os::Printer::log("Could not create terrain texture.", textureName, ELL_ERROR);
 
-				img->drop();
-			}
+                img->drop();
+            }
 
-			buffer->recalculateBoundingBox();
-			mesh->addMeshBuffer(buffer);
-			buffer->drop();
+            buffer->recalculateBoundingBox();
+            mesh->addMeshBuffer(buffer);
+            buffer->drop();
 
-			// keep on processing
-			processed.X += maxVtxBlockSize.Width - borderSkip;
-		}
+            // keep on processing
+            processed.X += maxVtxBlockSize.Width - borderSkip;
+        }
 
-		// keep on processing
-		processed.X = 0;
-		processed.Y += maxVtxBlockSize.Height - borderSkip;
-	}
+        // keep on processing
+        processed.X = 0;
+        processed.Y += maxVtxBlockSize.Height - borderSkip;
+    }
 
-	mesh->recalculateBoundingBox();
-	return mesh;
+    mesh->recalculateBoundingBox();
+    return mesh;
 #endif // NEW_MESHES
 }
 
 
 IGPUMesh* CGeometryCreator::createTerrainMeshGPU(video::IImage* texture,
-		video::IImage* heightmap, const core::dimension2d<float>& stretchSize,
-		float maxHeight, video::IVideoDriver* driver,
-		const core::dimension2d<uint32_t>& maxVtxBlockSize,
-		bool debugBorders) const
+        video::IImage* heightmap, const core::dimension2d<float>& stretchSize,
+        float maxHeight, video::IVideoDriver* driver,
+        const core::dimension2d<uint32_t>& maxVtxBlockSize,
+        bool debugBorders) const
 {
     if (!driver)
         return NULL;
 
-	SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createTerrainMeshCPU(texture,heightmap,stretchSize,maxHeight,driver,maxVtxBlockSize,debugBorders));
-	IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
-	cpumesh->drop();
+    SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createTerrainMeshCPU(texture,heightmap,stretchSize,maxHeight,driver,maxVtxBlockSize,debugBorders));
+    IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
+    cpumesh->drop();
 
-	return mesh;
+    return mesh;
 }
 
 
 /*
-	a cylinder, a cone and a cross
-	point up on (0,1.f, 0.f )
+    a cylinder, a cone and a cross
+    point up on (0,1.f, 0.f )
 */
 ICPUMesh* CGeometryCreator::createArrowMeshCPU(const uint32_t tesselationCylinder,
-						const uint32_t tesselationCone,
-						const float height,
-						const float cylinderHeight,
-						const float width0,
-						const float width1,
-						const video::SColor vtxColor0,
-						const video::SColor vtxColor1) const
+                        const uint32_t tesselationCone,
+                        const float height,
+                        const float cylinderHeight,
+                        const float width0,
+                        const float width1,
+                        const video::SColor vtxColor0,
+                        const video::SColor vtxColor1) const
 {
 #ifdef NEW_MESHES
     return NULL;
 #else
-	SMesh* mesh = (SMesh*)createCylinderMesh(width0, cylinderHeight, tesselationCylinder, vtxColor0, false);
+    SMesh* mesh = (SMesh*)createCylinderMesh(width0, cylinderHeight, tesselationCylinder, vtxColor0, false);
 
-	IMesh* mesh2 = createConeMesh(width1, height-cylinderHeight, tesselationCone, vtxColor1, vtxColor0);
-	for (uint32_t i=0; i<mesh2->getMeshBufferCount(); ++i)
-	{
-		scene::IMeshBuffer* buffer = mesh2->getMeshBuffer(i);
-		for (uint32_t j=0; j<buffer->getVertexCount(); ++j)
-			buffer->getPosition(j).Y += cylinderHeight;
-		buffer->setDirty(EBT_VERTEX);
-		buffer->recalculateBoundingBox();
-		mesh->addMeshBuffer(buffer);
-	}
-	mesh2->drop();
+    IMesh* mesh2 = createConeMesh(width1, height-cylinderHeight, tesselationCone, vtxColor1, vtxColor0);
+    for (uint32_t i=0; i<mesh2->getMeshBufferCount(); ++i)
+    {
+        scene::IMeshBuffer* buffer = mesh2->getMeshBuffer(i);
+        for (uint32_t j=0; j<buffer->getVertexCount(); ++j)
+            buffer->getPosition(j).Y += cylinderHeight;
+        buffer->setDirty(EBT_VERTEX);
+        buffer->recalculateBoundingBox();
+        mesh->addMeshBuffer(buffer);
+    }
+    mesh2->drop();
 
-	mesh->recalculateBoundingBox();
-	return mesh;
+    mesh->recalculateBoundingBox();
+    return mesh;
 #endif // NEW_MESHES
 }
 
 IGPUMesh* CGeometryCreator::createArrowMeshGPU(video::IVideoDriver* driver,
                         const uint32_t tesselationCylinder,
-						const uint32_t tesselationCone,
-						const float height,
-						const float cylinderHeight,
-						const float width0,
-						const float width1,
-						const video::SColor vtxColor0,
-						const video::SColor vtxColor1) const
+                        const uint32_t tesselationCone,
+                        const float height,
+                        const float cylinderHeight,
+                        const float width0,
+                        const float width1,
+                        const video::SColor vtxColor0,
+                        const video::SColor vtxColor1) const
 {
     if (!driver)
         return NULL;
 
-	SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createArrowMeshCPU(tesselationCylinder,tesselationCone,height,cylinderHeight,width0,width1,vtxColor0,vtxColor1));
-	IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
-	cpumesh->drop();
+    SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createArrowMeshCPU(tesselationCylinder,tesselationCone,height,cylinderHeight,width0,width1,vtxColor0,vtxColor1));
+    IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
+    cpumesh->drop();
 
-	return mesh;
+    return mesh;
 }
 
 
 /* A sphere with proper normals and texture coords */
 ICPUMesh* CGeometryCreator::createSphereMeshCPU(float radius, uint32_t polyCountX, uint32_t polyCountY) const
 {
-	// thanks to Alfaz93 who made his code available for Irrlicht on which
-	// this one is based!
+    // thanks to Alfaz93 who made his code available for Irrlicht on which
+    // this one is based!
 
-	// we are creating the sphere mesh here.
+    // we are creating the sphere mesh here.
 
-	if (polyCountX < 2)
-		polyCountX = 2;
-	if (polyCountY < 2)
-		polyCountY = 2;
+    if (polyCountX < 2)
+        polyCountX = 2;
+    if (polyCountY < 2)
+        polyCountY = 2;
 
-	const uint32_t polyCountXPitch = polyCountX+1; // get to same vertex on next level
+    const uint32_t polyCountXPitch = polyCountX+1; // get to same vertex on next level
 
-	ICPUMeshDataFormatDesc* desc = new ICPUMeshDataFormatDesc();
-	ICPUMeshBuffer* buffer = new ICPUMeshBuffer();
-	buffer->setMeshDataAndFormat(desc);
-	desc->drop();
+    ICPUMeshDataFormatDesc* desc = new ICPUMeshDataFormatDesc();
+    ICPUMeshBuffer* buffer = new ICPUMeshBuffer();
+    buffer->setMeshDataAndFormat(desc);
+    desc->drop();
 
     size_t indexCount = (polyCountX * polyCountY) * 6;
     core::ICPUBuffer* indices = new core::ICPUBuffer(indexCount * 4);
@@ -426,121 +426,121 @@ ICPUMesh* CGeometryCreator::createSphereMeshCPU(float radius, uint32_t polyCount
     //buffer->setIndexRange(0,11);
     indices->drop();
 
-	uint32_t level = 0;
-	size_t indexAddIx = 0;
+    uint32_t level = 0;
+    size_t indexAddIx = 0;
     uint32_t* indexPtr = (uint32_t*)indices->getPointer();
-	for (uint32_t p1 = 0; p1 < polyCountY-1; ++p1)
-	{
-		//main quads, top to bottom
-		for (uint32_t p2 = 0; p2 < polyCountX - 1; ++p2)
-		{
-			const uint32_t curr = level + p2;
-			indexPtr[indexAddIx++] = curr + polyCountXPitch;
-			indexPtr[indexAddIx++] = curr;
-			indexPtr[indexAddIx++] = curr + 1;
-			indexPtr[indexAddIx++] = curr + polyCountXPitch;
-			indexPtr[indexAddIx++] = curr + 1;
-			indexPtr[indexAddIx++] = curr + 1 + polyCountXPitch;
-		}
+    for (uint32_t p1 = 0; p1 < polyCountY-1; ++p1)
+    {
+        //main quads, top to bottom
+        for (uint32_t p2 = 0; p2 < polyCountX - 1; ++p2)
+        {
+            const uint32_t curr = level + p2;
+            indexPtr[indexAddIx++] = curr + polyCountXPitch;
+            indexPtr[indexAddIx++] = curr;
+            indexPtr[indexAddIx++] = curr + 1;
+            indexPtr[indexAddIx++] = curr + polyCountXPitch;
+            indexPtr[indexAddIx++] = curr + 1;
+            indexPtr[indexAddIx++] = curr + 1 + polyCountXPitch;
+        }
 
-		// the connectors from front to end
-		indexPtr[indexAddIx++] = level + polyCountX - 1 + polyCountXPitch;
-		indexPtr[indexAddIx++] = level + polyCountX - 1;
-		indexPtr[indexAddIx++] = level + polyCountX;
+        // the connectors from front to end
+        indexPtr[indexAddIx++] = level + polyCountX - 1 + polyCountXPitch;
+        indexPtr[indexAddIx++] = level + polyCountX - 1;
+        indexPtr[indexAddIx++] = level + polyCountX;
 
-		indexPtr[indexAddIx++] = level + polyCountX - 1 + polyCountXPitch;
-		indexPtr[indexAddIx++] = level + polyCountX;
-		indexPtr[indexAddIx++] = level + polyCountX + polyCountXPitch;
-		level += polyCountXPitch;
-	}
+        indexPtr[indexAddIx++] = level + polyCountX - 1 + polyCountXPitch;
+        indexPtr[indexAddIx++] = level + polyCountX;
+        indexPtr[indexAddIx++] = level + polyCountX + polyCountXPitch;
+        level += polyCountXPitch;
+    }
 
-	const uint32_t polyCountSq = polyCountXPitch * polyCountY; // top point
-	const uint32_t polyCountSq1 = polyCountSq + 1; // bottom point
-	const uint32_t polyCountSqM1 = (polyCountY - 1) * polyCountXPitch; // last row's first vertex
+    const uint32_t polyCountSq = polyCountXPitch * polyCountY; // top point
+    const uint32_t polyCountSq1 = polyCountSq + 1; // bottom point
+    const uint32_t polyCountSqM1 = (polyCountY - 1) * polyCountXPitch; // last row's first vertex
 
-	for (uint32_t p2 = 0; p2 < polyCountX - 1; ++p2)
-	{
-		// create triangles which are at the top of the sphere
+    for (uint32_t p2 = 0; p2 < polyCountX - 1; ++p2)
+    {
+        // create triangles which are at the top of the sphere
 
-		indexPtr[indexAddIx++] = polyCountSq;
-		indexPtr[indexAddIx++] = p2 + 1;
-		indexPtr[indexAddIx++] = p2;
+        indexPtr[indexAddIx++] = polyCountSq;
+        indexPtr[indexAddIx++] = p2 + 1;
+        indexPtr[indexAddIx++] = p2;
 
-		// create triangles which are at the bottom of the sphere
+        // create triangles which are at the bottom of the sphere
 
-		indexPtr[indexAddIx++] = polyCountSqM1 + p2;
-		indexPtr[indexAddIx++] = polyCountSqM1 + p2 + 1;
-		indexPtr[indexAddIx++] = polyCountSq1;
-	}
+        indexPtr[indexAddIx++] = polyCountSqM1 + p2;
+        indexPtr[indexAddIx++] = polyCountSqM1 + p2 + 1;
+        indexPtr[indexAddIx++] = polyCountSq1;
+    }
 
-	// create final triangle which is at the top of the sphere
+    // create final triangle which is at the top of the sphere
 
-	indexPtr[indexAddIx++] = polyCountSq;
-	indexPtr[indexAddIx++] = polyCountX;
-	indexPtr[indexAddIx++] = polyCountX - 1;
+    indexPtr[indexAddIx++] = polyCountSq;
+    indexPtr[indexAddIx++] = polyCountX;
+    indexPtr[indexAddIx++] = polyCountX - 1;
 
-	// create final triangle which is at the bottom of the sphere
+    // create final triangle which is at the bottom of the sphere
 
-	indexPtr[indexAddIx++] = polyCountSqM1 + polyCountX - 1;
-	indexPtr[indexAddIx++] = polyCountSqM1;
-	indexPtr[indexAddIx++] = polyCountSq1;
+    indexPtr[indexAddIx++] = polyCountSqM1 + polyCountX - 1;
+    indexPtr[indexAddIx++] = polyCountSqM1;
+    indexPtr[indexAddIx++] = polyCountSq1;
 
 
-	size_t vertexSize = 3*4+4+2*4+4;
-	size_t vertexCount = (polyCountXPitch * polyCountY) + 2;
+    size_t vertexSize = 3*4+4+2*4+4;
+    size_t vertexCount = (polyCountXPitch * polyCountY) + 2;
     core::ICPUBuffer* vertices = new core::ICPUBuffer(vertexCount*vertexSize);
-	uint8_t* tmpMem = (uint8_t*)vertices->getPointer();
-	for (size_t i=0; i<vertexCount; i++)
+    uint8_t* tmpMem = (uint8_t*)vertices->getPointer();
+    for (size_t i=0; i<vertexCount; i++)
     {
         tmpMem[i*vertexSize+3*4+0] = 255;
         tmpMem[i*vertexSize+3*4+1] = 255;
         tmpMem[i*vertexSize+3*4+2] = 255;
         tmpMem[i*vertexSize+3*4+3] = 255;
     }
-	// calculate the angle which separates all points in a circle
-	const double AngleX = 2 * core::PI / polyCountX;
-	const double AngleY = core::PI / polyCountY;
+    // calculate the angle which separates all points in a circle
+    const double AngleX = 2 * core::PI / polyCountX;
+    const double AngleY = core::PI / polyCountY;
 
-	double axz;
+    double axz;
 
-	// we don't start at 0.
+    // we don't start at 0.
 
-	double ay = 0;//AngleY / 2;
+    double ay = 0;//AngleY / 2;
 
     uint8_t* tmpMemPtr = tmpMem;
-	for (uint32_t y = 0; y < polyCountY; ++y)
-	{
-		ay += AngleY;
-		const double sinay = sin(ay);
-		axz = 0;
+    for (uint32_t y = 0; y < polyCountY; ++y)
+    {
+        ay += AngleY;
+        const double sinay = sin(ay);
+        axz = 0;
 
-		// calculate the necessary vertices without the doubled one
-		uint8_t* oldTmpMemPtr = tmpMemPtr;
-		for (uint32_t xz = 0;xz < polyCountX; ++xz)
-		{
-			// calculate points position
+        // calculate the necessary vertices without the doubled one
+        uint8_t* oldTmpMemPtr = tmpMemPtr;
+        for (uint32_t xz = 0;xz < polyCountX; ++xz)
+        {
+            // calculate points position
 
-			core::vector3df pos(static_cast<float>(cos(axz) * sinay),
-						static_cast<float>(cos(ay)),
-						static_cast<float>(sin(axz) * sinay));
-			// for spheres the normal is the position
-			core::vectorSIMDf normal(&pos.X);
-			normal.makeSafe3D();
-			uint32_t quantizedNormal = quantizeNormal2_10_10_10(normal);
-			pos *= radius;
+            core::vector3df pos(static_cast<float>(cos(axz) * sinay),
+                        static_cast<float>(cos(ay)),
+                        static_cast<float>(sin(axz) * sinay));
+            // for spheres the normal is the position
+            core::vectorSIMDf normal(&pos.X);
+            normal.makeSafe3D();
+            uint32_t quantizedNormal = quantizeNormal2_10_10_10(normal);
+            pos *= radius;
 
-			// calculate texture coordinates via sphere mapping
-			// tu is the same on each level, so only calculate once
-			float tu = 0.5f;
-			//if (y==0)
-			//{
-				if (normal.Y != -1.0f && normal.Y != 1.0f)
-					tu = static_cast<float>(acos(core::clamp(normal.X/sinay, -1.0, 1.0)) * 0.5 *core::RECIPROCAL_PI64);
-				if (normal.Z < 0.0f)
-					tu=1-tu;
-			//}
-			//else
-				//tu = ((float*)(tmpMem+(i-polyCountXPitch)*vertexSize))[4];
+            // calculate texture coordinates via sphere mapping
+            // tu is the same on each level, so only calculate once
+            float tu = 0.5f;
+            //if (y==0)
+            //{
+                if (normal.Y != -1.0f && normal.Y != 1.0f)
+                    tu = static_cast<float>(acos(core::clamp(normal.X/sinay, -1.0, 1.0)) * 0.5 *core::RECIPROCAL_PI64);
+                if (normal.Z < 0.0f)
+                    tu=1-tu;
+            //}
+            //else
+                //tu = ((float*)(tmpMem+(i-polyCountXPitch)*vertexSize))[4];
 
             ((float*)tmpMemPtr)[0] = pos.X;
             ((float*)tmpMemPtr)[1] = pos.Y;
@@ -549,10 +549,10 @@ ICPUMesh* CGeometryCreator::createSphereMeshCPU(float radius, uint32_t polyCount
             ((float*)tmpMemPtr)[5] = static_cast<float>(ay*core::RECIPROCAL_PI64);
             ((uint32_t*)tmpMemPtr)[6] = quantizedNormal;
 
-			tmpMemPtr += vertexSize;
-			axz += AngleX;
-		}
-		// This is the doubled vertex on the initial position
+            tmpMemPtr += vertexSize;
+            axz += AngleX;
+        }
+        // This is the doubled vertex on the initial position
 
         ((float*)tmpMemPtr)[0] = ((float*)oldTmpMemPtr)[0];
         ((float*)tmpMemPtr)[1] = ((float*)oldTmpMemPtr)[1];
@@ -561,9 +561,9 @@ ICPUMesh* CGeometryCreator::createSphereMeshCPU(float radius, uint32_t polyCount
         ((float*)tmpMemPtr)[5] = ((float*)oldTmpMemPtr)[5];
         ((uint32_t*)tmpMemPtr)[6] = ((uint32_t*)oldTmpMemPtr)[6];
         tmpMemPtr += vertexSize;
-	}
+    }
 
-	// the vertex at the top of the sphere
+    // the vertex at the top of the sphere
     ((float*)tmpMemPtr)[0] = 0.f;
     ((float*)tmpMemPtr)[1] = radius;
     ((float*)tmpMemPtr)[2] = 0.f;
@@ -571,7 +571,7 @@ ICPUMesh* CGeometryCreator::createSphereMeshCPU(float radius, uint32_t polyCount
     ((float*)tmpMemPtr)[5] = 0.f;
     ((uint32_t*)tmpMemPtr)[6] = quantizeNormal2_10_10_10(core::vectorSIMDf(0.f,1.f,0.f));
 
-	// the vertex at the bottom of the sphere
+    // the vertex at the bottom of the sphere
     tmpMemPtr += vertexSize;
     ((float*)tmpMemPtr)[0] = 0.f;
     ((float*)tmpMemPtr)[1] = -radius;
@@ -587,18 +587,18 @@ ICPUMesh* CGeometryCreator::createSphereMeshCPU(float radius, uint32_t polyCount
     desc->mapVertexAttrBuffer(vertices,scene::EVAI_ATTR3,scene::ECPA_FOUR,scene::ECT_INT_2_10_10_10_REV,vertexSize,4*3+4+2*4);
     vertices->drop();
 
-	// recalculate bounding box
-	core::aabbox3df BoundingBox;
-	BoundingBox.reset(core::vector3df(radius));
-	BoundingBox.addInternalPoint(-radius,-radius,-radius);
-	buffer->setBoundingBox(BoundingBox);
+    // recalculate bounding box
+    core::aabbox3df BoundingBox;
+    BoundingBox.reset(core::vector3df(radius));
+    BoundingBox.addInternalPoint(-radius,-radius,-radius);
+    buffer->setBoundingBox(BoundingBox);
 
-	SCPUMesh* mesh = new SCPUMesh;
-	mesh->addMeshBuffer(buffer);
-	buffer->drop();
+    SCPUMesh* mesh = new SCPUMesh;
+    mesh->addMeshBuffer(buffer);
+    buffer->drop();
 
-	mesh->recalculateBoundingBox();
-	return mesh;
+    mesh->recalculateBoundingBox();
+    return mesh;
 }
 
 IGPUMesh* CGeometryCreator::createSphereMeshGPU(video::IVideoDriver* driver, float radius, uint32_t polyCountX, uint32_t polyCountY) const
@@ -606,280 +606,280 @@ IGPUMesh* CGeometryCreator::createSphereMeshGPU(video::IVideoDriver* driver, flo
     if (!driver)
         return NULL;
 
-	SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createSphereMeshCPU(radius,polyCountX,polyCountY));
-	IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
-	cpumesh->drop();
+    SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createSphereMeshCPU(radius,polyCountX,polyCountY));
+    IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
+    cpumesh->drop();
 
-	return mesh;
+    return mesh;
 }
 
 
 /* A cylinder with proper normals and texture coords */
 ICPUMesh* CGeometryCreator::createCylinderMeshCPU(float radius, float length,
-			uint32_t tesselation, const video::SColor& color,
-			bool closeTop, float oblique) const
+            uint32_t tesselation, const video::SColor& color,
+            bool closeTop, float oblique) const
 {
 #ifdef NEW_MESHES
     return NULL;
 #else
-	SMeshBuffer* buffer = new SMeshBuffer();
+    SMeshBuffer* buffer = new SMeshBuffer();
 
-	const float recTesselation = core::reciprocal((float)tesselation);
-	const float recTesselationHalf = recTesselation * 0.5f;
-	const float angleStep = (core::PI * 2.f ) * recTesselation;
-	const float angleStepHalf = angleStep*0.5f;
+    const float recTesselation = core::reciprocal((float)tesselation);
+    const float recTesselationHalf = recTesselation * 0.5f;
+    const float angleStep = (core::PI * 2.f ) * recTesselation;
+    const float angleStepHalf = angleStep*0.5f;
 
-	uint32_t i;
-	video::S3DVertex v;
-	v.Color = color;
-	buffer->Vertices.reallocate(tesselation*4+4+(closeTop?2:1));
-	buffer->Indices.reallocate((tesselation*2+1)*(closeTop?12:9));
-	float tcx = 0.f;
-	for ( i = 0; i <= tesselation; ++i )
-	{
-		const float angle = angleStep * i;
-		v.Pos.X = radius * cosf(angle);
-		v.Pos.Y = 0.f;
-		v.Pos.Z = radius * sinf(angle);
-		v.Normal = v.Pos;
-		v.Normal.normalize();
-		v.TCoords.X=tcx;
-		v.TCoords.Y=0.f;
-		buffer->Vertices.push_back(v);
+    uint32_t i;
+    video::S3DVertex v;
+    v.Color = color;
+    buffer->Vertices.reallocate(tesselation*4+4+(closeTop?2:1));
+    buffer->Indices.reallocate((tesselation*2+1)*(closeTop?12:9));
+    float tcx = 0.f;
+    for ( i = 0; i <= tesselation; ++i )
+    {
+        const float angle = angleStep * i;
+        v.Pos.X = radius * cosf(angle);
+        v.Pos.Y = 0.f;
+        v.Pos.Z = radius * sinf(angle);
+        v.Normal = v.Pos;
+        v.Normal.normalize();
+        v.TCoords.X=tcx;
+        v.TCoords.Y=0.f;
+        buffer->Vertices.push_back(v);
 
-		v.Pos.X += oblique;
-		v.Pos.Y = length;
-		v.Normal = v.Pos;
-		v.Normal.normalize();
-		v.TCoords.Y=1.f;
-		buffer->Vertices.push_back(v);
+        v.Pos.X += oblique;
+        v.Pos.Y = length;
+        v.Normal = v.Pos;
+        v.Normal.normalize();
+        v.TCoords.Y=1.f;
+        buffer->Vertices.push_back(v);
 
-		v.Pos.X = radius * cosf(angle + angleStepHalf);
-		v.Pos.Y = 0.f;
-		v.Pos.Z = radius * sinf(angle + angleStepHalf);
-		v.Normal = v.Pos;
-		v.Normal.normalize();
-		v.TCoords.X=tcx+recTesselationHalf;
-		v.TCoords.Y=0.f;
-		buffer->Vertices.push_back(v);
+        v.Pos.X = radius * cosf(angle + angleStepHalf);
+        v.Pos.Y = 0.f;
+        v.Pos.Z = radius * sinf(angle + angleStepHalf);
+        v.Normal = v.Pos;
+        v.Normal.normalize();
+        v.TCoords.X=tcx+recTesselationHalf;
+        v.TCoords.Y=0.f;
+        buffer->Vertices.push_back(v);
 
-		v.Pos.X += oblique;
-		v.Pos.Y = length;
-		v.Normal = v.Pos;
-		v.Normal.normalize();
-		v.TCoords.Y=1.f;
-		buffer->Vertices.push_back(v);
-		tcx += recTesselation;
-	}
+        v.Pos.X += oblique;
+        v.Pos.Y = length;
+        v.Normal = v.Pos;
+        v.Normal.normalize();
+        v.TCoords.Y=1.f;
+        buffer->Vertices.push_back(v);
+        tcx += recTesselation;
+    }
 
-	// indices for the main hull part
-	const uint32_t nonWrappedSize = tesselation* 4;
-	for (i=0; i != nonWrappedSize; i += 2)
-	{
-		indexPtr[indexAddIx++] = i + 2);
-		indexPtr[indexAddIx++] = i + 0);
-		indexPtr[indexAddIx++] = i + 1);
+    // indices for the main hull part
+    const uint32_t nonWrappedSize = tesselation* 4;
+    for (i=0; i != nonWrappedSize; i += 2)
+    {
+        indexPtr[indexAddIx++] = i + 2);
+        indexPtr[indexAddIx++] = i + 0);
+        indexPtr[indexAddIx++] = i + 1);
 
-		indexPtr[indexAddIx++] = i + 2);
-		indexPtr[indexAddIx++] = i + 1);
-		indexPtr[indexAddIx++] = i + 3);
-	}
+        indexPtr[indexAddIx++] = i + 2);
+        indexPtr[indexAddIx++] = i + 1);
+        indexPtr[indexAddIx++] = i + 3);
+    }
 
-	// two closing quads between end and start
-	indexPtr[indexAddIx++] = 0);
-	indexPtr[indexAddIx++] = i + 0);
-	indexPtr[indexAddIx++] = i + 1);
+    // two closing quads between end and start
+    indexPtr[indexAddIx++] = 0);
+    indexPtr[indexAddIx++] = i + 0);
+    indexPtr[indexAddIx++] = i + 1);
 
-	indexPtr[indexAddIx++] = 0);
-	indexPtr[indexAddIx++] = i + 1);
-	indexPtr[indexAddIx++] = 1);
+    indexPtr[indexAddIx++] = 0);
+    indexPtr[indexAddIx++] = i + 1);
+    indexPtr[indexAddIx++] = 1);
 
-	// close down
-	v.Pos.X = 0.f;
-	v.Pos.Y = 0.f;
-	v.Pos.Z = 0.f;
-	v.Normal.X = 0.f;
-	v.Normal.Y = -1.f;
-	v.Normal.Z = 0.f;
-	v.TCoords.X = 1.f;
-	v.TCoords.Y = 1.f;
-	buffer->Vertices.push_back(v);
+    // close down
+    v.Pos.X = 0.f;
+    v.Pos.Y = 0.f;
+    v.Pos.Z = 0.f;
+    v.Normal.X = 0.f;
+    v.Normal.Y = -1.f;
+    v.Normal.Z = 0.f;
+    v.TCoords.X = 1.f;
+    v.TCoords.Y = 1.f;
+    buffer->Vertices.push_back(v);
 
-	uint32_t index = buffer->Vertices.size() - 1;
+    uint32_t index = buffer->Vertices.size() - 1;
 
-	for ( i = 0; i != nonWrappedSize; i += 2 )
-	{
-		indexPtr[indexAddIx++] = index);
-		indexPtr[indexAddIx++] = i + 0);
-		indexPtr[indexAddIx++] = i + 2);
-	}
+    for ( i = 0; i != nonWrappedSize; i += 2 )
+    {
+        indexPtr[indexAddIx++] = index);
+        indexPtr[indexAddIx++] = i + 0);
+        indexPtr[indexAddIx++] = i + 2);
+    }
 
-	indexPtr[indexAddIx++] = index);
-	indexPtr[indexAddIx++] = i + 0);
-	indexPtr[indexAddIx++] = 0);
+    indexPtr[indexAddIx++] = index);
+    indexPtr[indexAddIx++] = i + 0);
+    indexPtr[indexAddIx++] = 0);
 
-	if (closeTop)
-	{
-		// close top
-		v.Pos.X = oblique;
-		v.Pos.Y = length;
-		v.Pos.Z = 0.f;
-		v.Normal.X = 0.f;
-		v.Normal.Y = 1.f;
-		v.Normal.Z = 0.f;
-		v.TCoords.X = 0.f;
-		v.TCoords.Y = 0.f;
-		buffer->Vertices.push_back(v);
+    if (closeTop)
+    {
+        // close top
+        v.Pos.X = oblique;
+        v.Pos.Y = length;
+        v.Pos.Z = 0.f;
+        v.Normal.X = 0.f;
+        v.Normal.Y = 1.f;
+        v.Normal.Z = 0.f;
+        v.TCoords.X = 0.f;
+        v.TCoords.Y = 0.f;
+        buffer->Vertices.push_back(v);
 
-		index = buffer->Vertices.size() - 1;
+        index = buffer->Vertices.size() - 1;
 
-		for ( i = 0; i != nonWrappedSize; i += 2 )
-		{
-			indexPtr[indexAddIx++] = i + 1);
-			indexPtr[indexAddIx++] = index);
-			indexPtr[indexAddIx++] = i + 3);
-		}
+        for ( i = 0; i != nonWrappedSize; i += 2 )
+        {
+            indexPtr[indexAddIx++] = i + 1);
+            indexPtr[indexAddIx++] = index);
+            indexPtr[indexAddIx++] = i + 3);
+        }
 
-		indexPtr[indexAddIx++] = i + 1);
-		indexPtr[indexAddIx++] = index);
-		indexPtr[indexAddIx++] = 1);
-	}
+        indexPtr[indexAddIx++] = i + 1);
+        indexPtr[indexAddIx++] = index);
+        indexPtr[indexAddIx++] = 1);
+    }
 
-	buffer->recalculateBoundingBox();
-	SMesh* mesh = new SMesh();
-	mesh->addMeshBuffer(buffer);
-	mesh->setHardwareMappingHint(EHM_STATIC);
-	mesh->recalculateBoundingBox();
-	buffer->drop();
-	return mesh;
+    buffer->recalculateBoundingBox();
+    SMesh* mesh = new SMesh();
+    mesh->addMeshBuffer(buffer);
+    mesh->setHardwareMappingHint(EHM_STATIC);
+    mesh->recalculateBoundingBox();
+    buffer->drop();
+    return mesh;
 #endif // NEW_MESHES
 }
 
 IGPUMesh* CGeometryCreator::createCylinderMeshGPU(video::IVideoDriver* driver,
             float radius, float length,
-			uint32_t tesselation, const video::SColor& color,
-			bool closeTop, float oblique) const
+            uint32_t tesselation, const video::SColor& color,
+            bool closeTop, float oblique) const
 {
     if (!driver)
         return NULL;
 
-	SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createCylinderMeshCPU(radius,length,tesselation,color,closeTop,oblique));
-	IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
-	cpumesh->drop();
+    SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createCylinderMeshCPU(radius,length,tesselation,color,closeTop,oblique));
+    IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
+    cpumesh->drop();
 
-	return mesh;
+    return mesh;
 }
 
 
 
 /* A cone with proper normals and texture coords */
 ICPUMesh* CGeometryCreator::createConeMeshCPU(float radius, float length, uint32_t tesselation,
-					const video::SColor& colorTop,
-					const video::SColor& colorBottom,
-					float oblique) const
+                    const video::SColor& colorTop,
+                    const video::SColor& colorBottom,
+                    float oblique) const
 {
 #ifdef NEW_MESHES
     return NULL;
 #else
-	SMeshBuffer* buffer = new SMeshBuffer();
+    SMeshBuffer* buffer = new SMeshBuffer();
 
-	const float angleStep = (core::PI * 2.f ) / tesselation;
-	const float angleStepHalf = angleStep*0.5f;
+    const float angleStep = (core::PI * 2.f ) / tesselation;
+    const float angleStepHalf = angleStep*0.5f;
 
-	video::S3DVertex v;
-	uint32_t i;
+    video::S3DVertex v;
+    uint32_t i;
 
-	v.Color = colorTop;
-	for ( i = 0; i != tesselation; ++i )
-	{
-		float angle = angleStep * float(i);
+    v.Color = colorTop;
+    for ( i = 0; i != tesselation; ++i )
+    {
+        float angle = angleStep * float(i);
 
-		v.Pos.X = radius * cosf(angle);
-		v.Pos.Y = 0.f;
-		v.Pos.Z = radius * sinf(angle);
-		v.Normal = v.Pos;
-		v.Normal.normalize();
-		buffer->Vertices.push_back(v);
+        v.Pos.X = radius * cosf(angle);
+        v.Pos.Y = 0.f;
+        v.Pos.Z = radius * sinf(angle);
+        v.Normal = v.Pos;
+        v.Normal.normalize();
+        buffer->Vertices.push_back(v);
 
-		angle += angleStepHalf;
-		v.Pos.X = radius * cosf(angle);
-		v.Pos.Y = 0.f;
-		v.Pos.Z = radius * sinf(angle);
-		v.Normal = v.Pos;
-		v.Normal.normalize();
-		buffer->Vertices.push_back(v);
-	}
-	const uint32_t nonWrappedSize = buffer->Vertices.size() - 1;
+        angle += angleStepHalf;
+        v.Pos.X = radius * cosf(angle);
+        v.Pos.Y = 0.f;
+        v.Pos.Z = radius * sinf(angle);
+        v.Normal = v.Pos;
+        v.Normal.normalize();
+        buffer->Vertices.push_back(v);
+    }
+    const uint32_t nonWrappedSize = buffer->Vertices.size() - 1;
 
-	// close top
-	v.Pos.X = oblique;
-	v.Pos.Y = length;
-	v.Pos.Z = 0.f;
-	v.Normal.X = 0.f;
-	v.Normal.Y = 1.f;
-	v.Normal.Z = 0.f;
-	buffer->Vertices.push_back(v);
+    // close top
+    v.Pos.X = oblique;
+    v.Pos.Y = length;
+    v.Pos.Z = 0.f;
+    v.Normal.X = 0.f;
+    v.Normal.Y = 1.f;
+    v.Normal.Z = 0.f;
+    buffer->Vertices.push_back(v);
 
-	uint32_t index = buffer->Vertices.size() - 1;
+    uint32_t index = buffer->Vertices.size() - 1;
 
-	for ( i = 0; i != nonWrappedSize; i += 1 )
-	{
-		indexPtr[indexAddIx++] = i + 0);
-		indexPtr[indexAddIx++] = index);
-		indexPtr[indexAddIx++] = i + 1);
-	}
+    for ( i = 0; i != nonWrappedSize; i += 1 )
+    {
+        indexPtr[indexAddIx++] = i + 0);
+        indexPtr[indexAddIx++] = index);
+        indexPtr[indexAddIx++] = i + 1);
+    }
 
-	indexPtr[indexAddIx++] = i + 0);
-	indexPtr[indexAddIx++] = index);
-	indexPtr[indexAddIx++] = 0);
+    indexPtr[indexAddIx++] = i + 0);
+    indexPtr[indexAddIx++] = index);
+    indexPtr[indexAddIx++] = 0);
 
-	// close down
-	v.Color = colorBottom;
-	v.Pos.X = 0.f;
-	v.Pos.Y = 0.f;
-	v.Pos.Z = 0.f;
-	v.Normal.X = 0.f;
-	v.Normal.Y = -1.f;
-	v.Normal.Z = 0.f;
-	buffer->Vertices.push_back(v);
+    // close down
+    v.Color = colorBottom;
+    v.Pos.X = 0.f;
+    v.Pos.Y = 0.f;
+    v.Pos.Z = 0.f;
+    v.Normal.X = 0.f;
+    v.Normal.Y = -1.f;
+    v.Normal.Z = 0.f;
+    buffer->Vertices.push_back(v);
 
-	index = buffer->Vertices.size() - 1;
+    index = buffer->Vertices.size() - 1;
 
-	for ( i = 0; i != nonWrappedSize; i += 1 )
-	{
-		indexPtr[indexAddIx++] = index);
-		indexPtr[indexAddIx++] = i + 0);
-		indexPtr[indexAddIx++] = i + 1);
-	}
+    for ( i = 0; i != nonWrappedSize; i += 1 )
+    {
+        indexPtr[indexAddIx++] = index);
+        indexPtr[indexAddIx++] = i + 0);
+        indexPtr[indexAddIx++] = i + 1);
+    }
 
-	indexPtr[indexAddIx++] = index);
-	indexPtr[indexAddIx++] = i + 0);
-	indexPtr[indexAddIx++] = 0);
+    indexPtr[indexAddIx++] = index);
+    indexPtr[indexAddIx++] = i + 0);
+    indexPtr[indexAddIx++] = 0);
 
-	buffer->recalculateBoundingBox();
-	SMesh* mesh = new SMesh();
-	mesh->addMeshBuffer(buffer);
-	buffer->drop();
+    buffer->recalculateBoundingBox();
+    SMesh* mesh = new SMesh();
+    mesh->addMeshBuffer(buffer);
+    buffer->drop();
 
-	mesh->recalculateBoundingBox();
-	return mesh;
+    mesh->recalculateBoundingBox();
+    return mesh;
 #endif // NEW_MESHES
 }
 
 IGPUMesh* CGeometryCreator::createConeMeshGPU(video::IVideoDriver* driver,
                     float radius, float length, uint32_t tesselation,
-					const video::SColor& colorTop,
-					const video::SColor& colorBottom,
-					float oblique) const
+                    const video::SColor& colorTop,
+                    const video::SColor& colorBottom,
+                    float oblique) const
 {
     if (!driver)
         return NULL;
 
-	SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createConeMeshCPU(radius,length,tesselation,colorTop,colorBottom,oblique));
-	IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
-	cpumesh->drop();
+    SCPUMesh* cpumesh = static_cast<SCPUMesh*>(createConeMeshCPU(radius,length,tesselation,colorTop,colorBottom,oblique));
+    IGPUMesh* mesh = driver->createGPUMeshFromCPU(cpumesh,video::EMDCB_INTERLEAVED_PACK_ALL_SINGLE_BUFFER);
+    cpumesh->drop();
 
-	return mesh;
+    return mesh;
 }
 
 

@@ -11,29 +11,29 @@ namespace irr
 {
 namespace scene
 {
-	class CSceneNodeAnimatorRotation : public ISceneNodeAnimator
-	{
-	public:
+    class CSceneNodeAnimatorRotation : public ISceneNodeAnimator
+    {
+    public:
 
-		//! constructor
-		CSceneNodeAnimatorRotation(uint32_t time, const core::vector3df& rotation);
+        //! constructor
+        CSceneNodeAnimatorRotation(uint32_t time, const core::vector3df& rotation);
 
-		//! animates a scene node
-		virtual void animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs);
+        //! animates a scene node
+        virtual void animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs);
 
-		//! Returns type of the scene node animator
-		virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_ROTATION; }
+        //! Returns type of the scene node animator
+        virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_ROTATION; }
 
-		//! Creates a clone of this animator.
-		/** Please note that you will have to drop
-		(IReferenceCounted::drop()) the returned pointer after calling this. */
-		virtual ISceneNodeAnimator* createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager=0);
+        //! Creates a clone of this animator.
+        /** Please note that you will have to drop
+        (IReferenceCounted::drop()) the returned pointer after calling this. */
+        virtual ISceneNodeAnimator* createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager=0);
 
-	private:
+    private:
 
-		core::vector3df Rotation;
-		uint32_t StartTime;
-	};
+        core::vector3df Rotation;
+        uint32_t StartTime;
+    };
 
 
 } // end namespace scene

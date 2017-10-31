@@ -35,70 +35,70 @@ class CLMTSMeshFileLoader : public IMeshLoader
 {
 public:
 
-	CLMTSMeshFileLoader(io::IFileSystem* fs, video::IVideoDriver* driver);
+    CLMTSMeshFileLoader(io::IFileSystem* fs, video::IVideoDriver* driver);
 
-	virtual ~CLMTSMeshFileLoader();
+    virtual ~CLMTSMeshFileLoader();
 
-	virtual bool isALoadableFileExtension(const io::path& filename) const;
+    virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-	virtual IAnimatedMesh* createMesh(io::IReadFile* file);
+    virtual IAnimatedMesh* createMesh(io::IReadFile* file);
 
 private:
-	void constructMesh(SMesh* mesh);
-	void loadTextures(SMesh* mesh);
-	void cleanup();
+    void constructMesh(SMesh* mesh);
+    void loadTextures(SMesh* mesh);
+    void cleanup();
 
 // byte-align structures
 #include "irrpack.h"
 
-	struct SLMTSHeader
-	{
-		uint32_t MagicID;
-		uint32_t Version;
-		uint32_t HeaderSize;
-		uint16_t TextureCount;
-		uint16_t SubsetCount;
-		uint32_t TriangleCount;
-		uint16_t SubsetSize;
-		uint16_t VertexSize;
-	} PACK_STRUCT;
+    struct SLMTSHeader
+    {
+        uint32_t MagicID;
+        uint32_t Version;
+        uint32_t HeaderSize;
+        uint16_t TextureCount;
+        uint16_t SubsetCount;
+        uint32_t TriangleCount;
+        uint16_t SubsetSize;
+        uint16_t VertexSize;
+    } PACK_STRUCT;
 
-	struct SLMTSTextureInfoEntry
-	{
-		int8_t Filename[256];
-		uint16_t Flags;
-	} PACK_STRUCT;
+    struct SLMTSTextureInfoEntry
+    {
+        int8_t Filename[256];
+        uint16_t Flags;
+    } PACK_STRUCT;
 
-	struct SLMTSSubsetInfoEntry
-	{
-		uint32_t Offset;
-		uint32_t Count;
-		uint16_t TextID1;
-		uint16_t TextID2;
-	} PACK_STRUCT;
+    struct SLMTSSubsetInfoEntry
+    {
+        uint32_t Offset;
+        uint32_t Count;
+        uint16_t TextID1;
+        uint16_t TextID2;
+    } PACK_STRUCT;
 
-	struct SLMTSTriangleDataEntry
-	{
-		float X;
-		float Y;
-		float Z;
-		float U1;
-		float V1;
-		float U2;
-		float V2;
-	} PACK_STRUCT;
+    struct SLMTSTriangleDataEntry
+    {
+        float X;
+        float Y;
+        float Z;
+        float U1;
+        float V1;
+        float U2;
+        float V2;
+    } PACK_STRUCT;
 
 // Default alignment
 #include "irrunpack.h"
 
-	SLMTSHeader Header;
-	SLMTSTextureInfoEntry* Textures;
-	SLMTSSubsetInfoEntry* Subsets;
-	SLMTSTriangleDataEntry* Triangles;
+    SLMTSHeader Header;
+    SLMTSTextureInfoEntry* Textures;
+    SLMTSSubsetInfoEntry* Subsets;
+    SLMTSTriangleDataEntry* Triangles;
 
-	video::IVideoDriver* Driver;
-	io::IFileSystem* FileSystem;
-	bool FlipEndianess;
+    video::IVideoDriver* Driver;
+    io::IFileSystem* FileSystem;
+    bool FlipEndianess;
 };
 
 } // end namespace scene

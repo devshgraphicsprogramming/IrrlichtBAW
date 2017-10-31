@@ -124,7 +124,7 @@ class IMetaGranularBuffer : public virtual IReferenceCounted
         ///     2) can have holes in redirects
         virtual bool Alloc(uint32_t* granuleIDs, const size_t& count)
         {
-//			ValidateHashMap(Allocated);
+//            ValidateHashMap(Allocated);
             size_t allocationsCount = 0;
 
             size_t newAllocCount = Allocated+count;
@@ -255,7 +255,7 @@ class IMetaGranularBuffer : public virtual IReferenceCounted
                 }
             }
 #ifdef _DEBUG
-			assert(deletedGranuleCnt==count);
+            assert(deletedGranuleCnt==count);
 #endif // _DEBUG
 //            ValidateHashMap(Allocated-count);
 
@@ -288,7 +288,7 @@ class IMetaGranularBuffer : public virtual IReferenceCounted
             if (B->getSize()/GranuleByteSize-Allocated>=BackBufferShrinkStep+BackBufferGrowStep)
                 ShrinkBackBuffer();
 
-//			ValidateHashMap(Allocated);
+//            ValidateHashMap(Allocated);
         }
 
         inline const size_t getGranuleByteSize() const {return GranuleByteSize;}

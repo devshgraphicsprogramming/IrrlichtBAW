@@ -84,32 +84,32 @@ class IMaterialRendererServices
 {
 public:
 
-	//! Destructor
-	virtual ~IMaterialRendererServices() {}
+    //! Destructor
+    virtual ~IMaterialRendererServices() {}
 
-	//! Can be called by an IMaterialRenderer to make its work easier.
-	/** Sets all basic renderstates if needed.
-	Basic render states are diffuse, ambient, specular, and emissive color,
-	specular power, bilinear and trilinear filtering, wireframe mode,
-	grouraudshading, lighting, zbuffer, zwriteenable, backfaceculling and
-	fog enabling.
-	\param material The new material to be used.
-	\param lastMaterial The material used until now.
-	\param resetAllRenderstates Set to true if all renderstates should be
-	set, regardless of their current state. */
-	virtual void setBasicRenderStates(const SMaterial& material,
-		const SMaterial& lastMaterial,
-		bool resetAllRenderstates) = 0;
+    //! Can be called by an IMaterialRenderer to make its work easier.
+    /** Sets all basic renderstates if needed.
+    Basic render states are diffuse, ambient, specular, and emissive color,
+    specular power, bilinear and trilinear filtering, wireframe mode,
+    grouraudshading, lighting, zbuffer, zwriteenable, backfaceculling and
+    fog enabling.
+    \param material The new material to be used.
+    \param lastMaterial The material used until now.
+    \param resetAllRenderstates Set to true if all renderstates should be
+    set, regardless of their current state. */
+    virtual void setBasicRenderStates(const SMaterial& material,
+        const SMaterial& lastMaterial,
+        bool resetAllRenderstates) = 0;
 
 
 
-	virtual void setShaderConstant(const void* data, int32_t location, E_SHADER_CONSTANT_TYPE type, uint32_t number=1) = 0;
+    virtual void setShaderConstant(const void* data, int32_t location, E_SHADER_CONSTANT_TYPE type, uint32_t number=1) = 0;
     virtual void setShaderTextures(const int32_t* textureIndices, int32_t location, E_SHADER_CONSTANT_TYPE type, uint32_t number=1) = 0;
 
 
-	//! Get pointer to the IVideoDriver interface
-	/** \return Pointer to the IVideoDriver interface */
-	virtual IVideoDriver* getVideoDriver() = 0;
+    //! Get pointer to the IVideoDriver interface
+    /** \return Pointer to the IVideoDriver interface */
+    virtual IVideoDriver* getVideoDriver() = 0;
 };
 
 } // end namespace video

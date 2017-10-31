@@ -17,19 +17,19 @@ class COpenGLQuery : public virtual IQueryObject
         COpenGLQuery(const GLenum& type_in);
         virtual ~COpenGLQuery();
 
-		virtual const E_QUERY_OBJECT_TYPE getQueryObjectType() const {return cachedIrrType;}
+        virtual const E_QUERY_OBJECT_TYPE getQueryObjectType() const {return cachedIrrType;}
 
-		virtual void getQueryResult(uint32_t* queryResult);
-		virtual void getQueryResult(uint64_t* queryResult);
-		virtual bool getQueryResult32(IGPUBuffer* buffer, const size_t& offset=0, const bool& conditionalWrite=true);
-		virtual bool getQueryResult64(IGPUBuffer* buffer, const size_t& offset=0, const bool& conditionalWrite=true);
+        virtual void getQueryResult(uint32_t* queryResult);
+        virtual void getQueryResult(uint64_t* queryResult);
+        virtual bool getQueryResult32(IGPUBuffer* buffer, const size_t& offset=0, const bool& conditionalWrite=true);
+        virtual bool getQueryResult64(IGPUBuffer* buffer, const size_t& offset=0, const bool& conditionalWrite=true);
 
-		virtual bool isQueryReady();
-		virtual void isQueryReady32(IGPUBuffer* buffer, const size_t& offset=0);
-		virtual void isQueryReady64(IGPUBuffer* buffer, const size_t& offset=0);
+        virtual bool isQueryReady();
+        virtual void isQueryReady32(IGPUBuffer* buffer, const size_t& offset=0);
+        virtual void isQueryReady64(IGPUBuffer* buffer, const size_t& offset=0);
 
-		inline GLenum getType() const {return type;}
-		inline GLuint getGLHandle() const {return object;}
+        inline GLenum getType() const {return type;}
+        inline GLuint getGLHandle() const {return object;}
 
         inline void flagBegun() {active=true; queryIsReady=false;}
         inline void flagEnded() {active=false; queryNeedsUpdate=true;}

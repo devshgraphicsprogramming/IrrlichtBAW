@@ -14,55 +14,55 @@ namespace scene
 CEmptySceneNode::CEmptySceneNode(IDummyTransformationSceneNode* parent, ISceneManager* mgr, int32_t id)
 : ISceneNode(parent, mgr, id)
 {
-	#ifdef _DEBUG
-	setDebugName("CEmptySceneNode");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CEmptySceneNode");
+    #endif
 
-	setAutomaticCulling(scene::EAC_OFF);
+    setAutomaticCulling(scene::EAC_OFF);
 }
 
 
 //! pre render event
 void CEmptySceneNode::OnRegisterSceneNode()
 {
-	if (IsVisible)
-		SceneManager->registerNodeForRendering(this);
+    if (IsVisible)
+        SceneManager->registerNodeForRendering(this);
 
-	ISceneNode::OnRegisterSceneNode();
+    ISceneNode::OnRegisterSceneNode();
 }
 
 
 //! render
 void CEmptySceneNode::render()
 {
-	// do nothing
+    // do nothing
 }
 
 
 //! returns the axis aligned bounding box of this node
 const core::aabbox3d<float>& CEmptySceneNode::getBoundingBox()
 {
-	return Box;
+    return Box;
 }
 
 
 //! Creates a clone of this scene node and its children.
 ISceneNode* CEmptySceneNode::clone(IDummyTransformationSceneNode* newParent, ISceneManager* newManager)
 {
-	if (!newParent)
-		newParent = Parent;
-	if (!newManager)
-		newManager = SceneManager;
+    if (!newParent)
+        newParent = Parent;
+    if (!newManager)
+        newManager = SceneManager;
 
-	CEmptySceneNode* nb = new CEmptySceneNode(newParent,
-		newManager, ID);
+    CEmptySceneNode* nb = new CEmptySceneNode(newParent,
+        newManager, ID);
 
-	nb->cloneMembers(this, newManager);
-	nb->Box = Box;
+    nb->cloneMembers(this, newManager);
+    nb->Box = Box;
 
-	if ( newParent )
-		nb->drop();
-	return nb;
+    if ( newParent )
+        nb->drop();
+    return nb;
 }
 
 

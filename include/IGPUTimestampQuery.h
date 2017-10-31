@@ -13,7 +13,7 @@ namespace video
 class IGPUTimestampQuery : public IReferenceCounted
 {
     public:
-		virtual bool isQueryReady() = 0;
+        virtual bool isQueryReady() = 0;
 
         virtual uint64_t getTimestampWhenCompleted() = 0;
 };

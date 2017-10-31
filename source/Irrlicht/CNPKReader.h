@@ -21,103 +21,103 @@ namespace irr
 {
 namespace io
 {
-	namespace
-	{
-	//! File header containing location and size of the table of contents
-	struct SNPKHeader
-	{
-		// Don't change the order of these fields!  They must match the order stored on disk.
-		int8_t Tag[4];
-		uint32_t Length;
-		uint32_t Offset;
-	};
+    namespace
+    {
+    //! File header containing location and size of the table of contents
+    struct SNPKHeader
+    {
+        // Don't change the order of these fields!  They must match the order stored on disk.
+        int8_t Tag[4];
+        uint32_t Length;
+        uint32_t Offset;
+    };
 
-	//! An entry in the NPK file's table of contents.
-	struct SNPKFileEntry
-	{
-		core::stringc Name;
-		uint32_t Offset;
-		uint32_t Length;
-	};
-	} // end namespace
+    //! An entry in the NPK file's table of contents.
+    struct SNPKFileEntry
+    {
+        core::stringc Name;
+        uint32_t Offset;
+        uint32_t Length;
+    };
+    } // end namespace
 
-	//! Archiveloader capable of loading Nebula Device 2 NPK Archives
-	class CArchiveLoaderNPK : public IArchiveLoader
-	{
-	public:
+    //! Archiveloader capable of loading Nebula Device 2 NPK Archives
+    class CArchiveLoaderNPK : public IArchiveLoader
+    {
+    public:
 
-		//! Constructor
-		CArchiveLoaderNPK(io::IFileSystem* fs);
+        //! Constructor
+        CArchiveLoaderNPK(io::IFileSystem* fs);
 
-		//! returns true if the file maybe is able to be loaded by this class
-		//! based on the file extension (e.g. ".zip")
-		virtual bool isALoadableFileFormat(const io::path& filename) const;
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".zip")
+        virtual bool isALoadableFileFormat(const io::path& filename) const;
 
-		//! Check if the file might be loaded by this class
-		/** Check might look into the file.
-		\param file File handle to check.
-		\return True if file seems to be loadable. */
-		virtual bool isALoadableFileFormat(io::IReadFile* file) const;
+        //! Check if the file might be loaded by this class
+        /** Check might look into the file.
+        \param file File handle to check.
+        \return True if file seems to be loadable. */
+        virtual bool isALoadableFileFormat(io::IReadFile* file) const;
 
-		//! Check to see if the loader can create archives of this type.
-		/** Check based on the archive type.
-		\param fileType The archive type to check.
-		\return True if the archile loader supports this type, false if not */
-		virtual bool isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const;
+        //! Check to see if the loader can create archives of this type.
+        /** Check based on the archive type.
+        \param fileType The archive type to check.
+        \return True if the archile loader supports this type, false if not */
+        virtual bool isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const;
 
-		//! Creates an archive from the filename
-		/** \param file File handle to check.
-		\return Pointer to newly created archive, or 0 upon error. */
-		virtual IFileArchive* createArchive(const io::path& filename, bool ignoreCase, bool ignorePaths) const;
+        //! Creates an archive from the filename
+        /** \param file File handle to check.
+        \return Pointer to newly created archive, or 0 upon error. */
+        virtual IFileArchive* createArchive(const io::path& filename, bool ignoreCase, bool ignorePaths) const;
 
-		//! creates/loads an archive from the file.
-		//! \return Pointer to the created archive. Returns 0 if loading failed.
-		virtual io::IFileArchive* createArchive(io::IReadFile* file, bool ignoreCase, bool ignorePaths) const;
+        //! creates/loads an archive from the file.
+        //! \return Pointer to the created archive. Returns 0 if loading failed.
+        virtual io::IFileArchive* createArchive(io::IReadFile* file, bool ignoreCase, bool ignorePaths) const;
 
-		//! Returns the type of archive created by this loader
-		virtual E_FILE_ARCHIVE_TYPE getType() const { return EFAT_NPK; }
+        //! Returns the type of archive created by this loader
+        virtual E_FILE_ARCHIVE_TYPE getType() const { return EFAT_NPK; }
 
-	private:
-		io::IFileSystem* FileSystem;
-	};
+    private:
+        io::IFileSystem* FileSystem;
+    };
 
 
-	//! reads from NPK
-	class CNPKReader : public virtual IFileArchive, virtual CFileList
-	{
-	public:
+    //! reads from NPK
+    class CNPKReader : public virtual IFileArchive, virtual CFileList
+    {
+    public:
 
-		CNPKReader(IReadFile* file, bool ignoreCase, bool ignorePaths);
-		virtual ~CNPKReader();
+        CNPKReader(IReadFile* file, bool ignoreCase, bool ignorePaths);
+        virtual ~CNPKReader();
 
-		// file archive methods
+        // file archive methods
 
-		//! return the id of the file Archive
-		virtual const io::path& getArchiveName() const
-		{
-			return File->getFileName();
-		}
+        //! return the id of the file Archive
+        virtual const io::path& getArchiveName() const
+        {
+            return File->getFileName();
+        }
 
-		//! opens a file by file name
-		virtual IReadFile* createAndOpenFile(const io::path& filename);
+        //! opens a file by file name
+        virtual IReadFile* createAndOpenFile(const io::path& filename);
 
-		//! opens a file by index
-		virtual IReadFile* createAndOpenFile(uint32_t index);
+        //! opens a file by index
+        virtual IReadFile* createAndOpenFile(uint32_t index);
 
-		//! returns the list of files
-		virtual const IFileList* getFileList() const;
+        //! returns the list of files
+        virtual const IFileList* getFileList() const;
 
-		//! get the class Type
-		virtual E_FILE_ARCHIVE_TYPE getType() const { return EFAT_NPK; }
+        //! get the class Type
+        virtual E_FILE_ARCHIVE_TYPE getType() const { return EFAT_NPK; }
 
-	private:
+    private:
 
-		//! scans for a local header, returns false if the header is invalid
-		bool scanLocalHeader();
-		void readString(core::stringc& name);
+        //! scans for a local header, returns false if the header is invalid
+        bool scanLocalHeader();
+        void readString(core::stringc& name);
 
-		IReadFile* File;
-	};
+        IReadFile* File;
+    };
 
 } // end namespace io
 } // end namespace irr

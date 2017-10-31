@@ -27,109 +27,109 @@ class CB3DMeshFileLoader : public IMeshLoader
 {
 public:
 
-	//! Constructor
-	CB3DMeshFileLoader(scene::ISceneManager* smgr);
+    //! Constructor
+    CB3DMeshFileLoader(scene::ISceneManager* smgr);
 
-	//! returns true if the file maybe is able to be loaded by this class
-	//! based on the file extension (e.g. ".bsp")
-	virtual bool isALoadableFileExtension(const io::path& filename) const;
+    //! returns true if the file maybe is able to be loaded by this class
+    //! based on the file extension (e.g. ".bsp")
+    virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-	//! creates/loads an animated mesh from the file.
-	//! \return Pointer to the created mesh. Returns 0 if loading failed.
-	//! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-	//! See IReferenceCounted::drop() for more information.
-	virtual IAnimatedMesh* createMesh(io::IReadFile* file);
+    //! creates/loads an animated mesh from the file.
+    //! \return Pointer to the created mesh. Returns 0 if loading failed.
+    //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+    //! See IReferenceCounted::drop() for more information.
+    virtual IAnimatedMesh* createMesh(io::IReadFile* file);
 
 private:
 
-	struct SB3dChunkHeader
-	{
-		int8_t name[4];
-		int32_t size;
-	};
+    struct SB3dChunkHeader
+    {
+        int8_t name[4];
+        int32_t size;
+    };
 
-	struct SB3dChunk
-	{
-		SB3dChunk(const SB3dChunkHeader& header, long sp)
-			: length(header.size+8), startposition(sp)
-		{
-			name[0]=header.name[0];
-			name[1]=header.name[1];
-			name[2]=header.name[2];
-			name[3]=header.name[3];
-		}
+    struct SB3dChunk
+    {
+        SB3dChunk(const SB3dChunkHeader& header, long sp)
+            : length(header.size+8), startposition(sp)
+        {
+            name[0]=header.name[0];
+            name[1]=header.name[1];
+            name[2]=header.name[2];
+            name[3]=header.name[3];
+        }
 
-		int8_t name[4];
-		int32_t length;
-		long startposition;
-	};
+        int8_t name[4];
+        int32_t length;
+        long startposition;
+    };
 
-	struct SB3dTexture
-	{
-		core::stringc TextureName;
-		int32_t Flags;
-		int32_t Blend;
-		float Xpos;
-		float Ypos;
-		float Xscale;
-		float Yscale;
-		float Angle;
-	};
+    struct SB3dTexture
+    {
+        core::stringc TextureName;
+        int32_t Flags;
+        int32_t Blend;
+        float Xpos;
+        float Ypos;
+        float Xscale;
+        float Yscale;
+        float Angle;
+    };
 
-	struct SB3dMaterial
-	{
-		SB3dMaterial() : red(1.0f), green(1.0f),
-			blue(1.0f), alpha(1.0f), shininess(0.0f), blend(1),
-			fx(0)
-		{
-			for (uint32_t i=0; i<video::MATERIAL_MAX_TEXTURES; ++i)
-				Textures[i]=0;
-		}
-		video::SMaterial Material;
-		float red, green, blue, alpha;
-		float shininess;
-		int32_t blend,fx;
-		SB3dTexture *Textures[video::MATERIAL_MAX_TEXTURES];
-	};
+    struct SB3dMaterial
+    {
+        SB3dMaterial() : red(1.0f), green(1.0f),
+            blue(1.0f), alpha(1.0f), shininess(0.0f), blend(1),
+            fx(0)
+        {
+            for (uint32_t i=0; i<video::MATERIAL_MAX_TEXTURES; ++i)
+                Textures[i]=0;
+        }
+        video::SMaterial Material;
+        float red, green, blue, alpha;
+        float shininess;
+        int32_t blend,fx;
+        SB3dTexture *Textures[video::MATERIAL_MAX_TEXTURES];
+    };
 
-	bool load();
-	bool readChunkNODE(CSkinnedMesh::SJoint* InJoint);
-	bool readChunkMESH(CSkinnedMesh::SJoint* InJoint);
-	bool readChunkVRTS(CSkinnedMesh::SJoint* InJoint);
-	bool readChunkTRIS(scene::SSkinMeshBuffer *MeshBuffer, uint32_t MeshBufferID, int32_t Vertices_Start);
-	bool readChunkBONE(CSkinnedMesh::SJoint* InJoint);
-	bool readChunkKEYS(CSkinnedMesh::SJoint* InJoint);
-	bool readChunkANIM();
-	bool readChunkTEXS();
-	bool readChunkBRUS();
+    bool load();
+    bool readChunkNODE(CSkinnedMesh::SJoint* InJoint);
+    bool readChunkMESH(CSkinnedMesh::SJoint* InJoint);
+    bool readChunkVRTS(CSkinnedMesh::SJoint* InJoint);
+    bool readChunkTRIS(scene::SSkinMeshBuffer *MeshBuffer, uint32_t MeshBufferID, int32_t Vertices_Start);
+    bool readChunkBONE(CSkinnedMesh::SJoint* InJoint);
+    bool readChunkKEYS(CSkinnedMesh::SJoint* InJoint);
+    bool readChunkANIM();
+    bool readChunkTEXS();
+    bool readChunkBRUS();
 
-	void loadTextures(SB3dMaterial& material) const;
+    void loadTextures(SB3dMaterial& material) const;
 
-	void readString(core::stringc& newstring);
-	void readFloats(float* vec, uint32_t count);
+    void readString(core::stringc& newstring);
+    void readFloats(float* vec, uint32_t count);
 
-	core::array<SB3dChunk> B3dStack;
+    core::array<SB3dChunk> B3dStack;
 
-	core::array<SB3dMaterial> Materials;
-	core::array<SB3dTexture> Textures;
+    core::array<SB3dMaterial> Materials;
+    core::array<SB3dTexture> Textures;
 
-	core::array<int32_t> AnimatedVertices_VertexID;
+    core::array<int32_t> AnimatedVertices_VertexID;
 
-	core::array<int32_t> AnimatedVertices_BufferID;
+    core::array<int32_t> AnimatedVertices_BufferID;
 
-	core::array<video::S3DVertex2TCoords> BaseVertices;
+    core::array<video::S3DVertex2TCoords> BaseVertices;
 
-	ISceneManager*	SceneManager;
-	CSkinnedMesh*	AnimatedMesh;
-	io::IReadFile*	B3DFile;
+    ISceneManager*    SceneManager;
+    CSkinnedMesh*    AnimatedMesh;
+    io::IReadFile*    B3DFile;
 
-	//B3Ds have Vertex ID's local within the mesh I don't want this
-	// Variable needs to be class member due to recursion in calls
-	uint32_t VerticesStart;
+    //B3Ds have Vertex ID's local within the mesh I don't want this
+    // Variable needs to be class member due to recursion in calls
+    uint32_t VerticesStart;
 
-	bool NormalsInFile;
-	bool HasVertexColors;
-	bool ShowWarning;
+    bool NormalsInFile;
+    bool HasVertexColors;
+    bool ShowWarning;
 };
 
 
