@@ -14,15 +14,15 @@ namespace scene
 {
 
 
-	/* For Later, we never use non-skinned Meshes!
-	class IGPUAnimatedMesh : public IGPUMesh
-	{
+    /* For Later, we never use non-skinned Meshes!
+    class IGPUAnimatedMesh : public IGPUMesh
+    {
         inline virtual E_MESH_TYPE getMeshType() const
-		{
-			return EMT_ANIMATED_FRAME_BASED;
-		}
-	};
-	*/
+        {
+            return EMT_ANIMATED_FRAME_BASED;
+        }
+    };
+    */
 
 } // end namespace scene
 } // end namespace irr

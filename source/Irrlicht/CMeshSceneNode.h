@@ -14,73 +14,73 @@ namespace scene
 {
 
 
-	class CMeshSceneNode : public IMeshSceneNode
-	{
-	public:
+    class CMeshSceneNode : public IMeshSceneNode
+    {
+    public:
 
-		//! constructor
-		CMeshSceneNode(IGPUMesh* mesh, IDummyTransformationSceneNode* parent, ISceneManager* mgr,	int32_t id,
-			const core::vector3df& position = core::vector3df(0,0,0),
-			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f));
+        //! constructor
+        CMeshSceneNode(IGPUMesh* mesh, IDummyTransformationSceneNode* parent, ISceneManager* mgr,    int32_t id,
+            const core::vector3df& position = core::vector3df(0,0,0),
+            const core::vector3df& rotation = core::vector3df(0,0,0),
+            const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f));
 
-		//! destructor
-		virtual ~CMeshSceneNode();
+        //! destructor
+        virtual ~CMeshSceneNode();
 
-		//!
-		virtual const bool supportsDriverFence() const {return true;}
+        //!
+        virtual const bool supportsDriverFence() const {return true;}
 
-		//! frame
-		virtual void OnRegisterSceneNode();
+        //! frame
+        virtual void OnRegisterSceneNode();
 
-		//! renders the node.
-		virtual void render();
+        //! renders the node.
+        virtual void render();
 
-		//! returns the axis aligned bounding box of this node
-		virtual const core::aabbox3d<float>& getBoundingBox();
+        //! returns the axis aligned bounding box of this node
+        virtual const core::aabbox3d<float>& getBoundingBox();
 
-		//! returns the material based on the zero based index i. To get the amount
-		//! of materials used by this scene node, use getMaterialCount().
-		//! This function is needed for inserting the node into the scene hirachy on a
-		//! optimal position for minimizing renderstate changes, but can also be used
-		//! to directly modify the material of a scene node.
-		virtual video::SMaterial& getMaterial(uint32_t i);
+        //! returns the material based on the zero based index i. To get the amount
+        //! of materials used by this scene node, use getMaterialCount().
+        //! This function is needed for inserting the node into the scene hirachy on a
+        //! optimal position for minimizing renderstate changes, but can also be used
+        //! to directly modify the material of a scene node.
+        virtual video::SMaterial& getMaterial(uint32_t i);
 
-		//! returns amount of materials used by this scene node.
-		virtual uint32_t getMaterialCount() const;
+        //! returns amount of materials used by this scene node.
+        virtual uint32_t getMaterialCount() const;
 
-		//! Returns type of the scene node
-		virtual ESCENE_NODE_TYPE getType() const { return ESNT_MESH; }
+        //! Returns type of the scene node
+        virtual ESCENE_NODE_TYPE getType() const { return ESNT_MESH; }
 
-		//! Sets a new mesh
-		virtual void setMesh(IGPUMesh* mesh);
+        //! Sets a new mesh
+        virtual void setMesh(IGPUMesh* mesh);
 
-		//! Returns the current mesh
-		virtual IGPUMesh* getMesh(void) { return Mesh; }
+        //! Returns the current mesh
+        virtual IGPUMesh* getMesh(void) { return Mesh; }
 
-		//! Sets if the scene node should not copy the materials of the mesh but use them in a read only style.
-		/* In this way it is possible to change the materials a mesh causing all mesh scene nodes
-		referencing this mesh to change too. */
-		virtual void setReferencingMeshMaterials(const bool &referencing);
+        //! Sets if the scene node should not copy the materials of the mesh but use them in a read only style.
+        /* In this way it is possible to change the materials a mesh causing all mesh scene nodes
+        referencing this mesh to change too. */
+        virtual void setReferencingMeshMaterials(const bool &referencing);
 
-		//! Returns if the scene node should not copy the materials of the mesh but use them in a read only style
-		virtual bool isReferencingeMeshMaterials() const;
+        //! Returns if the scene node should not copy the materials of the mesh but use them in a read only style
+        virtual bool isReferencingeMeshMaterials() const;
 
-		//! Creates a clone of this scene node and its children.
-		virtual ISceneNode* clone(IDummyTransformationSceneNode* newParent=0, ISceneManager* newManager=0);
+        //! Creates a clone of this scene node and its children.
+        virtual ISceneNode* clone(IDummyTransformationSceneNode* newParent=0, ISceneManager* newManager=0);
 
-	protected:
+    protected:
 
-		void copyMaterials();
+        void copyMaterials();
 
-		core::array<video::SMaterial> Materials;
-		core::aabbox3d<float> Box;
+        core::array<video::SMaterial> Materials;
+        core::aabbox3d<float> Box;
 
-		IGPUMesh* Mesh;
+        IGPUMesh* Mesh;
 
-		int32_t PassCount;
-		bool ReferencingMeshMaterials;
-	};
+        int32_t PassCount;
+        bool ReferencingMeshMaterials;
+    };
 
 } // end namespace scene
 } // end namespace irr

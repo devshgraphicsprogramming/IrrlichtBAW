@@ -10,30 +10,30 @@ namespace irr
 namespace scene
 {
 
-	//! An enumeration for all types of debug data for built-in scene nodes (flags)
-	enum E_DEBUG_SCENE_TYPE
-	{
-		//! No Debug Data ( Default )
-		EDS_OFF = 0,
+    //! An enumeration for all types of debug data for built-in scene nodes (flags)
+    enum E_DEBUG_SCENE_TYPE
+    {
+        //! No Debug Data ( Default )
+        EDS_OFF = 0,
 
-		//! Show Bounding Boxes of SceneNode
-		EDS_BBOX = 1,
+        //! Show Bounding Boxes of SceneNode
+        EDS_BBOX = 1,
 
-		//! Shows Skeleton/Tags
-		EDS_SKELETON = 4,
+        //! Shows Skeleton/Tags
+        EDS_SKELETON = 4,
 
-		//! Overlays Mesh Wireframe
-		EDS_MESH_WIRE_OVERLAY = 8,
+        //! Overlays Mesh Wireframe
+        EDS_MESH_WIRE_OVERLAY = 8,
 
-		//! Show Bounding Boxes of all MeshBuffers
-		EDS_BBOX_BUFFERS = 32,
+        //! Show Bounding Boxes of all MeshBuffers
+        EDS_BBOX_BUFFERS = 32,
 
-		//! EDS_BBOX | EDS_BBOX_BUFFERS
-		EDS_BBOX_ALL = EDS_BBOX | EDS_BBOX_BUFFERS,
+        //! EDS_BBOX | EDS_BBOX_BUFFERS
+        EDS_BBOX_ALL = EDS_BBOX | EDS_BBOX_BUFFERS,
 
-		//! Show all debug infos
-		EDS_FULL = 0xffffffff
-	};
+        //! Show all debug infos
+        EDS_FULL = 0xffffffff
+    };
 
 
 } // end namespace scene

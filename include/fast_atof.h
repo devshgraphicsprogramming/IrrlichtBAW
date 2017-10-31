@@ -12,30 +12,30 @@ namespace irr
 {
 namespace core
 {
-	//! Selection of characters which count as decimal point in fast_atof
-	// TODO: This should probably also be used in irr::core::string, but the float-to-string code
-	//		used there has to be rewritten first.
-	IRRLICHT_API extern irr::core::stringc LOCALE_DECIMAL_POINTS;
+    //! Selection of characters which count as decimal point in fast_atof
+    // TODO: This should probably also be used in irr::core::string, but the float-to-string code
+    //        used there has to be rewritten first.
+    IRRLICHT_API extern irr::core::stringc LOCALE_DECIMAL_POINTS;
 
 // we write [17] here instead of [] to work around a swig bug
 const float fast_atof_table[17] = {
-	0.f,
-	0.1f,
-	0.01f,
-	0.001f,
-	0.0001f,
-	0.00001f,
-	0.000001f,
-	0.0000001f,
-	0.00000001f,
-	0.000000001f,
-	0.0000000001f,
-	0.00000000001f,
-	0.000000000001f,
-	0.0000000000001f,
-	0.00000000000001f,
-	0.000000000000001f,
-	0.0000000000000001f
+    0.f,
+    0.1f,
+    0.01f,
+    0.001f,
+    0.0001f,
+    0.00001f,
+    0.000001f,
+    0.0000001f,
+    0.00000001f,
+    0.000000001f,
+    0.0000000001f,
+    0.00000000001f,
+    0.000000000001f,
+    0.0000000000001f,
+    0.00000000000001f,
+    0.000000000000001f,
+    0.0000000000000001f
 };
 
 //! Convert a simple string of base 10 digits into an unsigned 32 bit integer.
@@ -48,32 +48,32 @@ const float fast_atof_table[17] = {
 */
 inline u32 strtoul10(const char* in, const char** out=0)
 {
-	if (!in)
-	{
-		if (out)
-			*out = in;
-		return 0;
-	}
+    if (!in)
+    {
+        if (out)
+            *out = in;
+        return 0;
+    }
 
-	bool overflow=false;
-	u32 unsignedValue = 0;
-	while ( ( *in >= '0') && ( *in <= '9' ))
-	{
-		const u32 tmp = ( unsignedValue * 10 ) + ( *in - '0' );
-		if (tmp<unsignedValue)
-		{
-			unsignedValue=(u32)0xffffffff;
-			overflow=true;
-		}
-		if (!overflow)
-			unsignedValue = tmp;
-		++in;
-	}
+    bool overflow=false;
+    u32 unsignedValue = 0;
+    while ( ( *in >= '0') && ( *in <= '9' ))
+    {
+        const u32 tmp = ( unsignedValue * 10 ) + ( *in - '0' );
+        if (tmp<unsignedValue)
+        {
+            unsignedValue=(u32)0xffffffff;
+            overflow=true;
+        }
+        if (!overflow)
+            unsignedValue = tmp;
+        ++in;
+    }
 
-	if (out)
-		*out = in;
+    if (out)
+        *out = in;
 
-	return unsignedValue;
+    return unsignedValue;
 }
 
 //! Convert a simple string of base 10 digits into a signed 32 bit integer.
@@ -88,32 +88,32 @@ inline u32 strtoul10(const char* in, const char** out=0)
 */
 inline s32 strtol10(const char* in, const char** out=0)
 {
-	if (!in)
-	{
-		if (out)
-			*out = in;
-		return 0;
-	}
+    if (!in)
+    {
+        if (out)
+            *out = in;
+        return 0;
+    }
 
-	const bool negative = ('-' == *in);
-	if (negative || ('+' == *in))
-		++in;
+    const bool negative = ('-' == *in);
+    if (negative || ('+' == *in))
+        ++in;
 
-	const u32 unsignedValue = strtoul10(in,out);
-	if (unsignedValue > (u32)INT_MAX)
-	{
-		if (negative)
-			return (s32)INT_MIN;
-		else
-			return (s32)INT_MAX;
-	}
-	else
-	{
-		if (negative)
-			return -((s32)unsignedValue);
-		else
-			return (s32)unsignedValue;
-	}
+    const u32 unsignedValue = strtoul10(in,out);
+    if (unsignedValue > (u32)INT_MAX)
+    {
+        if (negative)
+            return (s32)INT_MIN;
+        else
+            return (s32)INT_MAX;
+    }
+    else
+    {
+        if (negative)
+            return -((s32)unsignedValue);
+        else
+            return (s32)unsignedValue;
+    }
 }
 
 //! Convert a hex-encoded character to an unsigned integer.
@@ -124,14 +124,14 @@ inline s32 strtol10(const char* in, const char** out=0)
 */
 inline u32 ctoul16(char in)
 {
-	if (in >= '0' && in <= '9')
-		return in - '0';
-	else if (in >= 'a' && in <= 'f')
-		return 10u + in - 'a';
-	else if (in >= 'A' && in <= 'F')
-		return 10u + in - 'A';
-	else
-		return 0xffffffff;
+    if (in >= '0' && in <= '9')
+        return in - '0';
+    else if (in >= 'a' && in <= 'f')
+        return 10u + in - 'a';
+    else if (in >= 'A' && in <= 'F')
+        return 10u + in - 'A';
+    else
+        return 0xffffffff;
 }
 
 //! Convert a simple string of base 16 digits into an unsigned 32 bit integer.
@@ -145,40 +145,40 @@ inline u32 ctoul16(char in)
 */
 inline u32 strtoul16(const char* in, const char** out=0)
 {
-	if (!in)
-	{
-		if (out)
-			*out = in;
-		return 0;
-	}
+    if (!in)
+    {
+        if (out)
+            *out = in;
+        return 0;
+    }
 
-	bool overflow=false;
-	u32 unsignedValue = 0;
-	while (true)
-	{
-		u32 tmp = 0;
-		if ((*in >= '0') && (*in <= '9'))
-			tmp = (unsignedValue << 4u) + (*in - '0');
-		else if ((*in >= 'A') && (*in <= 'F'))
-			tmp = (unsignedValue << 4u) + (*in - 'A') + 10;
-		else if ((*in >= 'a') && (*in <= 'f'))
-			tmp = (unsignedValue << 4u) + (*in - 'a') + 10;
-		else
-			break;
-		if (tmp<unsignedValue)
-		{
-			unsignedValue=(u32)INT_MAX;
-			overflow=true;
-		}
-		if (!overflow)
-			unsignedValue = tmp;
-		++in;
-	}
+    bool overflow=false;
+    u32 unsignedValue = 0;
+    while (true)
+    {
+        u32 tmp = 0;
+        if ((*in >= '0') && (*in <= '9'))
+            tmp = (unsignedValue << 4u) + (*in - '0');
+        else if ((*in >= 'A') && (*in <= 'F'))
+            tmp = (unsignedValue << 4u) + (*in - 'A') + 10;
+        else if ((*in >= 'a') && (*in <= 'f'))
+            tmp = (unsignedValue << 4u) + (*in - 'a') + 10;
+        else
+            break;
+        if (tmp<unsignedValue)
+        {
+            unsignedValue=(u32)INT_MAX;
+            overflow=true;
+        }
+        if (!overflow)
+            unsignedValue = tmp;
+        ++in;
+    }
 
-	if (out)
-		*out = in;
+    if (out)
+        *out = in;
 
-	return unsignedValue;
+    return unsignedValue;
 }
 
 //! Convert a simple string of base 8 digits into an unsigned 32 bit integer.
@@ -192,36 +192,36 @@ inline u32 strtoul16(const char* in, const char** out=0)
 */
 inline u32 strtoul8(const char* in, const char** out=0)
 {
-	if (!in)
-	{
-		if (out)
-			*out = in;
-		return 0;
-	}
+    if (!in)
+    {
+        if (out)
+            *out = in;
+        return 0;
+    }
 
-	bool overflow=false;
-	u32 unsignedValue = 0;
-	while (true)
-	{
-		u32 tmp = 0;
-		if ((*in >= '0') && (*in <= '7'))
-			tmp = (unsignedValue << 3u) + (*in - '0');
-		else
-			break;
-		if (tmp<unsignedValue)
-		{
-			unsignedValue=(u32)INT_MAX;
-			overflow=true;
-		}
-		if (!overflow)
-			unsignedValue = tmp;
-		++in;
-	}
+    bool overflow=false;
+    u32 unsignedValue = 0;
+    while (true)
+    {
+        u32 tmp = 0;
+        if ((*in >= '0') && (*in <= '7'))
+            tmp = (unsignedValue << 3u) + (*in - '0');
+        else
+            break;
+        if (tmp<unsignedValue)
+        {
+            unsignedValue=(u32)INT_MAX;
+            overflow=true;
+        }
+        if (!overflow)
+            unsignedValue = tmp;
+        ++in;
+    }
 
-	if (out)
-		*out = in;
+    if (out)
+        *out = in;
 
-	return unsignedValue;
+    return unsignedValue;
 }
 
 //! Convert a C-style prefixed string (hex, oct, integer) into an unsigned 32 bit integer.
@@ -235,15 +235,15 @@ inline u32 strtoul8(const char* in, const char** out=0)
 */
 inline u32 strtoul_prefix(const char* in, const char** out=0)
 {
-	if (!in)
-	{
-		if (out)
-			*out = in;
-		return 0;
-	}
-	if ('0'==in[0])
-		return ('x'==in[1] ? strtoul16(in+2,out) : strtoul8(in+1,out));
-	return strtoul10(in,out);
+    if (!in)
+    {
+        if (out)
+            *out = in;
+        return 0;
+    }
+    if ('0'==in[0])
+        return ('x'==in[1] ? strtoul16(in+2,out) : strtoul8(in+1,out));
+    return strtoul10(in,out);
 }
 
 //! Converts a sequence of digits into a whole positive floating point value.
@@ -257,45 +257,45 @@ inline u32 strtoul_prefix(const char* in, const char** out=0)
 */
 inline f32 strtof10(const char* in, const char** out = 0)
 {
-	if (!in)
-	{
-		if (out)
-			*out = in;
-		return 0.f;
-	}
+    if (!in)
+    {
+        if (out)
+            *out = in;
+        return 0.f;
+    }
 
-	const u32 MAX_SAFE_U32_VALUE = UINT_MAX / 10 - 10;
-	u32 intValue = 0;
+    const u32 MAX_SAFE_U32_VALUE = UINT_MAX / 10 - 10;
+    u32 intValue = 0;
 
-	// Use integer arithmetic for as long as possible, for speed
-	// and precision.
-	while ( ( *in >= '0') && ( *in <= '9' ) )
-	{
-		// If it looks like we're going to overflow, bail out
-		// now and start using floating point.
-		if (intValue >= MAX_SAFE_U32_VALUE)
-			break;
+    // Use integer arithmetic for as long as possible, for speed
+    // and precision.
+    while ( ( *in >= '0') && ( *in <= '9' ) )
+    {
+        // If it looks like we're going to overflow, bail out
+        // now and start using floating point.
+        if (intValue >= MAX_SAFE_U32_VALUE)
+            break;
 
-		intValue = (intValue * 10) + (*in - '0');
-		++in;
-	}
+        intValue = (intValue * 10) + (*in - '0');
+        ++in;
+    }
 
-	f32 floatValue = (f32)intValue;
+    f32 floatValue = (f32)intValue;
 
-	// If there are any digits left to parse, then we need to use
-	// floating point arithmetic from here.
-	while ( ( *in >= '0') && ( *in <= '9' ) )
-	{
-		floatValue = (floatValue * 10.f) + (f32)(*in - '0');
-		++in;
-		if (floatValue > FLT_MAX) // Just give up.
-			break;
-	}
+    // If there are any digits left to parse, then we need to use
+    // floating point arithmetic from here.
+    while ( ( *in >= '0') && ( *in <= '9' ) )
+    {
+        floatValue = (floatValue * 10.f) + (f32)(*in - '0');
+        ++in;
+        if (floatValue > FLT_MAX) // Just give up.
+            break;
+    }
 
-	if (out)
-		*out = in;
+    if (out)
+        *out = in;
 
-	return floatValue;
+    return floatValue;
 }
 
 //! Provides a fast function for converting a string into a float.
@@ -308,37 +308,37 @@ inline f32 strtof10(const char* in, const char** out = 0)
 */
 inline const char* fast_atof_move(const char* in, f32& result)
 {
-	// Please run the regression test when making any modifications to this function.
+    // Please run the regression test when making any modifications to this function.
 
-	result = 0.f;
-	if (!in)
-		return 0;
+    result = 0.f;
+    if (!in)
+        return 0;
 
-	const bool negative = ('-' == *in);
-	if (negative || ('+'==*in))
-		++in;
+    const bool negative = ('-' == *in);
+    if (negative || ('+'==*in))
+        ++in;
 
-	f32 value = strtof10(in, &in);
+    f32 value = strtof10(in, &in);
 
-	if ( LOCALE_DECIMAL_POINTS.findFirst(*in) >= 0 )
-	{
-		const char* afterDecimal = ++in;
-		const f32 decimal = strtof10(in, &afterDecimal);
-		value += decimal * fast_atof_table[afterDecimal - in];
-		in = afterDecimal;
-	}
+    if ( LOCALE_DECIMAL_POINTS.findFirst(*in) >= 0 )
+    {
+        const char* afterDecimal = ++in;
+        const f32 decimal = strtof10(in, &afterDecimal);
+        value += decimal * fast_atof_table[afterDecimal - in];
+        in = afterDecimal;
+    }
 
-	if ('e' == *in || 'E' == *in)
-	{
-		++in;
-		// Assume that the exponent is a whole number.
-		// strtol10() will deal with both + and - signs,
-		// but calculate as f32 to prevent overflow at FLT_MAX
-		value *= powf(10.f, (f32)strtol10(in, &in));
-	}
+    if ('e' == *in || 'E' == *in)
+    {
+        ++in;
+        // Assume that the exponent is a whole number.
+        // strtol10() will deal with both + and - signs,
+        // but calculate as f32 to prevent overflow at FLT_MAX
+        value *= powf(10.f, (f32)strtol10(in, &in));
+    }
 
-	result = negative?-value:value;
-	return in;
+    result = negative?-value:value;
+    return in;
 }
 
 //! Convert a string to a floating point number
@@ -349,23 +349,23 @@ inline const char* fast_atof_move(const char* in, f32& result)
 */
 inline float fast_atof(const char* floatAsString, const char** out=0)
 {
-	float ret;
-	if (out)
-		*out=fast_atof_move(floatAsString, ret);
-	else
-		fast_atof_move(floatAsString, ret);
-	return ret;
+    float ret;
+    if (out)
+        *out=fast_atof_move(floatAsString, ret);
+    else
+        fast_atof_move(floatAsString, ret);
+    return ret;
 }
 
 
-	inline f32 getAsFloat ( const core::stringc &string, u32 &pos )
-	{
-		const char * in = string.c_str () + pos;
+    inline f32 getAsFloat ( const core::stringc &string, u32 &pos )
+    {
+        const char * in = string.c_str () + pos;
 
-		f32 value = 0.f;
-		pos += (u32) ( core::fast_atof_move ( in, value ) - in ) + 1;
-		return value;
-	}
+        f32 value = 0.f;
+        pos += (u32) ( core::fast_atof_move ( in, value ) - in ) + 1;
+        return value;
+    }
 
 } // end namespace core
 } // end namespace irr

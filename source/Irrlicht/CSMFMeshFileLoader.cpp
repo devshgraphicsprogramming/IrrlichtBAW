@@ -26,153 +26,153 @@ CSMFMeshFileLoader::CSMFMeshFileLoader(video::IVideoDriver* driver)
 //! Returns true if the file might be loaded by this class.
 bool CSMFMeshFileLoader::isALoadableFileExtension(const io::path& filename) const
 {
-	return core::hasFileExtension(filename, "smf");
+    return core::hasFileExtension(filename, "smf");
 }
 
 //! Creates/loads an animated mesh from the file.
 IAnimatedMesh* CSMFMeshFileLoader::createMesh(io::IReadFile* file)
 {
-	// create empty mesh
-	SMesh *mesh = new SMesh();
+    // create empty mesh
+    SMesh *mesh = new SMesh();
 
-	// load file
-	uint16_t version;
-	uint8_t  flags;
-	int32_t limbCount;
-	int32_t i;
+    // load file
+    uint16_t version;
+    uint8_t  flags;
+    int32_t limbCount;
+    int32_t i;
 
-	io::BinaryFile::read(file, version);
-	io::BinaryFile::read(file, flags);
-	io::BinaryFile::read(file, limbCount);
+    io::BinaryFile::read(file, version);
+    io::BinaryFile::read(file, flags);
+    io::BinaryFile::read(file, limbCount);
 
-	// load mesh data
-	core::matrix4 identity;
-	for (i=0; i < limbCount; ++i)
-		loadLimb(file, mesh, identity);
+    // load mesh data
+    core::matrix4 identity;
+    for (i=0; i < limbCount; ++i)
+        loadLimb(file, mesh, identity);
 
-	// recalculate buffer bounding boxes
-	for (i=0; i < (int32_t)mesh->getMeshBufferCount(); ++i)
-		mesh->getMeshBuffer(i)->recalculateBoundingBox();
+    // recalculate buffer bounding boxes
+    for (i=0; i < (int32_t)mesh->getMeshBufferCount(); ++i)
+        mesh->getMeshBuffer(i)->recalculateBoundingBox();
 
-	mesh->recalculateBoundingBox();
-	SAnimatedMesh *am = new SAnimatedMesh();
-	am->addMesh(mesh);
-	mesh->drop();
-	am->recalculateBoundingBox();
+    mesh->recalculateBoundingBox();
+    SAnimatedMesh *am = new SAnimatedMesh();
+    am->addMesh(mesh);
+    mesh->drop();
+    am->recalculateBoundingBox();
 
-	return am;
+    return am;
 }
 
 void CSMFMeshFileLoader::loadLimb(io::IReadFile* file, SMesh* mesh, const core::matrix4 &parentTransformation)
 {
-	core::matrix4 transformation;
+    core::matrix4 transformation;
 
-	// limb transformation
-	core::vector3df translate, rotate, scale;
-	io::BinaryFile::read(file, translate);
-	io::BinaryFile::read(file, rotate);
-	io::BinaryFile::read(file, scale);
+    // limb transformation
+    core::vector3df translate, rotate, scale;
+    io::BinaryFile::read(file, translate);
+    io::BinaryFile::read(file, rotate);
+    io::BinaryFile::read(file, scale);
 
-	transformation.setTranslation(translate);
-	transformation.setRotationDegrees(rotate);
-	transformation.setScale(scale);
+    transformation.setTranslation(translate);
+    transformation.setRotationDegrees(rotate);
+    transformation.setScale(scale);
 
-	transformation = parentTransformation * transformation;
+    transformation = parentTransformation * transformation;
 
-	core::stringc textureName, textureGroupName;
+    core::stringc textureName, textureGroupName;
 
-	// texture information
-	io::BinaryFile::read(file, textureGroupName);
-	io::BinaryFile::read(file, textureName);
+    // texture information
+    io::BinaryFile::read(file, textureGroupName);
+    io::BinaryFile::read(file, textureName);
 
-	// attempt to load texture using known formats
-	video::ITexture* texture = 0;
+    // attempt to load texture using known formats
+    video::ITexture* texture = 0;
 
-	const int8_t* extensions[] = {".jpg", ".png", ".tga", ".bmp", 0};
+    const int8_t* extensions[] = {".jpg", ".png", ".tga", ".bmp", 0};
 
-	for (const int8_t **ext = extensions; !texture && *ext; ++ext)
-	{
-		texture = Driver->getTexture(textureName + *ext);
-		if (texture)
-			textureName = textureName + *ext;
-	}
-	// find the correct mesh buffer
-	uint32_t i;
-	for (i=0; i<mesh->MeshBuffers.size(); ++i)
-		if (mesh->MeshBuffers[i]->getMaterial().TextureLayer[0].Texture == texture)
-			break;
+    for (const int8_t **ext = extensions; !texture && *ext; ++ext)
+    {
+        texture = Driver->getTexture(textureName + *ext);
+        if (texture)
+            textureName = textureName + *ext;
+    }
+    // find the correct mesh buffer
+    uint32_t i;
+    for (i=0; i<mesh->MeshBuffers.size(); ++i)
+        if (mesh->MeshBuffers[i]->getMaterial().TextureLayer[0].Texture == texture)
+            break;
 
-	// create mesh buffer if none was found
-	if (i == mesh->MeshBuffers.size())
-	{
-		CMeshBuffer<video::S3DVertex,uint16_t>* mb = new CMeshBuffer<video::S3DVertex,uint16_t>();
-		mb->Material.TextureLayer[0].Texture = texture;
+    // create mesh buffer if none was found
+    if (i == mesh->MeshBuffers.size())
+    {
+        CMeshBuffer<video::S3DVertex,uint16_t>* mb = new CMeshBuffer<video::S3DVertex,uint16_t>();
+        mb->Material.TextureLayer[0].Texture = texture;
 
-		// horribly hacky way to do this, maybe it's in the flags?
-		if (core::hasFileExtension(textureName, "tga", "png"))
-			mb->Material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
-		else
-			mb->Material.MaterialType = video::EMT_SOLID;
+        // horribly hacky way to do this, maybe it's in the flags?
+        if (core::hasFileExtension(textureName, "tga", "png"))
+            mb->Material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
+        else
+            mb->Material.MaterialType = video::EMT_SOLID;
 
-		mesh->MeshBuffers.push_back(mb);
-	}
+        mesh->MeshBuffers.push_back(mb);
+    }
 
-	CMeshBuffer<video::S3DVertex,uint16_t>* mb = (CMeshBuffer<video::S3DVertex,uint16_t>*)mesh->MeshBuffers[i];
+    CMeshBuffer<video::S3DVertex,uint16_t>* mb = (CMeshBuffer<video::S3DVertex,uint16_t>*)mesh->MeshBuffers[i];
 
-	uint16_t vertexCount, firstVertex = mb->getVertexCount();
+    uint16_t vertexCount, firstVertex = mb->getVertexCount();
 
-	io::BinaryFile::read(file, vertexCount);
-	mb->Vertices.reallocate(mb->Vertices.size() + vertexCount);
+    io::BinaryFile::read(file, vertexCount);
+    mb->Vertices.reallocate(mb->Vertices.size() + vertexCount);
 
-	// add vertices and set positions
-	for (i=0; i<vertexCount; ++i)
-	{
-		core::vector3df pos;
-		io::BinaryFile::read(file, pos);
-		transformation.transformVect(pos);
-		video::S3DVertex vert;
-		vert.Color = 0xFFFFFFFF;
-		vert.Pos = pos;
-		mb->Vertices.push_back(vert);
-	}
+    // add vertices and set positions
+    for (i=0; i<vertexCount; ++i)
+    {
+        core::vector3df pos;
+        io::BinaryFile::read(file, pos);
+        transformation.transformVect(pos);
+        video::S3DVertex vert;
+        vert.Color = 0xFFFFFFFF;
+        vert.Pos = pos;
+        mb->Vertices.push_back(vert);
+    }
 
-	// set vertex normals
-	for (i=0; i < vertexCount; ++i)
-	{
-		core::vector3df normal;
-		io::BinaryFile::read(file, normal);
-		transformation.rotateVect(normal);
-		mb->Vertices[firstVertex + i].Normal = normal;
-	}
-	// set texture coordinates
+    // set vertex normals
+    for (i=0; i < vertexCount; ++i)
+    {
+        core::vector3df normal;
+        io::BinaryFile::read(file, normal);
+        transformation.rotateVect(normal);
+        mb->Vertices[firstVertex + i].Normal = normal;
+    }
+    // set texture coordinates
 
-	for (i=0; i < vertexCount; ++i)
-	{
-		core::vector2df tcoords;
-		io::BinaryFile::read(file, tcoords);
-		mb->Vertices[firstVertex + i].TCoords = tcoords;
-	}
+    for (i=0; i < vertexCount; ++i)
+    {
+        core::vector2df tcoords;
+        io::BinaryFile::read(file, tcoords);
+        mb->Vertices[firstVertex + i].TCoords = tcoords;
+    }
 
-	// triangles
-	uint32_t triangleCount;
-	// vertexCount used as temporary
-	io::BinaryFile::read(file, vertexCount);
-	triangleCount=3*vertexCount;
-	mb->Indices.reallocate(mb->Indices.size() + triangleCount);
+    // triangles
+    uint32_t triangleCount;
+    // vertexCount used as temporary
+    io::BinaryFile::read(file, vertexCount);
+    triangleCount=3*vertexCount;
+    mb->Indices.reallocate(mb->Indices.size() + triangleCount);
 
-	for (i=0; i < triangleCount; ++i)
-	{
-		uint16_t index;
-		io::BinaryFile::read(file, index);
-		mb->Indices.push_back(firstVertex + index);
-	}
+    for (i=0; i < triangleCount; ++i)
+    {
+        uint16_t index;
+        io::BinaryFile::read(file, index);
+        mb->Indices.push_back(firstVertex + index);
+    }
 
-	// read limbs
-	int32_t limbCount;
-	io::BinaryFile::read(file, limbCount);
+    // read limbs
+    int32_t limbCount;
+    io::BinaryFile::read(file, limbCount);
 
-	for (int32_t l=0; l < limbCount; ++l)
-		loadLimb(file, mesh, transformation);
+    for (int32_t l=0; l < limbCount; ++l)
+        loadLimb(file, mesh, transformation);
 }
 
 } // namespace scene
@@ -190,37 +190,37 @@ namespace io
 template <class T>
 void BinaryFile::read(io::IReadFile* file, T &out, bool bigEndian)
 {
-	file->read((void*)&out, sizeof(out));
-	if (bigEndian != (_SYSTEM_BIG_ENDIAN_))
-		out = os::Byteswap::byteswap(out);
+    file->read((void*)&out, sizeof(out));
+    if (bigEndian != (_SYSTEM_BIG_ENDIAN_))
+        out = os::Byteswap::byteswap(out);
 }
 
 //! reads a 3d vector from the file, moving the file pointer along
 void BinaryFile::read(io::IReadFile* file, core::vector3df &outVector2d, bool bigEndian)
 {
-	BinaryFile::read(file, outVector2d.X, bigEndian);
-	BinaryFile::read(file, outVector2d.Y, bigEndian);
-	BinaryFile::read(file, outVector2d.Z, bigEndian);
+    BinaryFile::read(file, outVector2d.X, bigEndian);
+    BinaryFile::read(file, outVector2d.Y, bigEndian);
+    BinaryFile::read(file, outVector2d.Z, bigEndian);
 }
 
 //! reads a 2d vector from the file, moving the file pointer along
 void BinaryFile::read(io::IReadFile* file, core::vector2df &outVector2d, bool bigEndian)
 {
-	BinaryFile::read(file, outVector2d.X, bigEndian);
-	BinaryFile::read(file, outVector2d.Y, bigEndian);
+    BinaryFile::read(file, outVector2d.X, bigEndian);
+    BinaryFile::read(file, outVector2d.Y, bigEndian);
 }
 
 //! reads a null terminated string from the file, moving the file pointer along
 void BinaryFile::read(io::IReadFile* file, core::stringc &outString, bool bigEndian)
 {
-	int8_t c;
-	file->read((void*)&c, 1);
+    int8_t c;
+    file->read((void*)&c, 1);
 
-	while (c)
-	{
-		outString += c;
-		file->read((void*)&c, 1);
-	}
+    while (c)
+    {
+        outString += c;
+        file->read((void*)&c, 1);
+    }
 }
 
 } // namespace io

@@ -30,11 +30,11 @@ class ITransformFeedback : public virtual IReferenceCounted
         virtual const size_t getOutputBufferOffset(const size_t &ix) const = 0;
 
         //! Will not take place until material is set which matches
-		virtual void pauseTransformFeedback() = 0;
+        virtual void pauseTransformFeedback() = 0;
 
-		virtual void resumeTransformFeedback() = 0;
+        virtual void resumeTransformFeedback() = 0;
 
-		inline const bool& isActive() const {return active;}
+        inline const bool& isActive() const {return active;}
 
     protected:
         bool active;

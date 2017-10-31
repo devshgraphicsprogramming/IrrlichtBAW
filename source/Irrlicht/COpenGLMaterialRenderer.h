@@ -28,14 +28,14 @@ class COpenGLMaterialRenderer : public IMaterialRenderer
 {
 public:
 
-	//! Constructor
-	COpenGLMaterialRenderer(video::COpenGLDriver* driver) : Driver(driver)
-	{
-	}
+    //! Constructor
+    COpenGLMaterialRenderer(video::COpenGLDriver* driver) : Driver(driver)
+    {
+    }
 
 protected:
 
-	video::COpenGLDriver* Driver;
+    video::COpenGLDriver* Driver;
 };
 
 
@@ -44,14 +44,14 @@ class COpenGLMaterialRenderer_SOLID : public COpenGLMaterialRenderer
 {
 public:
 
-	COpenGLMaterialRenderer_SOLID(video::COpenGLDriver* d)
-		: COpenGLMaterialRenderer(d) {}
+    COpenGLMaterialRenderer_SOLID(video::COpenGLDriver* d)
+        : COpenGLMaterialRenderer(d) {}
 
-	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services)
-	{
-		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
-	}
+    virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
+        bool resetAllRenderstates, IMaterialRendererServices* services)
+    {
+        Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+    }
 };
 
 
@@ -61,31 +61,31 @@ class COpenGLMaterialRenderer_TRANSPARENT_ADD_COLOR : public COpenGLMaterialRend
 {
 public:
 
-	COpenGLMaterialRenderer_TRANSPARENT_ADD_COLOR(video::COpenGLDriver* d)
-		: COpenGLMaterialRenderer(d) {}
+    COpenGLMaterialRenderer_TRANSPARENT_ADD_COLOR(video::COpenGLDriver* d)
+        : COpenGLMaterialRenderer(d) {}
 
-	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services)
-	{
-		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+    virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
+        bool resetAllRenderstates, IMaterialRendererServices* services)
+    {
+        Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
-		if ((material.MaterialType != lastMaterial.MaterialType) || resetAllRenderstates)
-		{
-			glBlendFunc(GL_ONE, GL_ONE);
-			glEnable(GL_BLEND);
-		}
-	}
+        if ((material.MaterialType != lastMaterial.MaterialType) || resetAllRenderstates)
+        {
+            glBlendFunc(GL_ONE, GL_ONE);
+            glEnable(GL_BLEND);
+        }
+    }
 
-	virtual void OnUnsetMaterial()
-	{
-		glDisable(GL_BLEND);
-	}
+    virtual void OnUnsetMaterial()
+    {
+        glDisable(GL_BLEND);
+    }
 
-	//! Returns if the material is transparent.
-	virtual bool isTransparent() const
-	{
-		return true;
-	}
+    //! Returns if the material is transparent.
+    virtual bool isTransparent() const
+    {
+        return true;
+    }
 };
 
 
@@ -94,31 +94,31 @@ class COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL : public COpenGLMaterial
 {
 public:
 
-	COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL(video::COpenGLDriver* d)
-		: COpenGLMaterialRenderer(d) {}
+    COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL(video::COpenGLDriver* d)
+        : COpenGLMaterialRenderer(d) {}
 
-	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services)
-	{
-		Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+    virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
+        bool resetAllRenderstates, IMaterialRendererServices* services)
+    {
+        Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
-		if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
-		{
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glEnable(GL_BLEND);
-		}
-	}
+        if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
+        {
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_BLEND);
+        }
+    }
 
-	virtual void OnUnsetMaterial()
-	{
-		glDisable(GL_BLEND);
-	}
+    virtual void OnUnsetMaterial()
+    {
+        glDisable(GL_BLEND);
+    }
 
-	//! Returns if the material is transparent.
-	virtual bool isTransparent() const
-	{
-		return true;
-	}
+    //! Returns if the material is transparent.
+    virtual bool isTransparent() const
+    {
+        return true;
+    }
 };
 
 
@@ -127,8 +127,8 @@ class COpenGLMaterialRenderer_TRANSPARENT_VERTEX_ALPHA : public COpenGLMaterialR
 {
 public:
 
-	COpenGLMaterialRenderer_TRANSPARENT_VERTEX_ALPHA(video::COpenGLDriver* d)
-		: COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL(d) {}
+    COpenGLMaterialRenderer_TRANSPARENT_VERTEX_ALPHA(video::COpenGLDriver* d)
+        : COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL(d) {}
 };
 
 } // end namespace video

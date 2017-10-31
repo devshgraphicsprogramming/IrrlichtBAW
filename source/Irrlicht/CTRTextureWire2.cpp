@@ -40,28 +40,28 @@
 
 // apply global override
 #ifndef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
-	#undef INVERSE_W
+    #undef INVERSE_W
 #endif
 
 #ifndef SOFTWARE_DRIVER_2_SUBTEXEL
-	#undef SUBTEXEL
+    #undef SUBTEXEL
 #endif
 
 #if !defined ( SOFTWARE_DRIVER_2_USE_WBUFFER ) && defined ( USE_ZBUFFER )
-	#ifndef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
-		#undef IPOL_W
-	#endif
-	#define IPOL_Z
+    #ifndef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
+        #undef IPOL_W
+    #endif
+    #define IPOL_Z
 
-	#ifdef CMP_W
-		#undef CMP_W
-		#define CMP_Z
-	#endif
+    #ifdef CMP_W
+        #undef CMP_W
+        #define CMP_Z
+    #endif
 
-	#ifdef WRITE_W
-		#undef WRITE_W
-		#define WRITE_Z
-	#endif
+    #ifdef WRITE_W
+        #undef WRITE_W
+        #define WRITE_Z
+    #endif
 
 #endif
 
@@ -76,18 +76,18 @@ class CTRTextureWire2 : public IBurningShader
 {
 public:
 
-	//! constructor
-	CTRTextureWire2(CBurningVideoDriver* driver);
+    //! constructor
+    CTRTextureWire2(CBurningVideoDriver* driver);
 
-	//! draws an indexed triangle list
-	virtual void drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c );
-	virtual void drawLine ( const s4DVertex *a,const s4DVertex *b);
+    //! draws an indexed triangle list
+    virtual void drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c );
+    virtual void drawLine ( const s4DVertex *a,const s4DVertex *b);
 
 
 
 private:
-	void renderAlphaLine ( const s4DVertex *a,const s4DVertex *b ) const;
-	void renderLine ( const s4DVertex *a,const s4DVertex *b ) const;
+    void renderAlphaLine ( const s4DVertex *a,const s4DVertex *b ) const;
+    void renderLine ( const s4DVertex *a,const s4DVertex *b ) const;
 
 };
 
@@ -95,18 +95,18 @@ private:
 CTRTextureWire2::CTRTextureWire2(CBurningVideoDriver* driver)
 : IBurningShader(driver)
 {
-	#ifdef _DEBUG
-	setDebugName("CTRTextureWire2");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CTRTextureWire2");
+    #endif
 }
 
 
 // swap integer with xor
 static inline void swap_xor ( int32_t &a, int32_t &b )
 {
-	a ^= b;
-	b ^= a;
-	a ^= b;
+    a ^= b;
+    b ^= a;
+    a ^= b;
 }
 
 
@@ -115,144 +115,144 @@ static inline void swap_xor ( int32_t &a, int32_t &b )
 void CTRTextureWire2::renderLine ( const s4DVertex *a,const s4DVertex *b ) const
 {
 
-	int pitch0 = RenderTarget->getDimension().Width << VIDEO_SAMPLE_GRANULARITY;
-	int pitch1 = RenderTarget->getDimension().Width << 2;
+    int pitch0 = RenderTarget->getDimension().Width << VIDEO_SAMPLE_GRANULARITY;
+    int pitch1 = RenderTarget->getDimension().Width << 2;
 
-	int aposx = (int) a->Pos.x;
-	int aposy = (int) a->Pos.y;
-	int bposx = (int) b->Pos.x;
-	int bposy = (int) b->Pos.y;
+    int aposx = (int) a->Pos.x;
+    int aposy = (int) a->Pos.y;
+    int bposx = (int) b->Pos.x;
+    int bposy = (int) b->Pos.y;
 
-	int dx = bposx - aposx;
-	int dy = bposy - aposy;
+    int dx = bposx - aposx;
+    int dy = bposy - aposy;
 
-	int c;
-	int m;
-	int d = 0;
-	int run;
+    int c;
+    int m;
+    int d = 0;
+    int run;
 
-	tVideoSample *dst;
+    tVideoSample *dst;
 #ifdef USE_ZBUFFER
-	fp24 *z;
+    fp24 *z;
 #endif
 
-	int xInc0 = 1 << VIDEO_SAMPLE_GRANULARITY;
-	int yInc0 = pitch0;
+    int xInc0 = 1 << VIDEO_SAMPLE_GRANULARITY;
+    int yInc0 = pitch0;
 
-	int xInc1 = 4;
-	int yInc1 = pitch1;
+    int xInc1 = 4;
+    int yInc1 = pitch1;
 
-	tVideoSample color;
+    tVideoSample color;
 
 #ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
-	tFixPoint r0, g0, b0;
-	getSample_color ( r0, g0, b0, a->Color[0] );
-	color = fix_to_color ( r0, g0, b0 );
+    tFixPoint r0, g0, b0;
+    getSample_color ( r0, g0, b0, a->Color[0] );
+    color = fix_to_color ( r0, g0, b0 );
 #else
-	color = (tVideoSample) 0xFFFFFFFF;
+    color = (tVideoSample) 0xFFFFFFFF;
 #endif
 
-	if ( dx < 0 )
-	{
-		xInc0 = - ( 1 << VIDEO_SAMPLE_GRANULARITY);
-		xInc1 = -4;
-		dx = -dx;
-	}
+    if ( dx < 0 )
+    {
+        xInc0 = - ( 1 << VIDEO_SAMPLE_GRANULARITY);
+        xInc1 = -4;
+        dx = -dx;
+    }
 
-	if ( dy > dx )
-	{
-		swap_xor ( dx, dy );
-		swap_xor ( xInc0, yInc0 );
-		swap_xor ( xInc1, yInc1 );
-	}
+    if ( dy > dx )
+    {
+        swap_xor ( dx, dy );
+        swap_xor ( xInc0, yInc0 );
+        swap_xor ( xInc1, yInc1 );
+    }
 
-	if ( 0 == dx )
-		return;
+    if ( 0 == dx )
+        return;
 
-	dst = (tVideoSample*) ( (uint8_t*) (tVideoSample*)RenderTarget->lock() + ( aposy * pitch0 ) + (aposx << VIDEO_SAMPLE_GRANULARITY ) );
+    dst = (tVideoSample*) ( (uint8_t*) (tVideoSample*)RenderTarget->lock() + ( aposy * pitch0 ) + (aposx << VIDEO_SAMPLE_GRANULARITY ) );
 #ifdef USE_ZBUFFER
-	z = (fp24*) ( (uint8_t*) (fp24*) DepthBuffer->lock() + ( aposy * pitch1 ) + (aposx << 2 ) );
+    z = (fp24*) ( (uint8_t*) (fp24*) DepthBuffer->lock() + ( aposy * pitch1 ) + (aposx << 2 ) );
 #endif
 
-	c = dx << 1;
-	m = dy << 1;
+    c = dx << 1;
+    m = dy << 1;
 
 #ifdef IPOL_Z
-	float slopeZ = (b->Pos.z - a->Pos.z) / float(dx);
-	float dataZ = a->Pos.z;
+    float slopeZ = (b->Pos.z - a->Pos.z) / float(dx);
+    float dataZ = a->Pos.z;
 #endif
 
 #ifdef IPOL_W
-	fp24 slopeW = (b->Pos.w - a->Pos.w) / float( dx );
-	fp24 dataW = a->Pos.w;
+    fp24 slopeW = (b->Pos.w - a->Pos.w) / float( dx );
+    fp24 dataW = a->Pos.w;
 #endif
 
-	run = dx;
-	while ( run )
-	{
+    run = dx;
+    while ( run )
+    {
 #ifdef CMP_Z
-		if ( *z >= dataZ )
+        if ( *z >= dataZ )
 #endif
 #ifdef CMP_W
-		if ( dataW >= *z )
+        if ( dataW >= *z )
 #endif
-		{
+        {
 #ifdef WRITE_Z
-			*z = dataZ;
+            *z = dataZ;
 #endif
 #ifdef WRITE_W
-			*z = dataW;
+            *z = dataW;
 #endif
 
-		*dst = color;
+        *dst = color;
 
-		}
+        }
 
-		dst = (tVideoSample*) ( (uint8_t*) dst + xInc0 );	// x += xInc
+        dst = (tVideoSample*) ( (uint8_t*) dst + xInc0 );    // x += xInc
 #ifdef IPOL_Z
-		z = (fp24*) ( (uint8_t*) z + xInc1 );
+        z = (fp24*) ( (uint8_t*) z + xInc1 );
 #endif
 #ifdef IPOL_W
-		z = (fp24*) ( (uint8_t*) z + xInc1 );
+        z = (fp24*) ( (uint8_t*) z + xInc1 );
 #endif
 
-		d += m;
-		if ( d > dx )
-		{
-			dst = (tVideoSample*) ( (uint8_t*) dst + yInc0 );	// y += yInc
+        d += m;
+        if ( d > dx )
+        {
+            dst = (tVideoSample*) ( (uint8_t*) dst + yInc0 );    // y += yInc
 #ifdef IPOL_Z
-			z = (fp24*) ( (uint8_t*) z + yInc1 );
+            z = (fp24*) ( (uint8_t*) z + yInc1 );
 #endif
 #ifdef IPOL_W
-			z = (fp24*) ( (uint8_t*) z + yInc1 );
+            z = (fp24*) ( (uint8_t*) z + yInc1 );
 #endif
 
-			d -= c;
-		}
-		run -= 1;
+            d -= c;
+        }
+        run -= 1;
 #ifdef IPOL_Z
-		dataZ += slopeZ;
+        dataZ += slopeZ;
 #endif
 #ifdef IPOL_W
-		dataW += slopeW;
+        dataW += slopeW;
 #endif
 
-	}
+    }
 
 }
 
 void CTRTextureWire2::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const s4DVertex *c )
 {
-	sScanLineData line;
+    sScanLineData line;
 
-	// sort on height, y
-	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
-	if ( F32_A_GREATER_B ( b->Pos.y , c->Pos.y ) ) swapVertexPointer(&b, &c);
-	if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
+    // sort on height, y
+    if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
+    if ( F32_A_GREATER_B ( b->Pos.y , c->Pos.y ) ) swapVertexPointer(&b, &c);
+    if ( F32_A_GREATER_B ( a->Pos.y , b->Pos.y ) ) swapVertexPointer(&a, &b);
 
-	renderLine ( a, b );
-	renderLine ( b, c );
-	renderLine ( a, c );
+    renderLine ( a, b );
+    renderLine ( b, c );
+    renderLine ( a, c );
 
 }
 
@@ -260,12 +260,12 @@ void CTRTextureWire2::drawTriangle ( const s4DVertex *a,const s4DVertex *b,const
 void CTRTextureWire2::drawLine ( const s4DVertex *a,const s4DVertex *b)
 {
 
-	// query access to TexMaps
+    // query access to TexMaps
 
-	// sort on height, y
-	if ( a->Pos.y > b->Pos.y ) swapVertexPointer(&a, &b);
+    // sort on height, y
+    if ( a->Pos.y > b->Pos.y ) swapVertexPointer(&a, &b);
 
-	renderLine ( a, b );
+    renderLine ( a, b );
 
 }
 
@@ -284,11 +284,11 @@ namespace video
 //! creates a flat triangle renderer
 IBurningShader* createTriangleRendererTextureGouraudWire2(CBurningVideoDriver* driver)
 {
-	#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-	return new CTRTextureWire2(driver);
-	#else
-	return 0;
-	#endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_
+    #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
+    return new CTRTextureWire2(driver);
+    #else
+    return 0;
+    #endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_
 }
 
 

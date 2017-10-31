@@ -21,48 +21,48 @@ namespace video
 
 bool checkFBOStatus(const GLuint &fbo, COpenGLDriver* Driver)
 {
-	GLenum status = Driver->extGlCheckNamedFramebufferStatus(fbo,GL_FRAMEBUFFER);
+    GLenum status = Driver->extGlCheckNamedFramebufferStatus(fbo,GL_FRAMEBUFFER);
 
-	switch (status)
-	{
-		//Our FBO is perfect, return true
-		case GL_FRAMEBUFFER_COMPLETE:
-			return true;
+    switch (status)
+    {
+        //Our FBO is perfect, return true
+        case GL_FRAMEBUFFER_COMPLETE:
+            return true;
 
-		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-			os::Printer::log("FBO has invalid read buffer", ELL_ERROR);
-			break;
+        case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+            os::Printer::log("FBO has invalid read buffer", ELL_ERROR);
+            break;
 
-		case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-			os::Printer::log("FBO has invalid draw buffer", ELL_ERROR);
-			break;
+        case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+            os::Printer::log("FBO has invalid draw buffer", ELL_ERROR);
+            break;
 
-		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-			os::Printer::log("FBO has one or several incomplete image attachments", ELL_ERROR);
-			break;
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+            os::Printer::log("FBO has one or several incomplete image attachments", ELL_ERROR);
+            break;
 
-		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-			os::Printer::log("FBO missing an image attachment", ELL_ERROR);
-			break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+            os::Printer::log("FBO missing an image attachment", ELL_ERROR);
+            break;
 
-		case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-			os::Printer::log("FBO wrong multisample setup", ELL_ERROR);
-			break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+            os::Printer::log("FBO wrong multisample setup", ELL_ERROR);
+            break;
 
-		case GL_FRAMEBUFFER_UNSUPPORTED:
-			os::Printer::log("FBO format unsupported", ELL_ERROR);
-			break;
+        case GL_FRAMEBUFFER_UNSUPPORTED:
+            os::Printer::log("FBO format unsupported", ELL_ERROR);
+            break;
 
-		case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-			os::Printer::log("Some FBO attachment is layered, and some other is not layered, or if all populated color attachments are not from textures of the same target", ELL_ERROR);
-			break;
+        case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+            os::Printer::log("Some FBO attachment is layered, and some other is not layered, or if all populated color attachments are not from textures of the same target", ELL_ERROR);
+            break;
 
-		default:
-			break;
-	}
-	os::Printer::log("FBO error", ELL_ERROR);
-//	_IRR_DEBUG_BREAK_IF(true);
-	return false;
+        default:
+            break;
+    }
+    os::Printer::log("FBO error", ELL_ERROR);
+//    _IRR_DEBUG_BREAK_IF(true);
+    return false;
 }
 
 //! constructor
@@ -70,7 +70,7 @@ COpenGLFrameBuffer::COpenGLFrameBuffer(COpenGLDriver* driver)
   : frameBuffer(0), Driver(driver), lastValidated(0)
 {
 #ifdef _DEBUG
-	setDebugName("COpenGLFrameBuffer");
+    setDebugName("COpenGLFrameBuffer");
 #endif
     Driver->extGlCreateFramebuffers(1,&frameBuffer);
 
@@ -94,8 +94,8 @@ COpenGLFrameBuffer::~COpenGLFrameBuffer()
 
 bool COpenGLFrameBuffer::attach(const E_FBO_ATTACHMENT_POINT &attachmenPoint, ITexture* tex, const uint32_t &mipMapLayer, const int32_t &layer)
 {
-	if (!frameBuffer||attachmenPoint>=EFAP_MAX_ATTACHMENTS)
-		return false;
+    if (!frameBuffer||attachmenPoint>=EFAP_MAX_ATTACHMENTS)
+        return false;
 
     COpenGLTexture* glTex = static_cast<COpenGLTexture*>(tex);
     if (tex&&COpenGLTexture::isInternalFormatCompressed(glTex->getOpenGLInternalFormat()))
@@ -151,16 +151,16 @@ bool COpenGLFrameBuffer::attach(const E_FBO_ATTACHMENT_POINT &attachmenPoint, IT
     if (attachments[attachmenPoint])
         attachments[attachmenPoint]->drop();
     attachments[attachmenPoint] = tex;
-	if (tex)
+    if (tex)
         tex->grab(); // grab the depth buffer, not the RTT
 
-	return true;
+    return true;
 }
 
 bool COpenGLFrameBuffer::attach(const E_FBO_ATTACHMENT_POINT &attachmenPoint, IRenderBuffer* rbf)
 {
-	if (!frameBuffer||attachmenPoint>=EFAP_MAX_ATTACHMENTS)
-		return false;
+    if (!frameBuffer||attachmenPoint>=EFAP_MAX_ATTACHMENTS)
+        return false;
 
     COpenGLRenderBuffer* glRBuf = static_cast<COpenGLRenderBuffer*>(rbf);
 
@@ -192,10 +192,10 @@ bool COpenGLFrameBuffer::attach(const E_FBO_ATTACHMENT_POINT &attachmenPoint, IR
     if (attachments[attachmenPoint])
         attachments[attachmenPoint]->drop();
     attachments[attachmenPoint] = rbf;
-	if (rbf)
+    if (rbf)
         rbf->grab(); // grab the depth buffer, not the RTT
 
-	return true;
+    return true;
 }
 
 bool COpenGLFrameBuffer::rebindRevalidate()
@@ -246,7 +246,7 @@ bool COpenGLFrameBuffer::rebindRevalidate()
 
     if (noAttachments)
     {
-		os::Printer::log("FBO has no attachments!");
+        os::Printer::log("FBO has no attachments!");
         return false;
     }
 
@@ -263,7 +263,7 @@ bool COpenGLFrameBuffer::rebindRevalidate()
         COpenGLExtensionHandler::extGlNamedFramebufferDrawBuffers(frameBuffer, enabledBufferCnt, drawBuffers);
     }
 
-	return true;
+    return true;
 }
 
 

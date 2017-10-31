@@ -13,42 +13,42 @@ namespace irr
 {
 namespace io
 {
-	class IWriteFile;
+    class IWriteFile;
 } // end namespace io
 
 namespace scene
 {
 
-	//! Interface for writing meshes
-	class IMeshWriter : public virtual IReferenceCounted
-	{
-	public:
+    //! Interface for writing meshes
+    class IMeshWriter : public virtual IReferenceCounted
+    {
+    public:
 
-		//! Destructor
-		virtual ~IMeshWriter() {}
+        //! Destructor
+        virtual ~IMeshWriter() {}
 
-		//! Get the type of the mesh writer
-		/** For own implementations, use MAKE_IRR_ID as shown in the
-		EMESH_WRITER_TYPE enumeration to return your own unique mesh
-		type id.
-		\return Type of the mesh writer. */
-		virtual EMESH_WRITER_TYPE getType() const = 0;
+        //! Get the type of the mesh writer
+        /** For own implementations, use MAKE_IRR_ID as shown in the
+        EMESH_WRITER_TYPE enumeration to return your own unique mesh
+        type id.
+        \return Type of the mesh writer. */
+        virtual EMESH_WRITER_TYPE getType() const = 0;
 
-		//! Write a static mesh.
-		/** \param file File handle to write the mesh to.
-		\param mesh Pointer to mesh to be written.
-		\param flags Optional flags to set properties of the writer.
-		\return True if sucessful */
-		virtual bool writeMesh(io::IWriteFile* file, scene::ICPUMesh* mesh,
-							int32_t flags=EMWF_NONE) = 0;
+        //! Write a static mesh.
+        /** \param file File handle to write the mesh to.
+        \param mesh Pointer to mesh to be written.
+        \param flags Optional flags to set properties of the writer.
+        \return True if sucessful */
+        virtual bool writeMesh(io::IWriteFile* file, scene::ICPUMesh* mesh,
+                            int32_t flags=EMWF_NONE) = 0;
 
-		// Writes an animated mesh
-		// for future use, no writer is able to write animated meshes currently
-		/* \return Returns true if sucessful */
-		//virtual bool writeAnimatedMesh(io::IWriteFile* file,
-		// scene::IAnimatedMesh* mesh,
-		// int32_t flags=EMWF_NONE) = 0;
-	};
+        // Writes an animated mesh
+        // for future use, no writer is able to write animated meshes currently
+        /* \return Returns true if sucessful */
+        //virtual bool writeAnimatedMesh(io::IWriteFile* file,
+        // scene::IAnimatedMesh* mesh,
+        // int32_t flags=EMWF_NONE) = 0;
+    };
 
 } // end namespace
 } // end namespace

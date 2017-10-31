@@ -23,26 +23,26 @@ namespace core
 {
 
 /*! \file coreutil.h
-	\brief File containing useful basic utility functions
+    \brief File containing useful basic utility functions
 */
 
 //depr
 inline int64_t atolonglong(
-	const std::string& inString)
+    const std::string& inString)
 {
     int64_t x;
     std::istringstream tmp(inString);
     tmp >> x;
-	return x;
+    return x;
 }
 
 //depr
 inline std::string longlongtoa(
-	int64_t inVal)
+    int64_t inVal)
 {
     std::ostringstream tmp;
     tmp << inVal;
-	return tmp.str();
+    return tmp.str();
 }
 
 template<class T>
@@ -124,156 +124,156 @@ extern std::wstring UTF8StringToWString(const std::string& inString, uint32_t in
 // ----------- some basic quite often used string functions -----------------
 
 //! search if a filename has a proper extension
-inline int32_t isFileExtension (	const io::path& filename,
-								const io::path& ext0,
-								const io::path& ext1,
-								const io::path& ext2)
+inline int32_t isFileExtension (    const io::path& filename,
+                                const io::path& ext0,
+                                const io::path& ext1,
+                                const io::path& ext2)
 {
-	int32_t extPos = filename.findLast ( '.' );
-	if ( extPos < 0 )
-		return 0;
+    int32_t extPos = filename.findLast ( '.' );
+    if ( extPos < 0 )
+        return 0;
 
-	extPos += 1;
-	if ( filename.equals_substring_ignore_case ( ext0, extPos ) ) return 1;
-	if ( filename.equals_substring_ignore_case ( ext1, extPos ) ) return 2;
-	if ( filename.equals_substring_ignore_case ( ext2, extPos ) ) return 3;
-	return 0;
+    extPos += 1;
+    if ( filename.equals_substring_ignore_case ( ext0, extPos ) ) return 1;
+    if ( filename.equals_substring_ignore_case ( ext1, extPos ) ) return 2;
+    if ( filename.equals_substring_ignore_case ( ext2, extPos ) ) return 3;
+    return 0;
 }
 
 //! search if a filename has a proper extension
-inline bool hasFileExtension (	const io::path& filename,
-								const io::path& ext0,
-								const io::path& ext1 = "",
-								const io::path& ext2 = "")
+inline bool hasFileExtension (    const io::path& filename,
+                                const io::path& ext0,
+                                const io::path& ext1 = "",
+                                const io::path& ext2 = "")
 {
-	return isFileExtension ( filename, ext0, ext1, ext2 ) > 0;
+    return isFileExtension ( filename, ext0, ext1, ext2 ) > 0;
 }
 
 //! cut the filename extension from a source file path and store it in a dest file path
 inline io::path& cutFilenameExtension ( io::path &dest, const io::path &source )
 {
-	int32_t endPos = source.findLast ( '.' );
-	dest = source.subString ( 0, endPos < 0 ? source.size () : endPos );
-	return dest;
+    int32_t endPos = source.findLast ( '.' );
+    dest = source.subString ( 0, endPos < 0 ? source.size () : endPos );
+    return dest;
 }
 
 //! get the filename extension from a file path
 inline io::path& getFileNameExtension ( io::path &dest, const io::path &source )
 {
-	int32_t endPos = source.findLast ( '.' );
-	if ( endPos < 0 )
-		dest = "";
-	else
-		dest = source.subString ( endPos, source.size () );
-	return dest;
+    int32_t endPos = source.findLast ( '.' );
+    if ( endPos < 0 )
+        dest = "";
+    else
+        dest = source.subString ( endPos, source.size () );
+    return dest;
 }
 
 //! delete path from filename
 inline io::path& deletePathFromFilename(io::path& filename)
 {
-	// delete path from filename
-	const char* s = filename.c_str();
-	const char* p = s + filename.size();
+    // delete path from filename
+    const char* s = filename.c_str();
+    const char* p = s + filename.size();
 
-	// search for path separator or beginning
-	while ( *p != '/' && *p != '\\' && p != s )
-		p--;
+    // search for path separator or beginning
+    while ( *p != '/' && *p != '\\' && p != s )
+        p--;
 
-	if ( p != s )
-	{
-		++p;
-		filename = p;
-	}
-	return filename;
+    if ( p != s )
+    {
+        ++p;
+        filename = p;
+    }
+    return filename;
 }
 
 //! trim paths
 inline io::path& deletePathFromPath(io::path& filename, int32_t pathCount)
 {
-	// delete path from filename
-	int32_t i = filename.size();
+    // delete path from filename
+    int32_t i = filename.size();
 
-	// search for path separator or beginning
-	while ( i>=0 )
-	{
-		if ( filename[i] == '/' || filename[i] == '\\' )
-		{
-			if ( --pathCount <= 0 )
-				break;
-		}
-		--i;
-	}
+    // search for path separator or beginning
+    while ( i>=0 )
+    {
+        if ( filename[i] == '/' || filename[i] == '\\' )
+        {
+            if ( --pathCount <= 0 )
+                break;
+        }
+        --i;
+    }
 
-	if ( i>0 )
-	{
-		filename [ i + 1 ] = 0;
-		filename.validate();
-	}
-	else
-		filename="";
-	return filename;
+    if ( i>0 )
+    {
+        filename [ i + 1 ] = 0;
+        filename.validate();
+    }
+    else
+        filename="";
+    return filename;
 }
 
 //! looks if file is in the same directory of path. returns offset of directory.
 //! 0 means in same directory. 1 means file is direct child of path
 inline int32_t isInSameDirectory ( const io::path& path, const io::path& file )
 {
-	int32_t subA = 0;
-	int32_t subB = 0;
-	int32_t pos;
+    int32_t subA = 0;
+    int32_t subB = 0;
+    int32_t pos;
 
-	if ( path.size() && !path.equalsn ( file, path.size() ) )
-		return -1;
+    if ( path.size() && !path.equalsn ( file, path.size() ) )
+        return -1;
 
-	pos = 0;
-	while ( (pos = path.findNext ( '/', pos )) >= 0 )
-	{
-		subA += 1;
-		pos += 1;
-	}
+    pos = 0;
+    while ( (pos = path.findNext ( '/', pos )) >= 0 )
+    {
+        subA += 1;
+        pos += 1;
+    }
 
-	pos = 0;
-	while ( (pos = file.findNext ( '/', pos )) >= 0 )
-	{
-		subB += 1;
-		pos += 1;
-	}
+    pos = 0;
+    while ( (pos = file.findNext ( '/', pos )) >= 0 )
+    {
+        subB += 1;
+        pos += 1;
+    }
 
-	return subB - subA;
+    return subB - subA;
 }
 
 // splits a path into components
 static inline void splitFilename(const io::path &name, io::path* path=0,
-		io::path* filename=0, io::path* extension=0, bool make_lower=false)
+        io::path* filename=0, io::path* extension=0, bool make_lower=false)
 {
-	int32_t i = name.size();
-	int32_t extpos = i;
+    int32_t i = name.size();
+    int32_t extpos = i;
 
-	// search for path separator or beginning
-	while ( i >= 0 )
-	{
-		if ( name[i] == '.' )
-		{
-			extpos = i;
-			if ( extension )
-				*extension = name.subString ( extpos + 1, name.size() - (extpos + 1), make_lower );
-		}
-		else
-		if ( name[i] == '/' || name[i] == '\\' )
-		{
-			if ( filename )
-				*filename = name.subString ( i + 1, extpos - (i + 1), make_lower );
-			if ( path )
-			{
-				*path = name.subString ( 0, i + 1, make_lower );
-				path->replace ( '\\', '/' );
-			}
-			return;
-		}
-		i -= 1;
-	}
-	if ( filename )
-		*filename = name.subString ( 0, extpos, make_lower );
+    // search for path separator or beginning
+    while ( i >= 0 )
+    {
+        if ( name[i] == '.' )
+        {
+            extpos = i;
+            if ( extension )
+                *extension = name.subString ( extpos + 1, name.size() - (extpos + 1), make_lower );
+        }
+        else
+        if ( name[i] == '/' || name[i] == '\\' )
+        {
+            if ( filename )
+                *filename = name.subString ( i + 1, extpos - (i + 1), make_lower );
+            if ( path )
+            {
+                *path = name.subString ( 0, i + 1, make_lower );
+                path->replace ( '\\', '/' );
+            }
+            return;
+        }
+        i -= 1;
+    }
+    if ( filename )
+        *filename = name.subString ( 0, extpos, make_lower );
 }
 
 

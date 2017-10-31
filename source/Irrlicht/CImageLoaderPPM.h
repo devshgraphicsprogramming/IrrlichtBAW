@@ -20,30 +20,30 @@ namespace video
 
 
 /*!
-	Surface Loader for SUN Pixmaps
+    Surface Loader for SUN Pixmaps
 */
 class CImageLoaderPPM : public IImageLoader
 {
 public:
 
-	//! constructor
-	CImageLoaderPPM();
+    //! constructor
+    CImageLoaderPPM();
 
-	//! returns true if the file maybe is able to be loaded by this class
-	//! based on the file extension (e.g. ".tga")
-	virtual bool isALoadableFileExtension(const io::path& filename) const;
+    //! returns true if the file maybe is able to be loaded by this class
+    //! based on the file extension (e.g. ".tga")
+    virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-	//! returns true if the file maybe is able to be loaded by this class
-	virtual bool isALoadableFileFormat(io::IReadFile* file) const;
+    //! returns true if the file maybe is able to be loaded by this class
+    virtual bool isALoadableFileFormat(io::IReadFile* file) const;
 
-	//! creates a surface from the file
-	virtual IImage* loadImage(io::IReadFile* file) const;
+    //! creates a surface from the file
+    virtual IImage* loadImage(io::IReadFile* file) const;
 
 private:
-	//! read the next token from file
-	void getNextToken(io::IReadFile* file, std::string& token) const;
-	//! skip to next token (skip whitespace)
-	void skipToNextToken(io::IReadFile* file) const;
+    //! read the next token from file
+    void getNextToken(io::IReadFile* file, std::string& token) const;
+    //! skip to next token (skip whitespace)
+    void skipToNextToken(io::IReadFile* file) const;
 };
 
 } // end namespace video

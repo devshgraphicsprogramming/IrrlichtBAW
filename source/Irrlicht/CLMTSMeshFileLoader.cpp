@@ -38,9 +38,9 @@ Version 1.4 - 12 March 2005
 - Used the irrlicht Logger instead of cerr to output warnings and errors.
   For this I had to change the constructor
   from:
-	CLMTSMeshFileLoader(io::IFileSystem* fs, video::IVideoDriver* driver)
+    CLMTSMeshFileLoader(io::IFileSystem* fs, video::IVideoDriver* driver)
   to:
-	CLMTSMeshFileLoader(IrrlichtDevice* device)
+    CLMTSMeshFileLoader(IrrlichtDevice* device)
 
 Version 1.3 - 15 February 2005
 - Fixed bug that prevented loading more than one different lmts files.
@@ -83,284 +83,284 @@ namespace scene
 {
 
 CLMTSMeshFileLoader::CLMTSMeshFileLoader(io::IFileSystem* fs, video::IVideoDriver* driver)
-	: Textures(0), Subsets(0), Triangles(0), Driver(driver), FileSystem(fs), FlipEndianess(false)
+    : Textures(0), Subsets(0), Triangles(0), Driver(driver), FileSystem(fs), FlipEndianess(false)
 {
-	#ifdef _DEBUG
-	setDebugName("CLMTSMeshFileLoader");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CLMTSMeshFileLoader");
+    #endif
 
-	if (Driver)
-		Driver->grab();
+    if (Driver)
+        Driver->grab();
 
-	if (FileSystem)
-		FileSystem->grab();
+    if (FileSystem)
+        FileSystem->grab();
 }
 
 
 CLMTSMeshFileLoader::~CLMTSMeshFileLoader()
 {
-	cleanup();
+    cleanup();
 
-	if (Driver)
-		Driver->drop();
+    if (Driver)
+        Driver->drop();
 
-	if (FileSystem)
-		FileSystem->drop();
+    if (FileSystem)
+        FileSystem->drop();
 }
 
 
 void CLMTSMeshFileLoader::cleanup()
 {
-	delete [] Textures;
-	Textures = 0;
-	delete [] Subsets;
-	Subsets = 0;
-	delete [] Triangles;
-	Triangles = 0;
+    delete [] Textures;
+    Textures = 0;
+    delete [] Subsets;
+    Subsets = 0;
+    delete [] Triangles;
+    Triangles = 0;
 }
 
 
 bool CLMTSMeshFileLoader::isALoadableFileExtension(const io::path& filename) const
 {
-	return core::hasFileExtension ( filename, "lmts" );
+    return core::hasFileExtension ( filename, "lmts" );
 }
 
 
 IAnimatedMesh* CLMTSMeshFileLoader::createMesh(io::IReadFile* file)
 {
-	uint32_t i;
-	uint32_t id;
+    uint32_t i;
+    uint32_t id;
 
-	// HEADER
+    // HEADER
 
-	file->read(&Header, sizeof(SLMTSHeader));
-	if (Header.MagicID == 0x4C4D5354)
-	{
-		FlipEndianess = true;
-		Header.MagicID = os::Byteswap::byteswap(Header.MagicID);
-		Header.Version = os::Byteswap::byteswap(Header.Version);
-		Header.HeaderSize = os::Byteswap::byteswap(Header.HeaderSize);
-		Header.TextureCount = os::Byteswap::byteswap(Header.TextureCount);
-		Header.SubsetCount = os::Byteswap::byteswap(Header.SubsetCount);
-		Header.TriangleCount = os::Byteswap::byteswap(Header.TriangleCount);
-		Header.SubsetSize = os::Byteswap::byteswap(Header.SubsetSize);
-		Header.VertexSize = os::Byteswap::byteswap(Header.VertexSize);
-	}
-	if (Header.MagicID != 0x53544D4C) { // "LMTS"
-		os::Printer::log("LMTS ERROR: wrong header magic id!", ELL_ERROR);
-		return 0;
-	}
+    file->read(&Header, sizeof(SLMTSHeader));
+    if (Header.MagicID == 0x4C4D5354)
+    {
+        FlipEndianess = true;
+        Header.MagicID = os::Byteswap::byteswap(Header.MagicID);
+        Header.Version = os::Byteswap::byteswap(Header.Version);
+        Header.HeaderSize = os::Byteswap::byteswap(Header.HeaderSize);
+        Header.TextureCount = os::Byteswap::byteswap(Header.TextureCount);
+        Header.SubsetCount = os::Byteswap::byteswap(Header.SubsetCount);
+        Header.TriangleCount = os::Byteswap::byteswap(Header.TriangleCount);
+        Header.SubsetSize = os::Byteswap::byteswap(Header.SubsetSize);
+        Header.VertexSize = os::Byteswap::byteswap(Header.VertexSize);
+    }
+    if (Header.MagicID != 0x53544D4C) { // "LMTS"
+        os::Printer::log("LMTS ERROR: wrong header magic id!", ELL_ERROR);
+        return 0;
+    }
 
-	//Skip any User Data (arbitrary app specific data)
+    //Skip any User Data (arbitrary app specific data)
 
-	const int32_t userSize = Header.HeaderSize - sizeof(SLMTSHeader);
-	if (userSize>0)
-		file->seek(userSize,true);
+    const int32_t userSize = Header.HeaderSize - sizeof(SLMTSHeader);
+    if (userSize>0)
+        file->seek(userSize,true);
 
-	// TEXTURES
+    // TEXTURES
 
-	file->read(&id, sizeof(uint32_t));
-	if (FlipEndianess)
-		id = os::Byteswap::byteswap(id);
-	if (id != 0x54584554) { // "TEXT"
-		os::Printer::log("LMTS ERROR: wrong texture magic id!", ELL_ERROR);
-		return 0;
-	}
+    file->read(&id, sizeof(uint32_t));
+    if (FlipEndianess)
+        id = os::Byteswap::byteswap(id);
+    if (id != 0x54584554) { // "TEXT"
+        os::Printer::log("LMTS ERROR: wrong texture magic id!", ELL_ERROR);
+        return 0;
+    }
 
-	Textures = new SLMTSTextureInfoEntry[Header.TextureCount];
+    Textures = new SLMTSTextureInfoEntry[Header.TextureCount];
 
-	file->read(Textures, sizeof(SLMTSTextureInfoEntry)*Header.TextureCount);
-	if (FlipEndianess)
-	{
-		for (i=0; i<Header.TextureCount; ++i)
-			Textures[i].Flags = os::Byteswap::byteswap(Textures[i].Flags);
-	}
+    file->read(Textures, sizeof(SLMTSTextureInfoEntry)*Header.TextureCount);
+    if (FlipEndianess)
+    {
+        for (i=0; i<Header.TextureCount; ++i)
+            Textures[i].Flags = os::Byteswap::byteswap(Textures[i].Flags);
+    }
 
-	// SUBSETS
+    // SUBSETS
 
-	file->read(&id, sizeof(uint32_t));
-	if (FlipEndianess)
-		id = os::Byteswap::byteswap(id);
-	if (id != 0x53425553) // "SUBS"
-	{
-		os::Printer::log("LMTS ERROR: wrong subset magic id!", ELL_ERROR);
-		cleanup();
-		return 0;
-	}
+    file->read(&id, sizeof(uint32_t));
+    if (FlipEndianess)
+        id = os::Byteswap::byteswap(id);
+    if (id != 0x53425553) // "SUBS"
+    {
+        os::Printer::log("LMTS ERROR: wrong subset magic id!", ELL_ERROR);
+        cleanup();
+        return 0;
+    }
 
-	Subsets = new SLMTSSubsetInfoEntry[Header.SubsetCount];
-	const int32_t subsetUserSize = Header.SubsetSize - sizeof(SLMTSSubsetInfoEntry);
+    Subsets = new SLMTSSubsetInfoEntry[Header.SubsetCount];
+    const int32_t subsetUserSize = Header.SubsetSize - sizeof(SLMTSSubsetInfoEntry);
 
-	for (i=0; i<Header.SubsetCount; ++i)
-	{
-		file->read(&Subsets[i], sizeof(SLMTSSubsetInfoEntry));
-		if (FlipEndianess)
-		{
-			Subsets[i].Offset = os::Byteswap::byteswap(Subsets[i].Offset);
-			Subsets[i].Count = os::Byteswap::byteswap(Subsets[i].Count);
-			Subsets[i].TextID1 = os::Byteswap::byteswap(Subsets[i].TextID1);
-			Subsets[i].TextID2 = os::Byteswap::byteswap(Subsets[i].TextID2);
-		}
-		if (subsetUserSize>0)
-			file->seek(subsetUserSize,true);
-	}
+    for (i=0; i<Header.SubsetCount; ++i)
+    {
+        file->read(&Subsets[i], sizeof(SLMTSSubsetInfoEntry));
+        if (FlipEndianess)
+        {
+            Subsets[i].Offset = os::Byteswap::byteswap(Subsets[i].Offset);
+            Subsets[i].Count = os::Byteswap::byteswap(Subsets[i].Count);
+            Subsets[i].TextID1 = os::Byteswap::byteswap(Subsets[i].TextID1);
+            Subsets[i].TextID2 = os::Byteswap::byteswap(Subsets[i].TextID2);
+        }
+        if (subsetUserSize>0)
+            file->seek(subsetUserSize,true);
+    }
 
-	// TRIANGLES
+    // TRIANGLES
 
-	file->read(&id, sizeof(uint32_t));
-	if (FlipEndianess)
-		id = os::Byteswap::byteswap(id);
-	if (id != 0x53495254) // "TRIS"
-	{
-		os::Printer::log("LMTS ERROR: wrong triangle magic id!", ELL_ERROR);
-		cleanup();
-		return 0;
-	}
+    file->read(&id, sizeof(uint32_t));
+    if (FlipEndianess)
+        id = os::Byteswap::byteswap(id);
+    if (id != 0x53495254) // "TRIS"
+    {
+        os::Printer::log("LMTS ERROR: wrong triangle magic id!", ELL_ERROR);
+        cleanup();
+        return 0;
+    }
 
-	Triangles = new SLMTSTriangleDataEntry[(Header.TriangleCount*3)];
-	const int32_t triUserSize = Header.VertexSize - sizeof(SLMTSTriangleDataEntry);
+    Triangles = new SLMTSTriangleDataEntry[(Header.TriangleCount*3)];
+    const int32_t triUserSize = Header.VertexSize - sizeof(SLMTSTriangleDataEntry);
 
-	for (i=0; i<(Header.TriangleCount*3); ++i)
-	{
-		file->read(&Triangles[i], sizeof(SLMTSTriangleDataEntry));
-		if (FlipEndianess)
-		{
-			Triangles[i].X = os::Byteswap::byteswap(Triangles[i].X);
-			Triangles[i].Y = os::Byteswap::byteswap(Triangles[i].Y);
-			Triangles[i].Z = os::Byteswap::byteswap(Triangles[i].Z);
-			Triangles[i].U1 = os::Byteswap::byteswap(Triangles[i].U1);
-			Triangles[i].V1 = os::Byteswap::byteswap(Triangles[i].U2);
-			Triangles[i].U2 = os::Byteswap::byteswap(Triangles[i].V1);
-			Triangles[i].V2 = os::Byteswap::byteswap(Triangles[i].V2);
-		}
-		if (triUserSize>0)
-			file->seek(triUserSize,true);
-	}
+    for (i=0; i<(Header.TriangleCount*3); ++i)
+    {
+        file->read(&Triangles[i], sizeof(SLMTSTriangleDataEntry));
+        if (FlipEndianess)
+        {
+            Triangles[i].X = os::Byteswap::byteswap(Triangles[i].X);
+            Triangles[i].Y = os::Byteswap::byteswap(Triangles[i].Y);
+            Triangles[i].Z = os::Byteswap::byteswap(Triangles[i].Z);
+            Triangles[i].U1 = os::Byteswap::byteswap(Triangles[i].U1);
+            Triangles[i].V1 = os::Byteswap::byteswap(Triangles[i].U2);
+            Triangles[i].U2 = os::Byteswap::byteswap(Triangles[i].V1);
+            Triangles[i].V2 = os::Byteswap::byteswap(Triangles[i].V2);
+        }
+        if (triUserSize>0)
+            file->seek(triUserSize,true);
+    }
 
-	/////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////
 
-	SMesh* mesh = new SMesh();
+    SMesh* mesh = new SMesh();
 
-	constructMesh(mesh);
+    constructMesh(mesh);
 
-	loadTextures(mesh);
+    loadTextures(mesh);
 
-	cleanup();
+    cleanup();
 
-	SAnimatedMesh* am = new SAnimatedMesh();
-	am->Type = EAMT_LMTS; // not unknown to irrlicht anymore
+    SAnimatedMesh* am = new SAnimatedMesh();
+    am->Type = EAMT_LMTS; // not unknown to irrlicht anymore
 
-	am->addMesh(mesh);
-	am->recalculateBoundingBox();
-	mesh->drop();
-	return am;
+    am->addMesh(mesh);
+    am->recalculateBoundingBox();
+    mesh->drop();
+    return am;
 }
 
 
 void CLMTSMeshFileLoader::constructMesh(SMesh* mesh)
 {
-	for (int32_t i=0; i<Header.SubsetCount; ++i)
-	{
-		scene::SMeshBufferLightMap* meshBuffer = new scene::SMeshBufferLightMap();
+    for (int32_t i=0; i<Header.SubsetCount; ++i)
+    {
+        scene::SMeshBufferLightMap* meshBuffer = new scene::SMeshBufferLightMap();
 
-		// EMT_LIGHTMAP_M2/EMT_LIGHTMAP_M4 also possible
-		meshBuffer->Material.MaterialType = video::EMT_LIGHTMAP;
-		meshBuffer->Material.Wireframe = false;
-		meshBuffer->Material.Lighting = false;
+        // EMT_LIGHTMAP_M2/EMT_LIGHTMAP_M4 also possible
+        meshBuffer->Material.MaterialType = video::EMT_LIGHTMAP;
+        meshBuffer->Material.Wireframe = false;
+        meshBuffer->Material.Lighting = false;
 
-		mesh->addMeshBuffer(meshBuffer);
+        mesh->addMeshBuffer(meshBuffer);
 
-		const uint32_t offs = Subsets[i].Offset * 3;
+        const uint32_t offs = Subsets[i].Offset * 3;
 
-		for (uint32_t sc=0; sc<Subsets[i].Count; sc++)
-		{
-			const uint32_t idx = meshBuffer->getVertexCount();
+        for (uint32_t sc=0; sc<Subsets[i].Count; sc++)
+        {
+            const uint32_t idx = meshBuffer->getVertexCount();
 
-			for (uint32_t vu=0; vu<3; ++vu)
-			{
-				const SLMTSTriangleDataEntry& v = Triangles[offs+(3*sc)+vu];
-				meshBuffer->Vertices.push_back(
-						video::S3DVertex2TCoords(
-							v.X, v.Y, v.Z,
-							video::SColor(255,255,255,255),
-							v.U1, v.V1, v.U2, v.V2));
-			}
-			const core::vector3df normal = core::plane3df(
-				meshBuffer->Vertices[idx].Pos,
-				meshBuffer->Vertices[idx+1].Pos,
-				meshBuffer->Vertices[idx+2].Pos).Normal;
+            for (uint32_t vu=0; vu<3; ++vu)
+            {
+                const SLMTSTriangleDataEntry& v = Triangles[offs+(3*sc)+vu];
+                meshBuffer->Vertices.push_back(
+                        video::S3DVertex2TCoords(
+                            v.X, v.Y, v.Z,
+                            video::SColor(255,255,255,255),
+                            v.U1, v.V1, v.U2, v.V2));
+            }
+            const core::vector3df normal = core::plane3df(
+                meshBuffer->Vertices[idx].Pos,
+                meshBuffer->Vertices[idx+1].Pos,
+                meshBuffer->Vertices[idx+2].Pos).Normal;
 
-			meshBuffer->Vertices[idx].Normal = normal;
-			meshBuffer->Vertices[idx+1].Normal = normal;
-			meshBuffer->Vertices[idx+2].Normal = normal;
+            meshBuffer->Vertices[idx].Normal = normal;
+            meshBuffer->Vertices[idx+1].Normal = normal;
+            meshBuffer->Vertices[idx+2].Normal = normal;
 
-			meshBuffer->Indices.push_back(idx);
-			meshBuffer->Indices.push_back(idx+1);
-			meshBuffer->Indices.push_back(idx+2);
-		}
-		meshBuffer->drop();
-	}
+            meshBuffer->Indices.push_back(idx);
+            meshBuffer->Indices.push_back(idx+1);
+            meshBuffer->Indices.push_back(idx+2);
+        }
+        meshBuffer->drop();
+    }
 
-	for (uint32_t j=0; j<mesh->MeshBuffers.size(); ++j)
-		mesh->MeshBuffers[j]->recalculateBoundingBox();
+    for (uint32_t j=0; j<mesh->MeshBuffers.size(); ++j)
+        mesh->MeshBuffers[j]->recalculateBoundingBox();
 
-	mesh->recalculateBoundingBox();
+    mesh->recalculateBoundingBox();
 }
 
 
 void CLMTSMeshFileLoader::loadTextures(SMesh* mesh)
 {
-	if (!Driver || !FileSystem)
-		return;
+    if (!Driver || !FileSystem)
+        return;
 
-	// load textures
+    // load textures
 
-	// a little too much space, but won't matter here
-	core::array<video::ITexture*> tex;
-	tex.reallocate(Header.TextureCount);
-	core::array<video::ITexture*> lig;
-	lig.reallocate(Header.TextureCount);
-	core::array<uint32_t> id2id;
-	id2id.reallocate(Header.TextureCount);
+    // a little too much space, but won't matter here
+    core::array<video::ITexture*> tex;
+    tex.reallocate(Header.TextureCount);
+    core::array<video::ITexture*> lig;
+    lig.reallocate(Header.TextureCount);
+    core::array<uint32_t> id2id;
+    id2id.reallocate(Header.TextureCount);
 
-	const core::stringc Path = Parameters->getAttributeAsString(LMTS_TEXTURE_PATH);
+    const core::stringc Path = Parameters->getAttributeAsString(LMTS_TEXTURE_PATH);
 
-	core::stringc s;
-	for (uint32_t t=0; t<Header.TextureCount; ++t)
-	{
-		video::ITexture* tmptex = 0;
-		s = Path;
-		s.append(Textures[t].Filename);
+    core::stringc s;
+    for (uint32_t t=0; t<Header.TextureCount; ++t)
+    {
+        video::ITexture* tmptex = 0;
+        s = Path;
+        s.append(Textures[t].Filename);
 
-		if (FileSystem->existFile(s))
-			tmptex = Driver->getTexture(s);
-		else
-			os::Printer::log("LMTS WARNING: Texture does not exist", s.c_str(), ELL_WARNING);
+        if (FileSystem->existFile(s))
+            tmptex = Driver->getTexture(s);
+        else
+            os::Printer::log("LMTS WARNING: Texture does not exist", s.c_str(), ELL_WARNING);
 
-		if (Textures[t].Flags & 0x01)
-		{
-			id2id.push_back(lig.size());
-			lig.push_back(tmptex);
-		}
-		else
-		{
-			id2id.push_back(tex.size());
-			tex.push_back(tmptex);
-		}
-	}
+        if (Textures[t].Flags & 0x01)
+        {
+            id2id.push_back(lig.size());
+            lig.push_back(tmptex);
+        }
+        else
+        {
+            id2id.push_back(tex.size());
+            tex.push_back(tmptex);
+        }
+    }
 
-	// attach textures to materials.
+    // attach textures to materials.
 
-	for (uint32_t i=0; i<Header.SubsetCount; ++i)
-	{
-		if (Subsets[i].TextID1 < Header.TextureCount && id2id[Subsets[i].TextID1] < tex.size())
-			mesh->getMeshBuffer(i)->getMaterial().setTexture(0, tex[id2id[Subsets[i].TextID1]]);
-		if (Subsets[i].TextID2 < Header.TextureCount && id2id[Subsets[i].TextID2] < lig.size())
-			mesh->getMeshBuffer(i)->getMaterial().setTexture(1, lig[id2id[Subsets[i].TextID2]]);
+    for (uint32_t i=0; i<Header.SubsetCount; ++i)
+    {
+        if (Subsets[i].TextID1 < Header.TextureCount && id2id[Subsets[i].TextID1] < tex.size())
+            mesh->getMeshBuffer(i)->getMaterial().setTexture(0, tex[id2id[Subsets[i].TextID1]]);
+        if (Subsets[i].TextID2 < Header.TextureCount && id2id[Subsets[i].TextID2] < lig.size())
+            mesh->getMeshBuffer(i)->getMaterial().setTexture(1, lig[id2id[Subsets[i].TextID2]]);
 
-		if (!mesh->getMeshBuffer(i)->getMaterial().getTexture(1))
-			mesh->getMeshBuffer(i)->getMaterial().MaterialType = video::EMT_SOLID;
-	}
+        if (!mesh->getMeshBuffer(i)->getMaterial().getTexture(1))
+            mesh->getMeshBuffer(i)->getMaterial().MaterialType = video::EMT_SOLID;
+    }
 }
 
 

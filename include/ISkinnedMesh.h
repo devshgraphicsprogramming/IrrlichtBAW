@@ -71,25 +71,25 @@ namespace scene
             virtual uint32_t getMaxVertexWeights() const =0;
     };
 
-	//! Interface for using some special functions of Skinned meshes
-	class ICPUSkinnedMesh : public ICPUMesh
-	{
-	public:
+    //! Interface for using some special functions of Skinned meshes
+    class ICPUSkinnedMesh : public ICPUMesh
+    {
+    public:
 
-		//!
-		virtual CFinalBoneHierarchy* getBoneReferenceHierarchy() const = 0;
+        //!
+        virtual CFinalBoneHierarchy* getBoneReferenceHierarchy() const = 0;
 
-		//!
-		virtual E_MESH_TYPE getMeshType() const
-		{
-			return EMT_ANIMATED_SKINNED;
-		}
+        //!
+        virtual E_MESH_TYPE getMeshType() const
+        {
+            return EMT_ANIMATED_SKINNED;
+        }
 
 
 
-		//! Animation keyframe which describes a new position
-		class SPositionKey
-		{
+        //! Animation keyframe which describes a new position
+        class SPositionKey
+        {
         public:
                 SPositionKey() {}
                 SPositionKey(const float& mockFrame) : frame(mockFrame) {}
@@ -97,36 +97,36 @@ namespace scene
 
                 float frame;
                 core::vector3df position;
-		};
+        };
 
-		//! Animation keyframe which describes a new scale
-		class SScaleKey
-		{
-		    public:
+        //! Animation keyframe which describes a new scale
+        class SScaleKey
+        {
+            public:
                 SScaleKey() {}
                 SScaleKey(const float& mockFrame) : frame(mockFrame) {}
                 inline bool operator<(const SScaleKey& other) const { return (frame < other.frame); }
 
-			float frame;
-			core::vector3df scale;
-		};
+            float frame;
+            core::vector3df scale;
+        };
 
-		//! Animation keyframe which describes a new rotation
-		class SRotationKey
-		{
-		    public:
+        //! Animation keyframe which describes a new rotation
+        class SRotationKey
+        {
+            public:
                 SRotationKey() {}
                 SRotationKey(const float& mockFrame) : frame(mockFrame) {}
                 inline bool operator<(const SRotationKey& other) const { return (frame < other.frame); }
 
-			float frame;
-			core::quaternion rotation;
-		};
+            float frame;
+            core::quaternion rotation;
+        };
 
-		//! Joints
-		class SJoint
-		{
-		    public:
+        //! Joints
+        class SJoint
+        {
+            public:
                 SJoint() : Parent(NULL)
                 {
                 }
@@ -177,28 +177,28 @@ namespace scene
                 core::matrix4x3 GlobalMatrix;
 
                 core::matrix4x3 GlobalInversedMatrix; //the x format pre-calculates this
-		};
+        };
 
 
-		//Interface for the mesh loaders (finalize should lock these functions, and they should have some prefix like loader_
+        //Interface for the mesh loaders (finalize should lock these functions, and they should have some prefix like loader_
 
-		//these functions will use the needed arrays, set values, etc to help the loaders
+        //these functions will use the needed arrays, set values, etc to help the loaders
 
-		//! exposed for loaders: joints list
-		virtual std::vector<SJoint*>& getAllJoints() = 0;
+        //! exposed for loaders: joints list
+        virtual std::vector<SJoint*>& getAllJoints() = 0;
 
-		//! exposed for loaders: joints list
-		virtual const std::vector<SJoint*>& getAllJoints() const = 0;
+        //! exposed for loaders: joints list
+        virtual const std::vector<SJoint*>& getAllJoints() const = 0;
 
-		//! loaders should call this after populating the mesh
-		virtual void finalize() = 0;
+        //! loaders should call this after populating the mesh
+        virtual void finalize() = 0;
 
-		//! Adds a new joint to the mesh, access it as last one
-		virtual SJoint* addJoint(SJoint *parent=0) = 0;
+        //! Adds a new joint to the mesh, access it as last one
+        virtual SJoint* addJoint(SJoint *parent=0) = 0;
 
-		//! Check if the mesh is non-animated
-		virtual bool isStatic()=0;
-	};
+        //! Check if the mesh is non-animated
+        virtual bool isStatic()=0;
+    };
 
 } // end namespace scene
 } // end namespace irr

@@ -1286,7 +1286,7 @@ clEnqueueNDRangeKernel(cl_command_queue /* command_queue */,
 
 extern CL_API_ENTRY cl_int CL_API_CALL
 clEnqueueNativeKernel(cl_command_queue  /* command_queue */,
-					  void (CL_CALLBACK * /*user_func*/)(void *),
+                      void (CL_CALLBACK * /*user_func*/)(void *),
                       void *            /* args */,
                       size_t            /* cb_args */,
                       cl_uint           /* num_mem_objects */,

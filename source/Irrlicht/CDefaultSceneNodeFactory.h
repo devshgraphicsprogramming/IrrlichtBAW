@@ -14,64 +14,64 @@ namespace irr
 namespace scene
 {
 
-	class ISceneNode;
-	class ISceneManager;
+    class ISceneNode;
+    class ISceneManager;
 
-	//!	Interface making it possible to dynamicly create scene nodes and animators
-	class CDefaultSceneNodeFactory : public ISceneNodeFactory
-	{
-	public:
+    //!    Interface making it possible to dynamicly create scene nodes and animators
+    class CDefaultSceneNodeFactory : public ISceneNodeFactory
+    {
+    public:
 
-		CDefaultSceneNodeFactory(ISceneManager* mgr);
+        CDefaultSceneNodeFactory(ISceneManager* mgr);
 
-		//! adds a scene node to the scene graph based on its type id
-		/** \param type: Type of the scene node to add.
-		\param parent: Parent scene node of the new node, can be null to add the scene node to the root.
-		\return Returns pointer to the new scene node or null if not successful. */
-		virtual ISceneNode* addSceneNode(ESCENE_NODE_TYPE type, IDummyTransformationSceneNode* parent=0);
+        //! adds a scene node to the scene graph based on its type id
+        /** \param type: Type of the scene node to add.
+        \param parent: Parent scene node of the new node, can be null to add the scene node to the root.
+        \return Returns pointer to the new scene node or null if not successful. */
+        virtual ISceneNode* addSceneNode(ESCENE_NODE_TYPE type, IDummyTransformationSceneNode* parent=0);
 
-		//! adds a scene node to the scene graph based on its type name
-		/** \param typeName: Type name of the scene node to add.
-		\param parent: Parent scene node of the new node, can be null to add the scene node to the root.
-		\return Returns pointer to the new scene node or null if not successful. */
-		virtual ISceneNode* addSceneNode(const char* typeName, IDummyTransformationSceneNode* parent=0);
+        //! adds a scene node to the scene graph based on its type name
+        /** \param typeName: Type name of the scene node to add.
+        \param parent: Parent scene node of the new node, can be null to add the scene node to the root.
+        \return Returns pointer to the new scene node or null if not successful. */
+        virtual ISceneNode* addSceneNode(const char* typeName, IDummyTransformationSceneNode* parent=0);
 
-		//! returns amount of scene node types this factory is able to create
-		virtual uint32_t getCreatableSceneNodeTypeCount() const;
+        //! returns amount of scene node types this factory is able to create
+        virtual uint32_t getCreatableSceneNodeTypeCount() const;
 
-		//! returns type name of a createable scene node type by index
-		/** \param idx: Index of scene node type in this factory. Must be a value between 0 and
-		uetCreatableSceneNodeTypeCount() */
-		virtual const char* getCreateableSceneNodeTypeName(uint32_t idx) const;
+        //! returns type name of a createable scene node type by index
+        /** \param idx: Index of scene node type in this factory. Must be a value between 0 and
+        uetCreatableSceneNodeTypeCount() */
+        virtual const char* getCreateableSceneNodeTypeName(uint32_t idx) const;
 
-		//! returns type of a createable scene node type
-		/** \param idx: Index of scene node type in this factory. Must be a value between 0 and
-		getCreatableSceneNodeTypeCount() */
-		virtual ESCENE_NODE_TYPE getCreateableSceneNodeType(uint32_t idx) const;
+        //! returns type of a createable scene node type
+        /** \param idx: Index of scene node type in this factory. Must be a value between 0 and
+        getCreatableSceneNodeTypeCount() */
+        virtual ESCENE_NODE_TYPE getCreateableSceneNodeType(uint32_t idx) const;
 
-		//! returns type name of a createable scene node type
-		/** \param idx: Type of scene node.
-		\return: Returns name of scene node type if this factory can create the type, otherwise 0. */
-		virtual const char* getCreateableSceneNodeTypeName(ESCENE_NODE_TYPE type) const;
+        //! returns type name of a createable scene node type
+        /** \param idx: Type of scene node.
+        \return: Returns name of scene node type if this factory can create the type, otherwise 0. */
+        virtual const char* getCreateableSceneNodeTypeName(ESCENE_NODE_TYPE type) const;
 
-	private:
+    private:
 
-		ESCENE_NODE_TYPE getTypeFromName(const char* name) const;
+        ESCENE_NODE_TYPE getTypeFromName(const char* name) const;
 
-		struct SSceneNodeTypePair
-		{
-			SSceneNodeTypePair(ESCENE_NODE_TYPE type, const char* name)
-				: Type(type), TypeName(name)
-			{}
+        struct SSceneNodeTypePair
+        {
+            SSceneNodeTypePair(ESCENE_NODE_TYPE type, const char* name)
+                : Type(type), TypeName(name)
+            {}
 
-			ESCENE_NODE_TYPE Type;
-			core::stringc TypeName;
-		};
+            ESCENE_NODE_TYPE Type;
+            core::stringc TypeName;
+        };
 
-		core::array<SSceneNodeTypePair> SupportedSceneNodeTypes;
+        core::array<SSceneNodeTypePair> SupportedSceneNodeTypes;
 
-		ISceneManager* Manager;
-	};
+        ISceneManager* Manager;
+    };
 
 } // end namespace scene
 } // end namespace irr

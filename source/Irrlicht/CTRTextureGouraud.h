@@ -13,8 +13,8 @@ namespace irr
 {
 namespace video
 {
-	class ITriangleRenderer;
-	class IZBuffer;
+    class ITriangleRenderer;
+    class IZBuffer;
 } // end namespace video
 } // end namespace irr
 
@@ -27,54 +27,54 @@ namespace irr
 {
 namespace video
 {
-	//! CTRTextureGouraud class
-	class CTRTextureGouraud : public ITriangleRenderer
-	{
-	public:
+    //! CTRTextureGouraud class
+    class CTRTextureGouraud : public ITriangleRenderer
+    {
+    public:
 
-		//! constructor
-		CTRTextureGouraud(IZBuffer* zbuffer);
+        //! constructor
+        CTRTextureGouraud(IZBuffer* zbuffer);
 
-		//! destructor
-		virtual ~CTRTextureGouraud();
+        //! destructor
+        virtual ~CTRTextureGouraud();
 
-		//! sets a render target
-		virtual void setRenderTarget(video::IImage* surface, const core::rect<int32_t>& viewPort);
+        //! sets a render target
+        virtual void setRenderTarget(video::IImage* surface, const core::rect<int32_t>& viewPort);
 
-		//! draws an indexed triangle list
-		virtual void drawIndexedTriangleList(S2DVertex* vertices, int32_t vertexCount, const uint16_t* indexList, int32_t triangleCount);
+        //! draws an indexed triangle list
+        virtual void drawIndexedTriangleList(S2DVertex* vertices, int32_t vertexCount, const uint16_t* indexList, int32_t triangleCount);
 
-		//! en or disables the backface culling
-		virtual void setBackfaceCulling(bool enabled = true);
+        //! en or disables the backface culling
+        virtual void setBackfaceCulling(bool enabled = true);
 
-		//! sets the Texture
-		virtual void setTexture(video::IImage* texture);
+        //! sets the Texture
+        virtual void setTexture(video::IImage* texture);
 
-	protected:
+    protected:
 
-		//! vertauscht zwei vertizen
-		inline void swapVertices(const S2DVertex** v1, const S2DVertex** v2)
-		{
-			const S2DVertex* b = *v1;
-			*v1 = *v2;
-			*v2 = b;
-		}
+        //! vertauscht zwei vertizen
+        inline void swapVertices(const S2DVertex** v1, const S2DVertex** v2)
+        {
+            const S2DVertex* b = *v1;
+            *v1 = *v2;
+            *v2 = b;
+        }
 
-		video::IImage* RenderTarget;
-		core::rect<int32_t> ViewPortRect;
+        video::IImage* RenderTarget;
+        core::rect<int32_t> ViewPortRect;
 
-		IZBuffer* ZBuffer;
+        IZBuffer* ZBuffer;
 
-		int32_t SurfaceWidth;
-		int32_t SurfaceHeight;
-		bool BackFaceCullingEnabled;
-		TZBufferType* lockedZBuffer;
-		uint16_t* lockedSurface;
-		uint16_t* lockedTexture;
-		int32_t lockedTextureWidth;
-		int32_t textureXMask, textureYMask;
-		video::IImage* Texture;
-	};
+        int32_t SurfaceWidth;
+        int32_t SurfaceHeight;
+        bool BackFaceCullingEnabled;
+        TZBufferType* lockedZBuffer;
+        uint16_t* lockedSurface;
+        uint16_t* lockedTexture;
+        int32_t lockedTextureWidth;
+        int32_t textureXMask, textureYMask;
+        video::IImage* Texture;
+    };
 
 } // end namespace video
 } // end namespace irr

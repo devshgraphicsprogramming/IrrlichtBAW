@@ -494,7 +494,7 @@ IGPUTransientBuffer::E_ALLOC_RETURN_STATUS IGPUTransientBuffer::Alloc(size_t &of
                     allocMutex->Release();
                 return EARS_SUCCESS;
             }
-			else if (noFencesToCycle||(!noFencesToCycle&&waitPolicy<EWP_WAIT_FOR_GPU_FREE))
+            else if (noFencesToCycle||(!noFencesToCycle&&waitPolicy<EWP_WAIT_FOR_GPU_FREE))
                 break;
         }
 
@@ -1061,7 +1061,7 @@ bool IGPUTransientBuffer::waitRangeFences(const size_t& start, const size_t& end
     #if defined(_IRR_WINDOWS_API_)
                                     LARGE_INTEGER nTime;
                                     QueryPerformanceCounter(&nTime);
-								    size_t timeMeasuredNs = nTime.QuadPart;
+                                    size_t timeMeasuredNs = nTime.QuadPart;
                 #else
                                     timespec ts;
                                     clock_gettime(CLOCK_REALTIME, &ts); // Works on Linux

@@ -144,10 +144,10 @@ bool CMeshSceneNodeInstanced::setLoDMeshes(std::vector<MeshLoD> levelsOfDetail, 
 
     visibilityPadding = 4-(extraDataSizePerInstanceInput&0x3u);
 
-	instanceDataBuffer = new video::IMetaGranularGPUMappedBuffer(SceneManager->getVideoDriver(),extraDataSizePerInstanceInput+visibilityPadding+48+36,4096,false,16*1024,16*1024);
-	instanceBBoxesCount = instanceDataBuffer->getCapacity();
-	instanceBBoxes = (core::aabbox3df*)malloc(instanceBBoxesCount*sizeof(core::aabbox3df));
-	for (size_t i=0; i<instanceBBoxesCount; i++)
+    instanceDataBuffer = new video::IMetaGranularGPUMappedBuffer(SceneManager->getVideoDriver(),extraDataSizePerInstanceInput+visibilityPadding+48+36,4096,false,16*1024,16*1024);
+    instanceBBoxesCount = instanceDataBuffer->getCapacity();
+    instanceBBoxes = (core::aabbox3df*)malloc(instanceBBoxesCount*sizeof(core::aabbox3df));
+    for (size_t i=0; i<instanceBBoxesCount; i++)
     {
         instanceBBoxes[i].MinEdge.set( FLT_MAX, FLT_MAX, FLT_MAX);
         instanceBBoxes[i].MaxEdge.set(-FLT_MAX,-FLT_MAX,-FLT_MAX);
@@ -155,8 +155,8 @@ bool CMeshSceneNodeInstanced::setLoDMeshes(std::vector<MeshLoD> levelsOfDetail, 
 
     xfb.resize((levelsOfDetail.size()+gpuLoDsPerPass-1)/gpuLoDsPerPass);
 
-	gpuCulledLodInstanceDataBuffer = SceneManager->getVideoDriver()->createGPUBuffer(dataSizePerInstanceOutput*instanceBBoxesCount*gpuLoDsPerPass*xfb.size(),NULL);
-	instanceDataBufferChanged = false;
+    gpuCulledLodInstanceDataBuffer = SceneManager->getVideoDriver()->createGPUBuffer(dataSizePerInstanceOutput*instanceBBoxesCount*gpuLoDsPerPass*xfb.size(),NULL);
+    instanceDataBufferChanged = false;
 
     if (cpuCullFunc)
     {
@@ -178,8 +178,8 @@ bool CMeshSceneNodeInstanced::setLoDMeshes(std::vector<MeshLoD> levelsOfDetail, 
         instanceCountThresholdForGPU = 0;
 
 
-	extraDataInstanceSize = extraDataSizePerInstanceInput;
-	dataPerInstanceOutputSize = dataSizePerInstanceOutput;
+    extraDataInstanceSize = extraDataSizePerInstanceInput;
+    dataPerInstanceOutputSize = dataSizePerInstanceOutput;
     {
         video::IGPUBuffer* buff = instanceDataBuffer->getFrontBuffer();
 
@@ -212,7 +212,7 @@ bool CMeshSceneNodeInstanced::setLoDMeshes(std::vector<MeshLoD> levelsOfDetail, 
         }
     }
 
-	lastTimeUsedGPU = true;
+    lastTimeUsedGPU = true;
 
 
     for (size_t i=0; i<levelsOfDetail.size(); i++)
@@ -563,18 +563,18 @@ void CMeshSceneNodeInstanced::OnRegisterSceneNode()
 {
     ISceneNode::OnRegisterSceneNode();
 
-	if (IsVisible&&LoD.size()&&instanceDataBuffer&&instanceDataBuffer->getAllocatedCount()&&canProceedPastFence())
-	{
-		// because this node supports rendering of mixed mode meshes consisting of
-		// transparent and solid material at the same time, we need to go through all
-		// materials, check of what type they are and register this node for the right
-		// render pass according to that.
+    if (IsVisible&&LoD.size()&&instanceDataBuffer&&instanceDataBuffer->getAllocatedCount()&&canProceedPastFence())
+    {
+        // because this node supports rendering of mixed mode meshes consisting of
+        // transparent and solid material at the same time, we need to go through all
+        // materials, check of what type they are and register this node for the right
+        // render pass according to that.
 
-		video::IVideoDriver* driver = SceneManager->getVideoDriver();
+        video::IVideoDriver* driver = SceneManager->getVideoDriver();
 
-		PassCount = 0;
-		int transparentCount = 0;
-		int solidCount = 0;
+        PassCount = 0;
+        int transparentCount = 0;
+        int solidCount = 0;
 
         for (size_t i=0; i<LoD.size(); ++i)
         for (size_t j=0; j<LoD[i].mesh->getMeshBufferCount(); j++)
@@ -594,37 +594,37 @@ void CMeshSceneNodeInstanced::OnRegisterSceneNode()
                 break;
         }
 
-		// register according to material types counted
-		uint32_t taken = 0;
-		if (solidCount)
-			taken |= SceneManager->registerNodeForRendering(this, scene::ESNRP_SOLID);
+        // register according to material types counted
+        uint32_t taken = 0;
+        if (solidCount)
+            taken |= SceneManager->registerNodeForRendering(this, scene::ESNRP_SOLID);
 
-		if (transparentCount)
-			taken |= SceneManager->registerNodeForRendering(this, scene::ESNRP_TRANSPARENT);
+        if (transparentCount)
+            taken |= SceneManager->registerNodeForRendering(this, scene::ESNRP_TRANSPARENT);
 
         if (taken)
             RecullInstances();
-	}
+    }
 }
 
 
 //! renders the node.
 void CMeshSceneNodeInstanced::render()
 {
-	video::IVideoDriver* driver = SceneManager->getVideoDriver();
+    video::IVideoDriver* driver = SceneManager->getVideoDriver();
 
-	if (LoD.size()==0 || !driver)
-		return;
+    if (LoD.size()==0 || !driver)
+        return;
 
-	bool isTransparentPass =
-		SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
+    bool isTransparentPass =
+        SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
 
-	++PassCount;
+    ++PassCount;
 
-	driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
+    driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
 
 
-	if (flagQueryForRetrieval)
+    if (flagQueryForRetrieval)
     {
 /*#ifdef _DEBUG
         if (!LoD[LoD.size()-1].query->isQueryReady())
@@ -668,23 +668,23 @@ void CMeshSceneNodeInstanced::render()
 //! Creates a clone of this scene node and its children.
 ISceneNode* CMeshSceneNodeInstanced::clone(IDummyTransformationSceneNode* newParent, ISceneManager* newManager)
 {
-	if (!newParent)
-		newParent = Parent;
-	if (!newManager)
-		newManager = SceneManager;
+    if (!newParent)
+        newParent = Parent;
+    if (!newManager)
+        newManager = SceneManager;
 
     return NULL;
 /**
-	CMeshSceneNodeInstanced* nb = new CMeshSceneNodeInstanced(Mesh, newParent,
-		newManager, ID, RelativeTranslation, RelativeRotation, RelativeScale);
+    CMeshSceneNodeInstanced* nb = new CMeshSceneNodeInstanced(Mesh, newParent,
+        newManager, ID, RelativeTranslation, RelativeRotation, RelativeScale);
 
-	nb->cloneMembers(this, newManager);
-	nb->ReferencingMeshMaterials = ReferencingMeshMaterials;
-	nb->Materials = Materials;
+    nb->cloneMembers(this, newManager);
+    nb->ReferencingMeshMaterials = ReferencingMeshMaterials;
+    nb->Materials = Materials;
 
-	if (newParent)
-		nb->drop();
-	return nb;**/
+    if (newParent)
+        nb->drop();
+    return nb;**/
 }
 
 

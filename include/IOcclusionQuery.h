@@ -27,12 +27,12 @@ enum E_OCCLUSION_QUERY_TYPE
 class IOcclusionQuery : public virtual IQueryObject
 {
     public:
-		inline E_CONDITIONAL_RENDERING_WAIT_MODE getCondWaitMode() const {return waitMode;}
-		virtual void setCondWaitMode(const E_CONDITIONAL_RENDERING_WAIT_MODE& mode) {waitMode = mode;}
+        inline E_CONDITIONAL_RENDERING_WAIT_MODE getCondWaitMode() const {return waitMode;}
+        virtual void setCondWaitMode(const E_CONDITIONAL_RENDERING_WAIT_MODE& mode) {waitMode = mode;}
 
-		virtual const E_QUERY_OBJECT_TYPE getQueryObjectType() const {return EQOT_OCCLUSION;}
+        virtual const E_QUERY_OBJECT_TYPE getQueryObjectType() const {return EQOT_OCCLUSION;}
 
-		const E_OCCLUSION_QUERY_TYPE& getOcclusionQueryType() const {return oqt;}
+        const E_OCCLUSION_QUERY_TYPE& getOcclusionQueryType() const {return oqt;}
     protected:
         IOcclusionQuery(const E_OCCLUSION_QUERY_TYPE& occlusionQueryTypeHeuristic) : oqt(occlusionQueryTypeHeuristic) {}
     private:

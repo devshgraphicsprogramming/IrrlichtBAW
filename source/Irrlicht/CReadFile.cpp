@@ -13,28 +13,28 @@ namespace io
 CReadFile::CReadFile(const io::path& fileName)
 : File(0), FileSize(0), Filename(fileName)
 {
-	#ifdef _DEBUG
-	setDebugName("CReadFile");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CReadFile");
+    #endif
 
-	openFile();
+    openFile();
 }
 
 
 CReadFile::~CReadFile()
 {
-	if (File)
-		fclose(File);
+    if (File)
+        fclose(File);
 }
 
 
 //! returns how much was read
 int32_t CReadFile::read(void* buffer, uint32_t sizeToRead)
 {
-	if (!isOpen())
-		return 0;
+    if (!isOpen())
+        return 0;
 
-	return (int32_t)fread(buffer, 1, sizeToRead, File);
+    return (int32_t)fread(buffer, 1, sizeToRead, File);
 }
 
 
@@ -43,69 +43,69 @@ int32_t CReadFile::read(void* buffer, uint32_t sizeToRead)
 //! otherwise from begin of file
 bool CReadFile::seek(long finalPos, bool relativeMovement)
 {
-	if (!isOpen())
-		return false;
+    if (!isOpen())
+        return false;
 
-	return fseek(File, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
+    return fseek(File, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
 }
 
 
 //! returns size of file
 long CReadFile::getSize() const
 {
-	return FileSize;
+    return FileSize;
 }
 
 
 //! returns where in the file we are.
 long CReadFile::getPos() const
 {
-	return ftell(File);
+    return ftell(File);
 }
 
 
 //! opens the file
 void CReadFile::openFile()
 {
-	if (Filename.size() == 0) // bugfix posted by rt
-	{
-		File = 0;
-		return;
-	}
+    if (Filename.size() == 0) // bugfix posted by rt
+    {
+        File = 0;
+        return;
+    }
 
 #if defined ( _IRR_WCHAR_FILESYSTEM )
-	File = _wfopen(Filename.c_str(), L"rb");
+    File = _wfopen(Filename.c_str(), L"rb");
 #else
-	File = fopen(Filename.c_str(), "rb");
+    File = fopen(Filename.c_str(), "rb");
 #endif
 
-	if (File)
-	{
-		// get FileSize
+    if (File)
+    {
+        // get FileSize
 
-		fseek(File, 0, SEEK_END);
-		FileSize = getPos();
-		fseek(File, 0, SEEK_SET);
-	}
+        fseek(File, 0, SEEK_END);
+        FileSize = getPos();
+        fseek(File, 0, SEEK_SET);
+    }
 }
 
 
 //! returns name of file
 const io::path& CReadFile::getFileName() const
 {
-	return Filename;
+    return Filename;
 }
 
 
 
 IReadFile* createReadFile(const io::path& fileName)
 {
-	CReadFile* file = new CReadFile(fileName);
-	if (file->isOpen())
-		return file;
+    CReadFile* file = new CReadFile(fileName);
+    if (file->isOpen())
+        return file;
 
-	file->drop();
-	return 0;
+    file->drop();
+    return 0;
 }
 
 

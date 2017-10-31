@@ -95,84 +95,84 @@ IImageWriter* createImageWriterPPM();
 //! constructor
 CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<uint32_t>& screenSize)
 : FileSystem(io), ViewPort(0,0,0,0), ScreenSize(screenSize), boxLineMesh(0),
-	PrimitivesDrawn(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
-	OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false),
-	matrixModifiedBits(0)
+    PrimitivesDrawn(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
+    OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false),
+    matrixModifiedBits(0)
 {
-	#ifdef _DEBUG
-	setDebugName("CNullDriver");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CNullDriver");
+    #endif
 
-	for (size_t i=0; i<EQOT_COUNT; i++)
+    for (size_t i=0; i<EQOT_COUNT; i++)
     for (size_t j=0; j<_IRR_XFORM_FEEDBACK_MAX_STREAMS_; j++)
         currentQuery[i][j] = NULL;
 
-	setTextureCreationFlag(ETCF_ALWAYS_32_BIT, true);
-	setTextureCreationFlag(ETCF_CREATE_MIP_MAPS, true);
+    setTextureCreationFlag(ETCF_ALWAYS_32_BIT, true);
+    setTextureCreationFlag(ETCF_CREATE_MIP_MAPS, true);
 
-	ViewPort = core::rect<int32_t>(core::position2d<int32_t>(0,0), core::dimension2di(screenSize));
+    ViewPort = core::rect<int32_t>(core::position2d<int32_t>(0,0), core::dimension2di(screenSize));
 
 
-	if (FileSystem)
-		FileSystem->grab();
+    if (FileSystem)
+        FileSystem->grab();
 
-	// create surface loader
+    // create surface loader
 #ifdef _IRR_COMPILE_WITH_WAL_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderHalfLife());
-	SurfaceLoader.push_back(video::createImageLoaderWAL());
+    SurfaceLoader.push_back(video::createImageLoaderHalfLife());
+    SurfaceLoader.push_back(video::createImageLoaderWAL());
 #endif
 #ifdef _IRR_COMPILE_WITH_LMP_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderLMP());
+    SurfaceLoader.push_back(video::createImageLoaderLMP());
 #endif
 #ifdef _IRR_COMPILE_WITH_PPM_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderPPM());
+    SurfaceLoader.push_back(video::createImageLoaderPPM());
 #endif
 #ifdef _IRR_COMPILE_WITH_RGB_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderRGB());
+    SurfaceLoader.push_back(video::createImageLoaderRGB());
 #endif
 #ifdef _IRR_COMPILE_WITH_PSD_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderPSD());
+    SurfaceLoader.push_back(video::createImageLoaderPSD());
 #endif
 #ifdef _IRR_COMPILE_WITH_DDS_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderDDS());
+    SurfaceLoader.push_back(video::createImageLoaderDDS());
 #endif
 #ifdef _IRR_COMPILE_WITH_PCX_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderPCX());
+    SurfaceLoader.push_back(video::createImageLoaderPCX());
 #endif
 #ifdef _IRR_COMPILE_WITH_TGA_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderTGA());
+    SurfaceLoader.push_back(video::createImageLoaderTGA());
 #endif
 #ifdef _IRR_COMPILE_WITH_PNG_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderPNG());
+    SurfaceLoader.push_back(video::createImageLoaderPNG());
 #endif
 #ifdef _IRR_COMPILE_WITH_JPG_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderJPG());
+    SurfaceLoader.push_back(video::createImageLoaderJPG());
 #endif
 #ifdef _IRR_COMPILE_WITH_BMP_LOADER_
-	SurfaceLoader.push_back(video::createImageLoaderBMP());
+    SurfaceLoader.push_back(video::createImageLoaderBMP());
 #endif
 
 
 #ifdef _IRR_COMPILE_WITH_PPM_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterPPM());
+    SurfaceWriter.push_back(video::createImageWriterPPM());
 #endif
 #ifdef _IRR_COMPILE_WITH_PCX_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterPCX());
+    SurfaceWriter.push_back(video::createImageWriterPCX());
 #endif
 #ifdef _IRR_COMPILE_WITH_PSD_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterPSD());
+    SurfaceWriter.push_back(video::createImageWriterPSD());
 #endif
 #ifdef _IRR_COMPILE_WITH_TGA_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterTGA());
+    SurfaceWriter.push_back(video::createImageWriterTGA());
 #endif
 #ifdef _IRR_COMPILE_WITH_JPG_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterJPG());
+    SurfaceWriter.push_back(video::createImageWriterJPG());
 #endif
 #ifdef _IRR_COMPILE_WITH_PNG_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterPNG());
+    SurfaceWriter.push_back(video::createImageWriterPNG());
 #endif
 #ifdef _IRR_COMPILE_WITH_BMP_WRITER_
-	SurfaceWriter.push_back(video::createImageWriterBMP());
+    SurfaceWriter.push_back(video::createImageWriterBMP());
 #endif
 
     MaxTextureSizes[ITexture::ETT_1D][0] = 0x80u;
@@ -208,23 +208,23 @@ CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<uint32_t>&
     MaxTextureSizes[ITexture::ETT_TEXTURE_BUFFER][2] = 0x1u;
 
 
-	// set ExposedData to 0
-	memset(&ExposedData, 0, sizeof(ExposedData));
-	for (uint32_t i=0; i<video::EVDF_COUNT; ++i)
-		FeatureEnabled[i]=true;
+    // set ExposedData to 0
+    memset(&ExposedData, 0, sizeof(ExposedData));
+    for (uint32_t i=0; i<video::EVDF_COUNT; ++i)
+        FeatureEnabled[i]=true;
 
-	InitMaterial2D.AntiAliasing=video::EAAM_OFF;
-	InitMaterial2D.ZWriteEnable=false;
-	InitMaterial2D.ZBuffer=video::ECFN_NEVER;
-	for (uint32_t i=0; i<video::MATERIAL_MAX_TEXTURES; ++i)
-	{
-		InitMaterial2D.TextureLayer[i].SamplingParams.MinFilter = video::ETFT_NEAREST_NEARESTMIP;
-		InitMaterial2D.TextureLayer[i].SamplingParams.MaxFilter = video::ETFT_NEAREST_NO_MIP;
-		InitMaterial2D.TextureLayer[i].SamplingParams.TextureWrapU = video::ETC_REPEAT;
-		InitMaterial2D.TextureLayer[i].SamplingParams.TextureWrapV = video::ETC_REPEAT;
+    InitMaterial2D.AntiAliasing=video::EAAM_OFF;
+    InitMaterial2D.ZWriteEnable=false;
+    InitMaterial2D.ZBuffer=video::ECFN_NEVER;
+    for (uint32_t i=0; i<video::MATERIAL_MAX_TEXTURES; ++i)
+    {
+        InitMaterial2D.TextureLayer[i].SamplingParams.MinFilter = video::ETFT_NEAREST_NEARESTMIP;
+        InitMaterial2D.TextureLayer[i].SamplingParams.MaxFilter = video::ETFT_NEAREST_NO_MIP;
+        InitMaterial2D.TextureLayer[i].SamplingParams.TextureWrapU = video::ETC_REPEAT;
+        InitMaterial2D.TextureLayer[i].SamplingParams.TextureWrapV = video::ETC_REPEAT;
         InitMaterial2D.TextureLayer[i].SamplingParams.UseMipmaps = false;
-	}
-	OverrideMaterial2D=InitMaterial2D;
+    }
+    OverrideMaterial2D=InitMaterial2D;
 }
 
 
@@ -234,22 +234,22 @@ CNullDriver::~CNullDriver()
     if (boxLineMesh)
         boxLineMesh->drop();
 
-	if (FileSystem)
-		FileSystem->drop();
+    if (FileSystem)
+        FileSystem->drop();
 
     removeAllFrameBuffers();
     removeAllRenderBuffers();
-	deleteAllTextures();
+    deleteAllTextures();
 
-	uint32_t i;
-	for (i=0; i<SurfaceLoader.size(); ++i)
-		SurfaceLoader[i]->drop();
+    uint32_t i;
+    for (i=0; i<SurfaceLoader.size(); ++i)
+        SurfaceLoader[i]->drop();
 
-	for (i=0; i<SurfaceWriter.size(); ++i)
-		SurfaceWriter[i]->drop();
+    for (i=0; i<SurfaceWriter.size(); ++i)
+        SurfaceWriter[i]->drop();
 
-	// delete material renderers
-	deleteMaterialRenders();
+    // delete material renderers
+    deleteMaterialRenders();
 }
 
 void CNullDriver::bufferCopy(IGPUBuffer* readBuffer, IGPUBuffer* writeBuffer, const size_t& readOffset, const size_t& writeOffset, const size_t& length)
@@ -261,105 +261,105 @@ void CNullDriver::bufferCopy(IGPUBuffer* readBuffer, IGPUBuffer* writeBuffer, co
 //! Adds an external surface loader to the engine.
 void CNullDriver::addExternalImageLoader(IImageLoader* loader)
 {
-	if (!loader)
-		return;
+    if (!loader)
+        return;
 
-	loader->grab();
-	SurfaceLoader.push_back(loader);
+    loader->grab();
+    SurfaceLoader.push_back(loader);
 }
 
 
 //! Adds an external surface writer to the engine.
 void CNullDriver::addExternalImageWriter(IImageWriter* writer)
 {
-	if (!writer)
-		return;
+    if (!writer)
+        return;
 
-	writer->grab();
-	SurfaceWriter.push_back(writer);
+    writer->grab();
+    SurfaceWriter.push_back(writer);
 }
 
 
 //! Retrieve the number of image loaders
 uint32_t CNullDriver::getImageLoaderCount() const
 {
-	return SurfaceLoader.size();
+    return SurfaceLoader.size();
 }
 
 
 //! Retrieve the given image loader
 IImageLoader* CNullDriver::getImageLoader(uint32_t n)
 {
-	if (n < SurfaceLoader.size())
-		return SurfaceLoader[n];
-	return 0;
+    if (n < SurfaceLoader.size())
+        return SurfaceLoader[n];
+    return 0;
 }
 
 
 //! Retrieve the number of image writers
 uint32_t CNullDriver::getImageWriterCount() const
 {
-	return SurfaceWriter.size();
+    return SurfaceWriter.size();
 }
 
 
 //! Retrieve the given image writer
 IImageWriter* CNullDriver::getImageWriter(uint32_t n)
 {
-	if (n < SurfaceWriter.size())
-		return SurfaceWriter[n];
-	return 0;
+    if (n < SurfaceWriter.size())
+        return SurfaceWriter[n];
+    return 0;
 }
 
 
 //! deletes all textures
 void CNullDriver::deleteAllTextures()
 {
-	// we need to remove previously set textures which might otherwise be kept in the
-	// last set material member. Could be optimized to reduce state changes.
-	setMaterial(SMaterial());
+    // we need to remove previously set textures which might otherwise be kept in the
+    // last set material member. Could be optimized to reduce state changes.
+    setMaterial(SMaterial());
 
-	for (uint32_t i=0; i<Textures.size(); ++i)
-		Textures[i].Surface->drop();
+    for (uint32_t i=0; i<Textures.size(); ++i)
+        Textures[i].Surface->drop();
 
-	Textures.clear();
+    Textures.clear();
 }
 
 
 
 //! applications must call this method before performing any rendering. returns false if failed.
 bool CNullDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
-		const SExposedVideoData& videoData, core::rect<int32_t>* sourceRect)
+        const SExposedVideoData& videoData, core::rect<int32_t>* sourceRect)
 {
-	core::clearFPUException();
+    core::clearFPUException();
 
-	scene::CMeshSceneNodeInstanced::recullOrder = 0;
+    scene::CMeshSceneNodeInstanced::recullOrder = 0;
 
-	PrimitivesDrawn = 0;
-	return true;
+    PrimitivesDrawn = 0;
+    return true;
 }
 
 
 //! applications must call this method after performing any rendering. returns false if failed.
 bool CNullDriver::endScene()
 {
-	FPSCounter.registerFrame(os::Timer::getRealTime(), PrimitivesDrawn);
+    FPSCounter.registerFrame(os::Timer::getRealTime(), PrimitivesDrawn);
 
-	return true;
+    return true;
 }
 
 
 //! Disable a feature of the driver.
 void CNullDriver::disableFeature(E_VIDEO_DRIVER_FEATURE feature, bool flag)
 {
-	FeatureEnabled[feature]=!flag;
+    FeatureEnabled[feature]=!flag;
 }
 
 
 //! queries the features of the driver, returns true if feature is available
 bool CNullDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 {
-	return false;
+    return false;
 }
 
 
@@ -370,7 +370,7 @@ void CNullDriver::setTransform(const E_4X3_TRANSFORMATION_STATE& state, const co
         return;
 
 
-	const uint32_t commonBits = (0x1u<<E4X3TS_WORLD_VIEW)|(0x1u<<E4X3TS_WORLD_VIEW_INVERSE)|(0x1u<<E4X3TS_NORMAL_MATRIX)|(0x1u<<(E4X3TS_COUNT+EPTS_PROJ_VIEW_WORLD))|(0x1u<<(E4X3TS_COUNT+EPTS_PROJ_VIEW_WORLD_INVERSE));
+    const uint32_t commonBits = (0x1u<<E4X3TS_WORLD_VIEW)|(0x1u<<E4X3TS_WORLD_VIEW_INVERSE)|(0x1u<<E4X3TS_NORMAL_MATRIX)|(0x1u<<(E4X3TS_COUNT+EPTS_PROJ_VIEW_WORLD))|(0x1u<<(E4X3TS_COUNT+EPTS_PROJ_VIEW_WORLD_INVERSE));
     uint32_t modifiedBit;
     switch (state)
     {
@@ -401,7 +401,7 @@ void CNullDriver::setTransform(const E_PROJECTION_TRANSFORMATION_STATE& state, c
         return;
 
 
-	const uint32_t modifiedBit = ((0x1u<<EPTS_PROJ)|(0x1u<<EPTS_PROJ_VIEW)|(0x1u<<EPTS_PROJ_VIEW_WORLD)|(0x1u<<EPTS_PROJ_INVERSE)|(0x1u<<EPTS_PROJ_VIEW_INVERSE)|(0x1u<<EPTS_PROJ_VIEW_WORLD_INVERSE))<<E4X3TS_COUNT;
+    const uint32_t modifiedBit = ((0x1u<<EPTS_PROJ)|(0x1u<<EPTS_PROJ_VIEW)|(0x1u<<EPTS_PROJ_VIEW_WORLD)|(0x1u<<EPTS_PROJ_INVERSE)|(0x1u<<EPTS_PROJ_VIEW_INVERSE)|(0x1u<<EPTS_PROJ_VIEW_WORLD_INVERSE))<<E4X3TS_COUNT;
 
     //if all bits marked as modified and matrices dont change
     if ((matrixModifiedBits&modifiedBit)==modifiedBit)
@@ -421,7 +421,7 @@ const core::matrix4x3& CNullDriver::getTransform(const E_4X3_TRANSFORMATION_STAT
 {
     const uint32_t stateBit = 0x1u<<state;
 
-	if (matrixModifiedBits&stateBit)
+    if (matrixModifiedBits&stateBit)
     {
         switch (state)
         {
@@ -482,7 +482,7 @@ const core::matrix4& CNullDriver::getTransform(const E_PROJECTION_TRANSFORMATION
 {
     const uint32_t stateBit = 0x1u<<(state+E4X3TS_COUNT);
 
-	if (matrixModifiedBits&stateBit)
+    if (matrixModifiedBits&stateBit)
     {
         switch (state)
         {
@@ -543,17 +543,17 @@ void CNullDriver::setMaterial(const SMaterial& material)
 //! memory.
 void CNullDriver::removeTexture(ITexture* texture)
 {
-	if (!texture)
-		return;
+    if (!texture)
+        return;
 
-	for (uint32_t i=0; i<Textures.size(); ++i)
-	{
-		if (Textures[i].Surface == texture)
-		{
-			texture->drop();
-			Textures.erase(i);
-		}
-	}
+    for (uint32_t i=0; i<Textures.size(); ++i)
+    {
+        if (Textures[i].Surface == texture)
+        {
+            texture->drop();
+            Textures.erase(i);
+        }
+    }
 }
 
 void CNullDriver::removeRenderBuffer(IRenderBuffer* renderbuf)
@@ -581,21 +581,21 @@ void CNullDriver::removeFrameBuffer(IFrameBuffer* framebuf)
 //! memory.
 void CNullDriver::removeAllTextures()
 {
-	setMaterial ( SMaterial() );
-	deleteAllTextures();
+    setMaterial ( SMaterial() );
+    deleteAllTextures();
 }
 
 void CNullDriver::removeAllRenderBuffers()
 {
-	for (uint32_t i=0; i<RenderBuffers.size(); ++i)
-		RenderBuffers[i]->drop();
+    for (uint32_t i=0; i<RenderBuffers.size(); ++i)
+        RenderBuffers[i]->drop();
     RenderBuffers.clear();
 }
 
 void CNullDriver::removeAllFrameBuffers()
 {
-	for (uint32_t i=0; i<FrameBuffers.size(); ++i)
-		FrameBuffers[i]->drop();
+    for (uint32_t i=0; i<FrameBuffers.size(); ++i)
+        FrameBuffers[i]->drop();
     FrameBuffers.clear();
 }
 
@@ -603,200 +603,200 @@ void CNullDriver::removeAllFrameBuffers()
 //! Returns a texture by index
 ITexture* CNullDriver::getTextureByIndex(uint32_t i)
 {
-	if ( i < Textures.size() )
-		return Textures[i].Surface;
+    if ( i < Textures.size() )
+        return Textures[i].Surface;
 
-	return 0;
+    return 0;
 }
 
 
 //! Returns amount of textures currently loaded
 uint32_t CNullDriver::getTextureCount() const
 {
-	return Textures.size();
+    return Textures.size();
 }
 
 
 //! Renames a texture
 void CNullDriver::renameTexture(ITexture* texture, const io::path& newName)
 {
-	// we can do a const_cast here safely, the name of the ITexture interface
-	// is just readonly to prevent the user changing the texture name without invoking
-	// this method, because the textures will need resorting afterwards
+    // we can do a const_cast here safely, the name of the ITexture interface
+    // is just readonly to prevent the user changing the texture name without invoking
+    // this method, because the textures will need resorting afterwards
 
-	io::SNamedPath& name = const_cast<io::SNamedPath&>(texture->getName());
-	name.setPath(newName);
+    io::SNamedPath& name = const_cast<io::SNamedPath&>(texture->getName());
+    name.setPath(newName);
 
-	Textures.sort();
+    Textures.sort();
 }
 
 
 //! loads a Texture
 ITexture* CNullDriver::getTexture(const io::path& filename)
 {
-	// Identify textures by their absolute filenames if possible.
-	const io::path absolutePath = FileSystem->getAbsolutePath(filename);
+    // Identify textures by their absolute filenames if possible.
+    const io::path absolutePath = FileSystem->getAbsolutePath(filename);
 
-	ITexture* texture = findTexture(absolutePath);
-	if (texture)
-		return texture;
+    ITexture* texture = findTexture(absolutePath);
+    if (texture)
+        return texture;
 
-	// Then try the raw filename, which might be in an Archive
-	texture = findTexture(filename);
-	if (texture)
-		return texture;
+    // Then try the raw filename, which might be in an Archive
+    texture = findTexture(filename);
+    if (texture)
+        return texture;
 
-	// Now try to open the file using the complete path.
-	io::IReadFile* file = FileSystem->createAndOpenFile(absolutePath);
+    // Now try to open the file using the complete path.
+    io::IReadFile* file = FileSystem->createAndOpenFile(absolutePath);
 
-	if (!file)
-	{
-		// Try to open it using the raw filename.
-		file = FileSystem->createAndOpenFile(filename);
-	}
+    if (!file)
+    {
+        // Try to open it using the raw filename.
+        file = FileSystem->createAndOpenFile(filename);
+    }
 
-	if (file)
-	{
-		// Re-check name for actual archive names
-		texture = findTexture(file->getFileName());
-		if (texture)
-		{
-			file->drop();
-			return texture;
-		}
+    if (file)
+    {
+        // Re-check name for actual archive names
+        texture = findTexture(file->getFileName());
+        if (texture)
+        {
+            file->drop();
+            return texture;
+        }
 
-		texture = loadTextureFromFile(file);
-		file->drop();
+        texture = loadTextureFromFile(file);
+        file->drop();
 
-		if (texture)
-		{
-			addToTextureCache(texture);
-			texture->drop(); // drop it because we created it, one grab too much
-		}
-		else
-			os::Printer::log("Could not load texture", filename.c_str(), ELL_ERROR);
-		return texture;
-	}
-	else
-	{
-		os::Printer::log("Could not open file of texture", filename.c_str(), ELL_WARNING);
-		return 0;
-	}
+        if (texture)
+        {
+            addToTextureCache(texture);
+            texture->drop(); // drop it because we created it, one grab too much
+        }
+        else
+            os::Printer::log("Could not load texture", filename.c_str(), ELL_ERROR);
+        return texture;
+    }
+    else
+    {
+        os::Printer::log("Could not open file of texture", filename.c_str(), ELL_WARNING);
+        return 0;
+    }
 }
 
 
 //! loads a Texture
 ITexture* CNullDriver::getTexture(io::IReadFile* file)
 {
-	ITexture* texture = 0;
+    ITexture* texture = 0;
 
-	if (file)
-	{
-		texture = findTexture(file->getFileName());
+    if (file)
+    {
+        texture = findTexture(file->getFileName());
 
-		if (texture)
-			return texture;
+        if (texture)
+            return texture;
 
-		texture = loadTextureFromFile(file);
+        texture = loadTextureFromFile(file);
 
-		if (texture)
-		{
-			addToTextureCache(texture);
-			texture->drop(); // drop it because we created it, one grab too much
-		}
+        if (texture)
+        {
+            addToTextureCache(texture);
+            texture->drop(); // drop it because we created it, one grab too much
+        }
 
-		if (!texture)
-			os::Printer::log("Could not load texture", file->getFileName().c_str(), ELL_WARNING);
-	}
+        if (!texture)
+            os::Printer::log("Could not load texture", file->getFileName().c_str(), ELL_WARNING);
+    }
 
-	return texture;
+    return texture;
 }
 
 
 //! opens the file and loads it into the surface
 video::ITexture* CNullDriver::loadTextureFromFile(io::IReadFile* file, const io::path& hashName )
 {
-	ITexture* texture = 0;
-	IImage* image = createImageFromFile(file);
+    ITexture* texture = 0;
+    IImage* image = createImageFromFile(file);
 
-	if (image)
-	{
-		// create texture from surface
-		texture = createDeviceDependentTexture(image, hashName.size() ? hashName : file->getFileName() );
-		os::Printer::log("Loaded texture", file->getFileName().c_str());
-		image->drop();
-	}
+    if (image)
+    {
+        // create texture from surface
+        texture = createDeviceDependentTexture(image, hashName.size() ? hashName : file->getFileName() );
+        os::Printer::log("Loaded texture", file->getFileName().c_str());
+        image->drop();
+    }
 
-	return texture;
+    return texture;
 }
 
 
 //! adds a surface, not loaded or created by the Irrlicht Engine
 void CNullDriver::addToTextureCache(video::ITexture* texture)
 {
-	if (texture)
-	{
-		SSurface s;
-		s.Surface = texture;
-		texture->grab();
+    if (texture)
+    {
+        SSurface s;
+        s.Surface = texture;
+        texture->grab();
 
-		Textures.push_back(s);
+        Textures.push_back(s);
 
-		// the new texture is now at the end of the texture list. when searching for
-		// the next new texture, the texture array will be sorted and the index of this texture
-		// will be changed. to let the order be more consistent to the user, sort
-		// the textures now already although this isn't necessary:
+        // the new texture is now at the end of the texture list. when searching for
+        // the next new texture, the texture array will be sorted and the index of this texture
+        // will be changed. to let the order be more consistent to the user, sort
+        // the textures now already although this isn't necessary:
 
-		Textures.sort();
-	}
+        Textures.sort();
+    }
 }
 
 
 //! looks if the image is already loaded
 video::ITexture* CNullDriver::findTexture(const io::path& filename)
 {
-	SSurface s;
-	SDummyTexture dummy(filename);
-	s.Surface = &dummy;
+    SSurface s;
+    SDummyTexture dummy(filename);
+    s.Surface = &dummy;
 
-	int32_t index = Textures.binary_search(s);
-	if (index != -1)
-		return Textures[index].Surface;
+    int32_t index = Textures.binary_search(s);
+    if (index != -1)
+        return Textures[index].Surface;
 
-	return 0;
+    return 0;
 }
 
 
 //! Creates a texture from a loaded IImage.
 ITexture* CNullDriver::addTexture(const io::path& name, IImage* image, void* mipmapData)
 {
-	if ( 0 == name.size() || !image)
-		return 0;
+    if ( 0 == name.size() || !image)
+        return 0;
 
-	ITexture* t = createDeviceDependentTexture(image, name, mipmapData);
-	if (t)
-	{
-		addToTextureCache(t);
-		t->drop();
-	}
-	return t;
+    ITexture* t = createDeviceDependentTexture(image, name, mipmapData);
+    if (t)
+    {
+        addToTextureCache(t);
+        t->drop();
+    }
+    return t;
 }
 
 
 //! creates a Texture
 ITexture* CNullDriver::addTexture(const ITexture::E_TEXTURE_TYPE& type, const uint32_t* size, uint32_t mipMapLevels,
-				  const io::path& name, ECOLOR_FORMAT format)
+                  const io::path& name, ECOLOR_FORMAT format)
 {
-	if ( 0 == name.size () )
-		return 0;
+    if ( 0 == name.size () )
+        return 0;
 
-	ITexture* t = createDeviceDependentTexture(type,size,mipMapLevels,name,format);
-	addToTextureCache(t);
+    ITexture* t = createDeviceDependentTexture(type,size,mipMapLevels,name,format);
+    addToTextureCache(t);
 
-	if (t)
-		t->drop();
+    if (t)
+        t->drop();
 
-	return t;
+    return t;
 }
 
 
@@ -805,19 +805,19 @@ ITexture* CNullDriver::addTexture(const ITexture::E_TEXTURE_TYPE& type, const ui
 //! THIS METHOD HAS TO BE OVERRIDDEN BY DERIVED DRIVERS WITH OWN TEXTURES
 ITexture* CNullDriver::createDeviceDependentTexture(IImage* surface, const io::path& name, void* mipmapData)
 {
-	return new SDummyTexture(name);
+    return new SDummyTexture(name);
 }
 ITexture* CNullDriver::createDeviceDependentTexture(const ITexture::E_TEXTURE_TYPE& type, const uint32_t* size, uint32_t mipmapLevels,
-			const io::path& name, ECOLOR_FORMAT format)
+            const io::path& name, ECOLOR_FORMAT format)
 {
-	return new SDummyTexture(name);
+    return new SDummyTexture(name);
 }
 
 
 //! sets a render target
 bool CNullDriver::setRenderTarget(video::IFrameBuffer* texture, bool setNewViewport)
 {
-	return false;
+    return false;
 }
 
 
@@ -830,24 +830,24 @@ void CNullDriver::setViewPort(const core::rect<int32_t>& area)
 //! gets the area of the current viewport
 const core::rect<int32_t>& CNullDriver::getViewPort() const
 {
-	return ViewPort;
+    return ViewPort;
 }
 
 
 
 //! Draws a 3d line.
 void CNullDriver::draw3DLine(const core::vector3df& start,
-				const core::vector3df& end, SColor color)
+                const core::vector3df& end, SColor color)
 {
 }
 
 //! Draws a 3d axis aligned box.
 void CNullDriver::draw3DBox(const core::aabbox3d<float>& box, SColor color)
 {
-	core::vector3df edges[8];
-	box.getEdges(edges);
-	uint32_t colors[8];
-	for (uint32_t i=0; i<8; i++)
+    core::vector3df edges[8];
+    box.getEdges(edges);
+    uint32_t colors[8];
+    for (uint32_t i=0; i<8; i++)
     {
         colors[8] = color.color;
     }
@@ -891,11 +891,11 @@ void CNullDriver::draw3DBox(const core::aabbox3d<float>& box, SColor color)
 //! draws an 2d image
 void CNullDriver::draw2DImage(const video::ITexture* texture, const core::position2d<int32_t>& destPos)
 {
-	if (!texture)
-		return;
+    if (!texture)
+        return;
 
-	draw2DImage(texture,destPos, core::rect<int32_t>(core::position2d<int32_t>(0,0),
-												core::dimension2di(*reinterpret_cast<const core::dimension2du*>(texture->getSize()))));
+    draw2DImage(texture,destPos, core::rect<int32_t>(core::position2d<int32_t>(0,0),
+                                                core::dimension2di(*reinterpret_cast<const core::dimension2du*>(texture->getSize()))));
 }
 
 
@@ -906,60 +906,60 @@ void CNullDriver::draw2DImage(const video::ITexture* texture, const core::positi
 //! The subtextures are defined by the array of sourceRects and are chosen
 //! by the indices given.
 void CNullDriver::draw2DImageBatch(const video::ITexture* texture,
-				const core::position2d<int32_t>& pos,
-				const core::array<core::rect<int32_t> >& sourceRects,
-				const core::array<int32_t>& indices,
-				int32_t kerningWidth,
-				const core::rect<int32_t>* clipRect, SColor color,
-				bool useAlphaChannelOfTexture)
+                const core::position2d<int32_t>& pos,
+                const core::array<core::rect<int32_t> >& sourceRects,
+                const core::array<int32_t>& indices,
+                int32_t kerningWidth,
+                const core::rect<int32_t>* clipRect, SColor color,
+                bool useAlphaChannelOfTexture)
 {
-	core::position2d<int32_t> target(pos);
+    core::position2d<int32_t> target(pos);
 
-	for (uint32_t i=0; i<indices.size(); ++i)
-	{
-		draw2DImage(texture, target, sourceRects[indices[i]],
-				clipRect, color, useAlphaChannelOfTexture);
-		target.X += sourceRects[indices[i]].getWidth();
-		target.X += kerningWidth;
-	}
+    for (uint32_t i=0; i<indices.size(); ++i)
+    {
+        draw2DImage(texture, target, sourceRects[indices[i]],
+                clipRect, color, useAlphaChannelOfTexture);
+        target.X += sourceRects[indices[i]].getWidth();
+        target.X += kerningWidth;
+    }
 }
 
 //! draws a set of 2d images, using a color and the alpha channel of the
 //! texture if desired.
 void CNullDriver::draw2DImageBatch(const video::ITexture* texture,
-				const core::array<core::position2d<int32_t> >& positions,
-				const core::array<core::rect<int32_t> >& sourceRects,
-				const core::rect<int32_t>* clipRect,
-				SColor color,
-				bool useAlphaChannelOfTexture)
+                const core::array<core::position2d<int32_t> >& positions,
+                const core::array<core::rect<int32_t> >& sourceRects,
+                const core::rect<int32_t>* clipRect,
+                SColor color,
+                bool useAlphaChannelOfTexture)
 {
-	const uint32_t drawCount = core::min_<uint32_t>(positions.size(), sourceRects.size());
+    const uint32_t drawCount = core::min_<uint32_t>(positions.size(), sourceRects.size());
 
-	for (uint32_t i=0; i<drawCount; ++i)
-	{
-		draw2DImage(texture, positions[i], sourceRects[i],
-				clipRect, color, useAlphaChannelOfTexture);
-	}
+    for (uint32_t i=0; i<drawCount; ++i)
+    {
+        draw2DImage(texture, positions[i], sourceRects[i],
+                clipRect, color, useAlphaChannelOfTexture);
+    }
 }
 
 
 //! Draws a part of the texture into the rectangle.
 void CNullDriver::draw2DImage(const video::ITexture* texture, const core::rect<int32_t>& destRect,
-	const core::rect<int32_t>& sourceRect, const core::rect<int32_t>* clipRect,
-	const video::SColor* const colors, bool useAlphaChannelOfTexture)
+    const core::rect<int32_t>& sourceRect, const core::rect<int32_t>* clipRect,
+    const video::SColor* const colors, bool useAlphaChannelOfTexture)
 {
-	if (destRect.isValid())
-		draw2DImage(texture, core::position2d<int32_t>(destRect.UpperLeftCorner),
-				sourceRect, clipRect, colors?colors[0]:video::SColor(0xffffffff),
-				useAlphaChannelOfTexture);
+    if (destRect.isValid())
+        draw2DImage(texture, core::position2d<int32_t>(destRect.UpperLeftCorner),
+                sourceRect, clipRect, colors?colors[0]:video::SColor(0xffffffff),
+                useAlphaChannelOfTexture);
 }
 
 
 //! Draws a 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
 void CNullDriver::draw2DImage(const video::ITexture* texture, const core::position2d<int32_t>& destPos,
-				const core::rect<int32_t>& sourceRect,
-				const core::rect<int32_t>* clipRect, SColor color,
-				bool useAlphaChannelOfTexture)
+                const core::rect<int32_t>& sourceRect,
+                const core::rect<int32_t>* clipRect, SColor color,
+                bool useAlphaChannelOfTexture)
 {
 }
 
@@ -967,25 +967,25 @@ void CNullDriver::draw2DImage(const video::ITexture* texture, const core::positi
 //! Draws the outline of a 2d rectangle
 void CNullDriver::draw2DRectangleOutline(const core::recti& pos, SColor color)
 {
-	draw2DLine(pos.UpperLeftCorner, core::position2di(pos.LowerRightCorner.X, pos.UpperLeftCorner.Y), color);
-	draw2DLine(core::position2di(pos.LowerRightCorner.X, pos.UpperLeftCorner.Y), pos.LowerRightCorner, color);
-	draw2DLine(pos.LowerRightCorner, core::position2di(pos.UpperLeftCorner.X, pos.LowerRightCorner.Y), color);
-	draw2DLine(core::position2di(pos.UpperLeftCorner.X, pos.LowerRightCorner.Y), pos.UpperLeftCorner, color);
+    draw2DLine(pos.UpperLeftCorner, core::position2di(pos.LowerRightCorner.X, pos.UpperLeftCorner.Y), color);
+    draw2DLine(core::position2di(pos.LowerRightCorner.X, pos.UpperLeftCorner.Y), pos.LowerRightCorner, color);
+    draw2DLine(pos.LowerRightCorner, core::position2di(pos.UpperLeftCorner.X, pos.LowerRightCorner.Y), color);
+    draw2DLine(core::position2di(pos.UpperLeftCorner.X, pos.LowerRightCorner.Y), pos.UpperLeftCorner, color);
 }
 
 
 //! Draw a 2d rectangle
 void CNullDriver::draw2DRectangle(SColor color, const core::rect<int32_t>& pos, const core::rect<int32_t>* clip)
 {
-	draw2DRectangle(pos, color, color, color, color, clip);
+    draw2DRectangle(pos, color, color, color, color, clip);
 }
 
 
 
 //! Draws a 2d rectangle with a gradient.
 void CNullDriver::draw2DRectangle(const core::rect<int32_t>& pos,
-	SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
-	const core::rect<int32_t>* clip)
+    SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
+    const core::rect<int32_t>* clip)
 {
 }
 
@@ -993,7 +993,7 @@ void CNullDriver::draw2DRectangle(const core::rect<int32_t>& pos,
 
 //! Draws a 2d line.
 void CNullDriver::draw2DLine(const core::position2d<int32_t>& start,
-				const core::position2d<int32_t>& end, SColor color)
+                const core::position2d<int32_t>& end, SColor color)
 {
 }
 
@@ -1001,14 +1001,14 @@ void CNullDriver::draw2DLine(const core::position2d<int32_t>& start,
 //! returns color format
 ECOLOR_FORMAT CNullDriver::getColorFormat() const
 {
-	return ECF_R5G6B5;
+    return ECF_R5G6B5;
 }
 
 
 //! returns screen size
 const core::dimension2d<uint32_t>& CNullDriver::getScreenSize() const
 {
-	return ScreenSize;
+    return ScreenSize;
 }
 
 
@@ -1016,14 +1016,14 @@ const core::dimension2d<uint32_t>& CNullDriver::getScreenSize() const
 //! or the screen size if render targets are not implemented
 const core::dimension2d<uint32_t>& CNullDriver::getCurrentRenderTargetSize() const
 {
-	return ScreenSize;
+    return ScreenSize;
 }
 
 
 // returns current frames per second value
 int32_t CNullDriver::getFPS() const
 {
-	return FPSCounter.getFPS();
+    return FPSCounter.getFPS();
 }
 
 
@@ -1032,7 +1032,7 @@ int32_t CNullDriver::getFPS() const
 //! very useful method for statistics.
 uint32_t CNullDriver::getPrimitiveCountDrawn( uint32_t param ) const
 {
-	return (0 == param) ? FPSCounter.getPrimitive() : (1 == param) ? FPSCounter.getPrimitiveAverage() : FPSCounter.getPrimitiveTotal();
+    return (0 == param) ? FPSCounter.getPrimitive() : (1 == param) ? FPSCounter.getPrimitiveAverage() : FPSCounter.getPrimitiveTotal();
 }
 
 
@@ -1042,7 +1042,7 @@ uint32_t CNullDriver::getPrimitiveCountDrawn( uint32_t param ) const
 
 const wchar_t* CNullDriver::getName() const
 {
-	return L"Irrlicht NullDevice";
+    return L"Irrlicht NullDevice";
 }
 
 
@@ -1055,119 +1055,119 @@ const wchar_t* CNullDriver::getName() const
 void CNullDriver::makeNormalMapTexture(video::ITexture* texture, float amplitude) const
 {
     /*
-	if (!texture)
-		return;
+    if (!texture)
+        return;
 
-	if (texture->getColorFormat() != ECF_A1R5G5B5 &&
-		texture->getColorFormat() != ECF_A8R8G8B8 )
-	{
-		os::Printer::log("Error: Unsupported texture color format for making normal map.", ELL_ERROR);
-		return;
-	}
+    if (texture->getColorFormat() != ECF_A1R5G5B5 &&
+        texture->getColorFormat() != ECF_A8R8G8B8 )
+    {
+        os::Printer::log("Error: Unsupported texture color format for making normal map.", ELL_ERROR);
+        return;
+    }
 
-	core::dimension2d<uint32_t> dim = texture->getSize();
-	amplitude = amplitude / 255.0f;
-	float vh = dim.Height / (float)dim.Width;
-	float hh = dim.Width / (float)dim.Height;
+    core::dimension2d<uint32_t> dim = texture->getSize();
+    amplitude = amplitude / 255.0f;
+    float vh = dim.Height / (float)dim.Width;
+    float hh = dim.Width / (float)dim.Height;
 
-	if (texture->getColorFormat() == ECF_A8R8G8B8)
-	{
-		// ECF_A8R8G8B8 version
+    if (texture->getColorFormat() == ECF_A8R8G8B8)
+    {
+        // ECF_A8R8G8B8 version
 
-		int32_t *p = (int32_t*)texture->lock();
+        int32_t *p = (int32_t*)texture->lock();
 
-		if (!p)
-		{
-			os::Printer::log("Could not lock texture for making normal map.", ELL_ERROR);
-			return;
-		}
+        if (!p)
+        {
+            os::Printer::log("Could not lock texture for making normal map.", ELL_ERROR);
+            return;
+        }
 
-		// copy texture
+        // copy texture
 
-		uint32_t pitch = texture->getPitch() / 4;
+        uint32_t pitch = texture->getPitch() / 4;
 
-		int32_t* in = new int32_t[dim.Height * pitch];
-		memcpy(in, p, dim.Height * pitch * 4);
+        int32_t* in = new int32_t[dim.Height * pitch];
+        memcpy(in, p, dim.Height * pitch * 4);
 
-		for (int32_t x=0; x < int32_t(pitch); ++x)
-			for (int32_t y=0; y < int32_t(dim.Height); ++y)
-			{
-				// TODO: this could be optimized really a lot
+        for (int32_t x=0; x < int32_t(pitch); ++x)
+            for (int32_t y=0; y < int32_t(dim.Height); ++y)
+            {
+                // TODO: this could be optimized really a lot
 
-				core::vector3df h1((x-1)*hh, nml32(x-1, y, pitch, dim.Height, in)*amplitude, y*vh);
-				core::vector3df h2((x+1)*hh, nml32(x+1, y, pitch, dim.Height, in)*amplitude, y*vh);
-				//core::vector3df v1(x*hh, nml32(x, y-1, pitch, dim.Height, in)*amplitude, (y-1)*vh);
-				//core::vector3df v2(x*hh, nml32(x, y+1, pitch, dim.Height, in)*amplitude, (y+1)*vh);
-				core::vector3df v1(x*hh, nml32(x, y+1, pitch, dim.Height, in)*amplitude, (y-1)*vh);
-				core::vector3df v2(x*hh, nml32(x, y-1, pitch, dim.Height, in)*amplitude, (y+1)*vh);
+                core::vector3df h1((x-1)*hh, nml32(x-1, y, pitch, dim.Height, in)*amplitude, y*vh);
+                core::vector3df h2((x+1)*hh, nml32(x+1, y, pitch, dim.Height, in)*amplitude, y*vh);
+                //core::vector3df v1(x*hh, nml32(x, y-1, pitch, dim.Height, in)*amplitude, (y-1)*vh);
+                //core::vector3df v2(x*hh, nml32(x, y+1, pitch, dim.Height, in)*amplitude, (y+1)*vh);
+                core::vector3df v1(x*hh, nml32(x, y+1, pitch, dim.Height, in)*amplitude, (y-1)*vh);
+                core::vector3df v2(x*hh, nml32(x, y-1, pitch, dim.Height, in)*amplitude, (y+1)*vh);
 
-				core::vector3df v = v1-v2;
-				core::vector3df h = h1-h2;
+                core::vector3df v = v1-v2;
+                core::vector3df h = h1-h2;
 
-				core::vector3df n = v.crossProduct(h);
-				n.normalize();
-				n *= 0.5f;
-				n += core::vector3df(0.5f,0.5f,0.5f); // now between 0 and 1
-				n *= 255.0f;
+                core::vector3df n = v.crossProduct(h);
+                n.normalize();
+                n *= 0.5f;
+                n += core::vector3df(0.5f,0.5f,0.5f); // now between 0 and 1
+                n *= 255.0f;
 
-				int32_t height = (int32_t)nml32(x, y, pitch, dim.Height, in);
-				p[y*pitch + x] = video::SColor(
-					height, // store height in alpha
-					(int32_t)n.X, (int32_t)n.Z, (int32_t)n.Y).color;
-			}
+                int32_t height = (int32_t)nml32(x, y, pitch, dim.Height, in);
+                p[y*pitch + x] = video::SColor(
+                    height, // store height in alpha
+                    (int32_t)n.X, (int32_t)n.Z, (int32_t)n.Y).color;
+            }
 
-		delete [] in;
-		texture->unlock();
-	}
-	else
-	{
-		// ECF_A1R5G5B5 version
+        delete [] in;
+        texture->unlock();
+    }
+    else
+    {
+        // ECF_A1R5G5B5 version
 
-		int16_t *p = (int16_t*)texture->lock();
+        int16_t *p = (int16_t*)texture->lock();
 
-		if (!p)
-		{
-			os::Printer::log("Could not lock texture for making normal map.", ELL_ERROR);
-			return;
-		}
+        if (!p)
+        {
+            os::Printer::log("Could not lock texture for making normal map.", ELL_ERROR);
+            return;
+        }
 
-		uint32_t pitch = texture->getPitch() / 2;
+        uint32_t pitch = texture->getPitch() / 2;
 
-		// copy texture
+        // copy texture
 
-		int16_t* in = new int16_t[dim.Height * pitch];
-		memcpy(in, p, dim.Height * pitch * 2);
+        int16_t* in = new int16_t[dim.Height * pitch];
+        memcpy(in, p, dim.Height * pitch * 2);
 
-		for (int32_t x=0; x < int32_t(pitch); ++x)
-			for (int32_t y=0; y < int32_t(dim.Height); ++y)
-			{
-				// TODO: this could be optimized really a lot
+        for (int32_t x=0; x < int32_t(pitch); ++x)
+            for (int32_t y=0; y < int32_t(dim.Height); ++y)
+            {
+                // TODO: this could be optimized really a lot
 
-				core::vector3df h1((x-1)*hh, nml16(x-1, y, pitch, dim.Height, in)*amplitude, y*vh);
-				core::vector3df h2((x+1)*hh, nml16(x+1, y, pitch, dim.Height, in)*amplitude, y*vh);
-				core::vector3df v1(x*hh, nml16(x, y-1, pitch, dim.Height, in)*amplitude, (y-1)*vh);
-				core::vector3df v2(x*hh, nml16(x, y+1, pitch, dim.Height, in)*amplitude, (y+1)*vh);
+                core::vector3df h1((x-1)*hh, nml16(x-1, y, pitch, dim.Height, in)*amplitude, y*vh);
+                core::vector3df h2((x+1)*hh, nml16(x+1, y, pitch, dim.Height, in)*amplitude, y*vh);
+                core::vector3df v1(x*hh, nml16(x, y-1, pitch, dim.Height, in)*amplitude, (y-1)*vh);
+                core::vector3df v2(x*hh, nml16(x, y+1, pitch, dim.Height, in)*amplitude, (y+1)*vh);
 
-				core::vector3df v = v1-v2;
-				core::vector3df h = h1-h2;
+                core::vector3df v = v1-v2;
+                core::vector3df h = h1-h2;
 
-				core::vector3df n = v.crossProduct(h);
-				n.normalize();
-				n *= 0.5f;
-				n += core::vector3df(0.5f,0.5f,0.5f); // now between 0 and 1
-				n *= 255.0f;
+                core::vector3df n = v.crossProduct(h);
+                n.normalize();
+                n *= 0.5f;
+                n += core::vector3df(0.5f,0.5f,0.5f); // now between 0 and 1
+                n *= 255.0f;
 
-				p[y*pitch + x] = video::RGBA16((uint32_t)n.X, (uint32_t)n.Z, (uint32_t)n.Y);
-			}
+                p[y*pitch + x] = video::RGBA16((uint32_t)n.X, (uint32_t)n.Z, (uint32_t)n.Y);
+            }
 
-		delete [] in;
-		texture->unlock();
-	}
+        delete [] in;
+        texture->unlock();
+    }
 
-	texture->regenerateMipMapLevels();*/
+    texture->regenerateMipMapLevels();*/
 
-		os::Printer::log("DevSH thinks you're a retard for using the CPU for processing pixels.", ELL_ERROR);
-		return;
+        os::Printer::log("DevSH thinks you're a retard for using the CPU for processing pixels.", ELL_ERROR);
+        return;
 }
 
 
@@ -1176,137 +1176,137 @@ void CNullDriver::makeNormalMapTexture(video::ITexture* texture, float amplitude
 //! call.
 uint32_t CNullDriver::getMaximalIndicesCount() const
 {
-	return 0xFFFFFFFF;
+    return 0xFFFFFFFF;
 }
 
 
 //! Enables or disables a texture creation flag.
 void CNullDriver::setTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag, bool enabled)
 {
-	if (enabled && ((flag == ETCF_ALWAYS_16_BIT) || (flag == ETCF_ALWAYS_32_BIT)
-		|| (flag == ETCF_OPTIMIZED_FOR_QUALITY) || (flag == ETCF_OPTIMIZED_FOR_SPEED)))
-	{
-		// disable other formats
-		setTextureCreationFlag(ETCF_ALWAYS_16_BIT, false);
-		setTextureCreationFlag(ETCF_ALWAYS_32_BIT, false);
-		setTextureCreationFlag(ETCF_OPTIMIZED_FOR_QUALITY, false);
-		setTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED, false);
-	}
+    if (enabled && ((flag == ETCF_ALWAYS_16_BIT) || (flag == ETCF_ALWAYS_32_BIT)
+        || (flag == ETCF_OPTIMIZED_FOR_QUALITY) || (flag == ETCF_OPTIMIZED_FOR_SPEED)))
+    {
+        // disable other formats
+        setTextureCreationFlag(ETCF_ALWAYS_16_BIT, false);
+        setTextureCreationFlag(ETCF_ALWAYS_32_BIT, false);
+        setTextureCreationFlag(ETCF_OPTIMIZED_FOR_QUALITY, false);
+        setTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED, false);
+    }
 
-	// set flag
-	TextureCreationFlags = (TextureCreationFlags & (~flag)) |
-		((((uint32_t)!enabled)-1) & flag);
+    // set flag
+    TextureCreationFlags = (TextureCreationFlags & (~flag)) |
+        ((((uint32_t)!enabled)-1) & flag);
 }
 
 
 //! Returns if a texture creation flag is enabled or disabled.
 bool CNullDriver::getTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag) const
 {
-	return (TextureCreationFlags & flag)!=0;
+    return (TextureCreationFlags & flag)!=0;
 }
 
 
 //! Creates a software image from a file.
 IImage* CNullDriver::createImageFromFile(const io::path& filename)
 {
-	if (!filename.size())
-		return 0;
+    if (!filename.size())
+        return 0;
 
-	IImage* image = 0;
-	io::IReadFile* file = FileSystem->createAndOpenFile(filename);
+    IImage* image = 0;
+    io::IReadFile* file = FileSystem->createAndOpenFile(filename);
 
-	if (file)
-	{
-		image = createImageFromFile(file);
-		file->drop();
-	}
-//	else
-//		os::Printer::log("Could not open file of image", filename, ELL_WARNING);	// sodan
+    if (file)
+    {
+        image = createImageFromFile(file);
+        file->drop();
+    }
+//    else
+//        os::Printer::log("Could not open file of image", filename, ELL_WARNING);    // sodan
 
-	return image;
+    return image;
 }
 
 
 //! Creates a software image from a file.
 IImage* CNullDriver::createImageFromFile(io::IReadFile* file)
 {
-	if (!file)
-		return 0;
+    if (!file)
+        return 0;
 
-	IImage* image = 0;
+    IImage* image = 0;
 
-	int32_t i;
+    int32_t i;
 
-	// try to load file based on file extension
-	for (i=SurfaceLoader.size()-1; i>=0; --i)
-	{
-		if (SurfaceLoader[i]->isALoadableFileExtension(file->getFileName()))
-		{
-			// reset file position which might have changed due to previous loadImage calls
-			file->seek(0);
-			image = SurfaceLoader[i]->loadImage(file);
-			if (image)
-				return image;
-		}
-	}
+    // try to load file based on file extension
+    for (i=SurfaceLoader.size()-1; i>=0; --i)
+    {
+        if (SurfaceLoader[i]->isALoadableFileExtension(file->getFileName()))
+        {
+            // reset file position which might have changed due to previous loadImage calls
+            file->seek(0);
+            image = SurfaceLoader[i]->loadImage(file);
+            if (image)
+                return image;
+        }
+    }
 
-	// try to load file based on what is in it
-	for (i=SurfaceLoader.size()-1; i>=0; --i)
-	{
-		// dito
-		file->seek(0);
-		if (SurfaceLoader[i]->isALoadableFileFormat(file))
-		{
-			file->seek(0);
-			image = SurfaceLoader[i]->loadImage(file);
-			if (image)
-				return image;
-		}
-	}
+    // try to load file based on what is in it
+    for (i=SurfaceLoader.size()-1; i>=0; --i)
+    {
+        // dito
+        file->seek(0);
+        if (SurfaceLoader[i]->isALoadableFileFormat(file))
+        {
+            file->seek(0);
+            image = SurfaceLoader[i]->loadImage(file);
+            if (image)
+                return image;
+        }
+    }
 
-	return 0; // failed to load
+    return 0; // failed to load
 }
 
 
 //! Writes the provided image to disk file
 bool CNullDriver::writeImageToFile(IImage* image, const io::path& filename,uint32_t param)
 {
-	io::IWriteFile* file = FileSystem->createAndWriteFile(filename);
-	if(!file)
-		return false;
+    io::IWriteFile* file = FileSystem->createAndWriteFile(filename);
+    if(!file)
+        return false;
 
-	bool result = writeImageToFile(image, file, param);
-	file->drop();
+    bool result = writeImageToFile(image, file, param);
+    file->drop();
 
-	return result;
+    return result;
 }
 
 //! Writes the provided image to a file.
 bool CNullDriver::writeImageToFile(IImage* image, io::IWriteFile * file, uint32_t param)
 {
-	if(!file)
-		return false;
+    if(!file)
+        return false;
 
-	for (int32_t i=SurfaceWriter.size()-1; i>=0; --i)
-	{
-		if (SurfaceWriter[i]->isAWriteableFileExtension(file->getFileName()))
-		{
-			bool written = SurfaceWriter[i]->writeImage(file, image, param);
-			if (written)
-				return true;
-		}
-	}
-	return false; // failed to write
+    for (int32_t i=SurfaceWriter.size()-1; i>=0; --i)
+    {
+        if (SurfaceWriter[i]->isAWriteableFileExtension(file->getFileName()))
+        {
+            bool written = SurfaceWriter[i]->writeImage(file, image, param);
+            if (written)
+                return true;
+        }
+    }
+    return false; // failed to write
 }
 
 
 //! Creates a software image from a byte array.
 IImage* CNullDriver::createImageFromData(ECOLOR_FORMAT format,
-					const core::dimension2d<uint32_t>& size,
-					void *data, bool ownForeignMemory,
-					bool deleteMemory)
+                    const core::dimension2d<uint32_t>& size,
+                    void *data, bool ownForeignMemory,
+                    bool deleteMemory)
 {
-	return new CImage(format, size, data, ownForeignMemory, deleteMemory);
+    return new CImage(format, size, data, ownForeignMemory, deleteMemory);
 }
 
 
@@ -1320,29 +1320,29 @@ IImage* CNullDriver::createImage(ECOLOR_FORMAT format, const core::dimension2d<u
 //! Creates a software image from another image.
 IImage* CNullDriver::createImage(ECOLOR_FORMAT format, IImage *imageToCopy)
 {
-	os::Printer::log("Deprecated method, please create an empty image instead and use copyTo().", ELL_WARNING);
+    os::Printer::log("Deprecated method, please create an empty image instead and use copyTo().", ELL_WARNING);
 
-	CImage* tmp = new CImage(format, imageToCopy->getDimension());
-	imageToCopy->copyTo(tmp);
-	return tmp;
+    CImage* tmp = new CImage(format, imageToCopy->getDimension());
+    imageToCopy->copyTo(tmp);
+    return tmp;
 }
 
 
 //! Creates a software image from part of another image.
 IImage* CNullDriver::createImage(IImage* imageToCopy, const core::position2d<int32_t>& pos, const core::dimension2d<uint32_t>& size)
 {
-	os::Printer::log("Deprecated method, please create an empty image instead and use copyTo().", ELL_WARNING);
-	CImage* tmp = new CImage(imageToCopy->getColorFormat(), imageToCopy->getDimension());
-	imageToCopy->copyTo(tmp, core::position2di(0,0), core::recti(pos,size));
-	return tmp;
+    os::Printer::log("Deprecated method, please create an empty image instead and use copyTo().", ELL_WARNING);
+    CImage* tmp = new CImage(imageToCopy->getColorFormat(), imageToCopy->getDimension());
+    imageToCopy->copyTo(tmp, core::position2di(0,0), core::recti(pos,size));
+    return tmp;
 }
 
 
 
 void CNullDriver::drawMeshBuffer(scene::IGPUMeshBuffer* mb, IOcclusionQuery* query)
 {
-	if (!mb)
-		return;
+    if (!mb)
+        return;
 
     uint32_t increment = mb->getInstanceCount();
     switch (mb->getPrimitiveType())
@@ -1465,121 +1465,121 @@ void CNullDriver::endQuery(IQueryObject* query, const size_t& index)
 //! the window was resized.
 void CNullDriver::OnResize(const core::dimension2d<uint32_t>& size)
 {
-	if (ViewPort.getWidth() == (int32_t)ScreenSize.Width &&
-		ViewPort.getHeight() == (int32_t)ScreenSize.Height)
-		ViewPort = core::rect<int32_t>(core::position2d<int32_t>(0,0),
-									core::dimension2di(size));
+    if (ViewPort.getWidth() == (int32_t)ScreenSize.Width &&
+        ViewPort.getHeight() == (int32_t)ScreenSize.Height)
+        ViewPort = core::rect<int32_t>(core::position2d<int32_t>(0,0),
+                                    core::dimension2di(size));
 
-	ScreenSize = size;
+    ScreenSize = size;
 }
 
 
 // adds a material renderer and drops it afterwards. To be used for internal creation
 int32_t CNullDriver::addAndDropMaterialRenderer(IMaterialRenderer* m)
 {
-	int32_t i = addMaterialRenderer(m);
+    int32_t i = addMaterialRenderer(m);
 
-	if (m)
-		m->drop();
+    if (m)
+        m->drop();
 
-	return i;
+    return i;
 }
 
 
 //! Adds a new material renderer to the video device.
 int32_t CNullDriver::addMaterialRenderer(IMaterialRenderer* renderer, const char* name)
 {
-	if (!renderer)
-		return -1;
+    if (!renderer)
+        return -1;
 
-	SMaterialRenderer r;
-	r.Renderer = renderer;
-	r.Name = name;
+    SMaterialRenderer r;
+    r.Renderer = renderer;
+    r.Name = name;
 
-	if (name == 0 && (MaterialRenderers.size() < (sizeof(sBuiltInMaterialTypeNames) / sizeof(char*))-1 ))
-	{
-		// set name of built in renderer so that we don't have to implement name
-		// setting in all available renderers.
-		r.Name = sBuiltInMaterialTypeNames[MaterialRenderers.size()];
-	}
+    if (name == 0 && (MaterialRenderers.size() < (sizeof(sBuiltInMaterialTypeNames) / sizeof(char*))-1 ))
+    {
+        // set name of built in renderer so that we don't have to implement name
+        // setting in all available renderers.
+        r.Name = sBuiltInMaterialTypeNames[MaterialRenderers.size()];
+    }
 
-	MaterialRenderers.push_back(r);
-	renderer->grab();
+    MaterialRenderers.push_back(r);
+    renderer->grab();
 
-	return MaterialRenderers.size()-1;
+    return MaterialRenderers.size()-1;
 }
 
 
 //! Sets the name of a material renderer.
 void CNullDriver::setMaterialRendererName(int32_t idx, const char* name)
 {
-	if (idx < int32_t(sizeof(sBuiltInMaterialTypeNames) / sizeof(char*))-1 ||
-		idx >= (int32_t)MaterialRenderers.size())
-		return;
+    if (idx < int32_t(sizeof(sBuiltInMaterialTypeNames) / sizeof(char*))-1 ||
+        idx >= (int32_t)MaterialRenderers.size())
+        return;
 
-	MaterialRenderers[idx].Name = name;
+    MaterialRenderers[idx].Name = name;
 }
 
 
 //! Returns driver and operating system specific data about the IVideoDriver.
 const SExposedVideoData& CNullDriver::getExposedVideoData()
 {
-	return ExposedData;
+    return ExposedData;
 }
 
 
 //! Returns type of video driver
 E_DRIVER_TYPE CNullDriver::getDriverType() const
 {
-	return EDT_NULL;
+    return EDT_NULL;
 }
 
 
 //! deletes all material renderers
 void CNullDriver::deleteMaterialRenders()
 {
-	// delete material renderers
-	for (uint32_t i=0; i<MaterialRenderers.size(); ++i)
+    // delete material renderers
+    for (uint32_t i=0; i<MaterialRenderers.size(); ++i)
     {
-		if (MaterialRenderers[i].Renderer)
-			MaterialRenderers[i].Renderer->drop();
+        if (MaterialRenderers[i].Renderer)
+            MaterialRenderers[i].Renderer->drop();
     }
 
-	MaterialRenderers.clear();
+    MaterialRenderers.clear();
 }
 
 
 //! Returns pointer to material renderer or null
 IMaterialRenderer* CNullDriver::getMaterialRenderer(uint32_t idx)
 {
-	if ( idx < MaterialRenderers.size() )
-		return MaterialRenderers[idx].Renderer;
-	else
-		return 0;
+    if ( idx < MaterialRenderers.size() )
+        return MaterialRenderers[idx].Renderer;
+    else
+        return 0;
 }
 
 
 //! Returns amount of currently available material renderers.
 uint32_t CNullDriver::getMaterialRendererCount() const
 {
-	return MaterialRenderers.size();
+    return MaterialRenderers.size();
 }
 
 
 //! Returns name of the material renderer
 const char* CNullDriver::getMaterialRendererName(uint32_t idx) const
 {
-	if ( idx < MaterialRenderers.size() )
-		return MaterialRenderers[idx].Name.c_str();
+    if ( idx < MaterialRenderers.size() )
+        return MaterialRenderers[idx].Name.c_str();
 
-	return 0;
+    return 0;
 }
 
 
 //! Returns pointer to the IGPUProgrammingServices interface.
 IGPUProgrammingServices* CNullDriver::getGPUProgrammingServices()
 {
-	return this;
+    return this;
 }
 
 int32_t CNullDriver::addHighLevelShaderMaterial(
@@ -1600,8 +1600,8 @@ int32_t CNullDriver::addHighLevelShaderMaterial(
     const char* geometryShaderEntryPointName,
     const char* pixelShaderEntryPointName)
 {
-	os::Printer::log("High level shader materials not available (yet) in this driver, sorry");
-	return -1;
+    os::Printer::log("High level shader materials not available (yet) in this driver, sorry");
+    return -1;
 }
 
 bool CNullDriver::replaceHighLevelShaderMaterial(const int32_t &materialIDToReplace,
@@ -1631,10 +1631,10 @@ bool CNullDriver::replaceHighLevelShaderMaterial(const int32_t &materialIDToRepl
     if (nr==-1)
         return false;
 
-	MaterialRenderers[materialIDToReplace].Renderer->drop();
-	MaterialRenderers[materialIDToReplace] = MaterialRenderers[MaterialRenderers.size()-1];
+    MaterialRenderers[materialIDToReplace].Renderer->drop();
+    MaterialRenderers[materialIDToReplace] = MaterialRenderers[MaterialRenderers.size()-1];
 
-	MaterialRenderers.set_used(MaterialRenderers.size()-1);
+    MaterialRenderers.set_used(MaterialRenderers.size()-1);
 
     return true;
 }
@@ -1657,86 +1657,86 @@ int32_t CNullDriver::addHighLevelShaderMaterialFromFiles(
     const char* geometryShaderEntryPointName,
     const char* pixelShaderEntryPointName)
 {
-	io::IReadFile* vsfile = 0;
-	io::IReadFile* gsfile = 0;
-	io::IReadFile* ctsfile = 0;
-	io::IReadFile* etsfile = 0;
-	io::IReadFile* psfile = 0;
+    io::IReadFile* vsfile = 0;
+    io::IReadFile* gsfile = 0;
+    io::IReadFile* ctsfile = 0;
+    io::IReadFile* etsfile = 0;
+    io::IReadFile* psfile = 0;
 
-	if (vertexShaderProgramFileName.size() )
-	{
-		vsfile = FileSystem->createAndOpenFile(vertexShaderProgramFileName);
-		if (!vsfile)
-		{
-			os::Printer::log("Could not open vertex shader program file",
-				vertexShaderProgramFileName.c_str(), ELL_WARNING);
-		}
-	}
+    if (vertexShaderProgramFileName.size() )
+    {
+        vsfile = FileSystem->createAndOpenFile(vertexShaderProgramFileName);
+        if (!vsfile)
+        {
+            os::Printer::log("Could not open vertex shader program file",
+                vertexShaderProgramFileName.c_str(), ELL_WARNING);
+        }
+    }
 
-	if (controlShaderProgramFileName.size() )
-	{
-		ctsfile = FileSystem->createAndOpenFile(controlShaderProgramFileName);
-		if (!ctsfile)
-		{
-			os::Printer::log("Could not open control shader program file",
-				controlShaderProgramFileName.c_str(), ELL_WARNING);
-		}
-	}
+    if (controlShaderProgramFileName.size() )
+    {
+        ctsfile = FileSystem->createAndOpenFile(controlShaderProgramFileName);
+        if (!ctsfile)
+        {
+            os::Printer::log("Could not open control shader program file",
+                controlShaderProgramFileName.c_str(), ELL_WARNING);
+        }
+    }
 
-	if (evaluationShaderProgramFileName.size() )
-	{
-		etsfile = FileSystem->createAndOpenFile(evaluationShaderProgramFileName);
-		if (!etsfile)
-		{
-			os::Printer::log("Could not open evaluation shader program file",
-				evaluationShaderProgramFileName.c_str(), ELL_WARNING);
-		}
-	}
+    if (evaluationShaderProgramFileName.size() )
+    {
+        etsfile = FileSystem->createAndOpenFile(evaluationShaderProgramFileName);
+        if (!etsfile)
+        {
+            os::Printer::log("Could not open evaluation shader program file",
+                evaluationShaderProgramFileName.c_str(), ELL_WARNING);
+        }
+    }
 
-	if (geometryShaderProgramFileName.size() )
-	{
-		gsfile = FileSystem->createAndOpenFile(geometryShaderProgramFileName);
-		if (!gsfile)
-		{
-			os::Printer::log("Could not open geometry shader program file",
-				geometryShaderProgramFileName.c_str(), ELL_WARNING);
-		}
-	}
+    if (geometryShaderProgramFileName.size() )
+    {
+        gsfile = FileSystem->createAndOpenFile(geometryShaderProgramFileName);
+        if (!gsfile)
+        {
+            os::Printer::log("Could not open geometry shader program file",
+                geometryShaderProgramFileName.c_str(), ELL_WARNING);
+        }
+    }
 
-	if (pixelShaderProgramFileName.size() )
-	{
-		psfile = FileSystem->createAndOpenFile(pixelShaderProgramFileName);
-		if (!psfile)
-		{
-			os::Printer::log("Could not open pixel shader program file",
-				pixelShaderProgramFileName.c_str(), ELL_WARNING);
-		}
-	}
+    if (pixelShaderProgramFileName.size() )
+    {
+        psfile = FileSystem->createAndOpenFile(pixelShaderProgramFileName);
+        if (!psfile)
+        {
+            os::Printer::log("Could not open pixel shader program file",
+                pixelShaderProgramFileName.c_str(), ELL_WARNING);
+        }
+    }
 
-	int32_t result = addHighLevelShaderMaterialFromFiles(
-		vsfile, ctsfile, etsfile, gsfile, psfile,
-		patchVertices, baseMaterial, callback,
-		xformFeedbackOutputs,xformFeedbackOutputCount, userData,
-		vertexShaderEntryPointName, controlShaderEntryPointName,
-		evaluationShaderEntryPointName, geometryShaderEntryPointName,
-		pixelShaderEntryPointName);
+    int32_t result = addHighLevelShaderMaterialFromFiles(
+        vsfile, ctsfile, etsfile, gsfile, psfile,
+        patchVertices, baseMaterial, callback,
+        xformFeedbackOutputs,xformFeedbackOutputCount, userData,
+        vertexShaderEntryPointName, controlShaderEntryPointName,
+        evaluationShaderEntryPointName, geometryShaderEntryPointName,
+        pixelShaderEntryPointName);
 
-	if (psfile)
-		psfile->drop();
+    if (psfile)
+        psfile->drop();
 
-	if (ctsfile)
-		ctsfile->drop();
+    if (ctsfile)
+        ctsfile->drop();
 
-	if (etsfile)
-		etsfile->drop();
+    if (etsfile)
+        etsfile->drop();
 
-	if (gsfile)
-		gsfile->drop();
+    if (gsfile)
+        gsfile->drop();
 
-	if (vsfile)
-		vsfile->drop();
+    if (vsfile)
+        vsfile->drop();
 
-	return result;
+    return result;
 }
 
 int32_t CNullDriver::addHighLevelShaderMaterialFromFiles(
@@ -1757,95 +1757,95 @@ int32_t CNullDriver::addHighLevelShaderMaterialFromFiles(
     const char* geometryShaderEntryPointName,
     const char* pixelShaderEntryPointName)
 {
-	char* vs = 0;
-	char* cts = 0;
-	char* ets = 0;
-	char* gs = 0;
-	char* ps = 0;
+    char* vs = 0;
+    char* cts = 0;
+    char* ets = 0;
+    char* gs = 0;
+    char* ps = 0;
 
-	if (vertexShaderProgram)
-	{
-		const long size = vertexShaderProgram->getSize();
-		if (size)
-		{
-			vs = new char[size+1];
-			vertexShaderProgram->read(vs, size);
-			vs[size] = 0;
-		}
-	}
+    if (vertexShaderProgram)
+    {
+        const long size = vertexShaderProgram->getSize();
+        if (size)
+        {
+            vs = new char[size+1];
+            vertexShaderProgram->read(vs, size);
+            vs[size] = 0;
+        }
+    }
 
-	if (pixelShaderProgram)
-	{
-		const long size = pixelShaderProgram->getSize();
-		if (size)
-		{
-			// if both handles are the same we must reset the file
-			if (pixelShaderProgram==vertexShaderProgram)
-				pixelShaderProgram->seek(0);
-			ps = new char[size+1];
-			pixelShaderProgram->read(ps, size);
-			ps[size] = 0;
-		}
-	}
+    if (pixelShaderProgram)
+    {
+        const long size = pixelShaderProgram->getSize();
+        if (size)
+        {
+            // if both handles are the same we must reset the file
+            if (pixelShaderProgram==vertexShaderProgram)
+                pixelShaderProgram->seek(0);
+            ps = new char[size+1];
+            pixelShaderProgram->read(ps, size);
+            ps[size] = 0;
+        }
+    }
 
-	if (geometryShaderProgram)
-	{
-		const long size = geometryShaderProgram->getSize();
-		if (size)
-		{
-			// if both handles are the same we must reset the file
-			if ((geometryShaderProgram==vertexShaderProgram) ||
-					(geometryShaderProgram==pixelShaderProgram))
-				geometryShaderProgram->seek(0);
-			gs = new char[size+1];
-			geometryShaderProgram->read(gs, size);
-			gs[size] = 0;
-		}
-	}
+    if (geometryShaderProgram)
+    {
+        const long size = geometryShaderProgram->getSize();
+        if (size)
+        {
+            // if both handles are the same we must reset the file
+            if ((geometryShaderProgram==vertexShaderProgram) ||
+                    (geometryShaderProgram==pixelShaderProgram))
+                geometryShaderProgram->seek(0);
+            gs = new char[size+1];
+            geometryShaderProgram->read(gs, size);
+            gs[size] = 0;
+        }
+    }
 
-	if (controlShaderProgram)
-	{
-		const long size = controlShaderProgram->getSize();
-		if (size)
-		{
-			// if both handles are the same we must reset the file
-			if ((controlShaderProgram==vertexShaderProgram) ||
-					(controlShaderProgram==pixelShaderProgram) ||
+    if (controlShaderProgram)
+    {
+        const long size = controlShaderProgram->getSize();
+        if (size)
+        {
+            // if both handles are the same we must reset the file
+            if ((controlShaderProgram==vertexShaderProgram) ||
+                    (controlShaderProgram==pixelShaderProgram) ||
                         (controlShaderProgram==geometryShaderProgram))
-				controlShaderProgram->seek(0);
-			cts = new char[size+1];
-			controlShaderProgram->read(cts, size);
-			cts[size] = 0;
-		}
-	}
+                controlShaderProgram->seek(0);
+            cts = new char[size+1];
+            controlShaderProgram->read(cts, size);
+            cts[size] = 0;
+        }
+    }
 
-	if (evaluationShaderProgram)
-	{
-		const long size = evaluationShaderProgram->getSize();
-		if (size)
-		{
-			// if both handles are the same we must reset the file
-			if ((evaluationShaderProgram==vertexShaderProgram) ||
-					(evaluationShaderProgram==pixelShaderProgram) ||
+    if (evaluationShaderProgram)
+    {
+        const long size = evaluationShaderProgram->getSize();
+        if (size)
+        {
+            // if both handles are the same we must reset the file
+            if ((evaluationShaderProgram==vertexShaderProgram) ||
+                    (evaluationShaderProgram==pixelShaderProgram) ||
                         (evaluationShaderProgram==geometryShaderProgram) ||
                             (evaluationShaderProgram==controlShaderProgram))
-				evaluationShaderProgram->seek(0);
-			ets = new char[size+1];
-			evaluationShaderProgram->read(ets, size);
-			ets[size] = 0;
-		}
-	}
+                evaluationShaderProgram->seek(0);
+            ets = new char[size+1];
+            evaluationShaderProgram->read(ets, size);
+            ets[size] = 0;
+        }
+    }
 
 
-	int32_t result = this->addHighLevelShaderMaterial(
-		vs, cts, ets, gs, ps,patchVertices,
-		baseMaterial, callback,
-		xformFeedbackOutputs,xformFeedbackOutputCount, userData,
-		vertexShaderEntryPointName,
-		controlShaderEntryPointName,
-		evaluationShaderEntryPointName,
-		geometryShaderEntryPointName,
-		pixelShaderEntryPointName);
+    int32_t result = this->addHighLevelShaderMaterial(
+        vs, cts, ets, gs, ps,patchVertices,
+        baseMaterial, callback,
+        xformFeedbackOutputs,xformFeedbackOutputCount, userData,
+        vertexShaderEntryPointName,
+        controlShaderEntryPointName,
+        evaluationShaderEntryPointName,
+        geometryShaderEntryPointName,
+        pixelShaderEntryPointName);
 
     if (vs)
         delete [] vs;
@@ -1858,7 +1858,7 @@ int32_t CNullDriver::addHighLevelShaderMaterialFromFiles(
     if (ets)
         delete [] ets;
 
-	return result;
+    return result;
 }
 
 
@@ -1866,18 +1866,18 @@ int32_t CNullDriver::addHighLevelShaderMaterialFromFiles(
 
 IRenderBuffer* CNullDriver::addRenderBuffer(const core::dimension2d<uint32_t>& size, const ECOLOR_FORMAT format)
 {
-	return 0;
+    return 0;
 }
 
 void CNullDriver::addRenderBuffer(IRenderBuffer* buffer)
 {
-	RenderBuffers.push_back(buffer);
-	RenderBuffers.sort();
+    RenderBuffers.push_back(buffer);
+    RenderBuffers.sort();
 }
 
 IFrameBuffer* CNullDriver::addFrameBuffer()
 {
-	return 0;
+    return 0;
 }
 
 void CNullDriver::addFrameBuffer(IFrameBuffer* framebuffer)
@@ -1888,8 +1888,8 @@ void CNullDriver::addFrameBuffer(IFrameBuffer* framebuffer)
 
 
 void CNullDriver::blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out, bool copyDepth,
-									core::recti srcRect, core::recti dstRect,
-									bool bilinearFilter)
+                                    core::recti srcRect, core::recti dstRect,
+                                    bool bilinearFilter)
 {
 }
 
@@ -1949,26 +1949,26 @@ void CNullDriver::endTransformFeedback()
 // prints renderer version
 void CNullDriver::printVersion()
 {
-	core::stringw namePrint = L"Using renderer: ";
-	namePrint += getName();
-	os::Printer::log(namePrint.c_str(), ELL_INFORMATION);
+    core::stringw namePrint = L"Using renderer: ";
+    namePrint += getName();
+    os::Printer::log(namePrint.c_str(), ELL_INFORMATION);
 }
 
 
 //! creates a video driver
 IVideoDriver* createNullDriver(io::IFileSystem* io, const core::dimension2d<uint32_t>& screenSize)
 {
-	CNullDriver* nullDriver = new CNullDriver(io, screenSize);
+    CNullDriver* nullDriver = new CNullDriver(io, screenSize);
 
-	// create empty material renderers
-	for(uint32_t i=0; sBuiltInMaterialTypeNames[i]; ++i)
-	{
-		IMaterialRenderer* imr = new IMaterialRenderer();
-		nullDriver->addMaterialRenderer(imr);
-		imr->drop();
-	}
+    // create empty material renderers
+    for(uint32_t i=0; sBuiltInMaterialTypeNames[i]; ++i)
+    {
+        IMaterialRenderer* imr = new IMaterialRenderer();
+        nullDriver->addMaterialRenderer(imr);
+        imr->drop();
+    }
 
-	return nullDriver;
+    return nullDriver;
 }
 
 
@@ -1976,33 +1976,33 @@ IVideoDriver* createNullDriver(io::IFileSystem* io, const core::dimension2d<uint
 //! Enable/disable a clipping plane.
 void CNullDriver::enableClipPlane(uint32_t index, bool enable)
 {
-	// not necessary
+    // not necessary
 }
 
 
 void CNullDriver::setMinHardwareBufferVertexCount(uint32_t count)
 {
-	MinVertexCountForVBO = count;
+    MinVertexCountForVBO = count;
 }
 
 
 SOverrideMaterial& CNullDriver::getOverrideMaterial()
 {
-	return OverrideMaterial;
+    return OverrideMaterial;
 }
 
 
 //! Get the 2d override material for altering its values
 SMaterial& CNullDriver::getMaterial2D()
 {
-	return OverrideMaterial2D;
+    return OverrideMaterial2D;
 }
 
 
 //! Enable the 2d override material
 void CNullDriver::enableMaterial2D(bool enable)
 {
-	OverrideMaterial2DEnabled=enable;
+    OverrideMaterial2DEnabled=enable;
 }
 
 
@@ -2023,9 +2023,9 @@ determined by the color formats.
 \param dF Color format of destination
 */
 void CNullDriver::convertColor(const void* sP, ECOLOR_FORMAT sF, int32_t sN,
-		void* dP, ECOLOR_FORMAT dF) const
+        void* dP, ECOLOR_FORMAT dF) const
 {
-	video::CColorConverter::convert_viaFormat(sP, sF, sN, dP, dF);
+    video::CColorConverter::convert_viaFormat(sP, sF, sN, dP, dF);
 }
 
 

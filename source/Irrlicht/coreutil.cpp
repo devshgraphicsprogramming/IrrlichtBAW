@@ -25,35 +25,35 @@ namespace core
 
 std::string WStringToUTF8String(const std::wstring& inString)
 {
-	std::string utf8line;
-	utf8line.reserve(inString.length());
+    std::string utf8line;
+    utf8line.reserve(inString.length());
 
-	utf8::unchecked::utf16to8(inString.begin(), inString.end(), back_inserter(utf8line));
-	return utf8line;
+    utf8::unchecked::utf16to8(inString.begin(), inString.end(), back_inserter(utf8line));
+    return utf8line;
 }
 
 std::wstring UTF8StringToWString(const std::string& inString)
 {
-	std::string::const_iterator end_it = utf8::find_invalid(inString.begin(), inString.end());
+    std::string::const_iterator end_it = utf8::find_invalid(inString.begin(), inString.end());
 
-	std::wstring utf16line;
-	utf16line.reserve(end_it-inString.begin());
-	utf8::unchecked::utf8to16(inString.begin(), end_it, back_inserter(utf16line));
+    std::wstring utf16line;
+    utf16line.reserve(end_it-inString.begin());
+    utf8::unchecked::utf8to16(inString.begin(), end_it, back_inserter(utf16line));
 
-	return utf16line;
+    return utf16line;
 }
 
 std::wstring UTF8StringToWString(const std::string& inString, uint32_t inReplacementforInvalid)
 {
-	std::string replacedStr;
-	replacedStr.reserve(inString.size());
-	utf8::unchecked::replace_invalid(inString.begin(), inString.end(), back_inserter(replacedStr), inReplacementforInvalid);
+    std::string replacedStr;
+    replacedStr.reserve(inString.size());
+    utf8::unchecked::replace_invalid(inString.begin(), inString.end(), back_inserter(replacedStr), inReplacementforInvalid);
 
-	std::wstring utf16line;
-	utf16line.reserve(replacedStr.length());
-	utf8::unchecked::utf8to16(replacedStr.begin(), replacedStr.end(), back_inserter(utf16line));
+    std::wstring utf16line;
+    utf16line.reserve(replacedStr.length());
+    utf8::unchecked::utf8to16(replacedStr.begin(), replacedStr.end(), back_inserter(utf16line));
 
-	return utf16line;
+    return utf16line;
 }
 
 /*

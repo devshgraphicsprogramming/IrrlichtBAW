@@ -19,14 +19,14 @@ namespace video
 class CImageWriterPNG : public IImageWriter
 {
 public:
-	//! constructor
-	CImageWriterPNG();
+    //! constructor
+    CImageWriterPNG();
 
-	//! return true if this writer can write a file with the given extension
-	virtual bool isAWriteableFileExtension(const io::path& filename) const;
+    //! return true if this writer can write a file with the given extension
+    virtual bool isAWriteableFileExtension(const io::path& filename) const;
 
-	//! write image to file
-	virtual bool writeImage(io::IWriteFile *file, IImage *image, uint32_t param) const;
+    //! write image to file
+    virtual bool writeImage(io::IWriteFile *file, IImage *image, uint32_t param) const;
 };
 
 } // namespace video

@@ -31,65 +31,65 @@ class irrAllocator
 {
 public:
 
-	//! Destructor
-	virtual ~irrAllocator() {}
+    //! Destructor
+    virtual ~irrAllocator() {}
 
-	//! Allocate memory for an array of objects
-	T* allocate(size_t cnt)
-	{
-		return (T*)internal_new(cnt* sizeof(T));
-	}
+    //! Allocate memory for an array of objects
+    T* allocate(size_t cnt)
+    {
+        return (T*)internal_new(cnt* sizeof(T));
+    }
 
-	//! Deallocate memory for an array of objects
-	void deallocate(T* ptr)
-	{
-		internal_delete(ptr);
-	}
+    //! Deallocate memory for an array of objects
+    void deallocate(T* ptr)
+    {
+        internal_delete(ptr);
+    }
 
-	//! Construct an element
-	void construct(T* ptr, const T&e)
-	{
-		new ((void*)ptr) T(e);
-	}
+    //! Construct an element
+    void construct(T* ptr, const T&e)
+    {
+        new ((void*)ptr) T(e);
+    }
 
-	//! Destruct an element
-	void destruct(T* ptr)
-	{
-		ptr->~T();
-	}
+    //! Destruct an element
+    void destruct(T* ptr)
+    {
+        ptr->~T();
+    }
 
 protected:
 
 #ifdef __IRR_COMPILE_WITH_X86_SIMD_
-	virtual void* internal_new(size_t cnt)
-	{
-		void *memoryallocatedaligned = 0;
+    virtual void* internal_new(size_t cnt)
+    {
+        void *memoryallocatedaligned = 0;
 #ifdef _IRR_WINDOWS_
-		memoryallocatedaligned = _aligned_malloc(cnt,Alignment);
+        memoryallocatedaligned = _aligned_malloc(cnt,Alignment);
 #else
-		int dummy = posix_memalign((void**)&memoryallocatedaligned,Alignment,cnt);
+        int dummy = posix_memalign((void**)&memoryallocatedaligned,Alignment,cnt);
 #endif
-		return memoryallocatedaligned;
-	}
+        return memoryallocatedaligned;
+    }
 
-	virtual void internal_delete(void* ptr)
-	{
+    virtual void internal_delete(void* ptr)
+    {
 #ifdef _IRR_WINDOWS_
         _aligned_free(ptr);
 #else
         free(ptr);
 #endif
-	}
+    }
 #else
-	virtual void* internal_new(size_t cnt)
-	{
-		return operator new(cnt);
-	}
+    virtual void* internal_new(size_t cnt)
+    {
+        return operator new(cnt);
+    }
 
-	virtual void internal_delete(void* ptr)
-	{
-		operator delete(ptr);
-	}
+    virtual void internal_delete(void* ptr)
+    {
+        operator delete(ptr);
+    }
 #endif
 };
 
@@ -107,52 +107,52 @@ class irrAllocatorFast
 public:
 
 #ifdef __IRR_COMPILE_WITH_X86_SIMD_
-	//! Allocate memory for an array of objects
-	T* allocate(size_t cnt)
-	{
-		cnt *= sizeof(T);
-		T *memoryallocatedaligned = 0;
+    //! Allocate memory for an array of objects
+    T* allocate(size_t cnt)
+    {
+        cnt *= sizeof(T);
+        T *memoryallocatedaligned = 0;
 #ifdef _IRR_WINDOWS_
-		memoryallocatedaligned = (T*)_aligned_malloc(cnt,Alignment);
+        memoryallocatedaligned = (T*)_aligned_malloc(cnt,Alignment);
 #else
-		posix_memalign((void**)&memoryallocatedaligned,Alignment,cnt);
+        posix_memalign((void**)&memoryallocatedaligned,Alignment,cnt);
 #endif
-		return memoryallocatedaligned;
-	}
+        return memoryallocatedaligned;
+    }
 
-	//! Deallocate memory for an array of objects
-	void deallocate(T* ptr)
-	{
+    //! Deallocate memory for an array of objects
+    void deallocate(T* ptr)
+    {
 #ifdef _IRR_WINDOWS_
         _aligned_free(ptr);
 #else
         free(ptr);
 #endif
-	}
+    }
 #else
-	//! Allocate memory for an array of objects
-	T* allocate(size_t cnt)
-	{
-		return (T*)operator new(cnt* sizeof(T));
-	}
+    //! Allocate memory for an array of objects
+    T* allocate(size_t cnt)
+    {
+        return (T*)operator new(cnt* sizeof(T));
+    }
 
-	//! Deallocate memory for an array of objects
-	void deallocate(T* ptr)
-	{
-		operator delete(ptr);
-	}
+    //! Deallocate memory for an array of objects
+    void deallocate(T* ptr)
+    {
+        operator delete(ptr);
+    }
 #endif // __IRR_COMPILE_WITH_X86_SIMD_
-	//! Construct an element
-	void construct(T* ptr, const T&e)
-	{
-		new ((void*)ptr) T(e);
-	}
+    //! Construct an element
+    void construct(T* ptr, const T&e)
+    {
+        new ((void*)ptr) T(e);
+    }
 
-	//! Destruct an element
-	void destruct(T* ptr)
-	{
-		ptr->~T();
-	}
+    //! Destruct an element
+    void destruct(T* ptr)
+    {
+        ptr->~T();
+    }
 };
 
 
@@ -165,9 +165,9 @@ public:
 //! defines an allocation strategy
 enum eAllocStrategy
 {
-	ALLOC_STRATEGY_SAFE    = 0,
-	ALLOC_STRATEGY_DOUBLE  = 1,
-	ALLOC_STRATEGY_SQRT    = 2
+    ALLOC_STRATEGY_SAFE    = 0,
+    ALLOC_STRATEGY_DOUBLE  = 1,
+    ALLOC_STRATEGY_SQRT    = 2
 };
 
 

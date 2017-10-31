@@ -12,28 +12,28 @@ namespace irr
 namespace scene
 {
 
-	//! An enumeration for all types of automatic culling for built-in scene nodes
-	enum E_CULLING_TYPE
-	{
-		EAC_OFF = 0,
-		EAC_BOX = 1,
-		EAC_FRUSTUM_BOX = 2,
-		EAC_FRUSTUM_SPHERE = 4,
-		EAC_OCC_QUERY = 8,
-		EAC_COND_RENDER = 16
-	};
+    //! An enumeration for all types of automatic culling for built-in scene nodes
+    enum E_CULLING_TYPE
+    {
+        EAC_OFF = 0,
+        EAC_BOX = 1,
+        EAC_FRUSTUM_BOX = 2,
+        EAC_FRUSTUM_SPHERE = 4,
+        EAC_OCC_QUERY = 8,
+        EAC_COND_RENDER = 16
+    };
 
-	//! Names for culling type
-	const char* const AutomaticCullingNames[] =
-	{
-		"false",
-		"box",			// camera box against node box
-		"frustum_box",		// camera frustum against node box
-		"frustum_sphere",	// camera frustum against node sphere
-		"occ_query",	// occlusion query
-		"cond_render",
-		0
-	};
+    //! Names for culling type
+    const char* const AutomaticCullingNames[] =
+    {
+        "false",
+        "box",            // camera box against node box
+        "frustum_box",        // camera frustum against node box
+        "frustum_sphere",    // camera frustum against node sphere
+        "occ_query",    // occlusion query
+        "cond_render",
+        0
+    };
 
 } // end namespace scene
 } // end namespace irr

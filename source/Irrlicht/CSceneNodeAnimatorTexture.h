@@ -12,38 +12,38 @@ namespace irr
 {
 namespace scene
 {
-	class CSceneNodeAnimatorTexture : public ISceneNodeAnimatorFinishing
-	{
-	public:
+    class CSceneNodeAnimatorTexture : public ISceneNodeAnimatorFinishing
+    {
+    public:
 
-		//! constructor
-		CSceneNodeAnimatorTexture(const core::array<video::ITexture*>& textures,
-			int32_t timePerFrame, bool loop, uint32_t now);
+        //! constructor
+        CSceneNodeAnimatorTexture(const core::array<video::ITexture*>& textures,
+            int32_t timePerFrame, bool loop, uint32_t now);
 
-		//! destructor
-		virtual ~CSceneNodeAnimatorTexture();
+        //! destructor
+        virtual ~CSceneNodeAnimatorTexture();
 
-		//! animates a scene node
-		virtual void animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs);
+        //! animates a scene node
+        virtual void animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs);
 
-		//! Returns type of the scene node animator
-		virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_TEXTURE; }
+        //! Returns type of the scene node animator
+        virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_TEXTURE; }
 
-		//! Creates a clone of this animator.
-		/** Please note that you will have to drop
-		(IReferenceCounted::drop()) the returned pointer after calling
-		this. */
-		virtual ISceneNodeAnimator* createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager=0);
+        //! Creates a clone of this animator.
+        /** Please note that you will have to drop
+        (IReferenceCounted::drop()) the returned pointer after calling
+        this. */
+        virtual ISceneNodeAnimator* createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager=0);
 
-	private:
+    private:
 
-		void clearTextures();
+        void clearTextures();
 
-		core::array<video::ITexture*> Textures;
-		uint32_t TimePerFrame;
-		uint32_t StartTime;
-		bool Loop;
-	};
+        core::array<video::ITexture*> Textures;
+        uint32_t TimePerFrame;
+        uint32_t StartTime;
+        bool Loop;
+    };
 
 
 } // end namespace scene

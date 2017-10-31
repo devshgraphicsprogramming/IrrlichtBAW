@@ -118,8 +118,8 @@ namespace scene
         return core::min_(bestFit,core::vectorSIMDf(cubeHalfSize))+0.01f;
     }
 
-	inline uint32_t quantizeNormal2_10_10_10(const core::vectorSIMDf &normal)
-	{
+    inline uint32_t quantizeNormal2_10_10_10(const core::vectorSIMDf &normal)
+    {
         QuantizationCacheEntry2_10_10_10 dummySearchVal;
         dummySearchVal.key = normal;
         std::vector<QuantizationCacheEntry2_10_10_10>::iterator found = std::lower_bound(normalCacheFor2_10_10_10Quant.begin(),normalCacheFor2_10_10_10Quant.end(),dummySearchVal);
@@ -137,11 +137,11 @@ namespace scene
         normalCacheFor2_10_10_10Quant.insert(found,dummySearchVal);
 
 
-	    return bestFit;
-	}
+        return bestFit;
+    }
 
-	inline uint32_t quantizeNormal888(const core::vectorSIMDf &normal)
-	{
+    inline uint32_t quantizeNormal888(const core::vectorSIMDf &normal)
+    {
         uint8_t bestFit[4];
 
         core::vectorSIMDf fit = findBestFit(8,normal);
@@ -151,8 +151,8 @@ namespace scene
         bestFit[2] = (uint32_t(fit.Z)^(normal.Z<0.f ? xorflag:0))+(normal.Z<0.f ? 1:0);
 
 
-	    return *reinterpret_cast<uint32_t*>(bestFit);
-	}/*
+        return *reinterpret_cast<uint32_t*>(bestFit);
+    }/*
         ECT_FLOAT=0,
         ECT_HALF_FLOAT,
         ECT_DOUBLE_IN_FLOAT_OUT,

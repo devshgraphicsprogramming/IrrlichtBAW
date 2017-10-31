@@ -18,72 +18,72 @@ namespace scene
 //! Get CurrentFrameNr and update transiting settings
 void CSkinnedMeshSceneNode::buildFrameNr(const uint32_t& deltaTimeMs)
 {
-	if ((StartFrame==EndFrame))
-	{
-		CurrentFrameNr = StartFrame; //Support for non animated meshes
-	}
-	else if (Looping)
-	{
-		// play animation looped
-		CurrentFrameNr += float(deltaTimeMs) * FramesPerSecond;
+    if ((StartFrame==EndFrame))
+    {
+        CurrentFrameNr = StartFrame; //Support for non animated meshes
+    }
+    else if (Looping)
+    {
+        // play animation looped
+        CurrentFrameNr += float(deltaTimeMs) * FramesPerSecond;
 
-		// We have no interpolation between EndFrame and StartFrame,
-		// the last frame must be identical to first one with our current solution.
-		if (FramesPerSecond > 0.f) //forwards...
-		{
-			if (CurrentFrameNr > EndFrame)
-				CurrentFrameNr = StartFrame + fmod(CurrentFrameNr - StartFrame, EndFrame-StartFrame);
-		}
-		else //backwards...
-		{
-			if (CurrentFrameNr < StartFrame)
-				CurrentFrameNr = EndFrame - fmod(EndFrame - CurrentFrameNr, EndFrame-StartFrame);
-		}
-	}
-	else
-	{
-		// play animation non looped
+        // We have no interpolation between EndFrame and StartFrame,
+        // the last frame must be identical to first one with our current solution.
+        if (FramesPerSecond > 0.f) //forwards...
+        {
+            if (CurrentFrameNr > EndFrame)
+                CurrentFrameNr = StartFrame + fmod(CurrentFrameNr - StartFrame, EndFrame-StartFrame);
+        }
+        else //backwards...
+        {
+            if (CurrentFrameNr < StartFrame)
+                CurrentFrameNr = EndFrame - fmod(EndFrame - CurrentFrameNr, EndFrame-StartFrame);
+        }
+    }
+    else
+    {
+        // play animation non looped
 
-		CurrentFrameNr += float(deltaTimeMs) * FramesPerSecond;
-		if (FramesPerSecond > 0.f) //forwards...
-		{
-			if (CurrentFrameNr > EndFrame)
-			{
-				CurrentFrameNr = EndFrame;
-				if (LoopCallBack)
-					LoopCallBack->OnAnimationEnd(this);
-			}
-		}
-		else //backwards...
-		{
-			if (CurrentFrameNr < StartFrame)
-			{
-				CurrentFrameNr = StartFrame;
-				if (LoopCallBack)
-					LoopCallBack->OnAnimationEnd(this);
-			}
-		}
-	}
+        CurrentFrameNr += float(deltaTimeMs) * FramesPerSecond;
+        if (FramesPerSecond > 0.f) //forwards...
+        {
+            if (CurrentFrameNr > EndFrame)
+            {
+                CurrentFrameNr = EndFrame;
+                if (LoopCallBack)
+                    LoopCallBack->OnAnimationEnd(this);
+            }
+        }
+        else //backwards...
+        {
+            if (CurrentFrameNr < StartFrame)
+            {
+                CurrentFrameNr = StartFrame;
+                if (LoopCallBack)
+                    LoopCallBack->OnAnimationEnd(this);
+            }
+        }
+    }
 }
 
 
 void CSkinnedMeshSceneNode::OnRegisterSceneNode()
 {
-	if (IsVisible)
-	{
-	    if (!mesh)
+    if (IsVisible)
+    {
+        if (!mesh)
             return;
 
-		// because this node supports rendering of mixed mode meshes consisting of
-		// transparent and solid material at the same time, we need to go through all
-		// materials, check of what type they are and register this node for the right
-		// render pass according to that.
+        // because this node supports rendering of mixed mode meshes consisting of
+        // transparent and solid material at the same time, we need to go through all
+        // materials, check of what type they are and register this node for the right
+        // render pass according to that.
 
-		video::IVideoDriver* driver = SceneManager->getVideoDriver();
+        video::IVideoDriver* driver = SceneManager->getVideoDriver();
 
-		PassCount = 0;
-		int transparentCount = 0;
-		int solidCount = 0;
+        PassCount = 0;
+        int transparentCount = 0;
+        int solidCount = 0;
 
         // count copied materials
         for (uint32_t i=0; i<Materials.size(); ++i)
@@ -104,16 +104,16 @@ void CSkinnedMeshSceneNode::OnRegisterSceneNode()
                 break;
         }
 
-		// register according to material types counted
+        // register according to material types counted
 
-		if (solidCount)
-			SceneManager->registerNodeForRendering(this, scene::ESNRP_SOLID);
+        if (solidCount)
+            SceneManager->registerNodeForRendering(this, scene::ESNRP_SOLID);
 
-		if (transparentCount)
-			SceneManager->registerNodeForRendering(this, scene::ESNRP_TRANSPARENT);
+        if (transparentCount)
+            SceneManager->registerNodeForRendering(this, scene::ESNRP_TRANSPARENT);
 
-		ISceneNode::OnRegisterSceneNode();
-	}
+        ISceneNode::OnRegisterSceneNode();
+    }
 }
 
 
@@ -121,12 +121,12 @@ void CSkinnedMeshSceneNode::OnRegisterSceneNode()
 //! OnAnimate() is called just before rendering the whole scene.
 void CSkinnedMeshSceneNode::OnAnimate(uint32_t timeMs)
 {
-	if (LastTimeMs==0)	// first frame
-	{
-		LastTimeMs = timeMs;
+    if (LastTimeMs==0)    // first frame
+    {
+        LastTimeMs = timeMs;
         buildFrameNr(0);
-	}
-	else
+    }
+    else
     {
         // set CurrentFrameNr
         uint32_t deltaTime = timeMs-LastTimeMs;
@@ -137,9 +137,9 @@ void CSkinnedMeshSceneNode::OnAnimate(uint32_t timeMs)
         }
     }
 
-	updateAbsolutePosition();
+    updateAbsolutePosition();
 
-	if (boneStateManager->getBoneUpdateMode()==ISkinningStateManager::EBUM_CONTROL)
+    if (boneStateManager->getBoneUpdateMode()==ISkinningStateManager::EBUM_CONTROL)
     {
         ISceneNode::OnAnimate(timeMs);
         boneStateManager->performBoning();
@@ -156,16 +156,16 @@ void CSkinnedMeshSceneNode::OnAnimate(uint32_t timeMs)
 //! renders the node.
 void CSkinnedMeshSceneNode::render()
 {
-	video::IVideoDriver* driver = SceneManager->getVideoDriver();
+    video::IVideoDriver* driver = SceneManager->getVideoDriver();
 
-	if (!mesh || !driver)
-		return;
+    if (!mesh || !driver)
+        return;
 
 
-	bool isTransparentPass =
-		SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
+    bool isTransparentPass =
+        SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
 
-	++PassCount;
+    ++PassCount;
 
 
 
@@ -195,62 +195,62 @@ void CSkinnedMeshSceneNode::render()
         }
     }
 
-	// for debug purposes only:
-	if (DebugDataVisible && PassCount==1)
-	{
+    // for debug purposes only:
+    if (DebugDataVisible && PassCount==1)
+    {
         driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
 
-		video::SMaterial debug_mat;
+        video::SMaterial debug_mat;
         debug_mat.Thickness = 3.f;
-		driver->setMaterial(debug_mat);
+        driver->setMaterial(debug_mat);
 
-		if (DebugDataVisible & scene::EDS_BBOX)
-			driver->draw3DBox(Box, video::SColor(255,255,255,255));
+        if (DebugDataVisible & scene::EDS_BBOX)
+            driver->draw3DBox(Box, video::SColor(255,255,255,255));
 
-		// show bounding box
-		if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
-		{
-			for (uint32_t g=0; g< mesh->getMeshBufferCount(); ++g)
-			{
-				const IGPUMeshBuffer* mb = mesh->getMeshBuffer(g);
+        // show bounding box
+        if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
+        {
+            for (uint32_t g=0; g< mesh->getMeshBufferCount(); ++g)
+            {
+                const IGPUMeshBuffer* mb = mesh->getMeshBuffer(g);
 
-				driver->draw3DBox(mb->getBoundingBox(), video::SColor(255,190,128,128));
-			}
-		}
+                driver->draw3DBox(mb->getBoundingBox(), video::SColor(255,190,128,128));
+            }
+        }
 /**
-		// show skeleton
-		if (DebugDataVisible & scene::EDS_SKELETON)
-		{
-			if (mesh->getMeshType() == EMT_ANIMATED_SKINNED)
-			{
-				// draw skeleton
+        // show skeleton
+        if (DebugDataVisible & scene::EDS_SKELETON)
+        {
+            if (mesh->getMeshType() == EMT_ANIMATED_SKINNED)
+            {
+                // draw skeleton
 
-				for (uint32_t g=0; g < static_cast<ICPUSkinnedMesh*>(mesh)->getAllJoints().size(); ++g)
-				{
-					ICPUSkinnedMesh::SJoint *joint = static_cast<ICPUSkinnedMesh*>(Mesh)->getAllJoints()[g];
+                for (uint32_t g=0; g < static_cast<ICPUSkinnedMesh*>(mesh)->getAllJoints().size(); ++g)
+                {
+                    ICPUSkinnedMesh::SJoint *joint = static_cast<ICPUSkinnedMesh*>(Mesh)->getAllJoints()[g];
 
-					driver->setTransform(video::E4X3TS_WORLD, concatenateBFollowedByA(AbsoluteTransformation,concatenateBFollowedByA(joint->GlobalAnimatedMatrix,joint->GlobalInversedMatrix)));
+                    driver->setTransform(video::E4X3TS_WORLD, concatenateBFollowedByA(AbsoluteTransformation,concatenateBFollowedByA(joint->GlobalAnimatedMatrix,joint->GlobalInversedMatrix)));
                     driver->draw3DBox(joint->bbox, video::SColor(255,51,66,255));
-				}
-			}
-		}
+                }
+            }
+        }
 
-		// show mesh
-		if (DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY)
-		{
-			debug_mat.Wireframe = true;
-			debug_mat.ZBuffer = video::ECFN_NEVER;
-			driver->setMaterial(debug_mat);
+        // show mesh
+        if (DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY)
+        {
+            debug_mat.Wireframe = true;
+            debug_mat.ZBuffer = video::ECFN_NEVER;
+            driver->setMaterial(debug_mat);
 
-			for (uint32_t g=0; g<mesh->getMeshBufferCount(); ++g)
-			{
-				IGPUMeshBuffer* mb = mesh->getMeshBuffer(g);
-				driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
-				driver->drawMeshBuffer(mb,(AutomaticCullingState & scene::EAC_COND_RENDER) ? query:NULL);
-			}
-		}
+            for (uint32_t g=0; g<mesh->getMeshBufferCount(); ++g)
+            {
+                IGPUMeshBuffer* mb = mesh->getMeshBuffer(g);
+                driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
+                driver->drawMeshBuffer(mb,(AutomaticCullingState & scene::EAC_COND_RENDER) ? query:NULL);
+            }
+        }
 **/
-	}
+    }
 }
 
 
@@ -298,39 +298,39 @@ void CSkinnedMeshSceneNode::setMesh(IGPUSkinnedMesh* inMesh, const ISkinningStat
 //! the default is 0 - MaximalFrameCount of the mesh.
 bool CSkinnedMeshSceneNode::setFrameLoop(const float& begin, const float& end)
 {
-	const float maxFrameCount = mesh->getLastFrame();
-	if (end < begin)
-	{
-		StartFrame = core::s32_clamp(end, mesh->getFirstFrame(), maxFrameCount);
-		EndFrame = core::s32_clamp(begin, StartFrame, maxFrameCount);
-	}
-	else
-	{
-		StartFrame = core::s32_clamp(begin, mesh->getFirstFrame(), maxFrameCount);
-		EndFrame = core::s32_clamp(end, StartFrame, maxFrameCount);
-	}
-	if (FramesPerSecond < 0)
-		setCurrentFrame((float)EndFrame);
-	else
-		setCurrentFrame((float)StartFrame);
+    const float maxFrameCount = mesh->getLastFrame();
+    if (end < begin)
+    {
+        StartFrame = core::s32_clamp(end, mesh->getFirstFrame(), maxFrameCount);
+        EndFrame = core::s32_clamp(begin, StartFrame, maxFrameCount);
+    }
+    else
+    {
+        StartFrame = core::s32_clamp(begin, mesh->getFirstFrame(), maxFrameCount);
+        EndFrame = core::s32_clamp(end, StartFrame, maxFrameCount);
+    }
+    if (FramesPerSecond < 0)
+        setCurrentFrame((float)EndFrame);
+    else
+        setCurrentFrame((float)StartFrame);
 
-	return true;
+    return true;
 }
 
 
 
 void CSkinnedMeshSceneNode::setAnimationEndCallback(IAnimationEndCallBack<ISkinnedMeshSceneNode>* callback)
 {
-	if (callback == LoopCallBack)
-		return;
+    if (callback == LoopCallBack)
+        return;
 
-	if (LoopCallBack)
-		LoopCallBack->drop();
+    if (LoopCallBack)
+        LoopCallBack->drop();
 
-	LoopCallBack = callback;
+    LoopCallBack = callback;
 
-	if (LoopCallBack)
-		LoopCallBack->grab();
+    if (LoopCallBack)
+        LoopCallBack->grab();
 }
 
 

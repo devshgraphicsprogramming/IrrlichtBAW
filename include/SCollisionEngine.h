@@ -17,12 +17,12 @@ class SCollisionEngine
     public:
         ~SCollisionEngine()
         {
-			for (size_t i=0; i<colliders.size(); i++)
-				colliders[i]->drop();
+            for (size_t i=0; i<colliders.size(); i++)
+                colliders[i]->drop();
         }
 
-		//! Returns a 3d ray which would go through the 2d screen coodinates.
-		inline static bool getRayFromScreenCoordinates(vectorSIMDf &origin, vectorSIMDf &direction, float& rayLen,
+        //! Returns a 3d ray which would go through the 2d screen coodinates.
+        inline static bool getRayFromScreenCoordinates(vectorSIMDf &origin, vectorSIMDf &direction, float& rayLen,
                                         const position2di& uv, video::IVideoDriver* driver, scene::ICameraSceneNode* camera)
         {
             if (!camera||!driver)
@@ -54,9 +54,9 @@ class SCollisionEngine
             return true;
         }
 
-		//! Calculates 2d screen position from a 3d position.
-		inline static position2di getScreenCoordinatesFrom3DPosition(const vector3df& pos, video::IVideoDriver* driver, scene::ICameraSceneNode* camera, bool useViewPort=false)
-		{
+        //! Calculates 2d screen position from a 3d position.
+        inline static position2di getScreenCoordinatesFrom3DPosition(const vector3df& pos, video::IVideoDriver* driver, scene::ICameraSceneNode* camera, bool useViewPort=false)
+        {
             if (!driver||!camera)
                 return position2d<int32_t>(-100000,-100000);
 
@@ -83,7 +83,7 @@ class SCollisionEngine
             return position2d<int32_t>(
                         dim.Width + round32(dim.Width * (transformedPos[0] * zDiv)),
                         dim.Height - round32(dim.Height * (transformedPos[1] * zDiv)));
-		}
+        }
 
         inline void addCompoundCollider(SCompoundCollider* collider)
         {
@@ -101,12 +101,12 @@ class SCollisionEngine
 
             int32_t ix = colliders.binary_search(collider);
             if (ix<0)
-			{
-//				FW_WriteToLog(kLogError,"removeCompoundCollider collider not found!\n");
+            {
+//                FW_WriteToLog(kLogError,"removeCompoundCollider collider not found!\n");
                 return;
-			}
+            }
 
-			collider->drop();
+            collider->drop();
             colliders.erase(ix);
         }
 

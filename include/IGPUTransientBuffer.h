@@ -139,8 +139,8 @@ class IGPUTransientBuffer : public virtual IReferenceCounted
         {
             IGPUMappedBuffer* buffer = driver->createPersistentlyMappedBuffer(bufsize,NULL,accessPattern,true,inCPUMem);
             IGPUTransientBuffer* retval = new IGPUTransientBuffer(driver,buffer,growable,autoFlush,threadSafe,dbgr);
-			buffer->drop();
-			return retval;
+            buffer->drop();
+            return retval;
         }
         static IGPUTransientBuffer* createMappedTransientBuffer(IVideoDriver* driver, IGPUMappedBuffer* buffer, const bool& growable=false, const bool& autoFlush=true, const bool& threadSafe=true, core::LeakDebugger* dbgr=NULL)
         {
@@ -151,8 +151,8 @@ class IGPUTransientBuffer : public virtual IReferenceCounted
         {
             IGPUBuffer* buffer = driver->createGPUBuffer(bufsize,NULL,canModifySubData,inCPUMem,accessPattern);
             IGPUTransientBuffer* retval = new IGPUTransientBuffer(driver,buffer,growable,autoFlush,threadSafe,dbgr);
-			buffer->drop();
-			return retval;
+            buffer->drop();
+            return retval;
         }
         ~IGPUTransientBuffer();
 
@@ -197,7 +197,7 @@ class IGPUTransientBuffer : public virtual IReferenceCounted
         size_t largestFreeChunkSize; //! unifinished
         size_t trueLargestFreeChunkSize; //! unfinished
 
-		bool flushOnWait;
+        bool flushOnWait;
         const bool canGrow;
         IVideoDriver* Driver;
         IGPUBuffer* underlyingBuffer;
