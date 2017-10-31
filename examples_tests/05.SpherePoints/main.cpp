@@ -161,7 +161,7 @@ int main()
         if (time-lastFPSTime > 1000)
         {
             std::wostringstream str;
-            str << "Terrain Renderer Demo - Irrlicht Engine ["
+            str << "Sphere Points Demo - Irrlicht Engine ["
                 << driver->getName()
                 << "] FPS:"
                 << driver->getFPS()
