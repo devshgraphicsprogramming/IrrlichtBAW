@@ -1,7 +1,7 @@
 #ifndef __I_IOCCLUSION_QUERY_H_INCLUDED__
 #define __I_IOCCLUSION_QUERY_H_INCLUDED__
 
-#include <IQueryObject.h>
+#include "IQueryObject.h"
 
 
 namespace irr
