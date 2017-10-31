@@ -1,7 +1,7 @@
 #ifndef __I_GPU_TIMESTAMP_QUERY_H_INCLUDED__
 #define __I_GPU_TIMESTAMP_QUERY_H_INCLUDED__
 
-#include <IReferenceCounted.h>
+#include "IReferenceCounted.h"
 #include "stdint.h"
 
 namespace irr
