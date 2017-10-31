@@ -483,16 +483,21 @@ int main()
         if (time-lastFPSTime > 1000)
         {
             std::wostringstream str;
-            str << L"Builtin Nodes Demo - Irrlicht Engine [" << driver->getName() << "] FPS:" << driver->getFPS() << " PrimitvesDrawn:" << driver->getPrimitiveCountDrawn();
+            str << "Hardware Instancing Demo - Irrlicht Engine ["
+                << driver->getName()
+                << "] FPS:"
+                << driver->getFPS()
+                << " PrimitvesDrawn:"
+                << driver->getPrimitiveCountDrawn();
 
             device->setWindowCaption(str.str());
             lastFPSTime = time;
         }
     }
 
-        node->removeInstances(j,instancesToRemove);
-        delete [] instancesToRemove;
-        node->remove();
+    node->removeInstances(j,instancesToRemove);
+    delete [] instancesToRemove;
+    node->remove();
 
     gpumesh->drop();
     gpumesh2->drop();
