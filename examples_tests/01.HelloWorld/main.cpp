@@ -72,9 +72,9 @@ int main()
         uint64_t time = device->getTimer()->getRealTime();
         if (time-lastFPSTime > 1000)
         {
-            std::wostringstream str(L"Hello World - Irrlicht Engine [");
-            str.seekp(0,std::ios_base::end);
-            str << driver->getName() << "] FPS:" << driver->getFPS();
+            std::wostringstream str;
+            str << "Hello World - Irrlicht Engine ["
+                << driver->getName() << "] FPS:" << driver->getFPS();
 
             device->setWindowCaption(str.str());
             lastFPSTime = time;

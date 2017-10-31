@@ -160,14 +160,15 @@ int main()
         uint64_t time = device->getTimer()->getRealTime();
         if (time-lastFPSTime > 1000)
         {
-            stringw str = L"Terrain Renderer - Irrlicht Engine [";
-            str += driver->getName();
-            str += "] FPS:";
-            str += driver->getFPS();
-            str += " PrimitvesDrawn:";
-            str += driver->getPrimitiveCountDrawn();
+            std::wostringstream str;
+            str << "Terrain Renderer Demo - Irrlicht Engine ["
+                << driver->getName()
+                << "] FPS:"
+                << driver->getFPS()
+                << " PrimitvesDrawn:"
+                << driver->getPrimitiveCountDrawn();
 
-            device->setWindowCaption(str.c_str());
+            device->setWindowCaption(str.str());
             lastFPSTime = time;
         }
     }
