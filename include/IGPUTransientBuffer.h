@@ -9,8 +9,8 @@
 #include "IGPUMappedBuffer.h"
 #include "IVideoDriver.h"
 #include "IDriverFence.h"
+#include "os.h"
 #include <vector>
-#include "../source/Irrlicht/os.h"
 
 class FW_Mutex;
 class FW_ConditionVariable;

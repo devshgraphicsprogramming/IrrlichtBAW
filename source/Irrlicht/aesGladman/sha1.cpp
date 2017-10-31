@@ -38,7 +38,7 @@
 #include <stdlib.h>     /* for _lrotl with VC++     */
 
 #include "sha1.h"
-#include "../os.h"
+#include "os.h"
 
 /*
     To obtain the highest speed on processors with 32-bit words, this code
