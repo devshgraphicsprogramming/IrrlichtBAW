@@ -22,182 +22,182 @@
 
 namespace irr
 {
-	class CIrrDeviceFB : public CIrrDeviceStub, public video::IImagePresenter
-	{
-	public:
+    class CIrrDeviceFB : public CIrrDeviceStub, public video::IImagePresenter
+    {
+    public:
 
-		//! constructor
-		CIrrDeviceFB(const SIrrlichtCreationParameters& params);
+        //! constructor
+        CIrrDeviceFB(const SIrrlichtCreationParameters& params);
 
-		//! destructor
-		virtual ~CIrrDeviceFB();
+        //! destructor
+        virtual ~CIrrDeviceFB();
 
-		//! runs the device. Returns false if device wants to be deleted
-		virtual bool run();
+        //! runs the device. Returns false if device wants to be deleted
+        virtual bool run();
 
-		//! Cause the device to temporarily pause execution and let other processes to run
-		// This should bring down processor usage without major performance loss for Irrlicht
-		virtual void yield();
+        //! Cause the device to temporarily pause execution and let other processes to run
+        // This should bring down processor usage without major performance loss for Irrlicht
+        virtual void yield();
 
-		//! Pause execution and let other processes to run for a specified amount of time.
-		virtual void sleep(u32 timeMs, bool pauseTimer);
+        //! Pause execution and let other processes to run for a specified amount of time.
+        virtual void sleep(u32 timeMs, bool pauseTimer);
 
-		//! sets the caption of the window
-		virtual void setWindowCaption(const wchar_t* text);
+        //! sets the caption of the window
+        virtual void setWindowCaption(const wchar_t* text);
 
-		//! returns if window is active. if not, nothing need to be drawn
-		virtual bool isWindowActive() const;
+        //! returns if window is active. if not, nothing need to be drawn
+        virtual bool isWindowActive() const;
 
-		//! returns if window has focus
-		virtual bool isWindowFocused() const;
+        //! returns if window has focus
+        virtual bool isWindowFocused() const;
 
-		//! returns if window is minimized
-		virtual bool isWindowMinimized() const;
+        //! returns if window is minimized
+        virtual bool isWindowMinimized() const;
 
-		//! Minimizes window
-		virtual void minimizeWindow();
+        //! Minimizes window
+        virtual void minimizeWindow();
 
-		//! Maximizes window
-		virtual void maximizeWindow();
+        //! Maximizes window
+        virtual void maximizeWindow();
 
-		//! Restores original window size
-		virtual void restoreWindow();
+        //! Restores original window size
+        virtual void restoreWindow();
 
-		//! presents a surface in the client area
-		virtual bool present(video::IImage* surface, void* windowId = 0, core::rect<s32>* src=0 );
+        //! presents a surface in the client area
+        virtual bool present(video::IImage* surface, void* windowId = 0, core::rect<s32>* src=0 );
 
-		//! notifies the device that it should close itself
-		virtual void closeDevice();
+        //! notifies the device that it should close itself
+        virtual void closeDevice();
 
-		//! Sets if the window should be resizeable in windowed mode.
-		virtual void setResizable(bool resize=false);
+        //! Sets if the window should be resizeable in windowed mode.
+        virtual void setResizable(bool resize=false);
 
-		//! Returns the type of this device
-		virtual E_DEVICE_TYPE getType() const;
+        //! Returns the type of this device
+        virtual E_DEVICE_TYPE getType() const;
 
-	private:
+    private:
 
-		//! create the driver
-		void createDriver();
+        //! create the driver
+        void createDriver();
 
-		bool createWindow(const core::dimension2d<u32>& windowSize, u32 bits);
+        bool createWindow(const core::dimension2d<u32>& windowSize, u32 bits);
 
-		//! Implementation of the cursor control
-		class CCursorControl : public gui::ICursorControl
-		{
-		public:
+        //! Implementation of the cursor control
+        class CCursorControl : public gui::ICursorControl
+        {
+        public:
 
-			CCursorControl(CIrrDeviceFB* dev, bool null)
-				: Device(dev), IsVisible(true), Null(null)
-			{
-				Device->grab();
-			}
+            CCursorControl(CIrrDeviceFB* dev, bool null)
+                : Device(dev), IsVisible(true), Null(null)
+            {
+                Device->grab();
+            }
 
-			~CCursorControl()
-			{
-				Device->drop();
-			}
+            ~CCursorControl()
+            {
+                Device->drop();
+            }
 
-			//! Changes the visible state of the mouse cursor.
-			virtual void setVisible(bool visible)
-			{
-				IsVisible = visible;
-			}
+            //! Changes the visible state of the mouse cursor.
+            virtual void setVisible(bool visible)
+            {
+                IsVisible = visible;
+            }
 
-			//! Returns if the cursor is currently visible.
-			virtual bool isVisible() const
-			{
-				return IsVisible;
-			}
+            //! Returns if the cursor is currently visible.
+            virtual bool isVisible() const
+            {
+                return IsVisible;
+            }
 
-			//! Sets the new position of the cursor.
-			virtual void setPosition(const core::position2d<f32> &pos)
-			{
-				setPosition(pos.X, pos.Y);
-			}
+            //! Sets the new position of the cursor.
+            virtual void setPosition(const core::position2d<f32> &pos)
+            {
+                setPosition(pos.X, pos.Y);
+            }
 
-			//! Sets the new position of the cursor.
-			virtual void setPosition(f32 x, f32 y)
-			{
-				setPosition((s32)(x*Device->CreationParams.WindowSize.Width), (s32)(y*Device->CreationParams.WindowSize.Height));
-			}
+            //! Sets the new position of the cursor.
+            virtual void setPosition(f32 x, f32 y)
+            {
+                setPosition((s32)(x*Device->CreationParams.WindowSize.Width), (s32)(y*Device->CreationParams.WindowSize.Height));
+            }
 
-			//! Sets the new position of the cursor.
-			virtual void setPosition(const core::position2d<s32> &pos)
-			{
-				setPosition(pos.X, pos.Y);
-			}
+            //! Sets the new position of the cursor.
+            virtual void setPosition(const core::position2d<s32> &pos)
+            {
+                setPosition(pos.X, pos.Y);
+            }
 
-			//! Sets the new position of the cursor.
-			virtual void setPosition(s32 x, s32 y)
-			{
-			}
+            //! Sets the new position of the cursor.
+            virtual void setPosition(s32 x, s32 y)
+            {
+            }
 
-			//! Returns the current position of the mouse cursor.
-			virtual const core::position2d<s32>& getPosition()
-			{
-				updateCursorPos();
-				return CursorPos;
-			}
+            //! Returns the current position of the mouse cursor.
+            virtual const core::position2d<s32>& getPosition()
+            {
+                updateCursorPos();
+                return CursorPos;
+            }
 
-			//! Returns the current position of the mouse cursor.
-			virtual core::position2d<f32> getRelativePosition()
-			{
-				updateCursorPos();
-				return core::position2d<f32>(CursorPos.X / (f32)Device->CreationParams.WindowSize.Width,
-					CursorPos.Y / (f32)Device->CreationParams.WindowSize.Height);
-			}
+            //! Returns the current position of the mouse cursor.
+            virtual core::position2d<f32> getRelativePosition()
+            {
+                updateCursorPos();
+                return core::position2d<f32>(CursorPos.X / (f32)Device->CreationParams.WindowSize.Width,
+                    CursorPos.Y / (f32)Device->CreationParams.WindowSize.Height);
+            }
 
-			virtual void setReferenceRect(core::rect<s32>* rect=0)
-			{
-			}
+            virtual void setReferenceRect(core::rect<s32>* rect=0)
+            {
+            }
 
-		private:
+        private:
 
-			void updateCursorPos()
-			{
-			}
+            void updateCursorPos()
+            {
+            }
 
-			core::position2d<s32> CursorPos;
-			CIrrDeviceFB* Device;
-			bool IsVisible;
-			bool Null;
-		};
+            core::position2d<s32> CursorPos;
+            CIrrDeviceFB* Device;
+            bool IsVisible;
+            bool Null;
+        };
 
-		friend class CCursorControl;
+        friend class CCursorControl;
 
-		int Framebuffer;
-		int EventDevice;
-		int KeyboardDevice;
-		struct fb_fix_screeninfo fbfixscreeninfo;
-		struct fb_var_screeninfo fbscreeninfo;
-		struct fb_var_screeninfo oldscreeninfo;
-		long KeyboardMode;
-		u8* SoftwareImage;
+        int Framebuffer;
+        int EventDevice;
+        int KeyboardDevice;
+        struct fb_fix_screeninfo fbfixscreeninfo;
+        struct fb_var_screeninfo fbscreeninfo;
+        struct fb_var_screeninfo oldscreeninfo;
+        long KeyboardMode;
+        u8* SoftwareImage;
 
-		u32 Pitch;
-		video::ECOLOR_FORMAT FBColorFormat;
-		bool Close;
+        u32 Pitch;
+        video::ECOLOR_FORMAT FBColorFormat;
+        bool Close;
 
-		struct SKeyMap
-		{
-			SKeyMap() {}
-			SKeyMap(s32 x11, s32 win32)
-				: X11Key(x11), Win32Key(win32)
-			{
-			}
+        struct SKeyMap
+        {
+            SKeyMap() {}
+            SKeyMap(s32 x11, s32 win32)
+                : X11Key(x11), Win32Key(win32)
+            {
+            }
 
-			KeySym X11Key;
-			s32 Win32Key;
+            KeySym X11Key;
+            s32 Win32Key;
 
-			bool operator<(const SKeyMap& o) const
-			{
-				return X11Key<o.X11Key;
-			}
-		};
+            bool operator<(const SKeyMap& o) const
+            {
+                return X11Key<o.X11Key;
+            }
+        };
 
-		core::array<SKeyMap> KeyMap;
-	};
+        core::array<SKeyMap> KeyMap;
+    };
 
 
 } // end namespace irr

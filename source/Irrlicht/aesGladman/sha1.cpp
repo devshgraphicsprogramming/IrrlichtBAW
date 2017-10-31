@@ -5,27 +5,27 @@
 
  LICENSE TERMS
 
- The free distribution and use of this software in both source and binary 
+ The free distribution and use of this software in both source and binary
  form is allowed (with or without changes) provided that:
 
-   1. distributions of this source code include the above copyright 
+   1. distributions of this source code include the above copyright
       notice, this list of conditions and the following disclaimer;
 
    2. distributions in binary form include the above copyright
       notice, this list of conditions and the following disclaimer
       in the documentation and/or other associated materials;
 
-   3. the copyright holder's name is not used to endorse products 
-      built using this software without specific written permission. 
+   3. the copyright holder's name is not used to endorse products
+      built using this software without specific written permission.
 
  ALTERNATIVELY, provided that this notice is retained in full, this product
  may be distributed under the terms of the GNU General Public License (GPL),
  in which case the provisions of the GPL apply INSTEAD OF those given above.
- 
+
  DISCLAIMER
 
  This software is provided 'as is' with no explicit or implied warranties
- in respect of its properties, including, but not limited to, correctness 
+ in respect of its properties, including, but not limited to, correctness
  and/or fitness for purpose.
  ---------------------------------------------------------------------------
  Issue Date: 26/08/2003
@@ -38,25 +38,25 @@
 #include <stdlib.h>     /* for _lrotl with VC++     */
 
 #include "sha1.h"
-#include "../os.h"
+#include "os.h"
 
 /*
-    To obtain the highest speed on processors with 32-bit words, this code 
+    To obtain the highest speed on processors with 32-bit words, this code
     needs to determine the order in which bytes are packed into such words.
-    The following block of code is an attempt to capture the most obvious 
-    ways in which various environemnts specify their endian definitions. 
-    It may well fail, in which case the definitions will need to be set by 
+    The following block of code is an attempt to capture the most obvious
+    ways in which various environemnts specify their endian definitions.
+    It may well fail, in which case the definitions will need to be set by
     editing at the points marked **** EDIT HERE IF NECESSARY **** below.
 */
 
 /*  BYTE ORDER IN 32-BIT WORDS
 
     To obtain the highest speed on processors with 32-bit words, this code
-    needs to determine the byte order of the target machine. The following 
-    block of code is an attempt to capture the most obvious ways in which 
-    various environemnts define byte order. It may well fail, in which case 
-    the definitions will need to be set by editing at the points marked 
-    **** EDIT HERE IF NECESSARY **** below.  My thanks to Peter Gutmann for 
+    needs to determine the byte order of the target machine. The following
+    block of code is an attempt to capture the most obvious ways in which
+    various environemnts define byte order. It may well fail, in which case
+    the definitions will need to be set by editing at the points marked
+    **** EDIT HERE IF NECESSARY **** below.  My thanks to Peter Gutmann for
     some of these defines (from cryptlib).
 */
 
@@ -119,7 +119,7 @@ void sha1_compile(sha1_ctx ctx[1])
 
     for(i = 0; i < 20; ++i)
     {
-        rnd(ch, 0x5a827999);    
+        rnd(ch, 0x5a827999);
     }
 
     for(i = 20; i < 40; ++i)
@@ -137,10 +137,10 @@ void sha1_compile(sha1_ctx ctx[1])
         rnd(parity, 0xca62c1d6);
     }
 
-    ctx->hash[0] += a; 
-    ctx->hash[1] += b; 
-    ctx->hash[2] += c; 
-    ctx->hash[3] += d; 
+    ctx->hash[0] += a;
+    ctx->hash[1] += b;
+    ctx->hash[2] += c;
+    ctx->hash[3] += d;
     ctx->hash[4] += e;
 }
 
@@ -158,7 +158,7 @@ void sha1_begin(sha1_ctx ctx[1])
 /* call the hash_compile function as required.              */
 
 void sha1_hash(const unsigned char data[], unsigned long len, sha1_ctx ctx[1])
-{   sha1_32t pos = (sha1_32t)(ctx->count[0] & SHA1_MASK), 
+{   sha1_32t pos = (sha1_32t)(ctx->count[0] & SHA1_MASK),
              space = SHA1_BLOCK_SIZE - pos;
     const unsigned char *sp = data;
 
@@ -168,7 +168,7 @@ void sha1_hash(const unsigned char data[], unsigned long len, sha1_ctx ctx[1])
     while(len >= space)     /* tranfer whole blocks if possible  */
     {
         memcpy(((unsigned char*)ctx->wbuf) + pos, sp, space);
-        sp += space; len -= space; space = SHA1_BLOCK_SIZE; pos = 0; 
+        sp += space; len -= space; space = SHA1_BLOCK_SIZE; pos = 0;
         sha1_compile(ctx);
     }
 
@@ -179,14 +179,14 @@ void sha1_hash(const unsigned char data[], unsigned long len, sha1_ctx ctx[1])
 /* SHA1 final padding and digest calculation  */
 
 #if (PLATFORM_BYTE_ORDER == BRG_LITTLE_ENDIAN)
-static sha1_32t  mask[4] = 
+static sha1_32t  mask[4] =
     {   0x00000000, 0x000000ff, 0x0000ffff, 0x00ffffff };
-static sha1_32t  bits[4] = 
+static sha1_32t  bits[4] =
     {   0x00000080, 0x00008000, 0x00800000, 0x80000000 };
 #else
-static sha1_32t  mask[4] = 
+static sha1_32t  mask[4] =
     {   0x00000000, 0xff000000, 0xffff0000, 0xffffff00 };
-static sha1_32t  bits[4] = 
+static sha1_32t  bits[4] =
     {   0x80000000, 0x00800000, 0x00008000, 0x00000080 };
 #endif
 
@@ -199,7 +199,7 @@ void sha1_end(unsigned char hval[], sha1_ctx ctx[1])
     /* endian machines they will be at the bottom. Hence the AND    */
     /* and OR masks above are reversed for little endian systems    */
     /* Note that we can always add the first padding byte at this   */
-    /* point because the buffer always has at least one empty slot  */ 
+    /* point because the buffer always has at least one empty slot  */
     ctx->wbuf[i >> 2] = (ctx->wbuf[i >> 2] & mask[i & 3]) | bits[i & 3];
 
     /* we need 9 or more empty positions, one for the padding byte  */
@@ -214,9 +214,9 @@ void sha1_end(unsigned char hval[], sha1_ctx ctx[1])
     else    /* compute a word index for the empty buffer positions  */
         i = (i >> 2) + 1;
 
-    while(i < 14) /* and zero pad all but last two positions        */ 
+    while(i < 14) /* and zero pad all but last two positions        */
         ctx->wbuf[i++] = 0;
-    
+
     /* assemble the eight byte counter in in big-endian format      */
     ctx->wbuf[14] = swap_b32((ctx->count[1] << 3) | (ctx->count[0] >> 29));
     ctx->wbuf[15] = swap_b32(ctx->count[0] << 3);

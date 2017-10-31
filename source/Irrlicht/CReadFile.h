@@ -15,47 +15,47 @@ namespace irr
 namespace io
 {
 
-	/*!
-		Class for reading a real file from disk.
-	*/
-	class CReadFile : public IReadFile
-	{
-	public:
+    /*!
+        Class for reading a real file from disk.
+    */
+    class CReadFile : public IReadFile
+    {
+    public:
 
-		CReadFile(const io::path& fileName);
+        CReadFile(const io::path& fileName);
 
-		virtual ~CReadFile();
+        virtual ~CReadFile();
 
-		//! returns how much was read
-		virtual int32_t read(void* buffer, uint32_t sizeToRead);
+        //! returns how much was read
+        virtual int32_t read(void* buffer, uint32_t sizeToRead);
 
-		//! changes position in file, returns true if successful
-		virtual bool seek(long finalPos, bool relativeMovement = false);
+        //! changes position in file, returns true if successful
+        virtual bool seek(long finalPos, bool relativeMovement = false);
 
-		//! returns size of file
-		virtual long getSize() const;
+        //! returns size of file
+        virtual long getSize() const;
 
-		//! returns if file is open
-		virtual bool isOpen() const
-		{
-			return File != 0;
-		}
+        //! returns if file is open
+        virtual bool isOpen() const
+        {
+            return File != 0;
+        }
 
-		//! returns where in the file we are.
-		virtual long getPos() const;
+        //! returns where in the file we are.
+        virtual long getPos() const;
 
-		//! returns name of file
-		virtual const io::path& getFileName() const;
+        //! returns name of file
+        virtual const io::path& getFileName() const;
 
-	private:
+    private:
 
-		//! opens the file
-		void openFile();
+        //! opens the file
+        void openFile();
 
-		FILE* File;
-		long FileSize;
-		io::path Filename;
-	};
+        FILE* File;
+        long FileSize;
+        io::path Filename;
+    };
 
 } // end namespace io
 } // end namespace irr

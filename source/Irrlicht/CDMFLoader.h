@@ -42,47 +42,47 @@ namespace irr
 {
 namespace scene
 {
-	/** A class to load DeleD mesh files.*/
-	class CDMFLoader : public IMeshLoader
-	{
-	public:
+    /** A class to load DeleD mesh files.*/
+    class CDMFLoader : public IMeshLoader
+    {
+    public:
 
-		/** constructor*/
-		CDMFLoader(ISceneManager* smgr, io::IFileSystem* filesys);
+        /** constructor*/
+        CDMFLoader(ISceneManager* smgr, io::IFileSystem* filesys);
 
-		//! returns true if the file maybe is able to be loaded by this class
-		//! based on the file extension (e.g. ".cob")
-		virtual bool isALoadableFileExtension(const io::path& filename) const;
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".cob")
+        virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-		/** creates/loads an animated mesh from the file.
-		\return Pointer to the created mesh. Returns 0 if loading failed.
-		If you no longer need the mesh, you should call IAnimatedMesh::drop().
-		See IReferenceCounted::drop() for more information.*/
-		virtual IAnimatedMesh* createMesh(io::IReadFile* file);
+        /** creates/loads an animated mesh from the file.
+        \return Pointer to the created mesh. Returns 0 if loading failed.
+        If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        See IReferenceCounted::drop() for more information.*/
+        virtual IAnimatedMesh* createMesh(io::IReadFile* file);
 
-		/** loads dynamic lights present in this scene.
-		Note that loaded lights from DeleD must have the suffix \b dynamic_ and must be \b pointlight.
-		Irrlicht correctly loads specular color, diffuse color , position and distance of object affected by light.
-		\return number of lights loaded or 0 if loading failed.*/
-		int loadLights(const int8_t * filename, ISceneManager* smgr,
-			ISceneNode*  parent = 0, int32_t base_id = 1000);
+        /** loads dynamic lights present in this scene.
+        Note that loaded lights from DeleD must have the suffix \b dynamic_ and must be \b pointlight.
+        Irrlicht correctly loads specular color, diffuse color , position and distance of object affected by light.
+        \return number of lights loaded or 0 if loading failed.*/
+        int loadLights(const int8_t * filename, ISceneManager* smgr,
+            ISceneNode*  parent = 0, int32_t base_id = 1000);
 
-		/** loads water plains present in this scene.
-		Note that loaded water plains from DeleD must have the suffix \b water_ and must be \b rectangle (with just 1 rectangular face).
-		Irrlicht correctly loads position and rotation of water plain as well as texture layers.
-		\return number of water plains loaded or 0 if loading failed.*/
-		int loadWaterPlains(const int8_t *filename,
-				ISceneManager* smgr,
-				ISceneNode * parent = 0,
-				int32_t base_id = 2000,
-				bool mode = true);
+        /** loads water plains present in this scene.
+        Note that loaded water plains from DeleD must have the suffix \b water_ and must be \b rectangle (with just 1 rectangular face).
+        Irrlicht correctly loads position and rotation of water plain as well as texture layers.
+        \return number of water plains loaded or 0 if loading failed.*/
+        int loadWaterPlains(const int8_t *filename,
+                ISceneManager* smgr,
+                ISceneNode * parent = 0,
+                int32_t base_id = 2000,
+                bool mode = true);
 
-	private:
-		void findFile(bool use_mat_dirs, const core::stringc& path, const core::stringc& matPath, core::stringc& filename);
+    private:
+        void findFile(bool use_mat_dirs, const core::stringc& path, const core::stringc& matPath, core::stringc& filename);
 
-		ISceneManager* SceneMgr;
-		io::IFileSystem* FileSystem;
-	};
+        ISceneManager* SceneMgr;
+        io::IFileSystem* FileSystem;
+    };
 
 } // end namespace scene
 } // end namespace irr

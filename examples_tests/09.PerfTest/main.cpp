@@ -24,12 +24,12 @@ class MyEventReceiver : public IEventReceiver
 {
 public:
 
-	MyEventReceiver()
-	{
-	}
+    MyEventReceiver()
+    {
+    }
 
-	bool OnEvent(const SEvent& event)
-	{
+    bool OnEvent(const SEvent& event)
+    {
         if (event.EventType == irr::EET_KEY_INPUT_EVENT && !event.KeyInput.PressedDown)
         {
             switch (event.KeyInput.Key)
@@ -42,8 +42,8 @@ public:
             }
         }
 
-		return false;
-	}
+        return false;
+    }
 
 private:
 };
@@ -163,25 +163,25 @@ void APIENTRY openGLCBFunc(GLenum source, GLenum type, GLuint id, GLenum severit
 
 int main()
 {
-	// create device with full flexibility over creation parameters
-	// you can add more parameters if desired, check irr::SIrrlichtCreationParameters
-	irr::SIrrlichtCreationParameters params;
-	params.Bits = 24; //may have to set to 32bit for some platforms
-	params.ZBufferBits = 24; //we'd like 32bit here
+    // create device with full flexibility over creation parameters
+    // you can add more parameters if desired, check irr::SIrrlichtCreationParameters
+    irr::SIrrlichtCreationParameters params;
+    params.Bits = 24; //may have to set to 32bit for some platforms
+    params.ZBufferBits = 24; //we'd like 32bit here
     params.AntiAlias = 0; //No AA, yet
-	params.DriverType = video::EDT_OPENGL; //! Only Well functioning driver, software renderer left for sake of 2D image drawing
-	params.WindowSize = dimension2d<uint32_t>(1280, 720);
-	params.Fullscreen = false;
-	params.Vsync = true; //! If supported by target platform
-	params.Doublebuffer = true;
-	params.Stencilbuffer = false; //! This will not even be a choice soon
-	IrrlichtDevice* device = createDeviceEx(params);
+    params.DriverType = video::EDT_OPENGL; //! Only Well functioning driver, software renderer left for sake of 2D image drawing
+    params.WindowSize = dimension2d<uint32_t>(1280, 720);
+    params.Fullscreen = false;
+    params.Vsync = true; //! If supported by target platform
+    params.Doublebuffer = true;
+    params.Stencilbuffer = false; //! This will not even be a choice soon
+    IrrlichtDevice* device = createDeviceEx(params);
 
-	if (device == 0)
-		return 1; // could not create selected driver.
+    if (device == 0)
+        return 1; // could not create selected driver.
 
 
-	video::IVideoDriver* driver = device->getVideoDriver();
+    video::IVideoDriver* driver = device->getVideoDriver();
     if (COpenGLExtensionHandler::FeatureAvailable[COpenGLExtensionHandler::IRR_KHR_debug])
     {
         glEnable(GL_DEBUG_OUTPUT);
@@ -209,18 +209,18 @@ int main()
 
 
 
-	scene::ISceneManager* smgr = device->getSceneManager();
-	driver->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, true);
-	scene::ICameraSceneNode* camera =
-		smgr->addCameraSceneNodeFPS(0,100.0f,0.01f);
-	camera->setPosition(core::vector3df(-4,0,0));
-	camera->setTarget(core::vector3df(0,0,0));
-	camera->setNearValue(0.01f);
-	camera->setFarValue(100.0f);
+    scene::ISceneManager* smgr = device->getSceneManager();
+    driver->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, true);
+    scene::ICameraSceneNode* camera =
+        smgr->addCameraSceneNodeFPS(0,100.0f,0.01f);
+    camera->setPosition(core::vector3df(-4,0,0));
+    camera->setTarget(core::vector3df(0,0,0));
+    camera->setNearValue(0.01f);
+    camera->setFarValue(100.0f);
     smgr->setActiveCamera(camera);
-	device->getCursorControl()->setVisible(false);
-	MyEventReceiver receiver;
-	device->setEventReceiver(&receiver);
+    device->getCursorControl()->setVisible(false);
+    MyEventReceiver receiver;
+    device->setEventReceiver(&receiver);
 
 
     core::vectorSIMDf instanceAngularSpeed[kNumHardwareInstancesZ][kNumHardwareInstancesY][kNumHardwareInstancesX];
@@ -273,25 +273,25 @@ int main()
 
 
 
-	uint64_t lastFPSTime = 0;
+    uint64_t lastFPSTime = 0;
 
-	while(device->run())
-	//if (device->isWindowActive())
-	{
-		driver->beginScene(true, true, video::SColor(255,0,0,255) );
+    while(device->run())
+    //if (device->isWindowActive())
+    {
+        driver->beginScene(true, true, video::SColor(255,0,0,255) );
 
-		float timeLocal = device->getTimer()->getTime();
+        float timeLocal = device->getTimer()->getTime();
         for (size_t z=0; z<kNumHardwareInstancesZ; z++)
         for (size_t y=0; y<kNumHardwareInstancesY; y++)
         for (size_t x=0; x<kNumHardwareInstancesX; x++)
-		{
-		    core::vectorSIMDf rot = instanceAngularSpeed[z][y][x]*timeLocal;
-		    rot /= 1000.f;
-		    instanceNewPositions[z][y][x] = instancePositions[z][y][x]+core::vector3df(cosf(rot.X),cosf(rot.Y),cosf(rot.Z));
-		}
-		///case 0:
-		//instancePosBuf->updateSubRange(0,instancePosBuf->getSize(),instanceNewPositions);
-		///case 1:
+        {
+            core::vectorSIMDf rot = instanceAngularSpeed[z][y][x]*timeLocal;
+            rot /= 1000.f;
+            instanceNewPositions[z][y][x] = instancePositions[z][y][x]+core::vector3df(cosf(rot.X),cosf(rot.Y),cosf(rot.Z));
+        }
+        ///case 0:
+        //instancePosBuf->updateSubRange(0,instancePosBuf->getSize(),instanceNewPositions);
+        ///case 1:
         memcpy(ptr,instanceNewPositions,instancePosBuf->getSize());
         COpenGLExtensionHandler::extGlFlushMappedNamedBufferRange(handle,0,instancePosBuf->getSize());
 
@@ -299,26 +299,27 @@ int main()
         //! Also draws the meshbuffer
         smgr->drawAll();
 
-		driver->endScene();
+        driver->endScene();
 
-		// display frames per second in window title
-		uint64_t time = device->getTimer()->getRealTime();
-		if (time-lastFPSTime > 1000)
-		{
-			stringw str = L"Builtin Nodes Demo - Irrlicht Engine [";
-			str += driver->getName();
-			str += "] FPS:";
-			str += driver->getFPS();
-			str += " PrimitvesDrawn:";
-			str += driver->getPrimitiveCountDrawn();
+        // display frames per second in window title
+        uint64_t time = device->getTimer()->getRealTime();
+        if (time-lastFPSTime > 1000)
+        {
+            std::wostringstream str;
+            str << "Performance Test - Irrlicht Engine ["
+                << driver->getName()
+                << "] FPS:"
+                << driver->getFPS()
+                << " PrimitvesDrawn:"
+                << driver->getPrimitiveCountDrawn();
 
-			device->setWindowCaption(str.c_str());
-			lastFPSTime = time;
-		}
-	}
+            device->setWindowCaption(str.str());
+            lastFPSTime = time;
+        }
+    }
     COpenGLExtensionHandler::extGlUnmapNamedBuffer(handle);
 
-	device->drop();
+    device->drop();
 
-	return 0;
+    return 0;
 }

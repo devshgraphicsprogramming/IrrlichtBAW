@@ -29,7 +29,7 @@ namespace core
 Also useful for interpolations. */
 class quaternion : private vectorSIMDf
 {
-	public:
+    public:
 /**
         static inline void* operator new(size_t size) throw(std::bad_alloc)
         {
@@ -80,33 +80,33 @@ class quaternion : private vectorSIMDf
 **/
 
 
-		//! Default Constructor
-		inline quaternion() : vectorSIMDf(0,0,0,1) {}
+        //! Default Constructor
+        inline quaternion() : vectorSIMDf(0,0,0,1) {}
 
-		inline quaternion(const float* data) : vectorSIMDf(data) {}
+        inline quaternion(const float* data) : vectorSIMDf(data) {}
 
-		//! Constructor
-		inline quaternion(const float& x, const float& y, const float& z, const float& w) : vectorSIMDf(x,y,z,w) { }
+        //! Constructor
+        inline quaternion(const float& x, const float& y, const float& z, const float& w) : vectorSIMDf(x,y,z,w) { }
 
-		//! Constructor which converts euler angles (radians) to a quaternion
-		inline quaternion(const float& pitch, const float& yaw, const float& roll) {set(pitch,yaw,roll);}
+        //! Constructor which converts euler angles (radians) to a quaternion
+        inline quaternion(const float& pitch, const float& yaw, const float& roll) {set(pitch,yaw,roll);}
 
-		//! Constructor which converts a matrix to a quaternion
-		inline quaternion(const matrix4x3& mat) {*this = mat;}
+        //! Constructor which converts a matrix to a quaternion
+        inline quaternion(const matrix4x3& mat) {*this = mat;}
 
         inline float* getPointer() {return pointer;}
 
-		//! Equalilty operator
-		inline vector4db_SIMD operator==(const quaternion& other) const {return vectorSIMDf::operator==(other);}
+        //! Equalilty operator
+        inline vector4db_SIMD operator==(const quaternion& other) const {return vectorSIMDf::operator==(other);}
 
-		//! inequality operator
-		inline vector4db_SIMD operator!=(const quaternion& other) const {return vectorSIMDf::operator!=(other);}
+        //! inequality operator
+        inline vector4db_SIMD operator!=(const quaternion& other) const {return vectorSIMDf::operator!=(other);}
 
-		//! Assignment operator
-		inline quaternion& operator=(const quaternion& other) {return reinterpret_cast<quaternion&>(vectorSIMDf::operator=(other));}
+        //! Assignment operator
+        inline quaternion& operator=(const quaternion& other) {return reinterpret_cast<quaternion&>(vectorSIMDf::operator=(other));}
 
-		//! Matrix assignment operator
-		inline quaternion& operator=(const matrix4x3& m)
+        //! Matrix assignment operator
+        inline quaternion& operator=(const matrix4x3& m)
         {
 /*
             __m128 one = _mm_set1_ps(1.f);
@@ -177,31 +177,31 @@ class quaternion : private vectorSIMDf
             return *this;
         }
 
-		//! Multiplication operator with scalar
-		inline quaternion operator*(const float& s) const
-		{
-		    quaternion tmp;
-		    reinterpret_cast<vectorSIMDf&>(tmp) = reinterpret_cast<const vectorSIMDf*>(this)->operator*(s);
-		    return tmp;
-		}
+        //! Multiplication operator with scalar
+        inline quaternion operator*(const float& s) const
+        {
+            quaternion tmp;
+            reinterpret_cast<vectorSIMDf&>(tmp) = reinterpret_cast<const vectorSIMDf*>(this)->operator*(s);
+            return tmp;
+        }
 
-		//! Multiplication operator with scalar
-		inline quaternion& operator*=(const float& s)
-		{
-		    *this = (*this)*s;
-		    return *this;
-		}
+        //! Multiplication operator with scalar
+        inline quaternion& operator*=(const float& s)
+        {
+            *this = (*this)*s;
+            return *this;
+        }
 
-		//! Multiplication operator
-		inline quaternion& operator*=(const quaternion& other)
-		{
-		    *this = (*this)*other;
-		    return *this;
-		}
+        //! Multiplication operator
+        inline quaternion& operator*=(const quaternion& other)
+        {
+            *this = (*this)*other;
+            return *this;
+        }
 
-		//! Multiplication operator
-		//http://momchil-velikov.blogspot.fr/2013/10/fast-sse-quternion-multiplication.html
-		inline quaternion operator*(const quaternion& other) const
+        //! Multiplication operator
+        //http://momchil-velikov.blogspot.fr/2013/10/fast-sse-quternion-multiplication.html
+        inline quaternion operator*(const quaternion& other) const
         {
             __m128 xyzw = vectorSIMDf::getAsRegister();
             __m128 abcd = reinterpret_cast<const vectorSIMDf&>(other).getAsRegister();
@@ -265,34 +265,34 @@ class quaternion : private vectorSIMDf
             return scale*vec+direction.crossProduct(vec*W+direction.crossProduct(vec))*2.f;
         }
 
-		//! Calculates the dot product
-		inline vectorSIMDf dotProduct(const quaternion& other) const
-		{
-		    return vectorSIMDf::dotProduct(reinterpret_cast<const vectorSIMDf&>(other));
-		}
-		inline float dotProductAsFloat(const quaternion& other) const
-		{
-		    return vectorSIMDf::dotProductAsFloat(reinterpret_cast<const vectorSIMDf&>(other));
-		}
+        //! Calculates the dot product
+        inline vectorSIMDf dotProduct(const quaternion& other) const
+        {
+            return vectorSIMDf::dotProduct(reinterpret_cast<const vectorSIMDf&>(other));
+        }
+        inline float dotProductAsFloat(const quaternion& other) const
+        {
+            return vectorSIMDf::dotProductAsFloat(reinterpret_cast<const vectorSIMDf&>(other));
+        }
 
-		//! Sets new quaternion
-		inline quaternion& set(const vectorSIMDf& xyzw)
-		{
-		    *this = reinterpret_cast<const quaternion&>(xyzw);
-		    return *this;
-		}
+        //! Sets new quaternion
+        inline quaternion& set(const vectorSIMDf& xyzw)
+        {
+            *this = reinterpret_cast<const quaternion&>(xyzw);
+            return *this;
+        }
 
-		//! Sets new quaternion based on euler angles (radians)
-		inline quaternion& set(const float& roll, const float& pitch, const float& yaw);
+        //! Sets new quaternion based on euler angles (radians)
+        inline quaternion& set(const float& roll, const float& pitch, const float& yaw);
 
-		//! Sets new quaternion from other quaternion
-		inline quaternion& set(const quaternion& quat)
-		{
-		    *this = quat;
-		    return *this;
-		}
+        //! Sets new quaternion from other quaternion
+        inline quaternion& set(const quaternion& quat)
+        {
+            *this = quat;
+            return *this;
+        }
 
-		//! Creates a matrix from this quaternion
+        //! Creates a matrix from this quaternion
         inline matrix4x3 getMatrix() const
         {
             matrix4x3 m;
@@ -300,44 +300,44 @@ class quaternion : private vectorSIMDf
             return m;
         }
 
-		//! Creates a matrix from this quaternion
-		void getMatrix( matrix4x3 &dest, const vector3df_SIMD &translation=vectorSIMDf() ) const;
-		void getMatrix_Sub3x3Transposed( matrix4x3 &dest, const vector3df_SIMD &translation=vectorSIMDf() ) const;
+        //! Creates a matrix from this quaternion
+        void getMatrix( matrix4x3 &dest, const vector3df_SIMD &translation=vectorSIMDf() ) const;
+        void getMatrix_Sub3x3Transposed( matrix4x3 &dest, const vector3df_SIMD &translation=vectorSIMDf() ) const;
 
-		/*!
-			Creates a matrix from this quaternion
-			Rotate about a center point
-			shortcut for
-			quaternion q;
-			q.rotationFromTo ( vin[i].Normal, forward );
-			q.getMatrixCenter ( lookat, center, newPos );
+        /*!
+            Creates a matrix from this quaternion
+            Rotate about a center point
+            shortcut for
+            quaternion q;
+            q.rotationFromTo ( vin[i].Normal, forward );
+            q.getMatrixCenter ( lookat, center, newPos );
 
-			matrix4x3 m2;
-			m2.setInverseTranslation ( center );
-			lookat *= m2;
+            matrix4x3 m2;
+            m2.setInverseTranslation ( center );
+            lookat *= m2;
 
-			matrix4x3 m3;
-			m2.setTranslation ( newPos );
-			lookat *= m3;
+            matrix4x3 m3;
+            m2.setTranslation ( newPos );
+            lookat *= m3;
 
-		*/
-		void getMatrixCenter( matrix4x3 &dest, const vector3df_SIMD &center, const vector3df_SIMD &translation ) const;
+        */
+        void getMatrixCenter( matrix4x3 &dest, const vector3df_SIMD &center, const vector3df_SIMD &translation ) const;
 
-		//! Inverts this quaternion
-		inline void makeInverse()
-		{
-		    __m128 result = _mm_xor_ps(reinterpret_cast<vectorSIMDf*>(this)->getAsRegister(),_mm_castsi128_ps(_mm_set_epi32(0x0u,0x80000000u,0x80000000u,0x80000000u)));
-		    this->set(result);
-		}
+        //! Inverts this quaternion
+        inline void makeInverse()
+        {
+            __m128 result = _mm_xor_ps(reinterpret_cast<vectorSIMDf*>(this)->getAsRegister(),_mm_castsi128_ps(_mm_set_epi32(0x0u,0x80000000u,0x80000000u,0x80000000u)));
+            this->set(result);
+        }
 
-		//! Fills an angle (radians) around an axis (unit vector)
-		void toAngleAxis(float& angle, vector3df_SIMD& axis) const;
+        //! Fills an angle (radians) around an axis (unit vector)
+        void toAngleAxis(float& angle, vector3df_SIMD& axis) const;
 
-		//! Output this quaternion to an euler angle (radians)
-		void toEuler(vector3df_SIMD& euler) const;
+        //! Output this quaternion to an euler angle (radians)
+        void toEuler(vector3df_SIMD& euler) const;
 
-		//! Set quaternion to identity
-		inline void makeIdentity() {vectorSIMDf::set(0,0,0,1);}
+        //! Set quaternion to identity
+        inline void makeIdentity() {vectorSIMDf::set(0,0,0,1);}
 
 
         vectorSIMDf& getData() {return *((vectorSIMDf*)this);}
@@ -350,128 +350,128 @@ class quaternion : private vectorSIMDf
             return tmp;
         }
 
-		//! Set this quaternion to the linear interpolation between two quaternions
-		/** \param q1 First quaternion to be interpolated.
-		\param q2 Second quaternion to be interpolated.
-		\param time Progress of interpolation. For time=0 the result is
-		q1, for time=1 the result is q2. Otherwise interpolation
-		between q1 and q2.
-		*/
-		static quaternion lerp(const quaternion &q1, const quaternion &q2, const float& interpolant);
+        //! Set this quaternion to the linear interpolation between two quaternions
+        /** \param q1 First quaternion to be interpolated.
+        \param q2 Second quaternion to be interpolated.
+        \param time Progress of interpolation. For time=0 the result is
+        q1, for time=1 the result is q2. Otherwise interpolation
+        between q1 and q2.
+        */
+        static quaternion lerp(const quaternion &q1, const quaternion &q2, const float& interpolant);
 
-		//! Set this quaternion to the result of the spherical interpolation between two quaternions
-		/** \param q1 First quaternion to be interpolated.
-		\param q2 Second quaternion to be interpolated.
-		\param time Progress of interpolation. For time=0 the result is
-		q1, for time=1 the result is q2. Otherwise interpolation
-		between q1 and q2.
-		\param threshold To avoid inaccuracies at the end (time=1) the
-		interpolation switches to linear interpolation at some point.
-		This value defines how much of the remaining interpolation will
-		be calculated with lerp. Everything from 1-threshold up will be
-		linear interpolation.
-		*/
-		static quaternion slerp(quaternion q1, const quaternion& q2,
-				const float& interpolant, const float& threshold=.05f);
+        //! Set this quaternion to the result of the spherical interpolation between two quaternions
+        /** \param q1 First quaternion to be interpolated.
+        \param q2 Second quaternion to be interpolated.
+        \param time Progress of interpolation. For time=0 the result is
+        q1, for time=1 the result is q2. Otherwise interpolation
+        between q1 and q2.
+        \param threshold To avoid inaccuracies at the end (time=1) the
+        interpolation switches to linear interpolation at some point.
+        This value defines how much of the remaining interpolation will
+        be calculated with lerp. Everything from 1-threshold up will be
+        linear interpolation.
+        */
+        static quaternion slerp(quaternion q1, const quaternion& q2,
+                const float& interpolant, const float& threshold=.05f);
 
-		inline static quaternion fromEuler(const vector3df_SIMD& euler)
-		{
-		    quaternion tmp;
-		    tmp.set(euler.X,euler.Y,euler.Z);
-		    return tmp;
+        inline static quaternion fromEuler(const vector3df_SIMD& euler)
+        {
+            quaternion tmp;
+            tmp.set(euler.X,euler.Y,euler.Z);
+            return tmp;
         }
 
-		inline static quaternion fromEuler(const vector3df& euler)
-		{
-		    quaternion tmp;
-		    tmp.set(euler.X,euler.Y,euler.Z);
-		    return tmp;
+        inline static quaternion fromEuler(const vector3df& euler)
+        {
+            quaternion tmp;
+            tmp.set(euler.X,euler.Y,euler.Z);
+            return tmp;
         }
 
-		//! Set quaternion to represent a rotation from one vector to another.
-		static quaternion rotationFromTo(const vector3df_SIMD& from, const vector3df_SIMD& to);
+        //! Set quaternion to represent a rotation from one vector to another.
+        static quaternion rotationFromTo(const vector3df_SIMD& from, const vector3df_SIMD& to);
 
-		//! Create quaternion from rotation angle and rotation axis.
-		/** Axis must be unit length.
-		The quaternion representing the rotation is
-		q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k).
-		\param angle Rotation Angle in radians.
-		\param axis Rotation axis. */
-		static quaternion fromAngleAxis(const float& angle, const vector3df_SIMD& axis);
+        //! Create quaternion from rotation angle and rotation axis.
+        /** Axis must be unit length.
+        The quaternion representing the rotation is
+        q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k).
+        \param angle Rotation Angle in radians.
+        \param axis Rotation axis. */
+        static quaternion fromAngleAxis(const float& angle, const vector3df_SIMD& axis);
 };
 
 
 
 /*!
-	Creates a matrix from this quaternion
+    Creates a matrix from this quaternion
 */
 inline void quaternion::getMatrix(matrix4x3 &dest,
-		const core::vector3df_SIMD &center) const
+        const core::vector3df_SIMD &center) const
 {
-	dest(0,0) = 1.0f - 2.0f*Y*Y - 2.0f*Z*Z;
-	dest(1,0) = 2.0f*X*Y + 2.0f*Z*W;
-	dest(2,0) = 2.0f*X*Z - 2.0f*Y*W;
+    dest(0,0) = 1.0f - 2.0f*Y*Y - 2.0f*Z*Z;
+    dest(1,0) = 2.0f*X*Y + 2.0f*Z*W;
+    dest(2,0) = 2.0f*X*Z - 2.0f*Y*W;
 
-	dest(0,1) = 2.0f*X*Y - 2.0f*Z*W;
-	dest(1,1) = 1.0f - 2.0f*X*X - 2.0f*Z*Z;
-	dest(2,1) = 2.0f*Z*Y + 2.0f*X*W;
+    dest(0,1) = 2.0f*X*Y - 2.0f*Z*W;
+    dest(1,1) = 1.0f - 2.0f*X*X - 2.0f*Z*Z;
+    dest(2,1) = 2.0f*Z*Y + 2.0f*X*W;
 
-	dest(0,2) = 2.0f*X*Z + 2.0f*Y*W;
-	dest(1,2) = 2.0f*Z*Y - 2.0f*X*W;
-	dest(2,2) = 1.0f - 2.0f*X*X - 2.0f*Y*Y;
+    dest(0,2) = 2.0f*X*Z + 2.0f*Y*W;
+    dest(1,2) = 2.0f*Z*Y - 2.0f*X*W;
+    dest(2,2) = 1.0f - 2.0f*X*X - 2.0f*Y*Y;
 
-	dest(0,3) = center.X;
-	dest(1,3) = center.Y;
-	dest(2,3) = center.Z;
+    dest(0,3) = center.X;
+    dest(1,3) = center.Y;
+    dest(2,3) = center.Z;
 }
 
 inline void quaternion::getMatrix_Sub3x3Transposed(matrix4x3 &dest,
-		const core::vector3df_SIMD &center) const
+        const core::vector3df_SIMD &center) const
 {
-	dest(0,0) = 1.0f - 2.0f*Y*Y - 2.0f*Z*Z;
-	dest(0,1) = 2.0f*X*Y + 2.0f*Z*W;
-	dest(0,2) = 2.0f*X*Z - 2.0f*Y*W;
+    dest(0,0) = 1.0f - 2.0f*Y*Y - 2.0f*Z*Z;
+    dest(0,1) = 2.0f*X*Y + 2.0f*Z*W;
+    dest(0,2) = 2.0f*X*Z - 2.0f*Y*W;
 
-	dest(1,0) = 2.0f*X*Y - 2.0f*Z*W;
-	dest(1,1) = 1.0f - 2.0f*X*X - 2.0f*Z*Z;
-	dest(1,2) = 2.0f*Z*Y + 2.0f*X*W;
+    dest(1,0) = 2.0f*X*Y - 2.0f*Z*W;
+    dest(1,1) = 1.0f - 2.0f*X*X - 2.0f*Z*Z;
+    dest(1,2) = 2.0f*Z*Y + 2.0f*X*W;
 
-	dest(2,0) = 2.0f*X*Z + 2.0f*Y*W;
-	dest(2,1) = 2.0f*Z*Y - 2.0f*X*W;
-	dest(2,2) = 1.0f - 2.0f*X*X - 2.0f*Y*Y;
+    dest(2,0) = 2.0f*X*Z + 2.0f*Y*W;
+    dest(2,1) = 2.0f*Z*Y - 2.0f*X*W;
+    dest(2,2) = 1.0f - 2.0f*X*X - 2.0f*Y*Y;
 
-	dest(0,3) = center.X;
-	dest(1,3) = center.Y;
-	dest(2,3) = center.Z;
+    dest(0,3) = center.X;
+    dest(1,3) = center.Y;
+    dest(2,3) = center.Z;
 }
 
 /*!
-	Creates a matrix from this quaternion
-	Rotate about a center point
-	shortcut for
-	quaternion q;
-	q.rotationFromTo(vin[i].Normal, forward);
-	q.getMatrix(lookat, center);
+    Creates a matrix from this quaternion
+    Rotate about a center point
+    shortcut for
+    quaternion q;
+    q.rotationFromTo(vin[i].Normal, forward);
+    q.getMatrix(lookat, center);
 
-	matrix4x3 m2;
-	m2.setInverseTranslation(center);
-	lookat *= m2;
+    matrix4x3 m2;
+    m2.setInverseTranslation(center);
+    lookat *= m2;
 */
 inline void quaternion::getMatrixCenter(matrix4x3 &dest,
-					const vector3df_SIMD &center,
-					const vector3df_SIMD &translation) const
+                    const vector3df_SIMD &center,
+                    const vector3df_SIMD &translation) const
 {
     getMatrix(dest);
 
-	dest.setRotationCenter ( center.getAsVector3df(), translation.getAsVector3df() );
+    dest.setRotationCenter ( center.getAsVector3df(), translation.getAsVector3df() );
 }
 
 
 // set this quaternion to the result of the linear interpolation between two quaternions
 inline quaternion quaternion::lerp(const quaternion &q1, const quaternion &q2, const float& interpolant)
 {
-	vectorSIMDf tmp = reinterpret_cast<const vectorSIMDf&>(q1) + (reinterpret_cast<const vectorSIMDf&>(q2)-reinterpret_cast<const vectorSIMDf&>(q1))*interpolant;
-	return reinterpret_cast<quaternion&>(tmp);
+    vectorSIMDf tmp = reinterpret_cast<const vectorSIMDf&>(q1) + (reinterpret_cast<const vectorSIMDf&>(q2)-reinterpret_cast<const vectorSIMDf&>(q1))*interpolant;
+    return reinterpret_cast<quaternion&>(tmp);
 }
 
 
@@ -479,38 +479,38 @@ inline quaternion quaternion::lerp(const quaternion &q1, const quaternion &q2, c
 // set this quaternion to the result of the interpolation between two quaternions
 inline quaternion quaternion::slerp(quaternion q1, const quaternion &q2, const float& interpolant, const float& threshold)
 {
-	vectorSIMDf angle = q1.dotProduct(q2);
+    vectorSIMDf angle = q1.dotProduct(q2);
 
-	// make sure we use the short rotation
-	if (angle.X < 0.0f)
-	{
-		q1 *= -1.0f;
-		angle *= -1.0f;
-	}
+    // make sure we use the short rotation
+    if (angle.X < 0.0f)
+    {
+        q1 *= -1.0f;
+        angle *= -1.0f;
+    }
 
-	if (angle.X <= (1.f-threshold)) // spherical interpolation
-	{
-		const float theta = acosf(angle.X);
-		const vectorSIMDf sintheta(sinf(theta));
+    if (angle.X <= (1.f-threshold)) // spherical interpolation
+    {
+        const float theta = acosf(angle.X);
+        const vectorSIMDf sintheta(sinf(theta));
         const vectorSIMDf scale(sinf(theta * (1.0f-interpolant)));
-		const vectorSIMDf invscale(sinf(theta * interpolant));
-		vectorSIMDf retval = (reinterpret_cast<vectorSIMDf&>(q1)*scale + reinterpret_cast<const vectorSIMDf&>(q2)*invscale)/sintheta;
-		return reinterpret_cast<quaternion&>(retval);
-	}
-	else // linear interploation
-		return lerp(q1,q2,interpolant);
+        const vectorSIMDf invscale(sinf(theta * interpolant));
+        vectorSIMDf retval = (reinterpret_cast<vectorSIMDf&>(q1)*scale + reinterpret_cast<const vectorSIMDf&>(q2)*invscale)/sintheta;
+        return reinterpret_cast<quaternion&>(retval);
+    }
+    else // linear interploation
+        return lerp(q1,q2,interpolant);
 }
 
 
 //! axis must be unit length, angle in radians
 inline quaternion quaternion::fromAngleAxis(const float& angle, const vector3df_SIMD& axis)
 {
-	const float fHalfAngle = 0.5f*angle;
-	const float fSin = sinf(fHalfAngle);
-	quaternion retval;
-	reinterpret_cast<vectorSIMDf&>(retval) = axis*fSin;
-	reinterpret_cast<vectorSIMDf&>(retval).W = cosf(fHalfAngle);
-	return retval;
+    const float fHalfAngle = 0.5f*angle;
+    const float fSin = sinf(fHalfAngle);
+    quaternion retval;
+    reinterpret_cast<vectorSIMDf&>(retval) = axis*fSin;
+    reinterpret_cast<vectorSIMDf&>(retval).W = cosf(fHalfAngle);
+    return retval;
 }
 
 
@@ -518,93 +518,93 @@ inline void quaternion::toAngleAxis(float& angle, vector3df_SIMD &axis) const
 {
     vectorSIMDf scale = reinterpret_cast<const vectorSIMDf*>(this)->getLength();
 
-	if (scale.X==0.f)
-	{
-		angle = 0.0f;
-		axis.X = 0.0f;
-		axis.Y = 1.0f;
-		axis.Z = 0.0f;
-	}
-	else
-	{
-	    axis = reinterpret_cast<const vectorSIMDf*>(this)->operator/(scale);
-		angle = 2.f * acosf(axis.W);
+    if (scale.X==0.f)
+    {
+        angle = 0.0f;
+        axis.X = 0.0f;
+        axis.Y = 1.0f;
+        axis.Z = 0.0f;
+    }
+    else
+    {
+        axis = reinterpret_cast<const vectorSIMDf*>(this)->operator/(scale);
+        angle = 2.f * acosf(axis.W);
 
-	    axis.makeSafe3D();
-	}
+        axis.makeSafe3D();
+    }
 }
 
 inline void quaternion::toEuler(vector3df_SIMD& euler) const
 {
-	const double sqw = W*W;
-	const double sqx = X*X;
-	const double sqy = Y*Y;
-	const double sqz = Z*Z;
-	vectorSIMDf sqr = *reinterpret_cast<const vectorSIMDf*>(this);
-	sqr *= sqr;
-	const double test = 2.0 * (Y*W - X*Z);
+    const double sqw = W*W;
+    const double sqx = X*X;
+    const double sqy = Y*Y;
+    const double sqz = Z*Z;
+    vectorSIMDf sqr = *reinterpret_cast<const vectorSIMDf*>(this);
+    sqr *= sqr;
+    const double test = 2.0 * (Y*W - X*Z);
 
-	if (core::equals(test, 1.0, 0.000001))
-	{
-		// heading = rotation about z-axis
-		euler.Z = (float) (-2.0*atan2(X, W));
-		// bank = rotation about x-axis
-		euler.X = 0;
-		// attitude = rotation about y-axis
-		euler.Y = (float) (PI64/2.0);
-	}
-	else if (core::equals(test, -1.0, 0.000001))
-	{
-		// heading = rotation about z-axis
-		euler.Z = (float) (2.0*atan2(X, W));
-		// bank = rotation about x-axis
-		euler.X = 0;
-		// attitude = rotation about y-axis
-		euler.Y = (float) (PI64/-2.0);
-	}
-	else
-	{
-		// heading = rotation about z-axis
-		euler.Z = (float) atan2(2.0 * (X*Y +Z*W),(sqr.X - sqr.Y - sqr.Z + sqr.W));
-		// bank = rotation about x-axis
-		euler.X = (float) atan2(2.0 * (Y*Z +X*W),(-sqr.X - sqr.Y + sqr.Z + sqr.W));
-		// attitude = rotation about y-axis
-		euler.Y = (float) asin( core::clamp(test, -1.0, 1.0) );
-	}
+    if (core::equals(test, 1.0, 0.000001))
+    {
+        // heading = rotation about z-axis
+        euler.Z = (float) (-2.0*atan2(X, W));
+        // bank = rotation about x-axis
+        euler.X = 0;
+        // attitude = rotation about y-axis
+        euler.Y = (float) (PI64/2.0);
+    }
+    else if (core::equals(test, -1.0, 0.000001))
+    {
+        // heading = rotation about z-axis
+        euler.Z = (float) (2.0*atan2(X, W));
+        // bank = rotation about x-axis
+        euler.X = 0;
+        // attitude = rotation about y-axis
+        euler.Y = (float) (PI64/-2.0);
+    }
+    else
+    {
+        // heading = rotation about z-axis
+        euler.Z = (float) atan2(2.0 * (X*Y +Z*W),(sqr.X - sqr.Y - sqr.Z + sqr.W));
+        // bank = rotation about x-axis
+        euler.X = (float) atan2(2.0 * (Y*Z +X*W),(-sqr.X - sqr.Y + sqr.Z + sqr.W));
+        // attitude = rotation about y-axis
+        euler.Y = (float) asin( core::clamp(test, -1.0, 1.0) );
+    }
 }
 
 inline quaternion quaternion::rotationFromTo(const vector3df_SIMD& from, const vector3df_SIMD& to)
 {
-	// Based on Stan Melax's article in Game Programming Gems
-	// Copy, since cannot modify local
-	vector3df_SIMD v0 = from;
-	vector3df_SIMD v1 = to;
-	v0 = core::normalize(v0);
-	v1 = core::normalize(v1);
+    // Based on Stan Melax's article in Game Programming Gems
+    // Copy, since cannot modify local
+    vector3df_SIMD v0 = from;
+    vector3df_SIMD v1 = to;
+    v0 = core::normalize(v0);
+    v1 = core::normalize(v1);
 
-	const vectorSIMDf dddd = v0.dotProduct(v1);
-	quaternion tmp;
-	if (dddd.X >= 1.0f) // If dot == 1, vectors are the same
-	{
-		return tmp;
-	}
-	else if (dddd.X <= -1.0f) // exactly opposite
-	{
-		vector3df_SIMD axis(1.0f, 0.f, 0.f);
-		axis = axis.crossProduct(v0);
-		if (axis.getLengthAsFloat()==0.f)
-		{
-			axis.set(0.f,1.f,0.f);
-			axis = axis.crossProduct(v0);
-		}
-		// same as fromAngleAxis(PI, axis).normalize();
-		reinterpret_cast<vectorSIMDf&>(tmp) = axis;
-		return normalize(tmp);
-	}
+    const vectorSIMDf dddd = v0.dotProduct(v1);
+    quaternion tmp;
+    if (dddd.X >= 1.0f) // If dot == 1, vectors are the same
+    {
+        return tmp;
+    }
+    else if (dddd.X <= -1.0f) // exactly opposite
+    {
+        vector3df_SIMD axis(1.0f, 0.f, 0.f);
+        axis = axis.crossProduct(v0);
+        if (axis.getLengthAsFloat()==0.f)
+        {
+            axis.set(0.f,1.f,0.f);
+            axis = axis.crossProduct(v0);
+        }
+        // same as fromAngleAxis(PI, axis).normalize();
+        reinterpret_cast<vectorSIMDf&>(tmp) = axis;
+        return normalize(tmp);
+    }
 
     vectorSIMDf s = sqrt(vectorSIMDf(2.f,2.f,2.f,0.f)+dddd*2.f);
-	reinterpret_cast<vectorSIMDf&>(tmp) = v0.crossProduct(v1)*reciprocal(s);
-	tmp.W = s.X*0.5f;
+    reinterpret_cast<vectorSIMDf&>(tmp) = v0.crossProduct(v1)*reciprocal(s);
+    tmp.W = s.X*0.5f;
     return normalize(tmp);
 }
 #endif
@@ -612,28 +612,28 @@ inline quaternion quaternion::rotationFromTo(const vector3df_SIMD& from, const v
 // sets new quaternion based on euler angles
 inline quaternion& quaternion::set(const float& roll, const float& pitch, const float& yaw)
 {
-	double angle;
+    double angle;
 
-	angle = roll * 0.5;
-	const double sr = sin(angle);
-	const double cr = cos(angle);
+    angle = roll * 0.5;
+    const double sr = sin(angle);
+    const double cr = cos(angle);
 
-	angle = pitch * 0.5;
-	const double sp = sin(angle);
-	const double cp = cos(angle);
+    angle = pitch * 0.5;
+    const double sp = sin(angle);
+    const double cp = cos(angle);
 
-	angle = yaw * 0.5;
-	const double sy = sin(angle);
-	const double cy = cos(angle);
+    angle = yaw * 0.5;
+    const double sy = sin(angle);
+    const double cy = cos(angle);
 
-	const double cpcy = cp * cy;
-	const double spcy = sp * cy;
-	const double cpsy = cp * sy;
-	const double spsy = sp * sy;
+    const double cpcy = cp * cy;
+    const double spcy = sp * cy;
+    const double cpsy = cp * sy;
+    const double spsy = sp * sy;
 
     *reinterpret_cast<vectorSIMDf*>(this) = vectorSIMDf(sr,cr,cr,cr)*vectorSIMDf(cpcy,spcy,cpsy,cpcy)+vectorSIMDf(-cr,sr,-sr,sr)*vectorSIMDf(spsy,cpsy,spcy,spsy);
 
-	return *this;
+    return *this;
 }
 
 } // end namespace core

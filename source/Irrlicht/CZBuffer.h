@@ -12,38 +12,38 @@ namespace irr
 namespace video
 {
 
-	class CZBuffer : public IZBuffer
-	{
-	public:
+    class CZBuffer : public IZBuffer
+    {
+    public:
 
-		//! constructor
-		CZBuffer(const core::dimension2d<uint32_t>& size);
+        //! constructor
+        CZBuffer(const core::dimension2d<uint32_t>& size);
 
-		//! destructor
-		virtual ~CZBuffer();
+        //! destructor
+        virtual ~CZBuffer();
 
-		//! clears the zbuffer
-		virtual void clear();
+        //! clears the zbuffer
+        virtual void clear();
 
-		//! sets the new size of the zbuffer
-		virtual void setSize(const core::dimension2d<uint32_t>& size);
+        //! sets the new size of the zbuffer
+        virtual void setSize(const core::dimension2d<uint32_t>& size);
 
-		//! returns the size of the zbuffer
-		virtual const core::dimension2d<uint32_t>& getSize() const;
+        //! returns the size of the zbuffer
+        virtual const core::dimension2d<uint32_t>& getSize() const;
 
-		//! locks the zbuffer
-		virtual TZBufferType* lock();
+        //! locks the zbuffer
+        virtual TZBufferType* lock();
 
-		//! unlocks the zbuffer
-		virtual void unlock();
+        //! unlocks the zbuffer
+        virtual void unlock();
 
-	private:
+    private:
 
-		TZBufferType* Buffer;
-		TZBufferType* BufferEnd;
-		core::dimension2d<uint32_t> Size;
-		int32_t TotalSize;
-	};
+        TZBufferType* Buffer;
+        TZBufferType* BufferEnd;
+        core::dimension2d<uint32_t> Size;
+        int32_t TotalSize;
+    };
 
 } // end namespace video
 } // end namespace irr

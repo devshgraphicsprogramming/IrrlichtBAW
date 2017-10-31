@@ -101,26 +101,26 @@ class COBJMeshFileLoader : public IMeshLoader
 {
 public:
 
-	//! Constructor
-	COBJMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs);
+    //! Constructor
+    COBJMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs);
 
-	//! destructor
-	virtual ~COBJMeshFileLoader();
+    //! destructor
+    virtual ~COBJMeshFileLoader();
 
-	//! returns true if the file maybe is able to be loaded by this class
-	//! based on the file extension (e.g. ".obj")
-	virtual bool isALoadableFileExtension(const io::path& filename) const;
+    //! returns true if the file maybe is able to be loaded by this class
+    //! based on the file extension (e.g. ".obj")
+    virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-	//! creates/loads an animated mesh from the file.
-	//! \return Pointer to the created mesh. Returns 0 if loading failed.
-	//! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-	//! See IReferenceCounted::drop() for more information.
-	virtual ICPUMesh* createMesh(io::IReadFile* file);
+    //! creates/loads an animated mesh from the file.
+    //! \return Pointer to the created mesh. Returns 0 if loading failed.
+    //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+    //! See IReferenceCounted::drop() for more information.
+    virtual ICPUMesh* createMesh(io::IReadFile* file);
 
 private:
 
-	class SObjMtl
-	{
+    class SObjMtl
+    {
         public:
             SObjMtl() : Bumpiness (1.0f), Illumination(0),
                 RecalculateNormals(false)
@@ -148,53 +148,53 @@ private:
             float Bumpiness;
             char Illumination;
             bool RecalculateNormals;
-	};
+    };
 
-	// helper method for material reading
-	const char* readTextures(const char* bufPtr, const char* const bufEnd, SObjMtl* currMaterial, const io::path& relPath);
+    // helper method for material reading
+    const char* readTextures(const char* bufPtr, const char* const bufEnd, SObjMtl* currMaterial, const io::path& relPath);
 
-	// returns a pointer to the first printable character available in the buffer
-	const char* goFirstWord(const char* buf, const char* const bufEnd, bool acrossNewlines=true);
-	// returns a pointer to the first printable character after the first non-printable
-	const char* goNextWord(const char* buf, const char* const bufEnd, bool acrossNewlines=true);
-	// returns a pointer to the next printable character after the first line break
-	const char* goNextLine(const char* buf, const char* const bufEnd);
-	// copies the current word from the inBuf to the outBuf
-	uint32_t copyWord(char* outBuf, const char* inBuf, uint32_t outBufLength, const char* const pBufEnd);
-	// copies the current line from the inBuf to the outBuf
-	core::stringc copyLine(const char* inBuf, const char* const bufEnd);
+    // returns a pointer to the first printable character available in the buffer
+    const char* goFirstWord(const char* buf, const char* const bufEnd, bool acrossNewlines=true);
+    // returns a pointer to the first printable character after the first non-printable
+    const char* goNextWord(const char* buf, const char* const bufEnd, bool acrossNewlines=true);
+    // returns a pointer to the next printable character after the first line break
+    const char* goNextLine(const char* buf, const char* const bufEnd);
+    // copies the current word from the inBuf to the outBuf
+    uint32_t copyWord(char* outBuf, const char* inBuf, uint32_t outBufLength, const char* const pBufEnd);
+    // copies the current line from the inBuf to the outBuf
+    core::stringc copyLine(const char* inBuf, const char* const bufEnd);
 
-	// combination of goNextWord followed by copyWord
-	const char* goAndCopyNextWord(char* outBuf, const char* inBuf, uint32_t outBufLength, const char* const pBufEnd);
+    // combination of goNextWord followed by copyWord
+    const char* goAndCopyNextWord(char* outBuf, const char* inBuf, uint32_t outBufLength, const char* const pBufEnd);
 
-	//! Read the material from the given file
-	void readMTL(const char* fileName, const io::path& relPath);
+    //! Read the material from the given file
+    void readMTL(const char* fileName, const io::path& relPath);
 
-	//! Find and return the material with the given name
-	SObjMtl* findMtl(const std::string& mtlName, const std::string& grpName);
+    //! Find and return the material with the given name
+    SObjMtl* findMtl(const std::string& mtlName, const std::string& grpName);
 
-	//! Read RGB color
-	const char* readColor(const char* bufPtr, video::SColor& color, const char* const pBufEnd);
-	//! Read 3d vector of floats
-	const char* readVec3(const char* bufPtr, core::vector3df& vec, const char* const pBufEnd);
-	//! Read 2d vector of floats
-	const char* readUV(const char* bufPtr, core::vector2df& vec, const char* const pBufEnd);
-	//! Read boolean value represented as 'on' or 'off'
-	const char* readBool(const char* bufPtr, bool& tf, const char* const bufEnd);
+    //! Read RGB color
+    const char* readColor(const char* bufPtr, video::SColor& color, const char* const pBufEnd);
+    //! Read 3d vector of floats
+    const char* readVec3(const char* bufPtr, core::vector3df& vec, const char* const pBufEnd);
+    //! Read 2d vector of floats
+    const char* readUV(const char* bufPtr, core::vector2df& vec, const char* const pBufEnd);
+    //! Read boolean value represented as 'on' or 'off'
+    const char* readBool(const char* bufPtr, bool& tf, const char* const bufEnd);
 
-	// reads and convert to integer the vertex indices in a line of obj file's face statement
-	// -1 for the index if it doesn't exist
-	// indices are changed to 0-based index instead of 1-based from the obj file
-	bool retrieveVertexIndices(char* vertexData, int32_t* idx, const char* bufEnd, uint32_t vbsize, uint32_t vtsize, uint32_t vnsize);
+    // reads and convert to integer the vertex indices in a line of obj file's face statement
+    // -1 for the index if it doesn't exist
+    // indices are changed to 0-based index instead of 1-based from the obj file
+    bool retrieveVertexIndices(char* vertexData, int32_t* idx, const char* bufEnd, uint32_t vbsize, uint32_t vtsize, uint32_t vnsize);
 
 
-	scene::ISceneManager* SceneManager;
-	io::IFileSystem* FileSystem;
+    scene::ISceneManager* SceneManager;
+    io::IFileSystem* FileSystem;
 
-	bool useGroups;
-	bool useMaterials;
+    bool useGroups;
+    bool useMaterials;
 
-	core::array<SObjMtl*> Materials;
+    core::array<SObjMtl*> Materials;
 };
 
 } // end namespace scene

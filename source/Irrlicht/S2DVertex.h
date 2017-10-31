@@ -14,13 +14,13 @@ namespace irr
 namespace video
 {
 
-	struct S2DVertex
-	{
-		core::vector2d<int32_t> Pos;	// position
-		core::vector2d<int32_t> TCoords;	// texture coordinates
-		TZBufferType ZValue;		// zvalue
-		uint16_t Color;
-	};
+    struct S2DVertex
+    {
+        core::vector2d<int32_t> Pos;    // position
+        core::vector2d<int32_t> TCoords;    // texture coordinates
+        TZBufferType ZValue;        // zvalue
+        uint16_t Color;
+    };
 
 
 } // end namespace video

@@ -260,7 +260,7 @@ bool COpenGLVAO::rebindRevalidate()
 
     lastValidated = highestRevalidateStamp;
 
-	return true;
+    return true;
 }
 
 

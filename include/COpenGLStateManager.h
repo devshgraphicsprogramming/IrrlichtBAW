@@ -7,56 +7,56 @@
 #include <limits>       // std::numeric_limits
 
 #if defined(_IRR_WINDOWS_API_)
-	// include windows headers for HWND
-	#define WIN32_LEAN_AND_MEAN
-	#include <windows.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#define GL_GLEXT_LEGACY 1
-	#endif
-	#include <GL/gl.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#include "../Irrlicht/glext.h"
-	#endif
-	#include "wglext.h"
+    // include windows headers for HWND
+    #define WIN32_LEAN_AND_MEAN
+    #include <windows.h>
+    #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+        #define GL_GLEXT_LEGACY 1
+    #endif
+    #include <GL/gl.h>
+    #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+        #include "../Irrlicht/glext.h"
+    #endif
+    #include "wglext.h"
 
-	#ifdef _MSC_VER
-		#pragma comment(lib, "OpenGL32.lib")
-//		#pragma comment(lib, "OpenCL.lib")
-	#endif
+    #ifdef _MSC_VER
+        #pragma comment(lib, "OpenGL32.lib")
+//        #pragma comment(lib, "OpenCL.lib")
+    #endif
 
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#define GL_GLEXT_LEGACY 1
-	#endif
-	#include <OpenGL/gl.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#include "../Irrlicht/glext.h"
-	#endif
+    #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+        #define GL_GLEXT_LEGACY 1
+    #endif
+    #include <OpenGL/gl.h>
+    #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+        #include "../Irrlicht/glext.h"
+    #endif
 #elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#define GL_GLEXT_LEGACY 1
-		#define GLX_GLXEXT_LEGACY 1
-	#else
-		#define GL_GLEXT_PROTOTYPES 1
-		#define GLX_GLXEXT_PROTOTYPES 1
-	#endif
-	#define NO_SDL_GLEXT
-	#include <SDL/SDL_video.h>
-	#include <SDL/SDL_opengl.h>
-	#include "../source/Irrlicht/glext.h"
+    #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+        #define GL_GLEXT_LEGACY 1
+        #define GLX_GLXEXT_LEGACY 1
+    #else
+        #define GL_GLEXT_PROTOTYPES 1
+        #define GLX_GLXEXT_PROTOTYPES 1
+    #endif
+    #define NO_SDL_GLEXT
+    #include <SDL/SDL_video.h>
+    #include <SDL/SDL_opengl.h>
+    #include "../source/Irrlicht/glext.h"
 #else
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-		#define GL_GLEXT_LEGACY 1
-		#define GLX_GLXEXT_LEGACY 1
-	#else
-		#define GL_GLEXT_PROTOTYPES 1
-		#define GLX_GLXEXT_PROTOTYPES 1
-	#endif
-	#include <GL/gl.h>
-	#include <GL/glx.h>
-	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+    #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+        #define GL_GLEXT_LEGACY 1
+        #define GLX_GLXEXT_LEGACY 1
+    #else
+        #define GL_GLEXT_PROTOTYPES 1
+        #define GLX_GLXEXT_PROTOTYPES 1
+    #endif
+    #include <GL/gl.h>
+    #include <GL/glx.h>
+    #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
         #include "../source/Irrlicht/glext.h"
-	#endif
+    #endif
 #endif
 
 namespace irr
@@ -65,15 +65,15 @@ namespace video
 {
 
     //! To be updated later as time moves on
-	const uint32_t OGL_MAX_ENDISABLE_FLAGS = 36;
-	const uint32_t OGL_MAX_ENDISABLEI_FLAGS = 2;
+    const uint32_t OGL_MAX_ENDISABLE_FLAGS = 36;
+    const uint32_t OGL_MAX_ENDISABLEI_FLAGS = 2;
 
-	const uint32_t OGL_STATE_MAX_VIEWPORTS = 16;
-	const uint32_t OGL_STATE_MAX_DRAW_BUFFERS = 16;
+    const uint32_t OGL_STATE_MAX_VIEWPORTS = 16;
+    const uint32_t OGL_STATE_MAX_DRAW_BUFFERS = 16;
 
-	const uint8_t OGL_MAX_ENDISABLEI_INDICES = 16;//std::max(OGL_STATE_MAX_VIEWPORTS,OGL_STATE_MAX_DRAW_BUFFERS);
-	const uint32_t OGL_STATE_MAX_TEXTURES = 192;
-	//!
+    const uint8_t OGL_MAX_ENDISABLEI_INDICES = 16;//std::max(OGL_STATE_MAX_VIEWPORTS,OGL_STATE_MAX_DRAW_BUFFERS);
+    const uint32_t OGL_STATE_MAX_TEXTURES = 192;
+    //!
 
             enum E_GL_HINT_BIT
             {
@@ -132,8 +132,8 @@ namespace video
             };
 
 
-	class COpenGLStateDiff
-	{
+    class COpenGLStateDiff
+    {
         public:
             COpenGLStateDiff() : hintsToSet(0), glProvokingVertex_val(GL_INVALID_ENUM), glEnableCount(0), glDisableCount(0), glDisableiCount(0), glEnableiCount(0),
                                 changeGlProgram(false), changeGlProgramPipeline(false), resetPolygonOffset(false),
@@ -231,11 +231,11 @@ namespace video
             TextureToBind bindTextures[OGL_STATE_MAX_TEXTURES];
             IndexedObjectToBind bindSamplers[OGL_STATE_MAX_TEXTURES];
         private:
-	};
+    };
 
 
-	class COpenGLState
-	{
+    class COpenGLState
+    {
         public:
             inline GLenum glEnableBitToGLenum(const uint64_t &bit) const
             {
@@ -730,7 +730,7 @@ namespace video
             GLenum boundTextureTargets[OGL_STATE_MAX_TEXTURES];
             GLuint boundTextures[OGL_STATE_MAX_TEXTURES];
             GLuint boundSamplers[OGL_STATE_MAX_TEXTURES];
-	};
+    };
 
 
 } // end namespace video

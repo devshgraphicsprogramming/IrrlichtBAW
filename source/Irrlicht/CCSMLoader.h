@@ -48,32 +48,32 @@ namespace irr
 {
 namespace scene
 {
-	class CSMFile;
-	class ISceneManager;
+    class CSMFile;
+    class ISceneManager;
 
-	class CCSMLoader : public scene::IMeshLoader
-	{
-	public:
+    class CCSMLoader : public scene::IMeshLoader
+    {
+    public:
 
-		CCSMLoader(ISceneManager* manager, io::IFileSystem* fs);
+        CCSMLoader(ISceneManager* manager, io::IFileSystem* fs);
 
-		//! returns true if the file maybe is able to be loaded by this class
-		//! based on the file extension (e.g. ".bsp")
-		virtual bool isALoadableFileExtension(const io::path& filename) const;
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
+        virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-		//! creates/loads an animated mesh from the file.
-		virtual IAnimatedMesh* createMesh(io::IReadFile* file);
+        //! creates/loads an animated mesh from the file.
+        virtual IAnimatedMesh* createMesh(io::IReadFile* file);
 
-	private:
+    private:
 
-		scene::IMesh* createCSMMesh(io::IReadFile* file);
+        scene::IMesh* createCSMMesh(io::IReadFile* file);
 
-		scene::IMesh* createIrrlichtMesh(const CSMFile* csmFile,
-			const core::stringc& textureRoot, const io::path& lmprefix);
+        scene::IMesh* createIrrlichtMesh(const CSMFile* csmFile,
+            const core::stringc& textureRoot, const io::path& lmprefix);
 
-		io::IFileSystem* FileSystem;
-		scene::ISceneManager* SceneManager;
-	};
+        io::IFileSystem* FileSystem;
+        scene::ISceneManager* SceneManager;
+    };
 
 } // end namespace
 } // end namespace

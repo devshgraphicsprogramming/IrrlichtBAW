@@ -54,15 +54,15 @@ class COpenGLTransformFeedback : public ITransformFeedback
         inline const int32_t& getMaterialType() const {return cachedXFormFeedbackShader;}
 
         //! Begin, Pause, Resume, End
-		virtual void pauseTransformFeedback()
-		{
-		    pauseFeedback();
-		}
+        virtual void pauseTransformFeedback()
+        {
+            pauseFeedback();
+        }
 
-		virtual void resumeTransformFeedback()
-		{
-		    beginResumeFeedback();
-		}
+        virtual void resumeTransformFeedback()
+        {
+            beginResumeFeedback();
+        }
 
         void beginResumeFeedback();
 

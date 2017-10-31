@@ -17,35 +17,35 @@ namespace scene
 
 class CSkyDomeSceneNode : public ISceneNode
 {
-	public:
-		CSkyDomeSceneNode(video::ITexture* texture, uint32_t horiRes, uint32_t vertRes,
-			float texturePercentage, float spherePercentage, float radius,
-			IDummyTransformationSceneNode* parent, ISceneManager* smgr, int32_t id);
-		CSkyDomeSceneNode(CSkyDomeSceneNode* other,
-			IDummyTransformationSceneNode* parent, ISceneManager* smgr, int32_t id);
-		virtual ~CSkyDomeSceneNode();
+    public:
+        CSkyDomeSceneNode(video::ITexture* texture, uint32_t horiRes, uint32_t vertRes,
+            float texturePercentage, float spherePercentage, float radius,
+            IDummyTransformationSceneNode* parent, ISceneManager* smgr, int32_t id);
+        CSkyDomeSceneNode(CSkyDomeSceneNode* other,
+            IDummyTransformationSceneNode* parent, ISceneManager* smgr, int32_t id);
+        virtual ~CSkyDomeSceneNode();
 
-		//!
-		virtual const bool supportsDriverFence() const {return true;}
+        //!
+        virtual const bool supportsDriverFence() const {return true;}
 
-		virtual void OnRegisterSceneNode();
-		virtual void render();
-		virtual const core::aabbox3d<float>& getBoundingBox();
-		virtual video::SMaterial& getMaterial(uint32_t i);
-		virtual uint32_t getMaterialCount() const;
-		virtual ESCENE_NODE_TYPE getType() const { return ESNT_SKY_DOME; }
+        virtual void OnRegisterSceneNode();
+        virtual void render();
+        virtual const core::aabbox3d<float>& getBoundingBox();
+        virtual video::SMaterial& getMaterial(uint32_t i);
+        virtual uint32_t getMaterialCount() const;
+        virtual ESCENE_NODE_TYPE getType() const { return ESNT_SKY_DOME; }
 
-		virtual ISceneNode* clone(IDummyTransformationSceneNode* newParent=0, ISceneManager* newManager=0);
+        virtual ISceneNode* clone(IDummyTransformationSceneNode* newParent=0, ISceneManager* newManager=0);
 
-	private:
+    private:
 
-		void generateMesh();
+        void generateMesh();
 
-		IGPUMeshBuffer* Buffer;
+        IGPUMeshBuffer* Buffer;
 
         core::aabbox3df BoundingBox;
-		uint32_t HorizontalResolution, VerticalResolution;
-		float TexturePercentage, SpherePercentage, Radius;
+        uint32_t HorizontalResolution, VerticalResolution;
+        float TexturePercentage, SpherePercentage, Radius;
 };
 
 

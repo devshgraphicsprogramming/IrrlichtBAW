@@ -17,9 +17,9 @@ class IRenderBuffer : public IRenderable
 {
 public:
 
-	E_RENDERABLE_TYPE getRenderableType() const {return ERT_RENDERBUFFER;}
+    E_RENDERABLE_TYPE getRenderableType() const {return ERT_RENDERBUFFER;}
 
-	virtual void resize(const core::dimension2du &newSize) = 0;
+    virtual void resize(const core::dimension2du &newSize) = 0;
 
 protected:
 };

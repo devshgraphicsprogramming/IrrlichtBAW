@@ -28,240 +28,240 @@ class COgreMeshFileLoader : public IMeshLoader
 {
 public:
 
-	//! Constructor
-	COgreMeshFileLoader(io::IFileSystem* fs, video::IVideoDriver* driver);
+    //! Constructor
+    COgreMeshFileLoader(io::IFileSystem* fs, video::IVideoDriver* driver);
 
-	//! destructor
-	virtual ~COgreMeshFileLoader();
+    //! destructor
+    virtual ~COgreMeshFileLoader();
 
-	//! returns true if the file maybe is able to be loaded by this class
-	//! based on the file extension (e.g. ".cob")
-	virtual bool isALoadableFileExtension(const io::path& filename) const;
+    //! returns true if the file maybe is able to be loaded by this class
+    //! based on the file extension (e.g. ".cob")
+    virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-	//! creates/loads an animated mesh from the file.
-	//! \return Pointer to the created mesh. Returns 0 if loading failed.
-	//! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-	//! See IReferenceCounted::drop() for more information.
-	virtual IAnimatedMesh* createMesh(io::IReadFile* file);
+    //! creates/loads an animated mesh from the file.
+    //! \return Pointer to the created mesh. Returns 0 if loading failed.
+    //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+    //! See IReferenceCounted::drop() for more information.
+    virtual IAnimatedMesh* createMesh(io::IReadFile* file);
 
 private:
 
 // byte-align structures
 #include "irrpack.h"
 
-	struct ChunkHeader
-	{
-		uint16_t id;
-		uint32_t length;
-	} PACK_STRUCT;
+    struct ChunkHeader
+    {
+        uint16_t id;
+        uint32_t length;
+    } PACK_STRUCT;
 
 // Default alignment
 #include "irrunpack.h"
 
 
-	struct ChunkData
-	{
-		ChunkData() : read(0) {}
+    struct ChunkData
+    {
+        ChunkData() : read(0) {}
 
-		ChunkHeader header;
-		uint32_t read;
-	};
+        ChunkHeader header;
+        uint32_t read;
+    };
 
-	struct OgreTexture
-	{
-		core::array<core::stringc> Filename;
-		core::stringc Alias;
-		core::stringc CoordsType;
-		core::stringc MipMaps;
-		core::stringc Alpha;
-	};
+    struct OgreTexture
+    {
+        core::array<core::stringc> Filename;
+        core::stringc Alias;
+        core::stringc CoordsType;
+        core::stringc MipMaps;
+        core::stringc Alpha;
+    };
 
-	struct OgrePass
-	{
-		OgrePass() : AmbientTokenColor(false),
-			DiffuseTokenColor(false), SpecularTokenColor(false),
-			EmissiveTokenColor(false),
-			MaxLights(8), PointSize(1.0f), PointSprites(false),
-			PointSizeMin(0), PointSizeMax(0) {}
+    struct OgrePass
+    {
+        OgrePass() : AmbientTokenColor(false),
+            DiffuseTokenColor(false), SpecularTokenColor(false),
+            EmissiveTokenColor(false),
+            MaxLights(8), PointSize(1.0f), PointSprites(false),
+            PointSizeMin(0), PointSizeMax(0) {}
 
-		video::SMaterial Material;
-		OgreTexture Texture;
-		bool AmbientTokenColor;
-		bool DiffuseTokenColor;
-		bool SpecularTokenColor;
-		bool EmissiveTokenColor;
-		uint32_t MaxLights;
-		float PointSize;
-		bool PointSprites;
-		uint32_t PointSizeMin;
-		uint32_t PointSizeMax;
-	};
+        video::SMaterial Material;
+        OgreTexture Texture;
+        bool AmbientTokenColor;
+        bool DiffuseTokenColor;
+        bool SpecularTokenColor;
+        bool EmissiveTokenColor;
+        uint32_t MaxLights;
+        float PointSize;
+        bool PointSprites;
+        uint32_t PointSizeMin;
+        uint32_t PointSizeMax;
+    };
 
-	struct OgreTechnique
-	{
-		OgreTechnique() : Name(""), LODIndex(0) {}
+    struct OgreTechnique
+    {
+        OgreTechnique() : Name(""), LODIndex(0) {}
 
-		core::stringc Name;
-		core::stringc Scheme;
-		uint16_t LODIndex;
-		core::array<OgrePass> Passes;
-	};
+        core::stringc Name;
+        core::stringc Scheme;
+        uint16_t LODIndex;
+        core::array<OgrePass> Passes;
+    };
 
-	struct OgreMaterial
-	{
-		OgreMaterial() : Name(""), ReceiveShadows(true),
-			TransparencyCastsShadows(false) {}
+    struct OgreMaterial
+    {
+        OgreMaterial() : Name(""), ReceiveShadows(true),
+            TransparencyCastsShadows(false) {}
 
-		core::stringc Name;
-		bool ReceiveShadows;
-		bool TransparencyCastsShadows;
-		core::array<float> LODDistances;
-		core::array<OgreTechnique> Techniques;
-	};
+        core::stringc Name;
+        bool ReceiveShadows;
+        bool TransparencyCastsShadows;
+        core::array<float> LODDistances;
+        core::array<OgreTechnique> Techniques;
+    };
 
-	struct OgreVertexBuffer
-	{
-		OgreVertexBuffer() : BindIndex(0), VertexSize(0), Data(0) {}
+    struct OgreVertexBuffer
+    {
+        OgreVertexBuffer() : BindIndex(0), VertexSize(0), Data(0) {}
 
-		uint16_t BindIndex;
-		uint16_t VertexSize;
-		core::array<float> Data;
-	};
+        uint16_t BindIndex;
+        uint16_t VertexSize;
+        core::array<float> Data;
+    };
 
-	struct OgreVertexElement
-	{
-		uint16_t Source,
-		Type,
-		Semantic,
-		Offset,
-		Index;
-	};
+    struct OgreVertexElement
+    {
+        uint16_t Source,
+        Type,
+        Semantic,
+        Offset,
+        Index;
+    };
 
-	struct OgreGeometry
-	{
-		int32_t NumVertex;
-		core::array<OgreVertexElement> Elements;
-		core::array<OgreVertexBuffer> Buffers;
-		core::array<core::vector3df> Vertices;
-		core::array<core::vector3df> Normals;
-		core::array<int32_t> Colors;
-		core::array<core::vector2df> TexCoords;
-	};
+    struct OgreGeometry
+    {
+        int32_t NumVertex;
+        core::array<OgreVertexElement> Elements;
+        core::array<OgreVertexBuffer> Buffers;
+        core::array<core::vector3df> Vertices;
+        core::array<core::vector3df> Normals;
+        core::array<int32_t> Colors;
+        core::array<core::vector2df> TexCoords;
+    };
 
-	struct OgreTextureAlias
-	{
-		OgreTextureAlias() {};
-		OgreTextureAlias(const core::stringc& a, const core::stringc& b) : Texture(a), Alias(b) {};
-		core::stringc Texture;
-		core::stringc Alias;
-	};
+    struct OgreTextureAlias
+    {
+        OgreTextureAlias() {};
+        OgreTextureAlias(const core::stringc& a, const core::stringc& b) : Texture(a), Alias(b) {};
+        core::stringc Texture;
+        core::stringc Alias;
+    };
 
-	struct OgreBoneAssignment
-	{
-		int32_t VertexID;
-		uint16_t BoneID;
-		float Weight;
-	};
+    struct OgreBoneAssignment
+    {
+        int32_t VertexID;
+        uint16_t BoneID;
+        float Weight;
+    };
 
-	struct OgreSubMesh
-	{
-		core::stringc Material;
-		bool SharedVertices;
-		core::array<int32_t> Indices;
-		OgreGeometry Geometry;
-		uint16_t Operation;
-		core::array<OgreTextureAlias> TextureAliases;
-		core::array<OgreBoneAssignment> BoneAssignments;
-		bool Indices32Bit;
-	};
+    struct OgreSubMesh
+    {
+        core::stringc Material;
+        bool SharedVertices;
+        core::array<int32_t> Indices;
+        OgreGeometry Geometry;
+        uint16_t Operation;
+        core::array<OgreTextureAlias> TextureAliases;
+        core::array<OgreBoneAssignment> BoneAssignments;
+        bool Indices32Bit;
+    };
 
-	struct OgreMesh
-	{
-		bool SkeletalAnimation;
-		OgreGeometry Geometry;
-		core::array<OgreSubMesh> SubMeshes;
-		core::array<OgreBoneAssignment> BoneAssignments;
-		core::vector3df BBoxMinEdge;
-		core::vector3df BBoxMaxEdge;
-		float BBoxRadius;
-	};
+    struct OgreMesh
+    {
+        bool SkeletalAnimation;
+        OgreGeometry Geometry;
+        core::array<OgreSubMesh> SubMeshes;
+        core::array<OgreBoneAssignment> BoneAssignments;
+        core::vector3df BBoxMinEdge;
+        core::vector3df BBoxMaxEdge;
+        float BBoxRadius;
+    };
 
-	struct OgreBone
-	{
-		core::stringc Name;
-		core::vector3df Position;
-		core::quaternion Orientation;
-		core::vector3df Scale;
-		uint16_t Handle;
-		uint16_t Parent;
-	};
+    struct OgreBone
+    {
+        core::stringc Name;
+        core::vector3df Position;
+        core::quaternion Orientation;
+        core::vector3df Scale;
+        uint16_t Handle;
+        uint16_t Parent;
+    };
 
-	struct OgreKeyframe
-	{
-		uint16_t BoneID;
-		float Time;
-		core::vector3df Position;
-		core::quaternion Orientation;
-		core::vector3df Scale;
-	};
+    struct OgreKeyframe
+    {
+        uint16_t BoneID;
+        float Time;
+        core::vector3df Position;
+        core::quaternion Orientation;
+        core::vector3df Scale;
+    };
 _
 #error "Fix QUATERNIONS FIRST!!!"
 
-	struct OgreAnimation
-	{
-		core::stringc Name;
-		float Length;
-		core::array<OgreKeyframe> Keyframes;
-	};
+    struct OgreAnimation
+    {
+        core::stringc Name;
+        float Length;
+        core::array<OgreKeyframe> Keyframes;
+    };
 
-	struct OgreSkeleton
-	{
-		core::array<OgreBone> Bones;
-		core::array<OgreAnimation> Animations;
-	};
+    struct OgreSkeleton
+    {
+        core::array<OgreBone> Bones;
+        core::array<OgreAnimation> Animations;
+    };
 
-	bool readChunk(io::IReadFile* file);
-	bool readObjectChunk(io::IReadFile* file, ChunkData& parent, OgreMesh& mesh);
-	bool readGeometry(io::IReadFile* file, ChunkData& parent, OgreGeometry& geometry);
-	bool readVertexDeclaration(io::IReadFile* file, ChunkData& parent, OgreGeometry& geometry);
-	bool readVertexBuffer(io::IReadFile* file, ChunkData& parent, OgreGeometry& geometry);
-	bool readSubMesh(io::IReadFile* file, ChunkData& parent, OgreSubMesh& subMesh);
+    bool readChunk(io::IReadFile* file);
+    bool readObjectChunk(io::IReadFile* file, ChunkData& parent, OgreMesh& mesh);
+    bool readGeometry(io::IReadFile* file, ChunkData& parent, OgreGeometry& geometry);
+    bool readVertexDeclaration(io::IReadFile* file, ChunkData& parent, OgreGeometry& geometry);
+    bool readVertexBuffer(io::IReadFile* file, ChunkData& parent, OgreGeometry& geometry);
+    bool readSubMesh(io::IReadFile* file, ChunkData& parent, OgreSubMesh& subMesh);
 
-	void readChunkData(io::IReadFile* file, ChunkData& data);
-	void readString(io::IReadFile* file, ChunkData& data, core::stringc& out);
-	void readBool(io::IReadFile* file, ChunkData& data, bool& out);
-	void readInt(io::IReadFile* file, ChunkData& data, int32_t* out, uint32_t num=1);
-	void readShort(io::IReadFile* file, ChunkData& data, uint16_t* out, uint32_t num=1);
-	void readFloat(io::IReadFile* file, ChunkData& data, float* out, uint32_t num=1);
-	void readVector(io::IReadFile* file, ChunkData& data, core::vector3df& out);
-	void readQuaternion(io::IReadFile* file, ChunkData& data, core::quaternion& out);
+    void readChunkData(io::IReadFile* file, ChunkData& data);
+    void readString(io::IReadFile* file, ChunkData& data, core::stringc& out);
+    void readBool(io::IReadFile* file, ChunkData& data, bool& out);
+    void readInt(io::IReadFile* file, ChunkData& data, int32_t* out, uint32_t num=1);
+    void readShort(io::IReadFile* file, ChunkData& data, uint16_t* out, uint32_t num=1);
+    void readFloat(io::IReadFile* file, ChunkData& data, float* out, uint32_t num=1);
+    void readVector(io::IReadFile* file, ChunkData& data, core::vector3df& out);
+    void readQuaternion(io::IReadFile* file, ChunkData& data, core::quaternion& out);
 
-	void composeMeshBufferMaterial(scene::IMeshBuffer* mb, const core::stringc& materialName);
-	scene::SMeshBuffer* composeMeshBuffer(const core::array<int32_t>& indices, const OgreGeometry& geom);
-	scene::SMeshBufferLightMap* composeMeshBufferLightMap(const core::array<int32_t>& indices, const OgreGeometry& geom);
-	scene::IMeshBuffer* composeMeshBufferSkinned(scene::CSkinnedMesh& mesh, const core::array<int32_t>& indices, const OgreGeometry& geom);
-	void composeObject(void);
-	bool readColor(io::IReadFile* meshFile, video::SColor& col);
-	void getMaterialToken(io::IReadFile* file, core::stringc& token, bool noNewLine=false);
-	void readTechnique(io::IReadFile* meshFile, OgreMaterial& mat);
-	void readPass(io::IReadFile* file, OgreTechnique& technique);
-	void loadMaterials(io::IReadFile* file);
-	bool loadSkeleton(io::IReadFile* meshFile, const core::stringc& name);
-	void clearMeshes();
+    void composeMeshBufferMaterial(scene::IMeshBuffer* mb, const core::stringc& materialName);
+    scene::SMeshBuffer* composeMeshBuffer(const core::array<int32_t>& indices, const OgreGeometry& geom);
+    scene::SMeshBufferLightMap* composeMeshBufferLightMap(const core::array<int32_t>& indices, const OgreGeometry& geom);
+    scene::IMeshBuffer* composeMeshBufferSkinned(scene::CSkinnedMesh& mesh, const core::array<int32_t>& indices, const OgreGeometry& geom);
+    void composeObject(void);
+    bool readColor(io::IReadFile* meshFile, video::SColor& col);
+    void getMaterialToken(io::IReadFile* file, core::stringc& token, bool noNewLine=false);
+    void readTechnique(io::IReadFile* meshFile, OgreMaterial& mat);
+    void readPass(io::IReadFile* file, OgreTechnique& technique);
+    void loadMaterials(io::IReadFile* file);
+    bool loadSkeleton(io::IReadFile* meshFile, const core::stringc& name);
+    void clearMeshes();
 
-	io::IFileSystem* FileSystem;
-	video::IVideoDriver* Driver;
+    io::IFileSystem* FileSystem;
+    video::IVideoDriver* Driver;
 
-	core::stringc Version;
-	bool SwapEndian;
-	core::array<OgreMesh> Meshes;
-	io::path CurrentlyLoadingFromPath;
+    core::stringc Version;
+    bool SwapEndian;
+    core::array<OgreMesh> Meshes;
+    io::path CurrentlyLoadingFromPath;
 
-	core::array<OgreMaterial> Materials;
-	OgreSkeleton Skeleton;
+    core::array<OgreMaterial> Materials;
+    OgreSkeleton Skeleton;
 
-	IMesh* Mesh;
-	uint32_t NumUV;
+    IMesh* Mesh;
+    uint32_t NumUV;
 };
 
 } // end namespace scene

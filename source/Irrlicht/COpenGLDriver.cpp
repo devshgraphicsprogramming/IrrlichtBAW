@@ -41,366 +41,366 @@ namespace video
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 //! Windows constructor and init code
 COpenGLDriver::COpenGLDriver(const irr::SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceWin32* device)
+        io::IFileSystem* io, CIrrDeviceWin32* device)
 : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
-	CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
-	AntiAlias(params.AntiAlias), CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), CurrentXFormFeedback(0), XFormFeedbackRunning(false),
-	CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8), Params(params),
-	HDc(0), Window(static_cast<HWND>(params.WindowId)), Win32Device(device),
-	DeviceType(EIDT_WIN32), AuxContexts(0)
+    CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
+    AntiAlias(params.AntiAlias), CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), CurrentXFormFeedback(0), XFormFeedbackRunning(false),
+    CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8), Params(params),
+    HDc(0), Window(static_cast<HWND>(params.WindowId)), Win32Device(device),
+    DeviceType(EIDT_WIN32), AuxContexts(0)
 {
-	#ifdef _DEBUG
-	setDebugName("COpenGLDriver");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("COpenGLDriver");
+    #endif
 }
 
 
 bool COpenGLDriver::changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceWin32* device)
 {
-	if (videoData.OpenGLWin32.HWnd && videoData.OpenGLWin32.HDc && videoData.OpenGLWin32.HRc)
-	{
-		if (!wglMakeCurrent((HDC)videoData.OpenGLWin32.HDc, (HGLRC)videoData.OpenGLWin32.HRc))
-		{
-			os::Printer::log("Render Context switch failed.");
-			return false;
-		}
-		else
-		{
-			HDc = (HDC)videoData.OpenGLWin32.HDc;
-		}
-	}
-	// set back to main context
-	else if (HDc != ExposedData.OpenGLWin32.HDc)
-	{
-		if (!wglMakeCurrent((HDC)ExposedData.OpenGLWin32.HDc, (HGLRC)ExposedData.OpenGLWin32.HRc))
-		{
-			os::Printer::log("Render Context switch failed.");
-			return false;
-		}
-		else
-		{
-			HDc = (HDC)ExposedData.OpenGLWin32.HDc;
-		}
-	}
-	return true;
+    if (videoData.OpenGLWin32.HWnd && videoData.OpenGLWin32.HDc && videoData.OpenGLWin32.HRc)
+    {
+        if (!wglMakeCurrent((HDC)videoData.OpenGLWin32.HDc, (HGLRC)videoData.OpenGLWin32.HRc))
+        {
+            os::Printer::log("Render Context switch failed.");
+            return false;
+        }
+        else
+        {
+            HDc = (HDC)videoData.OpenGLWin32.HDc;
+        }
+    }
+    // set back to main context
+    else if (HDc != ExposedData.OpenGLWin32.HDc)
+    {
+        if (!wglMakeCurrent((HDC)ExposedData.OpenGLWin32.HDc, (HGLRC)ExposedData.OpenGLWin32.HRc))
+        {
+            os::Printer::log("Render Context switch failed.");
+            return false;
+        }
+        else
+        {
+            HDc = (HDC)ExposedData.OpenGLWin32.HDc;
+        }
+    }
+    return true;
 }
 
 //! inits the open gl driver
 bool COpenGLDriver::initDriver(CIrrDeviceWin32* device)
 {
-	// Create a window to test antialiasing support
-	const char* ClassName = __TEXT("GLCIrrDeviceWin32");
-	HINSTANCE lhInstance = GetModuleHandle(0);
+    // Create a window to test antialiasing support
+    const char* ClassName = __TEXT("GLCIrrDeviceWin32");
+    HINSTANCE lhInstance = GetModuleHandle(0);
 
-	// Register Class
-	WNDCLASSEX wcex;
-	wcex.cbSize        = sizeof(WNDCLASSEX);
-	wcex.style         = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc   = (WNDPROC)DefWindowProc;
-	wcex.cbClsExtra    = 0;
-	wcex.cbWndExtra    = 0;
-	wcex.hInstance     = lhInstance;
-	wcex.hIcon         = NULL;
-	wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName  = 0;
-	wcex.lpszClassName = ClassName;
-	wcex.hIconSm       = 0;
-	wcex.hIcon         = 0;
-	RegisterClassEx(&wcex);
+    // Register Class
+    WNDCLASSEX wcex;
+    wcex.cbSize        = sizeof(WNDCLASSEX);
+    wcex.style         = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc   = (WNDPROC)DefWindowProc;
+    wcex.cbClsExtra    = 0;
+    wcex.cbWndExtra    = 0;
+    wcex.hInstance     = lhInstance;
+    wcex.hIcon         = NULL;
+    wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.lpszMenuName  = 0;
+    wcex.lpszClassName = ClassName;
+    wcex.hIconSm       = 0;
+    wcex.hIcon         = 0;
+    RegisterClassEx(&wcex);
 
-	RECT clientSize;
-	clientSize.top = 0;
-	clientSize.left = 0;
-	clientSize.right = Params.WindowSize.Width;
-	clientSize.bottom = Params.WindowSize.Height;
+    RECT clientSize;
+    clientSize.top = 0;
+    clientSize.left = 0;
+    clientSize.right = Params.WindowSize.Width;
+    clientSize.bottom = Params.WindowSize.Height;
 
-	DWORD style = WS_POPUP;
-	if (!Params.Fullscreen)
-		style = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+    DWORD style = WS_POPUP;
+    if (!Params.Fullscreen)
+        style = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
 
-	AdjustWindowRect(&clientSize, style, FALSE);
+    AdjustWindowRect(&clientSize, style, FALSE);
 
-	const int32_t realWidth = clientSize.right - clientSize.left;
-	const int32_t realHeight = clientSize.bottom - clientSize.top;
+    const int32_t realWidth = clientSize.right - clientSize.left;
+    const int32_t realHeight = clientSize.bottom - clientSize.top;
 
-	const int32_t windowLeft = (GetSystemMetrics(SM_CXSCREEN) - realWidth) / 2;
-	const int32_t windowTop = (GetSystemMetrics(SM_CYSCREEN) - realHeight) / 2;
+    const int32_t windowLeft = (GetSystemMetrics(SM_CXSCREEN) - realWidth) / 2;
+    const int32_t windowTop = (GetSystemMetrics(SM_CYSCREEN) - realHeight) / 2;
 
-	HWND temporary_wnd=CreateWindow(ClassName, __TEXT(""), style, windowLeft,
-			windowTop, realWidth, realHeight, NULL, NULL, lhInstance, NULL);
+    HWND temporary_wnd=CreateWindow(ClassName, __TEXT(""), style, windowLeft,
+            windowTop, realWidth, realHeight, NULL, NULL, lhInstance, NULL);
 
-	if (!temporary_wnd)
-	{
-		os::Printer::log("Cannot create a temporary window.", ELL_ERROR);
-		UnregisterClass(ClassName, lhInstance);
-		return false;
-	}
+    if (!temporary_wnd)
+    {
+        os::Printer::log("Cannot create a temporary window.", ELL_ERROR);
+        UnregisterClass(ClassName, lhInstance);
+        return false;
+    }
 
-	HDc = GetDC(temporary_wnd);
+    HDc = GetDC(temporary_wnd);
 
-	// Set up pixel format descriptor with desired parameters
-	PIXELFORMATDESCRIPTOR pfd = {
-		sizeof(PIXELFORMATDESCRIPTOR),             // Size Of This Pixel Format Descriptor
-		1,                                         // Version Number
-		PFD_DRAW_TO_WINDOW |                       // Format Must Support Window
-		PFD_SUPPORT_OPENGL |                       // Format Must Support OpenGL
-		(Params.Doublebuffer?PFD_DOUBLEBUFFER:0) | // Must Support Double Buffering
-		(Params.Stereobuffer?PFD_STEREO:0),        // Must Support Stereo Buffer
-		PFD_TYPE_RGBA,                             // Request An RGBA Format
-		Params.Bits,                               // Select Our Color Depth
-		0, 0, 0, 0, 0, 0,                          // Color Bits Ignored
-		0,                                         // No Alpha Buffer
-		0,                                         // Shift Bit Ignored
-		0,                                         // No Accumulation Buffer
-		0, 0, 0, 0,	                               // Accumulation Bits Ignored
-		Params.ZBufferBits,                        // Z-Buffer (Depth Buffer)
-		BYTE(Params.Stencilbuffer ? 1 : 0),        // Stencil Buffer Depth
-		0,                                         // No Auxiliary Buffer
-		PFD_MAIN_PLANE,                            // Main Drawing Layer
-		0,                                         // Reserved
-		0, 0, 0                                    // Layer Masks Ignored
-	};
+    // Set up pixel format descriptor with desired parameters
+    PIXELFORMATDESCRIPTOR pfd = {
+        sizeof(PIXELFORMATDESCRIPTOR),             // Size Of This Pixel Format Descriptor
+        1,                                         // Version Number
+        PFD_DRAW_TO_WINDOW |                       // Format Must Support Window
+        PFD_SUPPORT_OPENGL |                       // Format Must Support OpenGL
+        (Params.Doublebuffer?PFD_DOUBLEBUFFER:0) | // Must Support Double Buffering
+        (Params.Stereobuffer?PFD_STEREO:0),        // Must Support Stereo Buffer
+        PFD_TYPE_RGBA,                             // Request An RGBA Format
+        Params.Bits,                               // Select Our Color Depth
+        0, 0, 0, 0, 0, 0,                          // Color Bits Ignored
+        0,                                         // No Alpha Buffer
+        0,                                         // Shift Bit Ignored
+        0,                                         // No Accumulation Buffer
+        0, 0, 0, 0,                                   // Accumulation Bits Ignored
+        Params.ZBufferBits,                        // Z-Buffer (Depth Buffer)
+        BYTE(Params.Stencilbuffer ? 1 : 0),        // Stencil Buffer Depth
+        0,                                         // No Auxiliary Buffer
+        PFD_MAIN_PLANE,                            // Main Drawing Layer
+        0,                                         // Reserved
+        0, 0, 0                                    // Layer Masks Ignored
+    };
 
-	GLuint PixelFormat;
+    GLuint PixelFormat;
 
-	for (uint32_t i=0; i<6; ++i)
-	{
-		if (i == 1)
-		{
-			if (Params.Stencilbuffer)
-			{
-				os::Printer::log("Cannot create a GL device with stencil buffer, disabling stencil shadows.", ELL_WARNING);
-				Params.Stencilbuffer = false;
-				pfd.cStencilBits = 0;
-			}
-			else
-				continue;
-		}
-		else
-		if (i == 2)
-		{
-			pfd.cDepthBits = 24;
-		}
-		else
-		if (i == 3)
-		{
-			if (Params.Bits!=16)
-				pfd.cDepthBits = 16;
-			else
-				continue;
-		}
-		else
-		if (i == 4)
-		{
-			// try single buffer
-			if (Params.Doublebuffer)
-				pfd.dwFlags &= ~PFD_DOUBLEBUFFER;
-			else
-				continue;
-		}
-		else
-		if (i == 5)
-		{
-			os::Printer::log("Cannot create a GL device context", "No suitable format for temporary window.", ELL_ERROR);
-			ReleaseDC(temporary_wnd, HDc);
-			DestroyWindow(temporary_wnd);
-			UnregisterClass(ClassName, lhInstance);
-			return false;
-		}
+    for (uint32_t i=0; i<6; ++i)
+    {
+        if (i == 1)
+        {
+            if (Params.Stencilbuffer)
+            {
+                os::Printer::log("Cannot create a GL device with stencil buffer, disabling stencil shadows.", ELL_WARNING);
+                Params.Stencilbuffer = false;
+                pfd.cStencilBits = 0;
+            }
+            else
+                continue;
+        }
+        else
+        if (i == 2)
+        {
+            pfd.cDepthBits = 24;
+        }
+        else
+        if (i == 3)
+        {
+            if (Params.Bits!=16)
+                pfd.cDepthBits = 16;
+            else
+                continue;
+        }
+        else
+        if (i == 4)
+        {
+            // try single buffer
+            if (Params.Doublebuffer)
+                pfd.dwFlags &= ~PFD_DOUBLEBUFFER;
+            else
+                continue;
+        }
+        else
+        if (i == 5)
+        {
+            os::Printer::log("Cannot create a GL device context", "No suitable format for temporary window.", ELL_ERROR);
+            ReleaseDC(temporary_wnd, HDc);
+            DestroyWindow(temporary_wnd);
+            UnregisterClass(ClassName, lhInstance);
+            return false;
+        }
 
-		// choose pixelformat
-		PixelFormat = ChoosePixelFormat(HDc, &pfd);
-		if (PixelFormat)
-			break;
-	}
+        // choose pixelformat
+        PixelFormat = ChoosePixelFormat(HDc, &pfd);
+        if (PixelFormat)
+            break;
+    }
 
-	SetPixelFormat(HDc, PixelFormat, &pfd);
-	HGLRC hrc=wglCreateContext(HDc);
-	if (!hrc)
-	{
-		os::Printer::log("Cannot create a temporary GL rendering context.", ELL_ERROR);
-		ReleaseDC(temporary_wnd, HDc);
-		DestroyWindow(temporary_wnd);
-		UnregisterClass(ClassName, lhInstance);
-		return false;
-	}
+    SetPixelFormat(HDc, PixelFormat, &pfd);
+    HGLRC hrc=wglCreateContext(HDc);
+    if (!hrc)
+    {
+        os::Printer::log("Cannot create a temporary GL rendering context.", ELL_ERROR);
+        ReleaseDC(temporary_wnd, HDc);
+        DestroyWindow(temporary_wnd);
+        UnregisterClass(ClassName, lhInstance);
+        return false;
+    }
 
-	SExposedVideoData data;
-	data.OpenGLWin32.HDc = HDc;
-	data.OpenGLWin32.HRc = hrc;
-	data.OpenGLWin32.HWnd = temporary_wnd;
+    SExposedVideoData data;
+    data.OpenGLWin32.HDc = HDc;
+    data.OpenGLWin32.HRc = hrc;
+    data.OpenGLWin32.HWnd = temporary_wnd;
 
 
-	if (!changeRenderContext(data, device))
-	{
-		os::Printer::log("Cannot activate a temporary GL rendering context.", ELL_ERROR);
-		wglDeleteContext(hrc);
-		ReleaseDC(temporary_wnd, HDc);
-		DestroyWindow(temporary_wnd);
-		UnregisterClass(ClassName, lhInstance);
-		return false;
-	}
+    if (!changeRenderContext(data, device))
+    {
+        os::Printer::log("Cannot activate a temporary GL rendering context.", ELL_ERROR);
+        wglDeleteContext(hrc);
+        ReleaseDC(temporary_wnd, HDc);
+        DestroyWindow(temporary_wnd);
+        UnregisterClass(ClassName, lhInstance);
+        return false;
+    }
 
-	core::stringc wglExtensions;
+    core::stringc wglExtensions;
 #ifdef WGL_ARB_extensions_string
-	PFNWGLGETEXTENSIONSSTRINGARBPROC irrGetExtensionsString = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
-	if (irrGetExtensionsString)
-		wglExtensions = irrGetExtensionsString(HDc);
+    PFNWGLGETEXTENSIONSSTRINGARBPROC irrGetExtensionsString = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
+    if (irrGetExtensionsString)
+        wglExtensions = irrGetExtensionsString(HDc);
 #elif defined(WGL_EXT_extensions_string)
-	PFNWGLGETEXTENSIONSSTRINGEXTPROC irrGetExtensionsString = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
-	if (irrGetExtensionsString)
-		wglExtensions = irrGetExtensionsString(HDc);
+    PFNWGLGETEXTENSIONSSTRINGEXTPROC irrGetExtensionsString = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
+    if (irrGetExtensionsString)
+        wglExtensions = irrGetExtensionsString(HDc);
 #endif
-	const bool pixel_format_supported = (wglExtensions.find("WGL_ARB_pixel_format") != -1);
-	const bool multi_sample_supported = ((wglExtensions.find("WGL_ARB_multisample") != -1) ||
-		(wglExtensions.find("WGL_EXT_multisample") != -1) || (wglExtensions.find("WGL_3DFX_multisample") != -1) );
+    const bool pixel_format_supported = (wglExtensions.find("WGL_ARB_pixel_format") != -1);
+    const bool multi_sample_supported = ((wglExtensions.find("WGL_ARB_multisample") != -1) ||
+        (wglExtensions.find("WGL_EXT_multisample") != -1) || (wglExtensions.find("WGL_3DFX_multisample") != -1) );
 #ifdef _DEBUG
-	os::Printer::log("WGL_extensions", wglExtensions.c_str());
+    os::Printer::log("WGL_extensions", wglExtensions.c_str());
 #endif
 
 #ifdef WGL_ARB_pixel_format
-	PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormat_ARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
-	if (pixel_format_supported && wglChoosePixelFormat_ARB)
-	{
-		// This value determines the number of samples used for antialiasing
-		// My experience is that 8 does not show a big
-		// improvement over 4, but 4 shows a big improvement
-		// over 2.
+    PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormat_ARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+    if (pixel_format_supported && wglChoosePixelFormat_ARB)
+    {
+        // This value determines the number of samples used for antialiasing
+        // My experience is that 8 does not show a big
+        // improvement over 4, but 4 shows a big improvement
+        // over 2.
 
-		if(AntiAlias > 32)
-			AntiAlias = 32;
+        if(AntiAlias > 32)
+            AntiAlias = 32;
 
-		float fAttributes[] = {0.0, 0.0};
-		int32_t iAttributes[] =
-		{
-			WGL_DRAW_TO_WINDOW_ARB,1,
-			WGL_SUPPORT_OPENGL_ARB,1,
-			WGL_ACCELERATION_ARB,WGL_FULL_ACCELERATION_ARB,
-			WGL_COLOR_BITS_ARB,(Params.Bits==32) ? 24 : 15,
-			WGL_ALPHA_BITS_ARB,(Params.Bits==32) ? 8 : 1,
-			WGL_DEPTH_BITS_ARB,Params.ZBufferBits, // 10,11
-			WGL_STENCIL_BITS_ARB,Params.Stencilbuffer ? 1 : 0,
-			WGL_DOUBLE_BUFFER_ARB,Params.Doublebuffer ? 1 : 0,
-			WGL_STEREO_ARB,Params.Stereobuffer ? 1 : 0,
-			WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+        float fAttributes[] = {0.0, 0.0};
+        int32_t iAttributes[] =
+        {
+            WGL_DRAW_TO_WINDOW_ARB,1,
+            WGL_SUPPORT_OPENGL_ARB,1,
+            WGL_ACCELERATION_ARB,WGL_FULL_ACCELERATION_ARB,
+            WGL_COLOR_BITS_ARB,(Params.Bits==32) ? 24 : 15,
+            WGL_ALPHA_BITS_ARB,(Params.Bits==32) ? 8 : 1,
+            WGL_DEPTH_BITS_ARB,Params.ZBufferBits, // 10,11
+            WGL_STENCIL_BITS_ARB,Params.Stencilbuffer ? 1 : 0,
+            WGL_DOUBLE_BUFFER_ARB,Params.Doublebuffer ? 1 : 0,
+            WGL_STEREO_ARB,Params.Stereobuffer ? 1 : 0,
+            WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
 #ifdef WGL_ARB_multisample
-			WGL_SAMPLES_ARB,AntiAlias, // 20,21
-			WGL_SAMPLE_BUFFERS_ARB, 1,
+            WGL_SAMPLES_ARB,AntiAlias, // 20,21
+            WGL_SAMPLE_BUFFERS_ARB, 1,
 #elif defined(WGL_EXT_multisample)
-			WGL_SAMPLES_EXT,AntiAlias, // 20,21
-			WGL_SAMPLE_BUFFERS_EXT, 1,
+            WGL_SAMPLES_EXT,AntiAlias, // 20,21
+            WGL_SAMPLE_BUFFERS_EXT, 1,
 #elif defined(WGL_3DFX_multisample)
-			WGL_SAMPLES_3DFX,AntiAlias, // 20,21
-			WGL_SAMPLE_BUFFERS_3DFX, 1,
+            WGL_SAMPLES_3DFX,AntiAlias, // 20,21
+            WGL_SAMPLE_BUFFERS_3DFX, 1,
 #endif
 #ifdef WGL_ARB_framebuffer_sRGB
-			WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB, Params.HandleSRGB ? 1:0,
+            WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB, Params.HandleSRGB ? 1:0,
 #elif defined(WGL_EXT_framebuffer_sRGB)
-			WGL_FRAMEBUFFER_SRGB_CAPABLE_EXT, Params.HandleSRGB ? 1:0,
+            WGL_FRAMEBUFFER_SRGB_CAPABLE_EXT, Params.HandleSRGB ? 1:0,
 #endif
-//			WGL_DEPTH_FLOAT_EXT, 1,
-			0,0,0,0
-		};
-		int iAttrSize = sizeof(iAttributes)/sizeof(int);
-		const bool framebuffer_srgb_supported = ((wglExtensions.find("WGL_ARB_framebuffer_sRGB") != -1) ||
-			(wglExtensions.find("WGL_EXT_framebuffer_sRGB") != -1));
-		if (!framebuffer_srgb_supported)
-		{
-			memmove(&iAttributes[24],&iAttributes[26],sizeof(int)*(iAttrSize-26));
-			iAttrSize -= 2;
-		}
-		if (!multi_sample_supported)
-		{
-			memmove(&iAttributes[20],&iAttributes[24],sizeof(int)*(iAttrSize-24));
-			iAttrSize -= 4;
-		}
+//            WGL_DEPTH_FLOAT_EXT, 1,
+            0,0,0,0
+        };
+        int iAttrSize = sizeof(iAttributes)/sizeof(int);
+        const bool framebuffer_srgb_supported = ((wglExtensions.find("WGL_ARB_framebuffer_sRGB") != -1) ||
+            (wglExtensions.find("WGL_EXT_framebuffer_sRGB") != -1));
+        if (!framebuffer_srgb_supported)
+        {
+            memmove(&iAttributes[24],&iAttributes[26],sizeof(int)*(iAttrSize-26));
+            iAttrSize -= 2;
+        }
+        if (!multi_sample_supported)
+        {
+            memmove(&iAttributes[20],&iAttributes[24],sizeof(int)*(iAttrSize-24));
+            iAttrSize -= 4;
+        }
 
-		int32_t rv=0;
-		// Try to get an acceptable pixel format
-		do
-		{
-			int pixelFormat=0;
-			UINT numFormats=0;
-			const BOOL valid = wglChoosePixelFormat_ARB(HDc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+        int32_t rv=0;
+        // Try to get an acceptable pixel format
+        do
+        {
+            int pixelFormat=0;
+            UINT numFormats=0;
+            const BOOL valid = wglChoosePixelFormat_ARB(HDc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
 
-			if (valid && numFormats)
-				rv = pixelFormat;
-			else
-				iAttributes[21] -= 1;
-		}
-		while(rv==0 && iAttributes[21]>1);
-		if (rv)
-		{
-			PixelFormat=rv;
-			AntiAlias=iAttributes[21];
-		}
-	}
-	else
+            if (valid && numFormats)
+                rv = pixelFormat;
+            else
+                iAttributes[21] -= 1;
+        }
+        while(rv==0 && iAttributes[21]>1);
+        if (rv)
+        {
+            PixelFormat=rv;
+            AntiAlias=iAttributes[21];
+        }
+    }
+    else
 #endif
-		AntiAlias=0;
+        AntiAlias=0;
 
-	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribs_ARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-	wglMakeCurrent(HDc, NULL);
-	wglDeleteContext(hrc);
-	ReleaseDC(temporary_wnd, HDc);
-	DestroyWindow(temporary_wnd);
-	UnregisterClass(ClassName, lhInstance);
+    PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribs_ARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+    wglMakeCurrent(HDc, NULL);
+    wglDeleteContext(hrc);
+    ReleaseDC(temporary_wnd, HDc);
+    DestroyWindow(temporary_wnd);
+    UnregisterClass(ClassName, lhInstance);
 
-	if (!wglCreateContextAttribs_ARB)
-	{
-		os::Printer::log("Couldn't get wglCreateContextAttribs_ARB address.", ELL_ERROR);
-		return false;
-	}
+    if (!wglCreateContextAttribs_ARB)
+    {
+        os::Printer::log("Couldn't get wglCreateContextAttribs_ARB address.", ELL_ERROR);
+        return false;
+    }
 
-	// get hdc
-	HDc=GetDC(Window);
-	if (!HDc)
-	{
-		os::Printer::log("Cannot create a GL device context.", ELL_ERROR);
-		return false;
-	}
+    // get hdc
+    HDc=GetDC(Window);
+    if (!HDc)
+    {
+        os::Printer::log("Cannot create a GL device context.", ELL_ERROR);
+        return false;
+    }
 
-	// search for pixel format the simple way
-	if (PixelFormat==0 || (!SetPixelFormat(HDc, PixelFormat, &pfd)))
-	{
-		for (uint32_t i=0; i<5; ++i)
-		{
-			if (i == 1)
-			{
-				if (Params.Stencilbuffer)
-				{
-					os::Printer::log("Cannot create a GL device with stencil buffer, disabling stencil shadows.", ELL_WARNING);
-					Params.Stencilbuffer = false;
-					pfd.cStencilBits = 0;
-				}
-				else
-					continue;
-			}
-			else
-			if (i == 2)
-			{
-				pfd.cDepthBits = 24;
-			}
-			if (i == 3)
-			{
-				if (Params.Bits!=16)
-					pfd.cDepthBits = 16;
-				else
-					continue;
-			}
-			else
-			if (i == 4)
-			{
-				os::Printer::log("Cannot create a GL device context", "No suitable format.", ELL_ERROR);
-				return false;
-			}
+    // search for pixel format the simple way
+    if (PixelFormat==0 || (!SetPixelFormat(HDc, PixelFormat, &pfd)))
+    {
+        for (uint32_t i=0; i<5; ++i)
+        {
+            if (i == 1)
+            {
+                if (Params.Stencilbuffer)
+                {
+                    os::Printer::log("Cannot create a GL device with stencil buffer, disabling stencil shadows.", ELL_WARNING);
+                    Params.Stencilbuffer = false;
+                    pfd.cStencilBits = 0;
+                }
+                else
+                    continue;
+            }
+            else
+            if (i == 2)
+            {
+                pfd.cDepthBits = 24;
+            }
+            if (i == 3)
+            {
+                if (Params.Bits!=16)
+                    pfd.cDepthBits = 16;
+                else
+                    continue;
+            }
+            else
+            if (i == 4)
+            {
+                os::Printer::log("Cannot create a GL device context", "No suitable format.", ELL_ERROR);
+                return false;
+            }
 
-			// choose pixelformat
-			PixelFormat = ChoosePixelFormat(HDc, &pfd);
-			if (PixelFormat)
-				break;
-		}
+            // choose pixelformat
+            PixelFormat = ChoosePixelFormat(HDc, &pfd);
+            if (PixelFormat)
+                break;
+        }
 
         // set pixel format
         if (!SetPixelFormat(HDc, PixelFormat, &pfd))
@@ -409,80 +409,80 @@ bool COpenGLDriver::initDriver(CIrrDeviceWin32* device)
             return false;
         }
     }
-	os::Printer::log("Pixel Format", core::longlongtoa(PixelFormat), ELL_DEBUG);
+    os::Printer::log("Pixel Format", core::longlongtoa(PixelFormat), ELL_DEBUG);
 
-	int iAttribs[] =
-	{
-		WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-		WGL_CONTEXT_MINOR_VERSION_ARB, 5,
-		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-		0
-	};
-	// create rendering context
-	hrc=wglCreateContextAttribs_ARB(HDc, 0, iAttribs);
-	if (!hrc)
-	{
-		iAttribs[3] = 4;
-		hrc=wglCreateContextAttribs_ARB(HDc, 0, iAttribs);
-	}
-	if (!hrc)
-	{
-		iAttribs[3] = 3;
-		hrc=wglCreateContextAttribs_ARB(HDc, 0, iAttribs);
-	}
+    int iAttribs[] =
+    {
+        WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+        WGL_CONTEXT_MINOR_VERSION_ARB, 5,
+        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+        0
+    };
+    // create rendering context
+    hrc=wglCreateContextAttribs_ARB(HDc, 0, iAttribs);
+    if (!hrc)
+    {
+        iAttribs[3] = 4;
+        hrc=wglCreateContextAttribs_ARB(HDc, 0, iAttribs);
+    }
+    if (!hrc)
+    {
+        iAttribs[3] = 3;
+        hrc=wglCreateContextAttribs_ARB(HDc, 0, iAttribs);
+    }
 
-	if (!hrc)
-	{
-		os::Printer::log("Cannot create a GL rendering context.", ELL_ERROR);
-		return false;
-	}
+    if (!hrc)
+    {
+        os::Printer::log("Cannot create a GL rendering context.", ELL_ERROR);
+        return false;
+    }
 
-	if (Params.AuxGLContexts)
+    if (Params.AuxGLContexts)
         AuxContexts = new SAuxContext[Params.AuxGLContexts];
-	for (size_t i=0; i<Params.AuxGLContexts; i++)
+    for (size_t i=0; i<Params.AuxGLContexts; i++)
     {
         AuxContexts[i].threadId = 0xdeadbeefbadc0ffeu;
         AuxContexts[i].ctx = wglCreateContextAttribs_ARB(HDc, hrc, iAttribs);
     }
 
-	// set exposed data
-	ExposedData.OpenGLWin32.HDc = HDc;
-	ExposedData.OpenGLWin32.HRc = hrc;
-	ExposedData.OpenGLWin32.HWnd = Window;
+    // set exposed data
+    ExposedData.OpenGLWin32.HDc = HDc;
+    ExposedData.OpenGLWin32.HRc = hrc;
+    ExposedData.OpenGLWin32.HWnd = Window;
 
-	// activate rendering context
-	if (!changeRenderContext(ExposedData, device))
-	{
-		os::Printer::log("Cannot activate GL rendering context", ELL_ERROR);
-		wglDeleteContext(hrc);
-		return false;
-	}
+    // activate rendering context
+    if (!changeRenderContext(ExposedData, device))
+    {
+        os::Printer::log("Cannot activate GL rendering context", ELL_ERROR);
+        wglDeleteContext(hrc);
+        return false;
+    }
 
 
-	int pf = GetPixelFormat(HDc);
-	DescribePixelFormat(HDc, pf, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
-	if (pfd.cAlphaBits != 0)
-	{
-		if (pfd.cRedBits == 8)
-			ColorFormat = ECF_A8R8G8B8;
-		else
-			ColorFormat = ECF_A1R5G5B5;
-	}
-	else
-	{
-		if (pfd.cRedBits == 8)
-			ColorFormat = ECF_R8G8B8;
-		else
-			ColorFormat = ECF_R5G6B5;
-	}
+    int pf = GetPixelFormat(HDc);
+    DescribePixelFormat(HDc, pf, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
+    if (pfd.cAlphaBits != 0)
+    {
+        if (pfd.cRedBits == 8)
+            ColorFormat = ECF_A8R8G8B8;
+        else
+            ColorFormat = ECF_A1R5G5B5;
+    }
+    else
+    {
+        if (pfd.cRedBits == 8)
+            ColorFormat = ECF_R8G8B8;
+        else
+            ColorFormat = ECF_R5G6B5;
+    }
 
 #ifdef _IRR_COMPILE_WITH_OPENCL_
-	ocl::COpenCLHandler::getCLDeviceFromGLContext(clDevice,hrc,HDc);
+    ocl::COpenCLHandler::getCLDeviceFromGLContext(clDevice,hrc,HDc);
 #endif // _IRR_COMPILE_WITH_OPENCL_
-	genericDriverInit();
+    genericDriverInit();
 
-	extGlSwapInterval(Params.Vsync ? 1 : 0);
-	return true;
+    extGlSwapInterval(Params.Vsync ? 1 : 0);
+    return true;
 }
 
 bool COpenGLDriver::initAuxContext()
@@ -534,19 +534,19 @@ bool COpenGLDriver::deinitAuxContext()
 #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
 //! Windows constructor and init code
 COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceMacOSX *device)
+        io::IFileSystem* io, CIrrDeviceMacOSX *device)
 : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
-	CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
-	AntiAlias(params.AntiAlias), CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), CurrentXFormFeedback(0), XFormFeedbackRunning(false),
-	CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8),
-	Params(params),
-	OSXDevice(device), DeviceType(EIDT_OSX), AuxContexts(0)
+    CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
+    AntiAlias(params.AntiAlias), CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), CurrentXFormFeedback(0), XFormFeedbackRunning(false),
+    CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8),
+    Params(params),
+    OSXDevice(device), DeviceType(EIDT_OSX), AuxContexts(0)
 {
-	#ifdef _DEBUG
-	setDebugName("COpenGLDriver");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("COpenGLDriver");
+    #endif
 
-	genericDriverInit();
+    genericDriverInit();
 }
 
 #endif
@@ -557,91 +557,91 @@ COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 //! Linux constructor and init code
 COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceLinux* device)
+        io::IFileSystem* io, CIrrDeviceLinux* device)
 : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
-	CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
-	AntiAlias(params.AntiAlias), CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), CurrentXFormFeedback(0), XFormFeedbackRunning(false),
-	CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8),
-	Params(params), X11Device(device), DeviceType(EIDT_X11), AuxContexts(0)
+    CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
+    AntiAlias(params.AntiAlias), CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), CurrentXFormFeedback(0), XFormFeedbackRunning(false),
+    CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8),
+    Params(params), X11Device(device), DeviceType(EIDT_X11), AuxContexts(0)
 {
-	#ifdef _DEBUG
-	setDebugName("COpenGLDriver");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("COpenGLDriver");
+    #endif
 }
 
 
 bool COpenGLDriver::changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceLinux* device)
 {
-	if (videoData.OpenGLLinux.X11Window)
-	{
-		if (videoData.OpenGLLinux.X11Display && videoData.OpenGLLinux.X11Context)
-		{
-			if (!glXMakeCurrent((Display*)videoData.OpenGLLinux.X11Display, videoData.OpenGLLinux.X11Window, (GLXContext)videoData.OpenGLLinux.X11Context))
-			{
-				os::Printer::log("Render Context switch failed.");
-				return false;
-			}
-			else
-			{
-				Drawable = videoData.OpenGLLinux.X11Window;
-				X11Display = (Display*)videoData.OpenGLLinux.X11Display;
-			}
-		}
-		else
-		{
-			// in case we only got a window ID, try with the existing values for display and context
-			if (!glXMakeCurrent((Display*)ExposedData.OpenGLLinux.X11Display, videoData.OpenGLLinux.X11Window, (GLXContext)ExposedData.OpenGLLinux.X11Context))
-			{
-				os::Printer::log("Render Context switch failed.");
-				return false;
-			}
-			else
-			{
-				Drawable = videoData.OpenGLLinux.X11Window;
-				X11Display = (Display*)ExposedData.OpenGLLinux.X11Display;
-			}
-		}
-	}
-	// set back to main context
-	else if (X11Display != ExposedData.OpenGLLinux.X11Display)
-	{
-		if (!glXMakeCurrent((Display*)ExposedData.OpenGLLinux.X11Display, ExposedData.OpenGLLinux.X11Window, (GLXContext)ExposedData.OpenGLLinux.X11Context))
-		{
-			os::Printer::log("Render Context switch failed.");
-			return false;
-		}
-		else
-		{
-			Drawable = ExposedData.OpenGLLinux.X11Window;
-			X11Display = (Display*)ExposedData.OpenGLLinux.X11Display;
-		}
-	}
-	return true;
+    if (videoData.OpenGLLinux.X11Window)
+    {
+        if (videoData.OpenGLLinux.X11Display && videoData.OpenGLLinux.X11Context)
+        {
+            if (!glXMakeCurrent((Display*)videoData.OpenGLLinux.X11Display, videoData.OpenGLLinux.X11Window, (GLXContext)videoData.OpenGLLinux.X11Context))
+            {
+                os::Printer::log("Render Context switch failed.");
+                return false;
+            }
+            else
+            {
+                Drawable = videoData.OpenGLLinux.X11Window;
+                X11Display = (Display*)videoData.OpenGLLinux.X11Display;
+            }
+        }
+        else
+        {
+            // in case we only got a window ID, try with the existing values for display and context
+            if (!glXMakeCurrent((Display*)ExposedData.OpenGLLinux.X11Display, videoData.OpenGLLinux.X11Window, (GLXContext)ExposedData.OpenGLLinux.X11Context))
+            {
+                os::Printer::log("Render Context switch failed.");
+                return false;
+            }
+            else
+            {
+                Drawable = videoData.OpenGLLinux.X11Window;
+                X11Display = (Display*)ExposedData.OpenGLLinux.X11Display;
+            }
+        }
+    }
+    // set back to main context
+    else if (X11Display != ExposedData.OpenGLLinux.X11Display)
+    {
+        if (!glXMakeCurrent((Display*)ExposedData.OpenGLLinux.X11Display, ExposedData.OpenGLLinux.X11Window, (GLXContext)ExposedData.OpenGLLinux.X11Context))
+        {
+            os::Printer::log("Render Context switch failed.");
+            return false;
+        }
+        else
+        {
+            Drawable = ExposedData.OpenGLLinux.X11Window;
+            X11Display = (Display*)ExposedData.OpenGLLinux.X11Display;
+        }
+    }
+    return true;
 }
 
 
 //! inits the open gl driver
 bool COpenGLDriver::initDriver(CIrrDeviceLinux* device, SAuxContext* auxCtxts)
 {
-	ExposedData.OpenGLLinux.X11Context = glXGetCurrentContext();
-	ExposedData.OpenGLLinux.X11Display = glXGetCurrentDisplay();
-	ExposedData.OpenGLLinux.X11Window = (unsigned long)Params.WindowId;
-	Drawable = glXGetCurrentDrawable();
-	X11Display = (Display*)ExposedData.OpenGLLinux.X11Display;
+    ExposedData.OpenGLLinux.X11Context = glXGetCurrentContext();
+    ExposedData.OpenGLLinux.X11Display = glXGetCurrentDisplay();
+    ExposedData.OpenGLLinux.X11Window = (unsigned long)Params.WindowId;
+    Drawable = glXGetCurrentDrawable();
+    X11Display = (Display*)ExposedData.OpenGLLinux.X11Display;
 
     AuxContexts = auxCtxts;
 
 #ifdef _IRR_COMPILE_WITH_OPENCL_
-	if (!ocl::COpenCLHandler::getCLDeviceFromGLContext(clDevice,reinterpret_cast<GLXContext&>(ExposedData.OpenGLLinux.X11Context),(Display*)ExposedData.OpenGLLinux.X11Display))
+    if (!ocl::COpenCLHandler::getCLDeviceFromGLContext(clDevice,reinterpret_cast<GLXContext&>(ExposedData.OpenGLLinux.X11Context),(Display*)ExposedData.OpenGLLinux.X11Display))
         os::Printer::log("Couldn't find matching OpenCL device.\n");
 #endif // _IRR_COMPILE_WITH_OPENCL_
 
-	genericDriverInit();
+    genericDriverInit();
 
-	// set vsync
-	//if (queryOpenGLFeature(IRR_))
+    // set vsync
+    //if (queryOpenGLFeature(IRR_))
         extGlSwapInterval(Params.Vsync ? -1 : 0);
-	return true;
+    return true;
 }
 
 bool COpenGLDriver::initAuxContext()
@@ -694,19 +694,19 @@ bool COpenGLDriver::deinitAuxContext()
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
 //! SDL constructor and init code
 COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceSDL* device)
+        io::IFileSystem* io, CIrrDeviceSDL* device)
 : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
-	CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
+    CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
     AntiAlias(params.AntiAlias), CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0),
      lastValidatedIndirectBuffer(0), CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8),
-	CurrentTarget(ERT_FRAME_BUFFER), Params(params),
-	SDLDevice(device), DeviceType(EIDT_SDL), AuxContexts(0)
+    CurrentTarget(ERT_FRAME_BUFFER), Params(params),
+    SDLDevice(device), DeviceType(EIDT_SDL), AuxContexts(0)
 {
-	#ifdef _DEBUG
-	setDebugName("COpenGLDriver");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("COpenGLDriver");
+    #endif
 
-	genericDriverInit();
+    genericDriverInit();
 }
 
 #endif // _IRR_COMPILE_WITH_SDL_DEVICE_
@@ -734,25 +734,25 @@ COpenGLDriver::~COpenGLDriver()
         }
 
         CurrentXFormFeedback->drop();
-		CurrentXFormFeedback = NULL;
+        CurrentXFormFeedback = NULL;
     }
 
     extGlUseProgram(0);
-	deleteMaterialRenders();
+    deleteMaterialRenders();
 
     removeAllFrameBuffers();
     removeAllRenderBuffers();
 
-	CurrentTexture.clear();
-	// I get a blue screen on my laptop, when I do not delete the
-	// textures manually before releasing the dc. Oh how I love this.
-	deleteAllTextures();
+    CurrentTexture.clear();
+    // I get a blue screen on my laptop, when I do not delete the
+    // textures manually before releasing the dc. Oh how I love this.
+    deleteAllTextures();
 
     extGlBindVertexArray(0);
     if (CurrentVAO)
         CurrentVAO->drop();
 
-	for(std::map<uint64_t,GLuint>::iterator it = SamplerMap.begin(); it != SamplerMap.end(); it++)
+    for(std::map<uint64_t,GLuint>::iterator it = SamplerMap.begin(); it != SamplerMap.end(); it++)
     {
         extGlDeleteSamplers(1,&it->second);
     }
@@ -762,33 +762,33 @@ COpenGLDriver::~COpenGLDriver()
 
     ctxInitMutex->Get();
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-	if (DeviceType == EIDT_WIN32)
-	{
+    if (DeviceType == EIDT_WIN32)
+    {
         for (size_t i=0; i<Params.AuxGLContexts; i++)
             wglDeleteContext(AuxContexts[i].ctx);
         if (AuxContexts)
             delete [] AuxContexts;
 
-		if (ExposedData.OpenGLWin32.HRc)
-		{
-			if (!wglMakeCurrent(HDc, 0))
-				os::Printer::log("Release of dc and rc failed.", ELL_WARNING);
+        if (ExposedData.OpenGLWin32.HRc)
+        {
+            if (!wglMakeCurrent(HDc, 0))
+                os::Printer::log("Release of dc and rc failed.", ELL_WARNING);
 
-			if (!wglDeleteContext((HGLRC)ExposedData.OpenGLWin32.HRc))
-				os::Printer::log("Release of rendering context failed.", ELL_WARNING);
-		}
+            if (!wglDeleteContext((HGLRC)ExposedData.OpenGLWin32.HRc))
+                os::Printer::log("Release of rendering context failed.", ELL_WARNING);
+        }
 
-		if (HDc)
-			ReleaseDC(Window, HDc);
+        if (HDc)
+            ReleaseDC(Window, HDc);
 
         //if (!ExternalWindow)
         //{
         //    DestroyWindow(temporary_wnd);
         //    UnregisterClass(ClassName, lhInstance);
         //}
-	}
+    }
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-	else
+    else
 #endif // _IRR_COMPILE_WITH_X11_DEVICE_
 #endif
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
@@ -817,21 +817,21 @@ bool COpenGLDriver::genericDriverInit()
 {
     ctxInitMutex = new FW_Mutex();
 
-	Name=L"OpenGL ";
-	Name.append(glGetString(GL_VERSION));
-	int32_t pos=Name.findNext(L' ', 7);
-	if (pos != -1)
-		Name=Name.subString(0, pos);
-	printVersion();
+    Name=L"OpenGL ";
+    Name.append(glGetString(GL_VERSION));
+    int32_t pos=Name.findNext(L' ', 7);
+    if (pos != -1)
+        Name=Name.subString(0, pos);
+    printVersion();
 
-	// print renderer information
-	const GLubyte* renderer = glGetString(GL_RENDERER);
-	const GLubyte* vendor = glGetString(GL_VENDOR);
-	if (renderer && vendor)
-	{
-		os::Printer::log(reinterpret_cast<const char*>(renderer), reinterpret_cast<const char*>(vendor), ELL_INFORMATION);
-		VendorName = reinterpret_cast<const char*>(vendor);
-	}
+    // print renderer information
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    const GLubyte* vendor = glGetString(GL_VENDOR);
+    if (renderer && vendor)
+    {
+        os::Printer::log(reinterpret_cast<const char*>(renderer), reinterpret_cast<const char*>(vendor), ELL_INFORMATION);
+        VendorName = reinterpret_cast<const char*>(vendor);
+    }
 
 
     maxConcurrentShaderInvocations = 0;
@@ -860,59 +860,59 @@ bool COpenGLDriver::genericDriverInit()
 #endif // _IRR_COMPILE_WITH_OPENCL_
 
 
-	GLint num = 0;
-	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &num);
-	MaxTextureSizes[ITexture::ETT_1D][0] = static_cast<uint32_t>(num);
-	MaxTextureSizes[ITexture::ETT_2D][0] = static_cast<uint32_t>(num);
-	MaxTextureSizes[ITexture::ETT_2D][1] = static_cast<uint32_t>(num);
+    GLint num = 0;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &num);
+    MaxTextureSizes[ITexture::ETT_1D][0] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_2D][0] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_2D][1] = static_cast<uint32_t>(num);
 
-	MaxTextureSizes[ITexture::ETT_1D_ARRAY][0] = static_cast<uint32_t>(num);
-	MaxTextureSizes[ITexture::ETT_2D_ARRAY][0] = static_cast<uint32_t>(num);
-	MaxTextureSizes[ITexture::ETT_2D_ARRAY][1] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_1D_ARRAY][0] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_2D_ARRAY][0] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_2D_ARRAY][1] = static_cast<uint32_t>(num);
 
-	glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE , &num);
-	MaxTextureSizes[ITexture::ETT_CUBE_MAP][0] = static_cast<uint32_t>(num);
-	MaxTextureSizes[ITexture::ETT_CUBE_MAP][1] = static_cast<uint32_t>(num);
+    glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE , &num);
+    MaxTextureSizes[ITexture::ETT_CUBE_MAP][0] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_CUBE_MAP][1] = static_cast<uint32_t>(num);
 
-	MaxTextureSizes[ITexture::ETT_CUBE_MAP_ARRAY][0] = static_cast<uint32_t>(num);
-	MaxTextureSizes[ITexture::ETT_CUBE_MAP_ARRAY][1] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_CUBE_MAP_ARRAY][0] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_CUBE_MAP_ARRAY][1] = static_cast<uint32_t>(num);
 
-	glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &num);
-	MaxTextureSizes[ITexture::ETT_1D_ARRAY][2] = static_cast<uint32_t>(num);
-	MaxTextureSizes[ITexture::ETT_2D_ARRAY][2] = static_cast<uint32_t>(num);
-	MaxTextureSizes[ITexture::ETT_CUBE_MAP_ARRAY][2] = static_cast<uint32_t>(num);
+    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &num);
+    MaxTextureSizes[ITexture::ETT_1D_ARRAY][2] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_2D_ARRAY][2] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_CUBE_MAP_ARRAY][2] = static_cast<uint32_t>(num);
 
-	glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &num);
-	MaxTextureSizes[ITexture::ETT_3D][0] = static_cast<uint32_t>(num);
-	MaxTextureSizes[ITexture::ETT_3D][1] = static_cast<uint32_t>(num);
-	MaxTextureSizes[ITexture::ETT_3D][2] = static_cast<uint32_t>(num);
-
-
-	glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE , &num);
-	MaxTextureSizes[ITexture::ETT_TEXTURE_BUFFER][0] = static_cast<uint32_t>(num);
+    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &num);
+    MaxTextureSizes[ITexture::ETT_3D][0] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_3D][1] = static_cast<uint32_t>(num);
+    MaxTextureSizes[ITexture::ETT_3D][2] = static_cast<uint32_t>(num);
 
 
-	uint32_t i;
-	CurrentTexture.clear();
-	// load extensions
-	initExtensions(Params.Stencilbuffer);
-	if (queryFeature(EVDF_ARB_GLSL))
-	{
-		char buf[32];
-		const uint32_t maj = ShaderLanguageVersion/10;
-		snprintf(buf, 32, "%u.%u", maj, ShaderLanguageVersion-maj*10);
-		os::Printer::log("GLSL version", buf, ELL_INFORMATION);
-	}
-	else
+    glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE , &num);
+    MaxTextureSizes[ITexture::ETT_TEXTURE_BUFFER][0] = static_cast<uint32_t>(num);
+
+
+    uint32_t i;
+    CurrentTexture.clear();
+    // load extensions
+    initExtensions(Params.Stencilbuffer);
+    if (queryFeature(EVDF_ARB_GLSL))
     {
-		os::Printer::log("GLSL not available.", ELL_ERROR);
-		return false;
+        char buf[32];
+        const uint32_t maj = ShaderLanguageVersion/10;
+        snprintf(buf, 32, "%u.%u", maj, ShaderLanguageVersion-maj*10);
+        os::Printer::log("GLSL version", buf, ELL_INFORMATION);
+    }
+    else
+    {
+        os::Printer::log("GLSL not available.", ELL_ERROR);
+        return false;
     }
 
     if (Version<430)
     {
-		os::Printer::log("OpenGL version is less than 4.3", ELL_ERROR);
-		return false;
+        os::Printer::log("OpenGL version is less than 4.3", ELL_ERROR);
+        return false;
     }
 
     for (size_t i=0; i<MATERIAL_MAX_TEXTURES; i++)
@@ -920,43 +920,43 @@ bool COpenGLDriver::genericDriverInit()
         CurrentSamplerHash[i] = 0xffffffffffffffffuLL;
     }
 
-	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
-	// Reset The Current Viewport
-	glViewport(0, 0, Params.WindowSize.Width, Params.WindowSize.Height);
+    // Reset The Current Viewport
+    glViewport(0, 0, Params.WindowSize.Width, Params.WindowSize.Height);
 
-	Params.HandleSRGB &= ((FeatureAvailable[IRR_ARB_framebuffer_sRGB] || FeatureAvailable[IRR_EXT_framebuffer_sRGB]) &&
-		FeatureAvailable[IRR_EXT_texture_sRGB]);
+    Params.HandleSRGB &= ((FeatureAvailable[IRR_ARB_framebuffer_sRGB] || FeatureAvailable[IRR_EXT_framebuffer_sRGB]) &&
+        FeatureAvailable[IRR_EXT_texture_sRGB]);
 #if defined(GL_ARB_framebuffer_sRGB)
-	if (Params.HandleSRGB)
-		glEnable(GL_FRAMEBUFFER_SRGB);
+    if (Params.HandleSRGB)
+        glEnable(GL_FRAMEBUFFER_SRGB);
 #elif defined(GL_EXT_framebuffer_sRGB)
-	if (Params.HandleSRGB)
-		glEnable(GL_FRAMEBUFFER_SRGB_EXT);
+    if (Params.HandleSRGB)
+        glEnable(GL_FRAMEBUFFER_SRGB_EXT);
 #endif
 
 
-	glClearDepth(0.0);
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-	glDepthFunc(GL_GEQUAL);
-	glDepthRange(1.0,0.0);
-	glFrontFace(GL_CW);
-	// adjust flat coloring scheme to DirectX version
+    glClearDepth(0.0);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glDepthFunc(GL_GEQUAL);
+    glDepthRange(1.0,0.0);
+    glFrontFace(GL_CW);
+    // adjust flat coloring scheme to DirectX version
 #if defined(GL_ARB_provoking_vertex) || defined(GL_EXT_provoking_vertex)
-	extGlProvokingVertex(GL_FIRST_VERTEX_CONVENTION_EXT);
+    extGlProvokingVertex(GL_FIRST_VERTEX_CONVENTION_EXT);
 #endif
 
-	// create material renderers
-	createMaterialRenderers();
+    // create material renderers
+    createMaterialRenderers();
 
-	// set the renderstates
-	setRenderStates3DMode();
+    // set the renderstates
+    setRenderStates3DMode();
 
-	// We need to reset once more at the beginning of the first rendering.
-	// This fixes problems with intermediate changes to the material during texture load.
-	ResetRenderStates = true;
+    // We need to reset once more at the beginning of the first rendering.
+    // This fixes problems with intermediate changes to the material during texture load.
+    ResetRenderStates = true;
 
-	return true;
+    return true;
 }
 
 class SimpleDummyCallBack : public video::IShaderConstantSetCallBack
@@ -989,20 +989,20 @@ public:
     virtual void OnSetMaterial(video::IMaterialRendererServices* services, const video::SMaterial &material, const video::SMaterial &lastMaterial)
     {
         currentMatType = material.MaterialType;
-	}
-	virtual void OnSetConstants(video::IMaterialRendererServices* services, int32_t userData)
-	{
-	    if (currentMatType>=EMT_COUNT)
+    }
+    virtual void OnSetConstants(video::IMaterialRendererServices* services, int32_t userData)
+    {
+        if (currentMatType>=EMT_COUNT)
             return;
 
-	    if (mvpUniform[currentMatType].location>=0)
+        if (mvpUniform[currentMatType].location>=0)
             services->setShaderConstant(services->getVideoDriver()->getTransform(EPTS_PROJ_VIEW_WORLD).pointer(),mvpUniform[currentMatType].location,mvpUniform[currentMatType].type);
-	}
+    }
 };
 
 void COpenGLDriver::createMaterialRenderers()
 {
-	// create OpenGL material renderers
+    // create OpenGL material renderers
     const char* std_vert =
     //"#version 430 core\n"
     "#version 400 core\n"
@@ -1086,34 +1086,34 @@ void COpenGLDriver::createMaterialRenderers()
     SimpleDummyCallBack* sdCB = new SimpleDummyCallBack();
 
     COpenGLSLMaterialRenderer* rdr = new COpenGLSLMaterialRenderer(
-		this, nr,
-		std_vert, "main",
-		std_solid_frag, "main",
-		NULL, NULL, NULL, NULL, NULL, NULL,3,sdCB,EMT_SOLID);
+        this, nr,
+        std_vert, "main",
+        std_solid_frag, "main",
+        NULL, NULL, NULL, NULL, NULL, NULL,3,sdCB,EMT_SOLID);
     if (rdr)
         rdr->drop();
 
-	rdr = new COpenGLSLMaterialRenderer(
-		this, nr,
-		std_vert, "main",
-		std_trans_add_frag, "main",
-		NULL, NULL, NULL, NULL, NULL, NULL,3,sdCB,EMT_TRANSPARENT_ADD_COLOR);
+    rdr = new COpenGLSLMaterialRenderer(
+        this, nr,
+        std_vert, "main",
+        std_trans_add_frag, "main",
+        NULL, NULL, NULL, NULL, NULL, NULL,3,sdCB,EMT_TRANSPARENT_ADD_COLOR);
     if (rdr)
         rdr->drop();
 
-	rdr = new COpenGLSLMaterialRenderer(
-		this, nr,
-		std_vert, "main",
-		std_trans_alpha_frag, "main",
-		NULL, NULL, NULL, NULL, NULL, NULL,3,sdCB,EMT_TRANSPARENT_ALPHA_CHANNEL);
+    rdr = new COpenGLSLMaterialRenderer(
+        this, nr,
+        std_vert, "main",
+        std_trans_alpha_frag, "main",
+        NULL, NULL, NULL, NULL, NULL, NULL,3,sdCB,EMT_TRANSPARENT_ALPHA_CHANNEL);
     if (rdr)
         rdr->drop();
 
-	rdr = new COpenGLSLMaterialRenderer(
-		this, nr,
-		std_vert, "main",
-		std_trans_vertex_frag, "main",
-		NULL, NULL, NULL, NULL, NULL, NULL,3,sdCB,EMT_TRANSPARENT_VERTEX_ALPHA);
+    rdr = new COpenGLSLMaterialRenderer(
+        this, nr,
+        std_vert, "main",
+        std_trans_vertex_frag, "main",
+        NULL, NULL, NULL, NULL, NULL, NULL,3,sdCB,EMT_TRANSPARENT_VERTEX_ALPHA);
     if (rdr)
         rdr->drop();
 
@@ -1124,62 +1124,62 @@ void COpenGLDriver::createMaterialRenderers()
 //! presents the rendered scene on the screen, returns false if failed
 bool COpenGLDriver::endScene()
 {
-	CNullDriver::endScene();
+    CNullDriver::endScene();
 
-	//glFlush();
+    //glFlush();
 
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-	if (DeviceType == EIDT_WIN32)
-		return SwapBuffers(HDc) == TRUE;
+    if (DeviceType == EIDT_WIN32)
+        return SwapBuffers(HDc) == TRUE;
 #endif
 
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-	if (DeviceType == EIDT_X11)
-	{
-		glXSwapBuffers(X11Display, Drawable);
-		return true;
-	}
+    if (DeviceType == EIDT_X11)
+    {
+        glXSwapBuffers(X11Display, Drawable);
+        return true;
+    }
 #endif
 
 #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-	if (DeviceType == EIDT_OSX)
-	{
-		OSXDevice->flush();
-		return true;
-	}
+    if (DeviceType == EIDT_OSX)
+    {
+        OSXDevice->flush();
+        return true;
+    }
 #endif
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-	if (DeviceType == EIDT_SDL)
-	{
-		SDL_GL_SwapBuffers();
-		return true;
-	}
+    if (DeviceType == EIDT_SDL)
+    {
+        SDL_GL_SwapBuffers();
+        return true;
+    }
 #endif
 
-	// todo: console device present
+    // todo: console device present
 
-	return false;
+    return false;
 }
 
 
 //! init call for rendering start
 bool COpenGLDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
-		const SExposedVideoData& videoData, core::rect<int32_t>* sourceRect)
+        const SExposedVideoData& videoData, core::rect<int32_t>* sourceRect)
 {
-	CNullDriver::beginScene(backBuffer, zBuffer, color, videoData, sourceRect);
+    CNullDriver::beginScene(backBuffer, zBuffer, color, videoData, sourceRect);
 #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-	if (DeviceType==EIDT_OSX)
-		changeRenderContext(videoData, (void*)0);
+    if (DeviceType==EIDT_OSX)
+        changeRenderContext(videoData, (void*)0);
 #endif // _IRR_COMPILE_WITH_OSX_DEVICE_
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	if (DeviceType == EIDT_SDL)
-	{
-		// todo: SDL sets glFrontFace(GL_CCW) after driver creation,
-		// it would be better if this was fixed elsewhere.
-		glFrontFace(GL_CW);
-	}
+    if (DeviceType == EIDT_SDL)
+    {
+        // todo: SDL sets glFrontFace(GL_CCW) after driver creation,
+        // it would be better if this was fixed elsewhere.
+        glFrontFace(GL_CW);
+    }
 #endif
 
     if (zBuffer)
@@ -1193,7 +1193,7 @@ bool COpenGLDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
         colorf /= 255.f;
         clearScreen(Params.Doublebuffer ? ESB_BACK_LEFT:ESB_FRONT_LEFT,reinterpret_cast<float*>(&colorf));
     }
-	return true;
+    return true;
 }
 
 
@@ -1418,11 +1418,11 @@ scene::IGPUMesh* COpenGLDriver::createGPUMeshFromCPU(scene::ICPUMesh* mesh, cons
         }
         //set bbox
         core::aabbox3df oldBBox = origmeshbuf->getBoundingBox();
-	if (mesh->getMeshType()!=scene::EMT_ANIMATED_SKINNED)
-		origmeshbuf->recalculateBoundingBox();
+    if (mesh->getMeshType()!=scene::EMT_ANIMATED_SKINNED)
+        origmeshbuf->recalculateBoundingBox();
         meshbuffer->setBoundingBox(origmeshbuf->getBoundingBox());
-	if (mesh->getMeshType()!=scene::EMT_ANIMATED_SKINNED)
-        	origmeshbuf->setBoundingBox(oldBBox);
+    if (mesh->getMeshType()!=scene::EMT_ANIMATED_SKINNED)
+            origmeshbuf->setBoundingBox(oldBBox);
         //set primitive type
         meshbuffer->setPrimitiveType(origmeshbuf->getPrimitiveType());
         //set material
@@ -1798,14 +1798,14 @@ void COpenGLDriver::endQuery(IQueryObject* query, const size_t& index)
 // small helper function to create vertex buffer object adress offsets
 static inline uint8_t* buffer_offset(const long offset)
 {
-	return ((uint8_t*)0 + offset);
+    return ((uint8_t*)0 + offset);
 }
 
 
 
 void COpenGLDriver::drawMeshBuffer(scene::IGPUMeshBuffer* mb, IOcclusionQuery* query)
 {
-	if (!mb)
+    if (!mb)
     {
         if (CurrentVAO)
         {
@@ -1813,13 +1813,13 @@ void COpenGLDriver::drawMeshBuffer(scene::IGPUMeshBuffer* mb, IOcclusionQuery* q
             CurrentVAO = NULL;
         }
         extGlBindVertexArray(0);
-		return;
+        return;
     }
     else if (!mb->getInstanceCount())
         return;
 
     COpenGLVAO* meshLayoutVAO = static_cast<COpenGLVAO*>(mb->getMeshDataAndFormat());
-	if (!meshLayoutVAO)
+    if (!meshLayoutVAO)
     {
         if (CurrentVAO)
         {
@@ -1827,22 +1827,22 @@ void COpenGLDriver::drawMeshBuffer(scene::IGPUMeshBuffer* mb, IOcclusionQuery* q
             CurrentVAO = NULL;
         }
         extGlBindVertexArray(0);
-		return;
+        return;
     }
 
 #ifdef _DEBUG
-	if (mb->getIndexCount() > getMaximalIndicesCount())
-	{
-		char tmp[1024];
-		sprintf(tmp,"Could not draw, too many indices(%u), maxium is %u.", mb->getIndexCount(), getMaximalIndicesCount());
-		os::Printer::log(tmp, ELL_ERROR);
-	}
+    if (mb->getIndexCount() > getMaximalIndicesCount())
+    {
+        char tmp[1024];
+        sprintf(tmp,"Could not draw, too many indices(%u), maxium is %u.", mb->getIndexCount(), getMaximalIndicesCount());
+        os::Printer::log(tmp, ELL_ERROR);
+    }
 #endif // _DEBUG
 
-	CNullDriver::drawMeshBuffer(mb,query);
+    CNullDriver::drawMeshBuffer(mb,query);
 
-	// draw everything
-	setRenderStates3DMode();
+    // draw everything
+    setRenderStates3DMode();
 
     COpenGLOcclusionQuery* queryGL = (static_cast<COpenGLOcclusionQuery*>(query));
 
@@ -1871,7 +1871,7 @@ void COpenGLDriver::drawMeshBuffer(scene::IGPUMeshBuffer* mb, IOcclusionQuery* q
         CurrentVAO = meshLayoutVAO;
     }
 
-	GLenum indexSize=0;
+    GLenum indexSize=0;
     if (meshLayoutVAO->getIndexBuffer())
     {
         switch (mb->getIndexType())
@@ -1918,18 +1918,18 @@ void COpenGLDriver::drawMeshBuffer(scene::IGPUMeshBuffer* mb, IOcclusionQuery* q
     }
 
     GLenum primType = primitiveTypeToGL(mb->getPrimitiveType());
-	switch (mb->getPrimitiveType())
-	{
-		case scene::EPT_POINTS:
-		{
-			// prepare size and attenuation (where supported)
-			GLfloat particleSize=Material.Thickness;
-			extGlPointParameterf(GL_POINT_FADE_THRESHOLD_SIZE, 1.0f);
-			glPointSize(particleSize);
+    switch (mb->getPrimitiveType())
+    {
+        case scene::EPT_POINTS:
+        {
+            // prepare size and attenuation (where supported)
+            GLfloat particleSize=Material.Thickness;
+            extGlPointParameterf(GL_POINT_FADE_THRESHOLD_SIZE, 1.0f);
+            glPointSize(particleSize);
 
-		}
-			break;
-		case scene::EPT_TRIANGLES:
+        }
+            break;
+        case scene::EPT_TRIANGLES:
         {
             if (static_cast<uint32_t>(Material.MaterialType) < MaterialRenderers.size())
             {
@@ -1938,10 +1938,10 @@ void COpenGLDriver::drawMeshBuffer(scene::IGPUMeshBuffer* mb, IOcclusionQuery* q
                     primType = GL_PATCHES;
             }
         }
-			break;
+            break;
         default:
-			break;
-	}
+            break;
+    }
 
     if (indexSize)
         extGlDrawElementsInstancedBaseVertexBaseInstance(primType,mb->getIndexCount(),indexSize,(void*)mb->getIndexBufferOffset(),mb->getInstanceCount(),mb->getBaseVertex(),mb->getBaseInstance());
@@ -2016,7 +2016,7 @@ void COpenGLDriver::drawArraysIndirect(scene::IGPUMeshDataFormatDesc* vao, scene
 
 
     COpenGLVAO* meshLayoutVAO = static_cast<COpenGLVAO*>(vao);
-	if (!meshLayoutVAO)
+    if (!meshLayoutVAO)
     {
         if (CurrentVAO)
         {
@@ -2024,11 +2024,11 @@ void COpenGLDriver::drawArraysIndirect(scene::IGPUMeshDataFormatDesc* vao, scene
             CurrentVAO = NULL;
         }
         extGlBindVertexArray(0);
-		return;
+        return;
     }
 
-	// draw everything
-	setRenderStates3DMode();
+    // draw everything
+    setRenderStates3DMode();
 
     COpenGLOcclusionQuery* queryGL = (static_cast<COpenGLOcclusionQuery*>(query));
 
@@ -2058,17 +2058,17 @@ void COpenGLDriver::drawArraysIndirect(scene::IGPUMeshDataFormatDesc* vao, scene
     }
 
     GLenum primType = primitiveTypeToGL(mode);
-	switch (mode)
-	{
-		case scene::EPT_POINTS:
-		{
-			// prepare size and attenuation (where supported)
-			GLfloat particleSize=Material.Thickness;
-			extGlPointParameterf(GL_POINT_FADE_THRESHOLD_SIZE, 1.0f);
-			glPointSize(particleSize);
-		}
-			break;
-		case scene::EPT_TRIANGLES:
+    switch (mode)
+    {
+        case scene::EPT_POINTS:
+        {
+            // prepare size and attenuation (where supported)
+            GLfloat particleSize=Material.Thickness;
+            extGlPointParameterf(GL_POINT_FADE_THRESHOLD_SIZE, 1.0f);
+            glPointSize(particleSize);
+        }
+            break;
+        case scene::EPT_TRIANGLES:
         {
             if (static_cast<uint32_t>(Material.MaterialType) < MaterialRenderers.size())
             {
@@ -2077,10 +2077,10 @@ void COpenGLDriver::drawArraysIndirect(scene::IGPUMeshDataFormatDesc* vao, scene
                     primType = GL_PATCHES;
             }
         }
-			break;
+            break;
         default:
-			break;
-	}
+            break;
+    }
 
 
     //actual drawing
@@ -2114,7 +2114,7 @@ void COpenGLDriver::drawIndexedIndirect(scene::IGPUMeshDataFormatDesc* vao, scen
 
 
     COpenGLVAO* meshLayoutVAO = static_cast<COpenGLVAO*>(vao);
-	if (!meshLayoutVAO)
+    if (!meshLayoutVAO)
     {
         if (CurrentVAO)
         {
@@ -2122,11 +2122,11 @@ void COpenGLDriver::drawIndexedIndirect(scene::IGPUMeshDataFormatDesc* vao, scen
             CurrentVAO = NULL;
         }
         extGlBindVertexArray(0);
-		return;
+        return;
     }
 
-	// draw everything
-	setRenderStates3DMode();
+    // draw everything
+    setRenderStates3DMode();
 
     COpenGLOcclusionQuery* queryGL = (static_cast<COpenGLOcclusionQuery*>(query));
 
@@ -2155,20 +2155,20 @@ void COpenGLDriver::drawIndexedIndirect(scene::IGPUMeshDataFormatDesc* vao, scen
         CurrentVAO = meshLayoutVAO;
     }
 
-	GLenum indexSize = type!=EIT_16BIT ? GL_UNSIGNED_INT:GL_UNSIGNED_SHORT;
+    GLenum indexSize = type!=EIT_16BIT ? GL_UNSIGNED_INT:GL_UNSIGNED_SHORT;
 
     GLenum primType = primitiveTypeToGL(mode);
-	switch (mode)
-	{
-		case scene::EPT_POINTS:
-		{
-			// prepare size and attenuation (where supported)
-			GLfloat particleSize=Material.Thickness;
-			extGlPointParameterf(GL_POINT_FADE_THRESHOLD_SIZE, 1.0f);
-			glPointSize(particleSize);
-		}
-			break;
-		case scene::EPT_TRIANGLES:
+    switch (mode)
+    {
+        case scene::EPT_POINTS:
+        {
+            // prepare size and attenuation (where supported)
+            GLfloat particleSize=Material.Thickness;
+            extGlPointParameterf(GL_POINT_FADE_THRESHOLD_SIZE, 1.0f);
+            glPointSize(particleSize);
+        }
+            break;
+        case scene::EPT_TRIANGLES:
         {
             if (static_cast<uint32_t>(Material.MaterialType) < MaterialRenderers.size())
             {
@@ -2177,10 +2177,10 @@ void COpenGLDriver::drawIndexedIndirect(scene::IGPUMeshDataFormatDesc* vao, scen
                     primType = GL_PATCHES;
             }
         }
-			break;
+            break;
         default:
-			break;
-	}
+            break;
+    }
 
 
     //actual drawing
@@ -2196,37 +2196,37 @@ void COpenGLDriver::drawIndexedIndirect(scene::IGPUMeshDataFormatDesc* vao, scen
 //! Get native wrap mode value
 inline GLint getTextureWrapMode(const uint8_t &clamp)
 {
-	GLint mode=GL_REPEAT;
-	switch (clamp)
-	{
-		case ETC_REPEAT:
-			mode=GL_REPEAT;
-			break;
-		case ETC_CLAMP_TO_EDGE:
-			mode=GL_CLAMP_TO_EDGE;
-			break;
-		case ETC_CLAMP_TO_BORDER:
+    GLint mode=GL_REPEAT;
+    switch (clamp)
+    {
+        case ETC_REPEAT:
+            mode=GL_REPEAT;
+            break;
+        case ETC_CLAMP_TO_EDGE:
+            mode=GL_CLAMP_TO_EDGE;
+            break;
+        case ETC_CLAMP_TO_BORDER:
             mode=GL_CLAMP_TO_BORDER;
-			break;
-		case ETC_MIRROR:
+            break;
+        case ETC_MIRROR:
             mode=GL_MIRRORED_REPEAT;
-			break;
-		case ETC_MIRROR_CLAMP_TO_EDGE:
-			if (COpenGLExtensionHandler::FeatureAvailable[COpenGLExtensionHandler::IRR_EXT_texture_mirror_clamp])
-				mode = GL_MIRROR_CLAMP_TO_EDGE_EXT;
-			else if (COpenGLExtensionHandler::FeatureAvailable[COpenGLExtensionHandler::IRR_ATI_texture_mirror_once])
-				mode = GL_MIRROR_CLAMP_TO_EDGE_ATI;
-			else
-				mode = GL_CLAMP;
-			break;
-		case ETC_MIRROR_CLAMP_TO_BORDER:
-			if (COpenGLExtensionHandler::FeatureAvailable[COpenGLExtensionHandler::IRR_EXT_texture_mirror_clamp])
-				mode = GL_MIRROR_CLAMP_TO_BORDER_EXT;
-			else
-				mode = GL_CLAMP;
-			break;
-	}
-	return mode;
+            break;
+        case ETC_MIRROR_CLAMP_TO_EDGE:
+            if (COpenGLExtensionHandler::FeatureAvailable[COpenGLExtensionHandler::IRR_EXT_texture_mirror_clamp])
+                mode = GL_MIRROR_CLAMP_TO_EDGE_EXT;
+            else if (COpenGLExtensionHandler::FeatureAvailable[COpenGLExtensionHandler::IRR_ATI_texture_mirror_once])
+                mode = GL_MIRROR_CLAMP_TO_EDGE_ATI;
+            else
+                mode = GL_CLAMP;
+            break;
+        case ETC_MIRROR_CLAMP_TO_BORDER:
+            if (COpenGLExtensionHandler::FeatureAvailable[COpenGLExtensionHandler::IRR_EXT_texture_mirror_clamp])
+                mode = GL_MIRROR_CLAMP_TO_BORDER_EXT;
+            else
+                mode = GL_CLAMP;
+            break;
+    }
+    return mode;
 }
 
 
@@ -2277,14 +2277,14 @@ GLuint COpenGLDriver::constructSamplerInCache(const uint64_t &hashVal)
 
 bool COpenGLDriver::setActiveTexture(uint32_t stage, video::ITexture* texture, const video::STextureSamplingParams &sampleParams)
 {
-	if (stage >= MaxTextureUnits)
-		return false;
+    if (stage >= MaxTextureUnits)
+        return false;
 
 
     if (texture&&texture->getTextureType()==ITexture::ETT_TEXTURE_BUFFER&&!static_cast<COpenGLTextureBufferObject*>(texture)->rebindRevalidate())
         return false;
 
-	if (CurrentTexture[stage]!=texture)
+    if (CurrentTexture[stage]!=texture)
     {
         const video::COpenGLTexture* oldTexture = static_cast<const COpenGLTexture*>(CurrentTexture[stage]);
         GLenum oldTexType = GL_INVALID_ENUM;
@@ -2341,7 +2341,7 @@ bool COpenGLDriver::setActiveTexture(uint32_t stage, video::ITexture* texture, c
         extGlBindSampler(stage,0);
     }
 
-	return true;
+    return true;
 }
 
 
@@ -2379,12 +2379,12 @@ void COpenGLDriver::STextureStageCache::clear()
 //! returns a device dependent texture from a software surface (IImage)
 video::ITexture* COpenGLDriver::createDeviceDependentTexture(IImage* surface, const io::path& name, void* mipmapData)
 {
-	return new COpenGLTexture(surface, name, mipmapData, this);
+    return new COpenGLTexture(surface, name, mipmapData, this);
 }
 
 //! returns a device dependent texture from a software surface (IImage)
 video::ITexture* COpenGLDriver::createDeviceDependentTexture(const ITexture::E_TEXTURE_TYPE& type, const uint32_t* size, uint32_t mipmapLevels,
-			const io::path& name, ECOLOR_FORMAT format)
+            const io::path& name, ECOLOR_FORMAT format)
 {
     switch (type)
     {
@@ -2411,13 +2411,13 @@ video::ITexture* COpenGLDriver::createDeviceDependentTexture(const ITexture::E_T
 //! Sets a material. All 3d drawing functions draw geometry now using this material.
 void COpenGLDriver::setMaterial(const SMaterial& material)
 {
-	Material = material;
-	OverrideMaterial.apply(Material);
+    Material = material;
+    OverrideMaterial.apply(Material);
 
-	for (int32_t i = MaxTextureUnits-1; i>= 0; --i)
-	{
-		setActiveTexture(i, material.getTexture(i), material.TextureLayer[i].SamplingParams);
-	}
+    for (int32_t i = MaxTextureUnits-1; i>= 0; --i)
+    {
+        setActiveTexture(i, material.getTexture(i), material.TextureLayer[i].SamplingParams);
+    }
 }
 
 
@@ -2425,32 +2425,32 @@ void COpenGLDriver::setMaterial(const SMaterial& material)
 bool COpenGLDriver::testGLError()
 {
 #ifdef _DEBUG
-	GLenum g = glGetError();
-	switch (g)
-	{
-	case GL_NO_ERROR:
-		return false;
-	case GL_INVALID_ENUM:
-		os::Printer::log("GL_INVALID_ENUM", ELL_ERROR); break;
-	case GL_INVALID_VALUE:
-		os::Printer::log("GL_INVALID_VALUE", ELL_ERROR); break;
-	case GL_INVALID_OPERATION:
-		os::Printer::log("GL_INVALID_OPERATION", ELL_ERROR); break;
-	case GL_STACK_OVERFLOW:
-		os::Printer::log("GL_STACK_OVERFLOW", ELL_ERROR); break;
-	case GL_STACK_UNDERFLOW:
-		os::Printer::log("GL_STACK_UNDERFLOW", ELL_ERROR); break;
-	case GL_OUT_OF_MEMORY:
-		os::Printer::log("GL_OUT_OF_MEMORY", ELL_ERROR); break;
-	case GL_TABLE_TOO_LARGE:
-		os::Printer::log("GL_TABLE_TOO_LARGE", ELL_ERROR); break;
-	case GL_INVALID_FRAMEBUFFER_OPERATION_EXT:
-		os::Printer::log("GL_INVALID_FRAMEBUFFER_OPERATION", ELL_ERROR); break;
-	};
-//	_IRR_DEBUG_BREAK_IF(true);
-	return true;
+    GLenum g = glGetError();
+    switch (g)
+    {
+    case GL_NO_ERROR:
+        return false;
+    case GL_INVALID_ENUM:
+        os::Printer::log("GL_INVALID_ENUM", ELL_ERROR); break;
+    case GL_INVALID_VALUE:
+        os::Printer::log("GL_INVALID_VALUE", ELL_ERROR); break;
+    case GL_INVALID_OPERATION:
+        os::Printer::log("GL_INVALID_OPERATION", ELL_ERROR); break;
+    case GL_STACK_OVERFLOW:
+        os::Printer::log("GL_STACK_OVERFLOW", ELL_ERROR); break;
+    case GL_STACK_UNDERFLOW:
+        os::Printer::log("GL_STACK_UNDERFLOW", ELL_ERROR); break;
+    case GL_OUT_OF_MEMORY:
+        os::Printer::log("GL_OUT_OF_MEMORY", ELL_ERROR); break;
+    case GL_TABLE_TOO_LARGE:
+        os::Printer::log("GL_TABLE_TOO_LARGE", ELL_ERROR); break;
+    case GL_INVALID_FRAMEBUFFER_OPERATION_EXT:
+        os::Printer::log("GL_INVALID_FRAMEBUFFER_OPERATION", ELL_ERROR); break;
+    };
+//    _IRR_DEBUG_BREAK_IF(true);
+    return true;
 #else
-	return false;
+    return false;
 #endif
 }
 
@@ -2458,29 +2458,29 @@ bool COpenGLDriver::testGLError()
 //! sets the needed renderstates
 void COpenGLDriver::setRenderStates3DMode()
 {
-	if (CurrentRenderMode != ERM_3D)
-	{
-		// Reset Texture Stages
-		glDisable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (CurrentRenderMode != ERM_3D)
+    {
+        // Reset Texture Stages
+        glDisable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		ResetRenderStates = true;
-	}
+        ResetRenderStates = true;
+    }
 
-	if (ResetRenderStates || LastMaterial != Material)
-	{
-		// unset old material
+    if (ResetRenderStates || LastMaterial != Material)
+    {
+        // unset old material
 
-		if (LastMaterial.MaterialType != Material.MaterialType &&
-				static_cast<uint32_t>(LastMaterial.MaterialType) < MaterialRenderers.size())
-			MaterialRenderers[LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
+        if (LastMaterial.MaterialType != Material.MaterialType &&
+                static_cast<uint32_t>(LastMaterial.MaterialType) < MaterialRenderers.size())
+            MaterialRenderers[LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
 
-		// set new material.
-		if (static_cast<uint32_t>(Material.MaterialType) < MaterialRenderers.size())
-			MaterialRenderers[Material.MaterialType].Renderer->OnSetMaterial(
-				Material, LastMaterial, ResetRenderStates, this);
+        // set new material.
+        if (static_cast<uint32_t>(Material.MaterialType) < MaterialRenderers.size())
+            MaterialRenderers[Material.MaterialType].Renderer->OnSetMaterial(
+                Material, LastMaterial, ResetRenderStates, this);
 
-		if (CurrentXFormFeedback&&XFormFeedbackRunning)
+        if (CurrentXFormFeedback&&XFormFeedbackRunning)
         {
             if (Material.MaterialType==CurrentXFormFeedback->getMaterialType())
             {
@@ -2491,14 +2491,14 @@ void COpenGLDriver::setRenderStates3DMode()
                 CurrentXFormFeedback->pauseFeedback();
         }
 
-		LastMaterial = Material;
-		ResetRenderStates = false;
-	}
+        LastMaterial = Material;
+        ResetRenderStates = false;
+    }
 
-	if (static_cast<uint32_t>(Material.MaterialType) < MaterialRenderers.size())
-		MaterialRenderers[Material.MaterialType].Renderer->OnRender(this);
+    if (static_cast<uint32_t>(Material.MaterialType) < MaterialRenderers.size())
+        MaterialRenderers[Material.MaterialType].Renderer->OnRender(this);
 
-	CurrentRenderMode = ERM_3D;
+    CurrentRenderMode = ERM_3D;
 }
 
 
@@ -2506,87 +2506,87 @@ void COpenGLDriver::setRenderStates3DMode()
 
 //! Can be called by an IMaterialRenderer to make its work easier.
 void COpenGLDriver::setBasicRenderStates(const SMaterial& material, const SMaterial& lastmaterial,
-	bool resetAllRenderStates)
+    bool resetAllRenderStates)
 {
-	// fillmode
-	if (resetAllRenderStates || (lastmaterial.Wireframe != material.Wireframe) || (lastmaterial.PointCloud != material.PointCloud))
-		glPolygonMode(GL_FRONT_AND_BACK, material.Wireframe ? GL_LINE : material.PointCloud? GL_POINT : GL_FILL);
+    // fillmode
+    if (resetAllRenderStates || (lastmaterial.Wireframe != material.Wireframe) || (lastmaterial.PointCloud != material.PointCloud))
+        glPolygonMode(GL_FRONT_AND_BACK, material.Wireframe ? GL_LINE : material.PointCloud? GL_POINT : GL_FILL);
 
-	// zbuffer
-	if (resetAllRenderStates || lastmaterial.ZBuffer != material.ZBuffer)
-	{
-		switch (material.ZBuffer)
-		{
-			case ECFN_NEVER:
-				glDisable(GL_DEPTH_TEST);
-				break;
-			case ECFN_LESSEQUAL:
-				glEnable(GL_DEPTH_TEST);
-				glDepthFunc(GL_LEQUAL);
-				break;
-			case ECFN_EQUAL:
-				glEnable(GL_DEPTH_TEST);
-				glDepthFunc(GL_EQUAL);
-				break;
-			case ECFN_LESS:
-				glEnable(GL_DEPTH_TEST);
-				glDepthFunc(GL_LESS);
-				break;
-			case ECFN_NOTEQUAL:
-				glEnable(GL_DEPTH_TEST);
-				glDepthFunc(GL_NOTEQUAL);
-				break;
-			case ECFN_GREATEREQUAL:
-				glEnable(GL_DEPTH_TEST);
-				glDepthFunc(GL_GEQUAL);
-				break;
-			case ECFN_GREATER:
-				glEnable(GL_DEPTH_TEST);
-				glDepthFunc(GL_GREATER);
-				break;
-			case ECFN_ALWAYS:
-				glEnable(GL_DEPTH_TEST);
-				glDepthFunc(GL_ALWAYS);
-				break;
-		}
-	}
+    // zbuffer
+    if (resetAllRenderStates || lastmaterial.ZBuffer != material.ZBuffer)
+    {
+        switch (material.ZBuffer)
+        {
+            case ECFN_NEVER:
+                glDisable(GL_DEPTH_TEST);
+                break;
+            case ECFN_LESSEQUAL:
+                glEnable(GL_DEPTH_TEST);
+                glDepthFunc(GL_LEQUAL);
+                break;
+            case ECFN_EQUAL:
+                glEnable(GL_DEPTH_TEST);
+                glDepthFunc(GL_EQUAL);
+                break;
+            case ECFN_LESS:
+                glEnable(GL_DEPTH_TEST);
+                glDepthFunc(GL_LESS);
+                break;
+            case ECFN_NOTEQUAL:
+                glEnable(GL_DEPTH_TEST);
+                glDepthFunc(GL_NOTEQUAL);
+                break;
+            case ECFN_GREATEREQUAL:
+                glEnable(GL_DEPTH_TEST);
+                glDepthFunc(GL_GEQUAL);
+                break;
+            case ECFN_GREATER:
+                glEnable(GL_DEPTH_TEST);
+                glDepthFunc(GL_GREATER);
+                break;
+            case ECFN_ALWAYS:
+                glEnable(GL_DEPTH_TEST);
+                glDepthFunc(GL_ALWAYS);
+                break;
+        }
+    }
 
-	// zwrite
-//	if (resetAllRenderStates || lastmaterial.ZWriteEnable != material.ZWriteEnable)
-	{
-		if (material.ZWriteEnable && (AllowZWriteOnTransparent || !material.isTransparent()))
-		{
-			glDepthMask(GL_TRUE);
-		}
-		else
-			glDepthMask(GL_FALSE);
-	}
+    // zwrite
+//    if (resetAllRenderStates || lastmaterial.ZWriteEnable != material.ZWriteEnable)
+    {
+        if (material.ZWriteEnable && (AllowZWriteOnTransparent || !material.isTransparent()))
+        {
+            glDepthMask(GL_TRUE);
+        }
+        else
+            glDepthMask(GL_FALSE);
+    }
 
-	// back face culling
-	if (resetAllRenderStates || (lastmaterial.FrontfaceCulling != material.FrontfaceCulling) || (lastmaterial.BackfaceCulling != material.BackfaceCulling))
-	{
-		if ((material.FrontfaceCulling) && (material.BackfaceCulling))
-		{
-			glCullFace(GL_FRONT_AND_BACK);
-			glEnable(GL_CULL_FACE);
-		}
-		else
-		if (material.BackfaceCulling)
-		{
-			glCullFace(GL_BACK);
-			glEnable(GL_CULL_FACE);
-		}
-		else
-		if (material.FrontfaceCulling)
-		{
-			glCullFace(GL_FRONT);
-			glEnable(GL_CULL_FACE);
-		}
-		else
-			glDisable(GL_CULL_FACE);
-	}
+    // back face culling
+    if (resetAllRenderStates || (lastmaterial.FrontfaceCulling != material.FrontfaceCulling) || (lastmaterial.BackfaceCulling != material.BackfaceCulling))
+    {
+        if ((material.FrontfaceCulling) && (material.BackfaceCulling))
+        {
+            glCullFace(GL_FRONT_AND_BACK);
+            glEnable(GL_CULL_FACE);
+        }
+        else
+        if (material.BackfaceCulling)
+        {
+            glCullFace(GL_BACK);
+            glEnable(GL_CULL_FACE);
+        }
+        else
+        if (material.FrontfaceCulling)
+        {
+            glCullFace(GL_FRONT);
+            glEnable(GL_CULL_FACE);
+        }
+        else
+            glDisable(GL_CULL_FACE);
+    }
 
-	if (resetAllRenderStates || (lastmaterial.RasterizerDiscard != material.RasterizerDiscard))
+    if (resetAllRenderStates || (lastmaterial.RasterizerDiscard != material.RasterizerDiscard))
     {
         if (material.RasterizerDiscard)
             glEnable(GL_RASTERIZER_DISCARD);
@@ -2594,142 +2594,142 @@ void COpenGLDriver::setBasicRenderStates(const SMaterial& material, const SMater
             glDisable(GL_RASTERIZER_DISCARD);
     }
 
-	// Color Mask
-	if (resetAllRenderStates || lastmaterial.ColorMask != material.ColorMask)
-	{
-		glColorMask(
-			(material.ColorMask & ECP_RED)?GL_TRUE:GL_FALSE,
-			(material.ColorMask & ECP_GREEN)?GL_TRUE:GL_FALSE,
-			(material.ColorMask & ECP_BLUE)?GL_TRUE:GL_FALSE,
-			(material.ColorMask & ECP_ALPHA)?GL_TRUE:GL_FALSE);
-	}
+    // Color Mask
+    if (resetAllRenderStates || lastmaterial.ColorMask != material.ColorMask)
+    {
+        glColorMask(
+            (material.ColorMask & ECP_RED)?GL_TRUE:GL_FALSE,
+            (material.ColorMask & ECP_GREEN)?GL_TRUE:GL_FALSE,
+            (material.ColorMask & ECP_BLUE)?GL_TRUE:GL_FALSE,
+            (material.ColorMask & ECP_ALPHA)?GL_TRUE:GL_FALSE);
+    }
 
-	if (queryFeature(EVDF_BLEND_OPERATIONS) &&
-		(resetAllRenderStates|| lastmaterial.BlendOperation != material.BlendOperation))
-	{
-		if (material.BlendOperation==EBO_NONE)
-			glDisable(GL_BLEND);
-		else
-		{
-			glEnable(GL_BLEND);
-			switch (material.BlendOperation)
-			{
-			case EBO_SUBTRACT:
+    if (queryFeature(EVDF_BLEND_OPERATIONS) &&
+        (resetAllRenderStates|| lastmaterial.BlendOperation != material.BlendOperation))
+    {
+        if (material.BlendOperation==EBO_NONE)
+            glDisable(GL_BLEND);
+        else
+        {
+            glEnable(GL_BLEND);
+            switch (material.BlendOperation)
+            {
+            case EBO_SUBTRACT:
                 extGlBlendEquation(GL_FUNC_SUBTRACT);
-				break;
-			case EBO_REVSUBTRACT:
+                break;
+            case EBO_REVSUBTRACT:
                 extGlBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
-				break;
-			case EBO_MIN:
+                break;
+            case EBO_MIN:
                 extGlBlendEquation(GL_MIN);
-				break;
-			case EBO_MAX:
+                break;
+            case EBO_MAX:
                 extGlBlendEquation(GL_MAX);
-				break;
-			case EBO_MIN_FACTOR:
+                break;
+            case EBO_MIN_FACTOR:
 #if defined(GL_AMD_blend_minmax_factor)
-				if (FeatureAvailable[IRR_AMD_blend_minmax_factor])
-					extGlBlendEquation(GL_FACTOR_MIN_AMD);
-				// fallback in case of missing extension
-				else
+                if (FeatureAvailable[IRR_AMD_blend_minmax_factor])
+                    extGlBlendEquation(GL_FACTOR_MIN_AMD);
+                // fallback in case of missing extension
+                else
 #endif
-				extGlBlendEquation(GL_MIN);
-				break;
-			case EBO_MAX_FACTOR:
+                extGlBlendEquation(GL_MIN);
+                break;
+            case EBO_MAX_FACTOR:
 #if defined(GL_AMD_blend_minmax_factor)
-				if (FeatureAvailable[IRR_AMD_blend_minmax_factor])
-					extGlBlendEquation(GL_FACTOR_MAX_AMD);
-				// fallback in case of missing extension
-				else
+                if (FeatureAvailable[IRR_AMD_blend_minmax_factor])
+                    extGlBlendEquation(GL_FACTOR_MAX_AMD);
+                // fallback in case of missing extension
+                else
 #endif
-				extGlBlendEquation(GL_MAX);
-				break;
-			case EBO_MIN_ALPHA:
+                extGlBlendEquation(GL_MAX);
+                break;
+            case EBO_MIN_ALPHA:
 #if defined(GL_SGIX_blend_alpha_minmax)
-				if (FeatureAvailable[IRR_SGIX_blend_alpha_minmax])
-					extGlBlendEquation(GL_ALPHA_MIN_SGIX);
-				// fallback in case of missing extension
-				else
-					if (FeatureAvailable[IRR_EXT_blend_minmax])
-						extGlBlendEquation(GL_MIN_EXT);
+                if (FeatureAvailable[IRR_SGIX_blend_alpha_minmax])
+                    extGlBlendEquation(GL_ALPHA_MIN_SGIX);
+                // fallback in case of missing extension
+                else
+                    if (FeatureAvailable[IRR_EXT_blend_minmax])
+                        extGlBlendEquation(GL_MIN_EXT);
 #endif
-				break;
-			case EBO_MAX_ALPHA:
+                break;
+            case EBO_MAX_ALPHA:
 #if defined(GL_SGIX_blend_alpha_minmax)
-				if (FeatureAvailable[IRR_SGIX_blend_alpha_minmax])
-					extGlBlendEquation(GL_ALPHA_MAX_SGIX);
-				// fallback in case of missing extension
-				else
-					if (FeatureAvailable[IRR_EXT_blend_minmax])
-						extGlBlendEquation(GL_MAX_EXT);
+                if (FeatureAvailable[IRR_SGIX_blend_alpha_minmax])
+                    extGlBlendEquation(GL_ALPHA_MAX_SGIX);
+                // fallback in case of missing extension
+                else
+                    if (FeatureAvailable[IRR_EXT_blend_minmax])
+                        extGlBlendEquation(GL_MAX_EXT);
 #endif
-				break;
-			default:
-				extGlBlendEquation(GL_FUNC_ADD);
-				break;
-			}
-		}
-	}
+                break;
+            default:
+                extGlBlendEquation(GL_FUNC_ADD);
+                break;
+            }
+        }
+    }
 
 
-	// thickness
-	if (resetAllRenderStates || lastmaterial.Thickness != material.Thickness)
-	{
-		if (AntiAlias)
-		{
-//			glPointSize(core::clamp(static_cast<GLfloat>(material.Thickness), DimSmoothedPoint[0], DimSmoothedPoint[1]));
-			// we don't use point smoothing
-			glPointSize(core::clamp(static_cast<GLfloat>(material.Thickness), DimAliasedPoint[0], DimAliasedPoint[1]));
-			glLineWidth(core::clamp(static_cast<GLfloat>(material.Thickness), DimSmoothedLine[0], DimSmoothedLine[1]));
-		}
-		else
-		{
-			glPointSize(core::clamp(static_cast<GLfloat>(material.Thickness), DimAliasedPoint[0], DimAliasedPoint[1]));
-			glLineWidth(core::clamp(static_cast<GLfloat>(material.Thickness), DimAliasedLine[0], DimAliasedLine[1]));
-		}
-	}
+    // thickness
+    if (resetAllRenderStates || lastmaterial.Thickness != material.Thickness)
+    {
+        if (AntiAlias)
+        {
+//            glPointSize(core::clamp(static_cast<GLfloat>(material.Thickness), DimSmoothedPoint[0], DimSmoothedPoint[1]));
+            // we don't use point smoothing
+            glPointSize(core::clamp(static_cast<GLfloat>(material.Thickness), DimAliasedPoint[0], DimAliasedPoint[1]));
+            glLineWidth(core::clamp(static_cast<GLfloat>(material.Thickness), DimSmoothedLine[0], DimSmoothedLine[1]));
+        }
+        else
+        {
+            glPointSize(core::clamp(static_cast<GLfloat>(material.Thickness), DimAliasedPoint[0], DimAliasedPoint[1]));
+            glLineWidth(core::clamp(static_cast<GLfloat>(material.Thickness), DimAliasedLine[0], DimAliasedLine[1]));
+        }
+    }
 
-	// Anti aliasing
-	if (resetAllRenderStates || lastmaterial.AntiAliasing != material.AntiAliasing)
-	{
-		if (FeatureAvailable[IRR_ARB_multisample])
-		{
-			if (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE)
-				glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE_ARB);
-			else if (lastmaterial.AntiAliasing & EAAM_ALPHA_TO_COVERAGE)
-				glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE_ARB);
+    // Anti aliasing
+    if (resetAllRenderStates || lastmaterial.AntiAliasing != material.AntiAliasing)
+    {
+        if (FeatureAvailable[IRR_ARB_multisample])
+        {
+            if (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE)
+                glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE_ARB);
+            else if (lastmaterial.AntiAliasing & EAAM_ALPHA_TO_COVERAGE)
+                glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE_ARB);
 
-			if ((AntiAlias >= 2) && (material.AntiAliasing & (EAAM_SIMPLE|EAAM_QUALITY)))
-			{
-				glEnable(GL_MULTISAMPLE_ARB);
-			}
-			else
-				glDisable(GL_MULTISAMPLE_ARB);
-		}
-		if ((material.AntiAliasing & EAAM_LINE_SMOOTH) != (lastmaterial.AntiAliasing & EAAM_LINE_SMOOTH))
-		{
-			if (material.AntiAliasing & EAAM_LINE_SMOOTH)
-				glEnable(GL_LINE_SMOOTH);
-			else if (lastmaterial.AntiAliasing & EAAM_LINE_SMOOTH)
-				glDisable(GL_LINE_SMOOTH);
-		}
-	}
+            if ((AntiAlias >= 2) && (material.AntiAliasing & (EAAM_SIMPLE|EAAM_QUALITY)))
+            {
+                glEnable(GL_MULTISAMPLE_ARB);
+            }
+            else
+                glDisable(GL_MULTISAMPLE_ARB);
+        }
+        if ((material.AntiAliasing & EAAM_LINE_SMOOTH) != (lastmaterial.AntiAliasing & EAAM_LINE_SMOOTH))
+        {
+            if (material.AntiAliasing & EAAM_LINE_SMOOTH)
+                glEnable(GL_LINE_SMOOTH);
+            else if (lastmaterial.AntiAliasing & EAAM_LINE_SMOOTH)
+                glDisable(GL_LINE_SMOOTH);
+        }
+    }
 }
 
 
 //! Enable the 2d override material
 void COpenGLDriver::enableMaterial2D(bool enable)
 {
-	if (!enable)
-		CurrentRenderMode = ERM_NONE;
-	CNullDriver::enableMaterial2D(enable);
+    if (!enable)
+        CurrentRenderMode = ERM_NONE;
+    CNullDriver::enableMaterial2D(enable);
 }
 
 
 //! \return Returns the name of the video driver.
 const wchar_t* COpenGLDriver::getName() const
 {
-	return Name.c_str();
+    return Name.c_str();
 }
 
 
@@ -2738,80 +2738,80 @@ const wchar_t* COpenGLDriver::getName() const
 // method just a bit.
 void COpenGLDriver::setViewPort(const core::rect<int32_t>& area)
 {
-	if (area == ViewPort)
-		return;
-	core::rect<int32_t> vp = area;
-	core::rect<int32_t> rendert(0,0, getCurrentRenderTargetSize().Width, getCurrentRenderTargetSize().Height);
-	vp.clipAgainst(rendert);
+    if (area == ViewPort)
+        return;
+    core::rect<int32_t> vp = area;
+    core::rect<int32_t> rendert(0,0, getCurrentRenderTargetSize().Width, getCurrentRenderTargetSize().Height);
+    vp.clipAgainst(rendert);
 
-	if (vp.getHeight()>0 && vp.getWidth()>0)
-	{
-		glViewport(vp.UpperLeftCorner.X,
-				vp.UpperLeftCorner.Y,
-				vp.getWidth(), vp.getHeight());
+    if (vp.getHeight()>0 && vp.getWidth()>0)
+    {
+        glViewport(vp.UpperLeftCorner.X,
+                vp.UpperLeftCorner.Y,
+                vp.getWidth(), vp.getHeight());
 
-		ViewPort = vp;
-	}
+        ViewPort = vp;
+    }
 }
 
 
 IRenderBuffer* COpenGLDriver::addRenderBuffer(const core::dimension2d<uint32_t>& size, const ECOLOR_FORMAT format)
 {
-	IRenderBuffer* buffer = new COpenGLRenderBuffer(COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(format),size,this);
-	CNullDriver::addRenderBuffer(buffer);
-	return buffer;
+    IRenderBuffer* buffer = new COpenGLRenderBuffer(COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(format),size,this);
+    CNullDriver::addRenderBuffer(buffer);
+    return buffer;
 }
 
 IFrameBuffer* COpenGLDriver::addFrameBuffer()
 {
-	IFrameBuffer* fbo = new COpenGLFrameBuffer(this);
-	CNullDriver::addFrameBuffer(fbo);
-	return fbo;
+    IFrameBuffer* fbo = new COpenGLFrameBuffer(this);
+    CNullDriver::addFrameBuffer(fbo);
+    return fbo;
 }
 
 
 //! Removes a texture from the texture cache and deletes it, freeing lot of memory.
 void COpenGLDriver::removeTexture(ITexture* texture)
 {
-	if (!texture)
-		return;
+    if (!texture)
+        return;
 
-	CNullDriver::removeTexture(texture);
-	// Remove this texture from CurrentTexture as well
-	CurrentTexture.remove(texture);
+    CNullDriver::removeTexture(texture);
+    // Remove this texture from CurrentTexture as well
+    CurrentTexture.remove(texture);
 }
 
 //! Only used by the internal engine. Used to notify the driver that
 //! the window was resized.
 void COpenGLDriver::OnResize(const core::dimension2d<uint32_t>& size)
 {
-	CNullDriver::OnResize(size);
-	glViewport(0, 0, size.Width, size.Height);
+    CNullDriver::OnResize(size);
+    glViewport(0, 0, size.Width, size.Height);
 }
 
 
 //! Returns type of video driver
 E_DRIVER_TYPE COpenGLDriver::getDriverType() const
 {
-	return EDT_OPENGL;
+    return EDT_OPENGL;
 }
 
 
 //! returns color format
 ECOLOR_FORMAT COpenGLDriver::getColorFormat() const
 {
-	return ColorFormat;
+    return ColorFormat;
 }
 
 
 void COpenGLDriver::setShaderConstant(const void* data, int32_t location, E_SHADER_CONSTANT_TYPE type, uint32_t number)
 {
-	os::Printer::log("Error: Please call services->setShaderConstant(), not VideoDriver->setShaderConstant().");
+    os::Printer::log("Error: Please call services->setShaderConstant(), not VideoDriver->setShaderConstant().");
 }
 
 void COpenGLDriver::setShaderTextures(const int32_t* textureIndices, int32_t location, E_SHADER_CONSTANT_TYPE type, uint32_t number)
 {
-	os::Printer::log("Error: Please call services->setShaderTextures(), not VideoDriver->setShaderTextures().");
+    os::Printer::log("Error: Please call services->setShaderTextures(), not VideoDriver->setShaderTextures().");
 }
 
 
@@ -2835,17 +2835,17 @@ int32_t COpenGLDriver::addHighLevelShaderMaterial(
 {
     int32_t nr = -1;
 
-	COpenGLSLMaterialRenderer* r = new COpenGLSLMaterialRenderer(
-		this, nr,
-		vertexShaderProgram, vertexShaderEntryPointName,
-		pixelShaderProgram, pixelShaderEntryPointName,
-		geometryShaderProgram, geometryShaderEntryPointName,
-		controlShaderProgram,controlShaderEntryPointName,
-		evaluationShaderProgram,evaluationShaderEntryPointName,
-		patchVertices,callback,baseMaterial,
-		xformFeedbackOutputs, xformFeedbackOutputCount, userData);
-	r->drop();
-	return nr;
+    COpenGLSLMaterialRenderer* r = new COpenGLSLMaterialRenderer(
+        this, nr,
+        vertexShaderProgram, vertexShaderEntryPointName,
+        pixelShaderProgram, pixelShaderEntryPointName,
+        geometryShaderProgram, geometryShaderEntryPointName,
+        controlShaderProgram,controlShaderEntryPointName,
+        evaluationShaderProgram,evaluationShaderEntryPointName,
+        patchVertices,callback,baseMaterial,
+        xformFeedbackOutputs, xformFeedbackOutputCount, userData);
+    r->drop();
+    return nr;
 }
 
 
@@ -2853,22 +2853,22 @@ int32_t COpenGLDriver::addHighLevelShaderMaterial(
 //! IMaterialRendererServices)
 IVideoDriver* COpenGLDriver::getVideoDriver()
 {
-	return this;
+    return this;
 }
 
 
 
 void COpenGLDriver::blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out, bool copyDepth,
-									core::recti srcRect, core::recti dstRect,
-									bool bilinearFilter)
+                                    core::recti srcRect, core::recti dstRect,
+                                    bool bilinearFilter)
 {
-	GLuint inFBOHandle = 0;
-	GLuint outFBOHandle = 0;
+    GLuint inFBOHandle = 0;
+    GLuint outFBOHandle = 0;
 
 
-	if (srcRect.getArea()==0)
-	{
-	    if (in)
+    if (srcRect.getArea()==0)
+    {
+        if (in)
         {
             if (!static_cast<COpenGLFrameBuffer*>(in)->rebindRevalidate())
                 return;
@@ -2900,10 +2900,10 @@ void COpenGLDriver::blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out, bool 
         }
         else
             srcRect = core::recti(0,0,ScreenSize.Width,ScreenSize.Height);
-	}
-	if (dstRect.getArea()==0)
-	{
-	    if (out)
+    }
+    if (dstRect.getArea()==0)
+    {
+        if (out)
         {
             if (!static_cast<COpenGLFrameBuffer*>(out)->rebindRevalidate())
                 return;
@@ -2935,9 +2935,9 @@ void COpenGLDriver::blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out, bool 
         }
         else
             dstRect = core::recti(0,0,ScreenSize.Width,ScreenSize.Height);
-	}
-	if (srcRect==dstRect||copyDepth)
-		bilinearFilter = false;
+    }
+    if (srcRect==dstRect||copyDepth)
+        bilinearFilter = false;
 
     setViewPort(dstRect);
 
@@ -2949,8 +2949,8 @@ void COpenGLDriver::blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out, bool 
     extGlBlitNamedFramebuffer(inFBOHandle,outFBOHandle,
                         srcRect.UpperLeftCorner.X,srcRect.UpperLeftCorner.Y,srcRect.LowerRightCorner.X,srcRect.LowerRightCorner.Y,
                         dstRect.UpperLeftCorner.X,dstRect.UpperLeftCorner.Y,dstRect.LowerRightCorner.X,dstRect.LowerRightCorner.Y,
-						GL_COLOR_BUFFER_BIT|(copyDepth ? GL_DEPTH_BUFFER_BIT:0),
-						bilinearFilter ? GL_LINEAR:GL_NEAREST);
+                        GL_COLOR_BUFFER_BIT|(copyDepth ? GL_DEPTH_BUFFER_BIT:0),
+                        bilinearFilter ? GL_LINEAR:GL_NEAREST);
 }
 
 
@@ -2960,7 +2960,7 @@ void COpenGLDriver::blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out, bool 
 //! call.
 uint32_t COpenGLDriver::getMaximalIndicesCount() const
 {
-	return MaxIndices;
+    return MaxIndices;
 }
 
 
@@ -3038,10 +3038,10 @@ bool COpenGLDriver::setRenderTarget(IFrameBuffer* frameBuffer, bool setNewViewpo
 // returns the current size of the screen or rendertarget
 const core::dimension2d<uint32_t>& COpenGLDriver::getCurrentRenderTargetSize() const
 {
-	if (CurrentRendertargetSize.Width == 0)
-		return ScreenSize;
-	else
-		return CurrentRendertargetSize;
+    if (CurrentRendertargetSize.Width == 0)
+        return ScreenSize;
+    else
+        return CurrentRendertargetSize;
 }
 
 
@@ -3166,9 +3166,9 @@ void COpenGLDriver::bindTransformFeedback(ITransformFeedback* xformFeedback)
 
     if (!CurrentXFormFeedback)
     {
-	    extGlBindTransformFeedback(GL_TRANSFORM_FEEDBACK,0);
-		CurrentXFormFeedback = NULL;
-	}
+        extGlBindTransformFeedback(GL_TRANSFORM_FEEDBACK,0);
+        CurrentXFormFeedback = NULL;
+    }
     else
     {
 #ifdef _DEBUG
@@ -3190,47 +3190,47 @@ void COpenGLDriver::beginTransformFeedback(ITransformFeedback* xformFeedback, co
         return;
     }
 
-	switch (primType)
-	{
-		case scene::EPT_POINTS:
+    switch (primType)
+    {
+        case scene::EPT_POINTS:
             CurrentXFormFeedback->setPrimitiveType(GL_POINTS);
             break;
-		case scene::EPT_LINE_STRIP:
-		case scene::EPT_LINE_LOOP:
-			os::Printer::log("Not using PROPER TRANSFORM FEEDBACK primitive type (only EPT_POINTS, EPT_LINES and EPT_TRIANGLES allowed!)!\n",ELL_ERROR);
-		case scene::EPT_LINES:
+        case scene::EPT_LINE_STRIP:
+        case scene::EPT_LINE_LOOP:
+            os::Printer::log("Not using PROPER TRANSFORM FEEDBACK primitive type (only EPT_POINTS, EPT_LINES and EPT_TRIANGLES allowed!)!\n",ELL_ERROR);
+        case scene::EPT_LINES:
             CurrentXFormFeedback->setPrimitiveType(GL_LINES);
             break;
-		case scene::EPT_TRIANGLE_STRIP:
-		case scene::EPT_TRIANGLE_FAN:
-			os::Printer::log("Not using PROPER TRANSFORM FEEDBACK primitive type (only EPT_POINTS, EPT_LINES and EPT_TRIANGLES allowed!)!\n",ELL_ERROR);
-		case scene::EPT_TRIANGLES:
+        case scene::EPT_TRIANGLE_STRIP:
+        case scene::EPT_TRIANGLE_FAN:
+            os::Printer::log("Not using PROPER TRANSFORM FEEDBACK primitive type (only EPT_POINTS, EPT_LINES and EPT_TRIANGLES allowed!)!\n",ELL_ERROR);
+        case scene::EPT_TRIANGLES:
             CurrentXFormFeedback->setPrimitiveType(GL_TRIANGLES);
             break;
-	}
-	CurrentXFormFeedback->setMaterialType(xformFeedbackShader);
+    }
+    CurrentXFormFeedback->setMaterialType(xformFeedbackShader);
 
-	XFormFeedbackRunning = true;
+    XFormFeedbackRunning = true;
 
-	if (Material.MaterialType==xformFeedbackShader)
-	{
+    if (Material.MaterialType==xformFeedbackShader)
+    {
         if (LastMaterial.MaterialType!=xformFeedbackShader)
             setRenderStates3DMode();
 
-		if (!CurrentXFormFeedback->isActive())
-			CurrentXFormFeedback->beginResumeFeedback();
-	}
+        if (!CurrentXFormFeedback->isActive())
+            CurrentXFormFeedback->beginResumeFeedback();
+    }
 }
 
 void COpenGLDriver::pauseTransformFeedback()
 {
-	XFormFeedbackRunning = false;
+    XFormFeedbackRunning = false;
     CurrentXFormFeedback->pauseFeedback();
 }
 
 void COpenGLDriver::resumeTransformFeedback()
 {
-	XFormFeedbackRunning = true;
+    XFormFeedbackRunning = true;
     CurrentXFormFeedback->beginResumeFeedback();
 }
 
@@ -3246,7 +3246,7 @@ void COpenGLDriver::endTransformFeedback()
         os::Printer::log("Ending an already paused transform feedback, the pause call is redundant!\n",ELL_ERROR);
 #endif // _DEBUG
     CurrentXFormFeedback->endFeedback();
-	XFormFeedbackRunning = false;
+    XFormFeedbackRunning = false;
     ///In the interest of binding speed we wont release the CurrentXFormFeedback
     //bindTransformFeedback(NULL);
 }
@@ -3255,12 +3255,12 @@ void COpenGLDriver::endTransformFeedback()
 //! Enable/disable a clipping plane.
 void COpenGLDriver::enableClipPlane(uint32_t index, bool enable)
 {
-	if (index >= MaxUserClipPlanes)
-		return;
-	if (enable)
+    if (index >= MaxUserClipPlanes)
+        return;
+    if (enable)
         glEnable(GL_CLIP_DISTANCE0 + index);
-	else
-		glDisable(GL_CLIP_DISTANCE0 + index);
+    else
+        glDisable(GL_CLIP_DISTANCE0 + index);
 }
 
 
@@ -3268,66 +3268,66 @@ void COpenGLDriver::enableClipPlane(uint32_t index, bool enable)
 //! Convert E_PRIMITIVE_TYPE to OpenGL equivalent
 GLenum COpenGLDriver::primitiveTypeToGL(scene::E_PRIMITIVE_TYPE type) const
 {
-	switch (type)
-	{
-		case scene::EPT_POINTS:
-			return GL_POINTS;
-		case scene::EPT_LINE_STRIP:
-			return GL_LINE_STRIP;
-		case scene::EPT_LINE_LOOP:
-			return GL_LINE_LOOP;
-		case scene::EPT_LINES:
-			return GL_LINES;
-		case scene::EPT_TRIANGLE_STRIP:
-			return GL_TRIANGLE_STRIP;
-		case scene::EPT_TRIANGLE_FAN:
-			return GL_TRIANGLE_FAN;
-		case scene::EPT_TRIANGLES:
-			return GL_TRIANGLES;
-	}
-	return GL_TRIANGLES;
+    switch (type)
+    {
+        case scene::EPT_POINTS:
+            return GL_POINTS;
+        case scene::EPT_LINE_STRIP:
+            return GL_LINE_STRIP;
+        case scene::EPT_LINE_LOOP:
+            return GL_LINE_LOOP;
+        case scene::EPT_LINES:
+            return GL_LINES;
+        case scene::EPT_TRIANGLE_STRIP:
+            return GL_TRIANGLE_STRIP;
+        case scene::EPT_TRIANGLE_FAN:
+            return GL_TRIANGLE_FAN;
+        case scene::EPT_TRIANGLES:
+            return GL_TRIANGLES;
+    }
+    return GL_TRIANGLES;
 }
 
 /*
 GLenum COpenGLDriver::getGLBlend(E_BLEND_FACTOR factor) const
 {
-	GLenum r = 0;
-	switch (factor)
-	{
-		case EBF_ZERO:			r = GL_ZERO; break;
-		case EBF_ONE:			r = GL_ONE; break;
-		case EBF_DST_COLOR:		r = GL_DST_COLOR; break;
-		case EBF_ONE_MINUS_DST_COLOR:	r = GL_ONE_MINUS_DST_COLOR; break;
-		case EBF_SRC_COLOR:		r = GL_SRC_COLOR; break;
-		case EBF_ONE_MINUS_SRC_COLOR:	r = GL_ONE_MINUS_SRC_COLOR; break;
-		case EBF_SRC_ALPHA:		r = GL_SRC_ALPHA; break;
-		case EBF_ONE_MINUS_SRC_ALPHA:	r = GL_ONE_MINUS_SRC_ALPHA; break;
-		case EBF_DST_ALPHA:		r = GL_DST_ALPHA; break;
-		case EBF_ONE_MINUS_DST_ALPHA:	r = GL_ONE_MINUS_DST_ALPHA; break;
-		case EBF_SRC_ALPHA_SATURATE:	r = GL_SRC_ALPHA_SATURATE; break;
-	}
-	return r;
+    GLenum r = 0;
+    switch (factor)
+    {
+        case EBF_ZERO:            r = GL_ZERO; break;
+        case EBF_ONE:            r = GL_ONE; break;
+        case EBF_DST_COLOR:        r = GL_DST_COLOR; break;
+        case EBF_ONE_MINUS_DST_COLOR:    r = GL_ONE_MINUS_DST_COLOR; break;
+        case EBF_SRC_COLOR:        r = GL_SRC_COLOR; break;
+        case EBF_ONE_MINUS_SRC_COLOR:    r = GL_ONE_MINUS_SRC_COLOR; break;
+        case EBF_SRC_ALPHA:        r = GL_SRC_ALPHA; break;
+        case EBF_ONE_MINUS_SRC_ALPHA:    r = GL_ONE_MINUS_SRC_ALPHA; break;
+        case EBF_DST_ALPHA:        r = GL_DST_ALPHA; break;
+        case EBF_ONE_MINUS_DST_ALPHA:    r = GL_ONE_MINUS_DST_ALPHA; break;
+        case EBF_SRC_ALPHA_SATURATE:    r = GL_SRC_ALPHA_SATURATE; break;
+    }
+    return r;
 }*/
 
 GLenum COpenGLDriver::getZBufferBits() const
 {
-	GLenum bits = 0;
-	switch (Params.ZBufferBits)
-	{
-	case 16:
-		bits = GL_DEPTH_COMPONENT16;
-		break;
-	case 24:
-		bits = GL_DEPTH_COMPONENT24;
-		break;
-	case 32:
-		bits = GL_DEPTH_COMPONENT32;
-		break;
-	default:
-		bits = GL_DEPTH_COMPONENT;
-		break;
-	}
-	return bits;
+    GLenum bits = 0;
+    switch (Params.ZBufferBits)
+    {
+    case 16:
+        bits = GL_DEPTH_COMPONENT16;
+        break;
+    case 24:
+        bits = GL_DEPTH_COMPONENT24;
+        break;
+    case 32:
+        bits = GL_DEPTH_COMPONENT32;
+        break;
+    default:
+        bits = GL_DEPTH_COMPONENT;
+        break;
+    }
+    return bits;
 }
 
 
@@ -3347,18 +3347,18 @@ namespace video
 // -----------------------------------
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
-	io::IFileSystem* io, CIrrDeviceWin32* device)
+    io::IFileSystem* io, CIrrDeviceWin32* device)
 {
 #ifdef _IRR_COMPILE_WITH_OPENGL_
-	COpenGLDriver* ogl =  new COpenGLDriver(params, io, device);
-	if (!ogl->initDriver(device))
-	{
-		ogl->drop();
-		ogl = 0;
-	}
-	return ogl;
+    COpenGLDriver* ogl =  new COpenGLDriver(params, io, device);
+    if (!ogl->initDriver(device))
+    {
+        ogl->drop();
+        ogl = 0;
+    }
+    return ogl;
 #else
-	return 0;
+    return 0;
 #endif // _IRR_COMPILE_WITH_OPENGL_
 }
 #endif // _IRR_COMPILE_WITH_WINDOWS_DEVICE_
@@ -3368,12 +3368,12 @@ IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 // -----------------------------------
 #if defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
 IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceMacOSX *device)
+        io::IFileSystem* io, CIrrDeviceMacOSX *device)
 {
 #ifdef _IRR_COMPILE_WITH_OPENGL_
-	return new COpenGLDriver(params, io, device);
+    return new COpenGLDriver(params, io, device);
 #else
-	return 0;
+    return 0;
 #endif //  _IRR_COMPILE_WITH_OPENGL_
 }
 #endif // _IRR_COMPILE_WITH_OSX_DEVICE_
@@ -3383,22 +3383,22 @@ IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 // -----------------------------------
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceLinux* device
+        io::IFileSystem* io, CIrrDeviceLinux* device
 #ifdef _IRR_COMPILE_WITH_OPENGL_
-		, COpenGLDriver::SAuxContext* auxCtxts
+        , COpenGLDriver::SAuxContext* auxCtxts
 #endif // _IRR_COMPILE_WITH_OPENGL_
         )
 {
 #ifdef _IRR_COMPILE_WITH_OPENGL_
-	COpenGLDriver* ogl =  new COpenGLDriver(params, io, device);
-	if (!ogl->initDriver(device,auxCtxts))
-	{
-		ogl->drop();
-		ogl = 0;
-	}
-	return ogl;
+    COpenGLDriver* ogl =  new COpenGLDriver(params, io, device);
+    if (!ogl->initDriver(device,auxCtxts))
+    {
+        ogl->drop();
+        ogl = 0;
+    }
+    return ogl;
 #else
-	return 0;
+    return 0;
 #endif //  _IRR_COMPILE_WITH_OPENGL_
 }
 #endif // _IRR_COMPILE_WITH_X11_DEVICE_
@@ -3409,12 +3409,12 @@ IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 // -----------------------------------
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
 IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceSDL* device)
+        io::IFileSystem* io, CIrrDeviceSDL* device)
 {
 #ifdef _IRR_COMPILE_WITH_OPENGL_
-	return new COpenGLDriver(params, io, device);
+    return new COpenGLDriver(params, io, device);
 #else
-	return 0;
+    return 0;
 #endif //  _IRR_COMPILE_WITH_OPENGL_
 }
 #endif // _IRR_COMPILE_WITH_SDL_DEVICE_

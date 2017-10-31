@@ -20,115 +20,115 @@ namespace scene
 
 //! constructor
 CMeshSceneNode::CMeshSceneNode(IGPUMesh* mesh, IDummyTransformationSceneNode* parent, ISceneManager* mgr, int32_t id,
-			const core::vector3df& position, const core::vector3df& rotation,
-			const core::vector3df& scale)
+            const core::vector3df& position, const core::vector3df& rotation,
+            const core::vector3df& scale)
 : IMeshSceneNode(parent, mgr, id, position, rotation, scale), Mesh(0),
-	PassCount(0), ReferencingMeshMaterials(true)
+    PassCount(0), ReferencingMeshMaterials(true)
 {
-	#ifdef _DEBUG
-	setDebugName("CMeshSceneNode");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CMeshSceneNode");
+    #endif
 
-	setMesh(mesh);
+    setMesh(mesh);
 }
 
 
 //! destructor
 CMeshSceneNode::~CMeshSceneNode()
 {
-	if (Mesh)
-		Mesh->drop();
+    if (Mesh)
+        Mesh->drop();
 }
 
 
 //! frame
 void CMeshSceneNode::OnRegisterSceneNode()
 {
-	if (IsVisible)
-	{
-		// because this node supports rendering of mixed mode meshes consisting of
-		// transparent and solid material at the same time, we need to go through all
-		// materials, check of what type they are and register this node for the right
-		// render pass according to that.
+    if (IsVisible)
+    {
+        // because this node supports rendering of mixed mode meshes consisting of
+        // transparent and solid material at the same time, we need to go through all
+        // materials, check of what type they are and register this node for the right
+        // render pass according to that.
 
-		video::IVideoDriver* driver = SceneManager->getVideoDriver();
+        video::IVideoDriver* driver = SceneManager->getVideoDriver();
 
-		PassCount = 0;
-		int transparentCount = 0;
-		int solidCount = 0;
+        PassCount = 0;
+        int transparentCount = 0;
+        int solidCount = 0;
 
-		// count transparent and solid materials in this scene node
-		if (ReferencingMeshMaterials && Mesh)
-		{
-			// count mesh materials
+        // count transparent and solid materials in this scene node
+        if (ReferencingMeshMaterials && Mesh)
+        {
+            // count mesh materials
 
-			for (uint32_t i=0; i<Mesh->getMeshBufferCount(); ++i)
-			{
-				scene::IGPUMeshBuffer* mb = Mesh->getMeshBuffer(i);
-				if (!mb||(mb->getIndexCount()<1 && !mb->isIndexCountGivenByXFormFeedback()))
+            for (uint32_t i=0; i<Mesh->getMeshBufferCount(); ++i)
+            {
+                scene::IGPUMeshBuffer* mb = Mesh->getMeshBuffer(i);
+                if (!mb||(mb->getIndexCount()<1 && !mb->isIndexCountGivenByXFormFeedback()))
                     continue;
 
-				video::IMaterialRenderer* rnd = driver->getMaterialRenderer(mb->getMaterial().MaterialType);
+                video::IMaterialRenderer* rnd = driver->getMaterialRenderer(mb->getMaterial().MaterialType);
 
-				if (rnd && rnd->isTransparent())
-					++transparentCount;
-				else
-					++solidCount;
+                if (rnd && rnd->isTransparent())
+                    ++transparentCount;
+                else
+                    ++solidCount;
 
-				if (solidCount && transparentCount)
-					break;
-			}
-		}
-		else
-		{
-			// count copied materials
+                if (solidCount && transparentCount)
+                    break;
+            }
+        }
+        else
+        {
+            // count copied materials
 
-			for (uint32_t i=0; i<Materials.size(); ++i)
-			{
-				scene::IGPUMeshBuffer* mb = Mesh->getMeshBuffer(i);
-				if (!mb||(mb->getIndexCount()<1 && !mb->isIndexCountGivenByXFormFeedback()))
+            for (uint32_t i=0; i<Materials.size(); ++i)
+            {
+                scene::IGPUMeshBuffer* mb = Mesh->getMeshBuffer(i);
+                if (!mb||(mb->getIndexCount()<1 && !mb->isIndexCountGivenByXFormFeedback()))
                     continue;
 
-				video::IMaterialRenderer* rnd =
-					driver->getMaterialRenderer(Materials[i].MaterialType);
+                video::IMaterialRenderer* rnd =
+                    driver->getMaterialRenderer(Materials[i].MaterialType);
 
-				if (rnd && rnd->isTransparent())
-					++transparentCount;
-				else
-					++solidCount;
+                if (rnd && rnd->isTransparent())
+                    ++transparentCount;
+                else
+                    ++solidCount;
 
-				if (solidCount && transparentCount)
-					break;
-			}
-		}
+                if (solidCount && transparentCount)
+                    break;
+            }
+        }
 
-		// register according to material types counted
+        // register according to material types counted
 
-		if (solidCount)
-			SceneManager->registerNodeForRendering(this, scene::ESNRP_SOLID);
+        if (solidCount)
+            SceneManager->registerNodeForRendering(this, scene::ESNRP_SOLID);
 
-		if (transparentCount)
-			SceneManager->registerNodeForRendering(this, scene::ESNRP_TRANSPARENT);
+        if (transparentCount)
+            SceneManager->registerNodeForRendering(this, scene::ESNRP_TRANSPARENT);
 
-		ISceneNode::OnRegisterSceneNode();
-	}
+        ISceneNode::OnRegisterSceneNode();
+    }
 }
 
 
 //! renders the node.
 void CMeshSceneNode::render()
 {
-	video::IVideoDriver* driver = SceneManager->getVideoDriver();
+    video::IVideoDriver* driver = SceneManager->getVideoDriver();
 
-	if (!Mesh || !driver)
-		return;
+    if (!Mesh || !driver)
+        return;
 
-	bool isTransparentPass =
-		SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
+    bool isTransparentPass =
+        SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
 
-	++PassCount;
+    ++PassCount;
 
-	if (canProceedPastFence())
+    if (canProceedPastFence())
     {
         driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
 
@@ -153,42 +153,42 @@ void CMeshSceneNode::render()
         }
     }
 
-	// for debug purposes only:
-	if (DebugDataVisible && PassCount==1)
-	{
+    // for debug purposes only:
+    if (DebugDataVisible && PassCount==1)
+    {
         driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
 
-		video::SMaterial m;
-		m.AntiAliasing=0;
-		driver->setMaterial(m);
+        video::SMaterial m;
+        m.AntiAliasing=0;
+        driver->setMaterial(m);
 
-		if (DebugDataVisible & scene::EDS_BBOX)
-		{
+        if (DebugDataVisible & scene::EDS_BBOX)
+        {
             Box = Mesh->getBoundingBox();
-			driver->draw3DBox(Box, video::SColor(255,255,255,255));
-		}
-		if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
-		{
-			for (uint32_t g=0; g<Mesh->getMeshBufferCount(); ++g)
-			{
-				driver->draw3DBox(
-					Mesh->getMeshBuffer(g)->getBoundingBox(),
-					video::SColor(255,190,128,128));
-			}
-		}
+            driver->draw3DBox(Box, video::SColor(255,255,255,255));
+        }
+        if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
+        {
+            for (uint32_t g=0; g<Mesh->getMeshBufferCount(); ++g)
+            {
+                driver->draw3DBox(
+                    Mesh->getMeshBuffer(g)->getBoundingBox(),
+                    video::SColor(255,190,128,128));
+            }
+        }
 
-		// show mesh
-		if (DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY)
-		{
-			m.Wireframe = true;
-			driver->setMaterial(m);
+        // show mesh
+        if (DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY)
+        {
+            m.Wireframe = true;
+            driver->setMaterial(m);
 
-			for (uint32_t g=0; g<Mesh->getMeshBufferCount(); ++g)
-			{
-				driver->drawMeshBuffer(Mesh->getMeshBuffer(g), (AutomaticCullingState & scene::EAC_COND_RENDER) ? query:NULL);
-			}
-		}
-	}
+            for (uint32_t g=0; g<Mesh->getMeshBufferCount(); ++g)
+            {
+                driver->drawMeshBuffer(Mesh->getMeshBuffer(g), (AutomaticCullingState & scene::EAC_COND_RENDER) ? query:NULL);
+            }
+        }
+    }
 }
 
 
@@ -196,7 +196,7 @@ void CMeshSceneNode::render()
 //! returns the axis aligned bounding box of this node
 const core::aabbox3d<float>& CMeshSceneNode::getBoundingBox()
 {
-	return Mesh ? Mesh->getBoundingBox() : Box;
+    return Mesh ? Mesh->getBoundingBox() : Box;
 }
 
 
@@ -207,59 +207,59 @@ const core::aabbox3d<float>& CMeshSceneNode::getBoundingBox()
 //! to directly modify the material of a scene node.
 video::SMaterial& CMeshSceneNode::getMaterial(uint32_t i)
 {
-	if (Mesh && ReferencingMeshMaterials && i<Mesh->getMeshBufferCount())
-		return Mesh->getMeshBuffer(i)->getMaterial();
+    if (Mesh && ReferencingMeshMaterials && i<Mesh->getMeshBufferCount())
+        return Mesh->getMeshBuffer(i)->getMaterial();
 
-	if (i >= Materials.size())
-		return ISceneNode::getMaterial(i);
+    if (i >= Materials.size())
+        return ISceneNode::getMaterial(i);
 
-	return Materials[i];
+    return Materials[i];
 }
 
 
 //! returns amount of materials used by this scene node.
 uint32_t CMeshSceneNode::getMaterialCount() const
 {
-	if (Mesh && ReferencingMeshMaterials)
-		return Mesh->getMeshBufferCount();
+    if (Mesh && ReferencingMeshMaterials)
+        return Mesh->getMeshBufferCount();
 
-	return Materials.size();
+    return Materials.size();
 }
 
 
 //! Sets a new mesh
 void CMeshSceneNode::setMesh(IGPUMesh* mesh)
 {
-	if (mesh)
-	{
-		mesh->grab();
-		if (Mesh)
-			Mesh->drop();
+    if (mesh)
+    {
+        mesh->grab();
+        if (Mesh)
+            Mesh->drop();
 
-		Mesh = mesh;
-		copyMaterials();
-	}
+        Mesh = mesh;
+        copyMaterials();
+    }
 }
 
 
 
 void CMeshSceneNode::copyMaterials()
 {
-	Materials.clear();
+    Materials.clear();
 
-	if (Mesh)
-	{
-		video::SMaterial mat;
+    if (Mesh)
+    {
+        video::SMaterial mat;
 
-		for (uint32_t i=0; i<Mesh->getMeshBufferCount(); ++i)
-		{
-			IGPUMeshBuffer* mb = Mesh->getMeshBuffer(i);
-			if (mb)
-				mat = mb->getMaterial();
+        for (uint32_t i=0; i<Mesh->getMeshBufferCount(); ++i)
+        {
+            IGPUMeshBuffer* mb = Mesh->getMeshBuffer(i);
+            if (mb)
+                mat = mb->getMaterial();
 
-			Materials.push_back(mat);
-		}
-	}
+            Materials.push_back(mat);
+        }
+    }
 }
 
 
@@ -269,35 +269,35 @@ void CMeshSceneNode::copyMaterials()
 referencing this mesh to change too. */
 void CMeshSceneNode::setReferencingMeshMaterials(const bool &referencing)
 {
-	ReferencingMeshMaterials = referencing;
+    ReferencingMeshMaterials = referencing;
 }
 
 
 //! Returns if the scene node should not copy the materials of the mesh but use them in a read only style
 bool CMeshSceneNode::isReferencingeMeshMaterials() const
 {
-	return ReferencingMeshMaterials;
+    return ReferencingMeshMaterials;
 }
 
 
 //! Creates a clone of this scene node and its children.
 ISceneNode* CMeshSceneNode::clone(IDummyTransformationSceneNode* newParent, ISceneManager* newManager)
 {
-	if (!newParent)
-		newParent = Parent;
-	if (!newManager)
-		newManager = SceneManager;
+    if (!newParent)
+        newParent = Parent;
+    if (!newManager)
+        newManager = SceneManager;
 
-	CMeshSceneNode* nb = new CMeshSceneNode(Mesh, newParent,
-		newManager, ID, RelativeTranslation, RelativeRotation, RelativeScale);
+    CMeshSceneNode* nb = new CMeshSceneNode(Mesh, newParent,
+        newManager, ID, RelativeTranslation, RelativeRotation, RelativeScale);
 
-	nb->cloneMembers(this, newManager);
-	nb->ReferencingMeshMaterials = ReferencingMeshMaterials;
-	nb->Materials = Materials;
+    nb->cloneMembers(this, newManager);
+    nb->ReferencingMeshMaterials = ReferencingMeshMaterials;
+    nb->Materials = Materials;
 
-	if (newParent)
-		nb->drop();
-	return nb;
+    if (newParent)
+        nb->drop();
+    return nb;
 }
 
 

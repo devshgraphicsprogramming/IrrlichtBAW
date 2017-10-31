@@ -22,18 +22,18 @@ inline void FW_SleepMs(const uint64_t &milliseconds)
 #ifdef WIN32
     if (!milliseconds)
         SwitchToThread();
-	else
+    else
         Sleep(milliseconds);
 #else
-	if (!milliseconds)
-		pthread_yield();
-	else
-	{
-		struct timespec ts;
-		ts.tv_sec = (time_t) (milliseconds / 1000ull);
-		ts.tv_nsec = (long) (milliseconds % 1000ull) * 1000000ull;
-		nanosleep(&ts, NULL);
-	}
+    if (!milliseconds)
+        pthread_yield();
+    else
+    {
+        struct timespec ts;
+        ts.tv_sec = (time_t) (milliseconds / 1000ull);
+        ts.tv_nsec = (long) (milliseconds % 1000ull) * 1000000ull;
+        nanosleep(&ts, NULL);
+    }
 #endif
 }
 
@@ -57,15 +57,15 @@ inline void FW_SleepNano(const uint64_t &nanoseconds)
         } while((time2-time1) < nanoseconds*freq/__int64(1000000000));
     }
 #else
-	if (!nanoseconds)
-		pthread_yield();
-	else
-	{
-		struct timespec ts;
-		ts.tv_sec = (time_t) (nanoseconds / 1000000000ull);
-		ts.tv_nsec = (long) (nanoseconds % 1000000000ull);
-		nanosleep(&ts, NULL);
-	}
+    if (!nanoseconds)
+        pthread_yield();
+    else
+    {
+        struct timespec ts;
+        ts.tv_sec = (time_t) (nanoseconds / 1000000000ull);
+        ts.tv_nsec = (long) (nanoseconds % 1000000000ull);
+        nanosleep(&ts, NULL);
+    }
 #endif
 }
 
@@ -88,13 +88,13 @@ inline uint64_t FW_GetTimestampNs()
 
 class FW_ConditionVariable;
 
-class	FW_Mutex
+class    FW_Mutex
 {
 public:
     FW_Mutex();
     ~FW_Mutex();
 
-	inline  void	Get(void)
+    inline  void    Get(void)
     {
     #if _MSC_VER && !__INTEL_COMPILER
         EnterCriticalSection(&hMutex);
@@ -102,7 +102,7 @@ public:
         pthread_mutex_lock(&hMutex);
     #endif
     }
-	inline  void	Release(void)
+    inline  void    Release(void)
     {
     #if _MSC_VER && !__INTEL_COMPILER
         LeaveCriticalSection(&hMutex);
@@ -110,8 +110,8 @@ public:
         pthread_mutex_unlock(&hMutex);
     #endif
     }
-	inline  bool    TryLock(void)
-	{
+    inline  bool    TryLock(void)
+    {
     #if _MSC_VER && !__INTEL_COMPILER
         return TryEnterCriticalSection(&hMutex);
     #else
@@ -124,7 +124,7 @@ private:
     FW_Mutex(const FW_Mutex&); // no implementation
     FW_Mutex& operator=(const FW_Mutex&); // no implementation
 #if _MSC_VER && !__INTEL_COMPILER
-	CRITICAL_SECTION hMutex;
+    CRITICAL_SECTION hMutex;
 #elif defined(_PTHREAD_H)
     pthread_mutex_t hMutex;
 #else
@@ -217,31 +217,31 @@ inline void FW_AtomicCounterIncr(FW_AtomicCounter &lock)
     //after all the previous read threads change state to either decremented or write block wait
     //anyhow the value of the counter will fall to 0 (value is decremented anyway in *DecrBlock)
     //either the original second thread will grab the write lock or one of the previous read threads which called DecrBlock
-	if (InterlockedIncrement(&lock)>FW_AtomicCounterMagicBlockVal)
-	{
-		while (lock>=FW_AtomicCounterMagicBlockVal)
-		{
-			SwitchToThread();
-		}
-	}
+    if (InterlockedIncrement(&lock)>FW_AtomicCounterMagicBlockVal)
+    {
+        while (lock>=FW_AtomicCounterMagicBlockVal)
+        {
+            SwitchToThread();
+        }
+    }
 
     //! Alternative possibly safer version
     /*
-	tryReadLockAgain:
-	if (InterlockedIncrement(&lock)>=FW_AtomicCounterMagicBlockVal)
-	{
+    tryReadLockAgain:
+    if (InterlockedIncrement(&lock)>=FW_AtomicCounterMagicBlockVal)
+    {
         InterlockedDecrement(&lock);
 
         //a loop
         checkLock:
         if (lock>=FW_AtomicCounterMagicBlockVal)
         {
-			Sleep(0);
+            Sleep(0);
             goto checkLock;
         }
         else
             goto tryReadLockAgain;
-	}*/
+    }*/
 }
 inline void FW_AtomicCounterDecr(FW_AtomicCounter &lock)
 {
@@ -272,7 +272,7 @@ inline void FW_AtomicCounterDecrBlock(FW_AtomicCounter &lock)
 }
 inline void FW_AtomicCounterUnBlock(FW_AtomicCounter &lock)
 {
-	InterlockedExchangeAdd(&lock,long(-FW_AtomicCounterMagicBlockVal));
+    InterlockedExchangeAdd(&lock,long(-FW_AtomicCounterMagicBlockVal));
 }
 inline void FW_AtomicCounterUnBlockIncr(FW_AtomicCounter &lock)
 {
@@ -281,7 +281,7 @@ inline void FW_AtomicCounterUnBlockIncr(FW_AtomicCounter &lock)
     //because we got there before and value of lock was never 0 between this thread
     //grabbing the write lock and now - trying to release it
     //so we don't need to wait for write lock to be released to grab the read lock
-	InterlockedExchangeAdd(&lock,long(1-FW_AtomicCounterMagicBlockVal));
+    InterlockedExchangeAdd(&lock,long(1-FW_AtomicCounterMagicBlockVal));
 }
 
 #elif defined(__GNUC__)
@@ -303,18 +303,18 @@ inline void FW_AtomicCounterIncr(FW_AtomicCounter &lock)
     //after all the previous read threads change state to either decremented or write block wait
     //anyhow the value of the counter will fall to 0 (value is decremented anyway in *DecrBlock)
     //either the original second thread will grab the write lock or one of the previous read threads which called DecrBlock
-	if (__sync_fetch_and_add(&lock,int32_t(1))>=FW_AtomicCounterMagicBlockVal) // value before incr being compared on Linux
-	{
+    if (__sync_fetch_and_add(&lock,int32_t(1))>=FW_AtomicCounterMagicBlockVal) // value before incr being compared on Linux
+    {
         while (lock>=FW_AtomicCounterMagicBlockVal)
         {
             pthread_yield();
         }
-	}
+    }
 
     //! Alternative possibly safer version
-	///tryReadLockAgain:
-	///if (__sync_fetch_and_add(&lock,int32_t(1))>=FW_AtomicCounterMagicBlockVal) // value before incr being compared on Linux
-	///{
+    ///tryReadLockAgain:
+    ///if (__sync_fetch_and_add(&lock,int32_t(1))>=FW_AtomicCounterMagicBlockVal) // value before incr being compared on Linux
+    ///{
         ///__sync_fetch_and_add(&lock,int32_t(-1));
 
         //a loop
@@ -326,7 +326,7 @@ inline void FW_AtomicCounterIncr(FW_AtomicCounter &lock)
         ///}
         ///else
             ///goto tryReadLockAgain;
-	///}
+    ///}
 }
 inline void FW_AtomicCounterDecr(FW_AtomicCounter &lock)
 {

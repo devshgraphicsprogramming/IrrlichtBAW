@@ -20,29 +20,29 @@ class CSoftware2MaterialRenderer : public IMaterialRenderer
 {
 public:
 
-	//! Constructor
-	CSoftware2MaterialRenderer(video::CBurningVideoDriver* driver)
-		: Driver(driver)
-	{
-	}
+    //! Constructor
+    CSoftware2MaterialRenderer(video::CBurningVideoDriver* driver)
+        : Driver(driver)
+    {
+    }
 
 protected:
 
-	video::CBurningVideoDriver* Driver;
+    video::CBurningVideoDriver* Driver;
 };
 
 //! solid material renderer
 class CSoftware2MaterialRenderer_SOLID : public CSoftware2MaterialRenderer
 {
 public:
-	CSoftware2MaterialRenderer_SOLID ( video::CBurningVideoDriver* driver )
-		:CSoftware2MaterialRenderer ( driver ) {}
+    CSoftware2MaterialRenderer_SOLID ( video::CBurningVideoDriver* driver )
+        :CSoftware2MaterialRenderer ( driver ) {}
 
-	//! Returns if the material is transparent.
-	virtual bool isTransparent() const
-	{
-		return false;
-	}
+    //! Returns if the material is transparent.
+    virtual bool isTransparent() const
+    {
+        return false;
+    }
 
 };
 
@@ -52,15 +52,15 @@ public:
 class CSoftware2MaterialRenderer_TRANSPARENT_ADD_COLOR : public CSoftware2MaterialRenderer
 {
 public:
-	CSoftware2MaterialRenderer_TRANSPARENT_ADD_COLOR ( video::CBurningVideoDriver* driver )
-		: CSoftware2MaterialRenderer ( driver ) {}
+    CSoftware2MaterialRenderer_TRANSPARENT_ADD_COLOR ( video::CBurningVideoDriver* driver )
+        : CSoftware2MaterialRenderer ( driver ) {}
 
 
-	//! Returns if the material is transparent.
-	virtual bool isTransparent() const
-	{
-		return true;
-	}
+    //! Returns if the material is transparent.
+    virtual bool isTransparent() const
+    {
+        return true;
+    }
 
 };
 
@@ -68,10 +68,10 @@ public:
 class CSoftware2MaterialRenderer_UNSUPPORTED : public CSoftware2MaterialRenderer
 {
 public:
-	CSoftware2MaterialRenderer_UNSUPPORTED ( video::CBurningVideoDriver* driver )
-		: CSoftware2MaterialRenderer ( driver ) {}
+    CSoftware2MaterialRenderer_UNSUPPORTED ( video::CBurningVideoDriver* driver )
+        : CSoftware2MaterialRenderer ( driver ) {}
 
-	virtual int32_t getRenderCapability() const { return 1; }
+    virtual int32_t getRenderCapability() const { return 1; }
 
 };
 
@@ -79,33 +79,33 @@ public:
 class CBurningShader_REFERENCE : public CSoftware2MaterialRenderer
 {
 public:
-	CBurningShader_REFERENCE ( video::CBurningVideoDriver* driver )
-		: CSoftware2MaterialRenderer ( driver ) {}
+    CBurningShader_REFERENCE ( video::CBurningVideoDriver* driver )
+        : CSoftware2MaterialRenderer ( driver ) {}
 
-	virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
-		bool resetAllRenderstates, IMaterialRendererServices* services)
-	{
-	}
+    virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
+        bool resetAllRenderstates, IMaterialRendererServices* services)
+    {
+    }
 
-	virtual void OnUnsetMaterial()
-	{
-	}
+    virtual void OnUnsetMaterial()
+    {
+    }
 
-	virtual bool isTransparent() const
-	{
-		return false;
-	}
+    virtual bool isTransparent() const
+    {
+        return false;
+    }
 
-	virtual bool OnRender(IMaterialRendererServices* service)
-	{
-		return true;
-	};
+    virtual bool OnRender(IMaterialRendererServices* service)
+    {
+        return true;
+    };
 
 
-	virtual int32_t getRenderCapability() const
-	{
-		return 1;
-	}
+    virtual int32_t getRenderCapability() const
+    {
+        return 1;
+    }
 
 };
 

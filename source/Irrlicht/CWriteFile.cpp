@@ -14,20 +14,20 @@ namespace io
 CWriteFile::CWriteFile(const io::path& fileName, bool append)
 : FileSize(0)
 {
-	#ifdef _DEBUG
-	setDebugName("CWriteFile");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CWriteFile");
+    #endif
 
-	Filename = fileName;
-	openFile(append);
+    Filename = fileName;
+    openFile(append);
 }
 
 
 
 CWriteFile::~CWriteFile()
 {
-	if (File)
-		fclose(File);
+    if (File)
+        fclose(File);
 }
 
 
@@ -35,7 +35,7 @@ CWriteFile::~CWriteFile()
 //! returns if file is open
 inline bool CWriteFile::isOpen() const
 {
-	return File != 0;
+    return File != 0;
 }
 
 
@@ -43,10 +43,10 @@ inline bool CWriteFile::isOpen() const
 //! returns how much was read
 int32_t CWriteFile::write(const void* buffer, uint32_t sizeToWrite)
 {
-	if (!isOpen())
-		return 0;
+    if (!isOpen())
+        return 0;
 
-	return (int32_t)fwrite(buffer, 1, sizeToWrite, File);
+    return (int32_t)fwrite(buffer, 1, sizeToWrite, File);
 }
 
 
@@ -56,10 +56,10 @@ int32_t CWriteFile::write(const void* buffer, uint32_t sizeToWrite)
 //! otherwise from begin of file
 bool CWriteFile::seek(long finalPos, bool relativeMovement)
 {
-	if (!isOpen())
-		return false;
+    if (!isOpen())
+        return false;
 
-	return fseek(File, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
+    return fseek(File, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
 }
 
 
@@ -67,7 +67,7 @@ bool CWriteFile::seek(long finalPos, bool relativeMovement)
 //! returns where in the file we are.
 long CWriteFile::getPos() const
 {
-	return ftell(File);
+    return ftell(File);
 }
 
 
@@ -75,26 +75,26 @@ long CWriteFile::getPos() const
 //! opens the file
 void CWriteFile::openFile(bool append)
 {
-	if (Filename.size() == 0)
-	{
-		File = 0;
-		return;
-	}
+    if (Filename.size() == 0)
+    {
+        File = 0;
+        return;
+    }
 
 #if defined(_IRR_WCHAR_FILESYSTEM)
-	File = _wfopen(Filename.c_str(), append ? L"ab" : L"wb");
+    File = _wfopen(Filename.c_str(), append ? L"ab" : L"wb");
 #else
-	File = fopen(Filename.c_str(), append ? "ab" : "wb");
+    File = fopen(Filename.c_str(), append ? "ab" : "wb");
 #endif
 
-	if (File)
-	{
-		// get FileSize
+    if (File)
+    {
+        // get FileSize
 
-		fseek(File, 0, SEEK_END);
-		FileSize = ftell(File);
-		fseek(File, 0, SEEK_SET);
-	}
+        fseek(File, 0, SEEK_END);
+        FileSize = ftell(File);
+        fseek(File, 0, SEEK_SET);
+    }
 }
 
 
@@ -102,19 +102,19 @@ void CWriteFile::openFile(bool append)
 //! returns name of file
 const io::path& CWriteFile::getFileName() const
 {
-	return Filename;
+    return Filename;
 }
 
 
 
 IWriteFile* createWriteFile(const io::path& fileName, bool append)
 {
-	CWriteFile* file = new CWriteFile(fileName, append);
-	if (file->isOpen())
-		return file;
+    CWriteFile* file = new CWriteFile(fileName, append);
+    if (file->isOpen())
+        return file;
 
-	file->drop();
-	return 0;
+    file->drop();
+    return 0;
 }
 
 

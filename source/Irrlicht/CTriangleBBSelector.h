@@ -17,21 +17,21 @@ class CTriangleBBSelector : public CTriangleSelector
 {
 public:
 
-	//! Constructs a selector based on a mesh
-	CTriangleBBSelector(ISceneNode* node);
+    //! Constructs a selector based on a mesh
+    CTriangleBBSelector(ISceneNode* node);
 
-	//! Gets all triangles.
-	virtual void getTriangles(core::triangle3df* triangles, s32 arraySize, s32& outTriangleCount,
-		const core::matrix4* transform=0) const;
+    //! Gets all triangles.
+    virtual void getTriangles(core::triangle3df* triangles, s32 arraySize, s32& outTriangleCount,
+        const core::matrix4* transform=0) const;
 
-	//! Gets all triangles which lie within a specific bounding box.
-	void getTriangles(core::triangle3df* triangles, s32 arraySize, s32& outTriangleCount,
-		const core::aabbox3d<f32>& box, const core::matrix4* transform=0) const;
+    //! Gets all triangles which lie within a specific bounding box.
+    void getTriangles(core::triangle3df* triangles, s32 arraySize, s32& outTriangleCount,
+        const core::aabbox3d<f32>& box, const core::matrix4* transform=0) const;
 
-	//! Gets all triangles which have or may have contact with a 3d line.
-	virtual void getTriangles(core::triangle3df* triangles, s32 arraySize,
-		s32& outTriangleCount, const core::line3d<f32>& line,
-		const core::matrix4* transform=0) const;
+    //! Gets all triangles which have or may have contact with a 3d line.
+    virtual void getTriangles(core::triangle3df* triangles, s32 arraySize,
+        s32& outTriangleCount, const core::line3d<f32>& line,
+        const core::matrix4* transform=0) const;
 
 };
 

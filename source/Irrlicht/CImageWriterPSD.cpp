@@ -18,25 +18,25 @@ namespace video
 
 IImageWriter* createImageWriterPSD()
 {
-	return new CImageWriterPSD;
+    return new CImageWriterPSD;
 }
 
 CImageWriterPSD::CImageWriterPSD()
 {
 #ifdef _DEBUG
-	setDebugName("CImageWriterPSD");
+    setDebugName("CImageWriterPSD");
 #endif
 }
 
 bool CImageWriterPSD::isAWriteableFileExtension(const io::path& filename) const
 {
-	return core::hasFileExtension ( filename, "psd" );
+    return core::hasFileExtension ( filename, "psd" );
 }
 
 bool CImageWriterPSD::writeImage(io::IWriteFile *file, IImage *image,uint32_t param) const
 {
-	os::Printer::log("PSD writer not yet implemented. Image not written.", ELL_WARNING);
-	return false;
+    os::Printer::log("PSD writer not yet implemented. Image not written.", ELL_WARNING);
+    return false;
 }
 
 } // namespace video

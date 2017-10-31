@@ -18,11 +18,11 @@ namespace video
 CDepthBuffer::CDepthBuffer(const core::dimension2d<uint32_t>& size)
 : Buffer(0), Size(0,0)
 {
-	#ifdef _DEBUG
-	setDebugName("CDepthBuffer");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CDepthBuffer");
+    #endif
 
-	setSize(size);
+    setSize(size);
 }
 
 
@@ -30,8 +30,8 @@ CDepthBuffer::CDepthBuffer(const core::dimension2d<uint32_t>& size)
 //! destructor
 CDepthBuffer::~CDepthBuffer()
 {
-	if (Buffer)
-		delete [] Buffer;
+    if (Buffer)
+        delete [] Buffer;
 }
 
 
@@ -41,15 +41,15 @@ void CDepthBuffer::clear()
 {
 
 #ifdef SOFTWARE_DRIVER_2_USE_WBUFFER
-	float zMax = 0.f;
+    float zMax = 0.f;
 #else
-	float zMax = 1.f;
+    float zMax = 1.f;
 #endif
 
-	uint32_t zMaxValue;
-	zMaxValue = IR(zMax);
+    uint32_t zMaxValue;
+    zMaxValue = IR(zMax);
 
-	memset32 ( Buffer, zMaxValue, TotalSize );
+    memset32 ( Buffer, zMaxValue, TotalSize );
 }
 
 
@@ -57,18 +57,18 @@ void CDepthBuffer::clear()
 //! sets the new size of the zbuffer
 void CDepthBuffer::setSize(const core::dimension2d<uint32_t>& size)
 {
-	if (size == Size)
-		return;
+    if (size == Size)
+        return;
 
-	Size = size;
+    Size = size;
 
-	if (Buffer)
-		delete [] Buffer;
+    if (Buffer)
+        delete [] Buffer;
 
-	Pitch = size.Width * sizeof ( fp24 );
-	TotalSize = Pitch * size.Height;
-	Buffer = new uint8_t[TotalSize];
-	clear ();
+    Pitch = size.Width * sizeof ( fp24 );
+    TotalSize = Pitch * size.Height;
+    Buffer = new uint8_t[TotalSize];
+    clear ();
 }
 
 
@@ -76,7 +76,7 @@ void CDepthBuffer::setSize(const core::dimension2d<uint32_t>& size)
 //! returns the size of the zbuffer
 const core::dimension2d<uint32_t>& CDepthBuffer::getSize() const
 {
-	return Size;
+    return Size;
 }
 
 // -----------------------------------------------------------------
@@ -85,11 +85,11 @@ const core::dimension2d<uint32_t>& CDepthBuffer::getSize() const
 CStencilBuffer::CStencilBuffer(const core::dimension2d<uint32_t>& size)
 : Buffer(0), Size(0,0)
 {
-	#ifdef _DEBUG
-	setDebugName("CDepthBuffer");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CDepthBuffer");
+    #endif
 
-	setSize(size);
+    setSize(size);
 }
 
 
@@ -97,8 +97,8 @@ CStencilBuffer::CStencilBuffer(const core::dimension2d<uint32_t>& size)
 //! destructor
 CStencilBuffer::~CStencilBuffer()
 {
-	if (Buffer)
-		delete [] Buffer;
+    if (Buffer)
+        delete [] Buffer;
 }
 
 
@@ -106,7 +106,7 @@ CStencilBuffer::~CStencilBuffer()
 //! clears the zbuffer
 void CStencilBuffer::clear()
 {
-	memset32 ( Buffer, 0, TotalSize );
+    memset32 ( Buffer, 0, TotalSize );
 }
 
 
@@ -114,18 +114,18 @@ void CStencilBuffer::clear()
 //! sets the new size of the zbuffer
 void CStencilBuffer::setSize(const core::dimension2d<uint32_t>& size)
 {
-	if (size == Size)
-		return;
+    if (size == Size)
+        return;
 
-	Size = size;
+    Size = size;
 
-	if (Buffer)
-		delete [] Buffer;
+    if (Buffer)
+        delete [] Buffer;
 
-	Pitch = size.Width * sizeof ( uint32_t );
-	TotalSize = Pitch * size.Height;
-	Buffer = new uint8_t[TotalSize];
-	clear ();
+    Pitch = size.Width * sizeof ( uint32_t );
+    TotalSize = Pitch * size.Height;
+    Buffer = new uint8_t[TotalSize];
+    clear ();
 }
 
 
@@ -133,7 +133,7 @@ void CStencilBuffer::setSize(const core::dimension2d<uint32_t>& size)
 //! returns the size of the zbuffer
 const core::dimension2d<uint32_t>& CStencilBuffer::getSize() const
 {
-	return Size;
+    return Size;
 }
 
 
@@ -151,22 +151,22 @@ namespace video
 //! creates a ZBuffer
 IDepthBuffer* createDepthBuffer(const core::dimension2d<uint32_t>& size)
 {
-	#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-	return new CDepthBuffer(size);
-	#else
-	return 0;
-	#endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_
+    #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
+    return new CDepthBuffer(size);
+    #else
+    return 0;
+    #endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_
 }
 
 
 //! creates a ZBuffer
 IStencilBuffer* createStencilBuffer(const core::dimension2d<uint32_t>& size)
 {
-	#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
-	return new CStencilBuffer(size);
-	#else
-	return 0;
-	#endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_
+    #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
+    return new CStencilBuffer(size);
+    #else
+    return 0;
+    #endif // _IRR_COMPILE_WITH_BURNINGSVIDEO_
 }
 
 } // end namespace video

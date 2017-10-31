@@ -39,7 +39,7 @@
 
 #include <memory.h>
 
-#define USE_SHA1	// Irrlicht only cares about SHA1 for now
+#define USE_SHA1    // Irrlicht only cares about SHA1 for now
 #if !defined(USE_SHA1) && !defined(USE_SHA256)
 #error define USE_SHA1 or USE_SHA256 to set the HMAC hash algorithm
 #endif
@@ -50,10 +50,10 @@
 
 #define HMAC_HASH_INPUT_SIZE    SHA1_BLOCK_SIZE
 #define HMAC_HASH_OUTPUT_SIZE   SHA1_DIGEST_SIZE
-#define sha_ctx             	sha1_ctx
-#define sha_begin           	sha1_begin
-#define sha_hash            	sha1_hash
-#define sha_end             	sha1_end
+#define sha_ctx                 sha1_ctx
+#define sha_begin               sha1_begin
+#define sha_hash                sha1_hash
+#define sha_end                 sha1_end
 
 #endif
 

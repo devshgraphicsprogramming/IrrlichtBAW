@@ -12,5 +12,5 @@ usual.
 
 Object files included:
 
-JDOSAMSC.OBJ	For Microsoft C version 5 or later.
-JDOSABCC.OBJ	For Borland C version 3.0 or later.
+JDOSAMSC.OBJ    For Microsoft C version 5 or later.
+JDOSABCC.OBJ    For Borland C version 3.0 or later.

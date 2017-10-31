@@ -61,26 +61,26 @@ user for the desired renderer and start it up.
 */
 int main()
 {
-	// create device with full flexibility over creation parameters
-	// you can add more parameters if desired, check irr::SIrrlichtCreationParameters
-	irr::SIrrlichtCreationParameters params;
-	params.Bits = 24; //may have to set to 32bit for some platforms
-	params.ZBufferBits = 24; //we'd like 32bit here
+    // create device with full flexibility over creation parameters
+    // you can add more parameters if desired, check irr::SIrrlichtCreationParameters
+    irr::SIrrlichtCreationParameters params;
+    params.Bits = 24; //may have to set to 32bit for some platforms
+    params.ZBufferBits = 24; //we'd like 32bit here
     params.AntiAlias = 0; //No AA, yet
-	params.DriverType = video::EDT_OPENGL; //! Only Well functioning driver, software renderer left for sake of 2D image drawing
-	params.WindowSize = dimension2d<uint32_t>(1920, 1080);
-	params.Fullscreen = false;
-	params.Vsync = true; //! If supported by target platform
-	params.Doublebuffer = true;
-	params.Stencilbuffer = false; //! This will not even be a choice soon
-	IrrlichtDevice* device = createDeviceEx(params);
+    params.DriverType = video::EDT_OPENGL; //! Only Well functioning driver, software renderer left for sake of 2D image drawing
+    params.WindowSize = dimension2d<uint32_t>(1920, 1080);
+    params.Fullscreen = false;
+    params.Vsync = true; //! If supported by target platform
+    params.Doublebuffer = true;
+    params.Stencilbuffer = false; //! This will not even be a choice soon
+    IrrlichtDevice* device = createDeviceEx(params);
 
-	if (device == 0)
-		return 1; // could not create selected driver.
+    if (device == 0)
+        return 1; // could not create selected driver.
 
 
-	video::IVideoDriver* driver = device->getVideoDriver();
-	SimpleCallBack* callBack = new SimpleCallBack();
+    video::IVideoDriver* driver = device->getVideoDriver();
+    SimpleCallBack* callBack = new SimpleCallBack();
 
     //! First need to make a material other than default to be able to draw with custom shader
     video::SMaterial material;
@@ -95,7 +95,7 @@ int main()
 
 
 
-	scene::ISceneManager* smgr = device->getSceneManager();
+    scene::ISceneManager* smgr = device->getSceneManager();
 
 
     scene::IGPUMeshBuffer* mb = new scene::IGPUMeshBuffer();
@@ -140,12 +140,12 @@ int main()
     camera->setNearValue(0.001f);
     camera->setFarValue(10.f);
 
-	uint64_t lastFPSTime = 0;
+    uint64_t lastFPSTime = 0;
 
-	while(device->run())
-	if (device->isWindowActive())
-	{
-		driver->beginScene(true, true, video::SColor(255,0,0,255) );
+    while(device->run())
+    if (device->isWindowActive())
+    {
+        driver->beginScene(true, true, video::SColor(255,0,0,255) );
 
         smgr->drawAll();
 
@@ -154,26 +154,27 @@ int main()
         //! draw back to front
         driver->drawMeshBuffer(mb);
 
-		driver->endScene();
+        driver->endScene();
 
-		// display frames per second in window title
-		uint64_t time = device->getTimer()->getRealTime();
-		if (time-lastFPSTime > 1000)
-		{
-			stringw str = L"Terrain Renderer - Irrlicht Engine [";
-			str += driver->getName();
-			str += "] FPS:";
-			str += driver->getFPS();
-			str += " PrimitvesDrawn:";
-			str += driver->getPrimitiveCountDrawn();
+        // display frames per second in window title
+        uint64_t time = device->getTimer()->getRealTime();
+        if (time-lastFPSTime > 1000)
+        {
+            std::wostringstream str;
+            str << "Sphere Points Demo - Irrlicht Engine ["
+                << driver->getName()
+                << "] FPS:"
+                << driver->getFPS()
+                << " PrimitvesDrawn:"
+                << driver->getPrimitiveCountDrawn();
 
-			device->setWindowCaption(str.c_str());
-			lastFPSTime = time;
-		}
-	}
-	mb->drop();
+            device->setWindowCaption(str.str());
+            lastFPSTime = time;
+        }
+    }
+    mb->drop();
 
-	device->drop();
+    device->drop();
 
-	return 0;
+    return 0;
 }

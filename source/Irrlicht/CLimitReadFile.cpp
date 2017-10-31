@@ -12,27 +12,27 @@ namespace io
 
 
 CLimitReadFile::CLimitReadFile(IReadFile* alreadyOpenedFile, long pos,
-		long areaSize, const io::path& name)
-	: Filename(name), AreaStart(0), AreaEnd(0), Pos(0),
-	File(alreadyOpenedFile)
+        long areaSize, const io::path& name)
+    : Filename(name), AreaStart(0), AreaEnd(0), Pos(0),
+    File(alreadyOpenedFile)
 {
-	#ifdef _DEBUG
-	setDebugName("CLimitReadFile");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CLimitReadFile");
+    #endif
 
-	if (File)
-	{
-		File->grab();
-		AreaStart = pos;
-		AreaEnd = AreaStart + areaSize;
-	}
+    if (File)
+    {
+        File->grab();
+        AreaStart = pos;
+        AreaEnd = AreaStart + areaSize;
+    }
 }
 
 
 CLimitReadFile::~CLimitReadFile()
 {
-	if (File)
-		File->drop();
+    if (File)
+        File->drop();
 }
 
 
@@ -40,27 +40,27 @@ CLimitReadFile::~CLimitReadFile()
 int32_t CLimitReadFile::read(void* buffer, uint32_t sizeToRead)
 {
 #if 1
-	if (0 == File)
-		return 0;
+    if (0 == File)
+        return 0;
 
-	int32_t r = AreaStart + Pos;
-	int32_t toRead = core::s32_min(AreaEnd, r + sizeToRead) - core::s32_max(AreaStart, r);
-	if (toRead < 0)
-		return 0;
-	File->seek(r);
-	r = File->read(buffer, toRead);
-	Pos += r;
-	return r;
+    int32_t r = AreaStart + Pos;
+    int32_t toRead = core::s32_min(AreaEnd, r + sizeToRead) - core::s32_max(AreaStart, r);
+    if (toRead < 0)
+        return 0;
+    File->seek(r);
+    r = File->read(buffer, toRead);
+    Pos += r;
+    return r;
 #else
-	const long pos = File->getPos();
+    const long pos = File->getPos();
 
-	if (pos >= AreaEnd)
-		return 0;
+    if (pos >= AreaEnd)
+        return 0;
 
-	if (pos + (long)sizeToRead >= AreaEnd)
-		sizeToRead = AreaEnd - pos;
+    if (pos + (long)sizeToRead >= AreaEnd)
+        sizeToRead = AreaEnd - pos;
 
-	return File->read(buffer, sizeToRead);
+    return File->read(buffer, sizeToRead);
 #endif
 }
 
@@ -69,24 +69,24 @@ int32_t CLimitReadFile::read(void* buffer, uint32_t sizeToRead)
 bool CLimitReadFile::seek(long finalPos, bool relativeMovement)
 {
 #if 1
-	Pos = core::s32_clamp(finalPos + (relativeMovement ? Pos : 0 ), 0, AreaEnd - AreaStart);
-	return true;
+    Pos = core::s32_clamp(finalPos + (relativeMovement ? Pos : 0 ), 0, AreaEnd - AreaStart);
+    return true;
 #else
-	const long pos = File->getPos();
+    const long pos = File->getPos();
 
-	if (relativeMovement)
-	{
-		if (pos + finalPos > AreaEnd)
-			finalPos = AreaEnd - pos;
-	}
-	else
-	{
-		finalPos += AreaStart;
-		if (finalPos > AreaEnd)
-			return false;
-	}
+    if (relativeMovement)
+    {
+        if (pos + finalPos > AreaEnd)
+            finalPos = AreaEnd - pos;
+    }
+    else
+    {
+        finalPos += AreaStart;
+        if (finalPos > AreaEnd)
+            return false;
+    }
 
-	return File->seek(finalPos, relativeMovement);
+    return File->seek(finalPos, relativeMovement);
 #endif
 }
 
@@ -94,7 +94,7 @@ bool CLimitReadFile::seek(long finalPos, bool relativeMovement)
 //! returns size of file
 long CLimitReadFile::getSize() const
 {
-	return AreaEnd - AreaStart;
+    return AreaEnd - AreaStart;
 }
 
 
@@ -102,9 +102,9 @@ long CLimitReadFile::getSize() const
 long CLimitReadFile::getPos() const
 {
 #if 1
-	return Pos;
+    return Pos;
 #else
-	return File->getPos() - AreaStart;
+    return File->getPos() - AreaStart;
 #endif
 }
 
@@ -112,13 +112,13 @@ long CLimitReadFile::getPos() const
 //! returns name of file
 const io::path& CLimitReadFile::getFileName() const
 {
-	return Filename;
+    return Filename;
 }
 
 
 IReadFile* createLimitReadFile(const io::path& fileName, IReadFile* alreadyOpenedFile, long pos, long areaSize)
 {
-	return new CLimitReadFile(alreadyOpenedFile, pos, areaSize, fileName);
+    return new CLimitReadFile(alreadyOpenedFile, pos, areaSize, fileName);
 }
 
 

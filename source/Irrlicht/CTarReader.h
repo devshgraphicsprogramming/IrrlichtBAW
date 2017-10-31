@@ -21,110 +21,110 @@ namespace irr
 namespace io
 {
 
-	enum E_TAR_LINK_INDICATOR
-	{
-		ETLI_REGULAR_FILE_OLD      =  0 ,
-		ETLI_REGULAR_FILE          = '0',
-		ETLI_LINK_TO_ARCHIVED_FILE = '1', // Hard link
-		ETLI_SYMBOLIC_LINK         = '2',
-		ETLI_CHAR_SPECIAL_DEVICE   = '3',
-		ETLI_BLOCK_SPECIAL_DEVICE  = '4',
-		ETLI_DIRECTORY             = '5',
-		ETLI_FIFO_SPECIAL_FILE     = '6',
-		ETLI_CONTIGUOUS_FILE       = '7'
-	};
+    enum E_TAR_LINK_INDICATOR
+    {
+        ETLI_REGULAR_FILE_OLD      =  0 ,
+        ETLI_REGULAR_FILE          = '0',
+        ETLI_LINK_TO_ARCHIVED_FILE = '1', // Hard link
+        ETLI_SYMBOLIC_LINK         = '2',
+        ETLI_CHAR_SPECIAL_DEVICE   = '3',
+        ETLI_BLOCK_SPECIAL_DEVICE  = '4',
+        ETLI_DIRECTORY             = '5',
+        ETLI_FIFO_SPECIAL_FILE     = '6',
+        ETLI_CONTIGUOUS_FILE       = '7'
+    };
 
 // byte-align structures
 #include "irrpack.h"
 
-	struct STarHeader
-	{
-		char FileName[100];
-		char FileMode[8];
-		char UserID[8];
-		char GroupID[8];
-		char Size[12];
-		char ModifiedTime[12];
-		char Checksum[8];
-		char Link;
-		char LinkName[100];
-		char Magic[6];
-		char USTARVersion[2];
-		char UserName[32];
-		char GroupName[32];
-		char DeviceMajor[8];
-		char DeviceMinor[8];
-		char FileNamePrefix[155];
-	} PACK_STRUCT;
+    struct STarHeader
+    {
+        char FileName[100];
+        char FileMode[8];
+        char UserID[8];
+        char GroupID[8];
+        char Size[12];
+        char ModifiedTime[12];
+        char Checksum[8];
+        char Link;
+        char LinkName[100];
+        char Magic[6];
+        char USTARVersion[2];
+        char UserName[32];
+        char GroupName[32];
+        char DeviceMajor[8];
+        char DeviceMinor[8];
+        char FileNamePrefix[155];
+    } PACK_STRUCT;
 
 // Default alignment
 #include "irrunpack.h"
 
-	//! Archiveloader capable of loading ZIP Archives
-	class CArchiveLoaderTAR : public IArchiveLoader
-	{
-	public:
+    //! Archiveloader capable of loading ZIP Archives
+    class CArchiveLoaderTAR : public IArchiveLoader
+    {
+    public:
 
-		//! Constructor
-		CArchiveLoaderTAR(io::IFileSystem* fs);
+        //! Constructor
+        CArchiveLoaderTAR(io::IFileSystem* fs);
 
-		//! returns true if the file maybe is able to be loaded by this class
-		//! based on the file extension (e.g. ".tar")
-		virtual bool isALoadableFileFormat(const io::path& filename) const;
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".tar")
+        virtual bool isALoadableFileFormat(const io::path& filename) const;
 
-		//! Check if the file might be loaded by this class
-		/** Check might look into the file.
-		\param file File handle to check.
-		\return True if file seems to be loadable. */
-		virtual bool isALoadableFileFormat(io::IReadFile* file) const;
+        //! Check if the file might be loaded by this class
+        /** Check might look into the file.
+        \param file File handle to check.
+        \return True if file seems to be loadable. */
+        virtual bool isALoadableFileFormat(io::IReadFile* file) const;
 
-		//! Check to see if the loader can create archives of this type.
-		/** Check based on the archive type.
-		\param fileType The archive type to check.
-		\return True if the archile loader supports this type, false if not */
-		virtual bool isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const;
+        //! Check to see if the loader can create archives of this type.
+        /** Check based on the archive type.
+        \param fileType The archive type to check.
+        \return True if the archile loader supports this type, false if not */
+        virtual bool isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const;
 
-		//! Creates an archive from the filename
-		/** \param file File handle to check.
-		\return Pointer to newly created archive, or 0 upon error. */
-		virtual IFileArchive* createArchive(const io::path& filename, bool ignoreCase, bool ignorePaths) const;
+        //! Creates an archive from the filename
+        /** \param file File handle to check.
+        \return Pointer to newly created archive, or 0 upon error. */
+        virtual IFileArchive* createArchive(const io::path& filename, bool ignoreCase, bool ignorePaths) const;
 
-		//! creates/loads an archive from the file.
-		//! \return Pointer to the created archive. Returns 0 if loading failed.
-		virtual io::IFileArchive* createArchive(io::IReadFile* file, bool ignoreCase, bool ignorePaths) const;
+        //! creates/loads an archive from the file.
+        //! \return Pointer to the created archive. Returns 0 if loading failed.
+        virtual io::IFileArchive* createArchive(io::IReadFile* file, bool ignoreCase, bool ignorePaths) const;
 
-	private:
-		io::IFileSystem* FileSystem;
-	};
+    private:
+        io::IFileSystem* FileSystem;
+    };
 
 
 
-	class CTarReader : public virtual IFileArchive, virtual CFileList
-	{
-	public:
+    class CTarReader : public virtual IFileArchive, virtual CFileList
+    {
+    public:
 
-		CTarReader(IReadFile* file, bool ignoreCase, bool ignorePaths);
+        CTarReader(IReadFile* file, bool ignoreCase, bool ignorePaths);
 
-		virtual ~CTarReader();
+        virtual ~CTarReader();
 
-		//! opens a file by file name
-		virtual IReadFile* createAndOpenFile(const io::path& filename);
+        //! opens a file by file name
+        virtual IReadFile* createAndOpenFile(const io::path& filename);
 
-		//! opens a file by index
-		virtual IReadFile* createAndOpenFile(uint32_t index);
+        //! opens a file by index
+        virtual IReadFile* createAndOpenFile(uint32_t index);
 
-		//! returns the list of files
-		virtual const IFileList* getFileList() const;
+        //! returns the list of files
+        virtual const IFileList* getFileList() const;
 
-		//! get the class Type
-		virtual E_FILE_ARCHIVE_TYPE getType() const { return EFAT_TAR; }
+        //! get the class Type
+        virtual E_FILE_ARCHIVE_TYPE getType() const { return EFAT_TAR; }
 
-	private:
+    private:
 
-		uint32_t populateFileList();
+        uint32_t populateFileList();
 
-		IReadFile* File;
-	};
+        IReadFile* File;
+    };
 
 } // end namespace io
 } // end namespace irr

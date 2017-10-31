@@ -72,55 +72,55 @@ struct SMyMaterialHeader
 class CMY3DMeshFileLoader : public IMeshLoader
 {
 public:
-	CMY3DMeshFileLoader(ISceneManager *scmgr, io::IFileSystem* fs);
-	virtual ~CMY3DMeshFileLoader();
+    CMY3DMeshFileLoader(ISceneManager *scmgr, io::IFileSystem* fs);
+    virtual ~CMY3DMeshFileLoader();
 
-	virtual bool isALoadableFileExtension(const io::path& filename) const;
+    virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-	virtual IAnimatedMesh* createMesh(io::IReadFile* file);
+    virtual IAnimatedMesh* createMesh(io::IReadFile* file);
 
-	//! getting access to the nodes (with transparent material), creating
-	//! while loading .my3d file
-	const core::array<ISceneNode*>& getChildNodes() const;
+    //! getting access to the nodes (with transparent material), creating
+    //! while loading .my3d file
+    const core::array<ISceneNode*>& getChildNodes() const;
 
 private:
 
-	video::ITexture* readEmbeddedLightmap(io::IReadFile* file, char* namebuf);
+    video::ITexture* readEmbeddedLightmap(io::IReadFile* file, char* namebuf);
 
-	scene::ISceneManager* SceneManager;
-	io::IFileSystem* FileSystem;
+    scene::ISceneManager* SceneManager;
+    io::IFileSystem* FileSystem;
 
-	struct SMyMaterialEntry
-	{
-		SMyMaterialEntry ()
-		: Texture1FileName("null"), Texture2FileName("null"),
-		Texture1(0), Texture2(0), MaterialType(video::EMT_SOLID) {}
+    struct SMyMaterialEntry
+    {
+        SMyMaterialEntry ()
+        : Texture1FileName("null"), Texture2FileName("null"),
+        Texture1(0), Texture2(0), MaterialType(video::EMT_SOLID) {}
 
-		SMyMaterialHeader Header;
-		core::stringc Texture1FileName;
-		core::stringc Texture2FileName;
-		video::ITexture *Texture1;
-		video::ITexture *Texture2;
-		video::E_MATERIAL_TYPE MaterialType;
-	};
+        SMyMaterialHeader Header;
+        core::stringc Texture1FileName;
+        core::stringc Texture2FileName;
+        video::ITexture *Texture1;
+        video::ITexture *Texture2;
+        video::E_MATERIAL_TYPE MaterialType;
+    };
 
-	struct SMyMeshBufferEntry
-	{
-		SMyMeshBufferEntry() : MaterialIndex(-1), MeshBuffer(0) {}
-		SMyMeshBufferEntry(int32_t mi, SMeshBufferLightMap* mb)
-			: MaterialIndex(mi), MeshBuffer(mb) {}
+    struct SMyMeshBufferEntry
+    {
+        SMyMeshBufferEntry() : MaterialIndex(-1), MeshBuffer(0) {}
+        SMyMeshBufferEntry(int32_t mi, SMeshBufferLightMap* mb)
+            : MaterialIndex(mi), MeshBuffer(mb) {}
 
-		int32_t MaterialIndex;
-		SMeshBufferLightMap* MeshBuffer;
-	};
+        int32_t MaterialIndex;
+        SMeshBufferLightMap* MeshBuffer;
+    };
 
-	SMyMaterialEntry*    getMaterialEntryByIndex     (uint32_t matInd);
-	SMeshBufferLightMap* getMeshBufferByMaterialIndex(uint32_t matInd);
+    SMyMaterialEntry*    getMaterialEntryByIndex     (uint32_t matInd);
+    SMeshBufferLightMap* getMeshBufferByMaterialIndex(uint32_t matInd);
 
-	core::array<SMyMaterialEntry>   MaterialEntry;
-	core::array<SMyMeshBufferEntry> MeshBufferEntry;
+    core::array<SMyMaterialEntry>   MaterialEntry;
+    core::array<SMyMeshBufferEntry> MeshBufferEntry;
 
-	core::array<ISceneNode*> ChildNodes;
+    core::array<ISceneNode*> ChildNodes;
 };
 
 

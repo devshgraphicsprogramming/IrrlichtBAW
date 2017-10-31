@@ -30,8 +30,8 @@
  -------------------------------------------------------------------------
  Issue Date: 26/08/2003
 
- This file implements password based file encryption and authentication 
- using AES in CTR mode, HMAC-SHA1 authentication and RFC2898 password 
+ This file implements password based file encryption and authentication
+ using AES in CTR mode, HMAC-SHA1 authentication and RFC2898 password
  based key derivation.
 
 */
@@ -92,20 +92,20 @@ int fcrypt_init(
     /* if we need a random component in the encryption  */
     /* nonce, this is where it would have to be set     */
     memset(cx->nonce, 0, BLOCK_SIZE * sizeof(unsigned char));
-    /* initialise for authentication			        */
+    /* initialise for authentication                    */
     hmac_sha_begin(cx->auth_ctx);
 
     /* derive the encryption and authetication keys and the password verifier   */
     derive_key(pwd, pwd_len, salt, SALT_LENGTH(mode), KEYING_ITERATIONS,
                         kbuf, 2 * KEY_LENGTH(mode) + PWD_VER_LENGTH);
-    /* set the encryption key							*/
+    /* set the encryption key                            */
     aes_encrypt_key(kbuf, KEY_LENGTH(mode), cx->encr_ctx);
-    /* set the authentication key						*/
+    /* set the authentication key                        */
     hmac_sha_key(kbuf + KEY_LENGTH(mode), KEY_LENGTH(mode), cx->auth_ctx);
 #ifdef PASSWORD_VERIFIER
     memcpy(pwd_ver, kbuf + 2 * KEY_LENGTH(mode), PWD_VER_LENGTH);
 #endif
-    /* clear the buffer holding the derived key values	*/
+    /* clear the buffer holding the derived key values    */
     memset(kbuf, 0, 2 * KEY_LENGTH(mode) + PWD_VER_LENGTH);
 
     return GOOD_RETURN;
@@ -134,7 +134,7 @@ int fcrypt_end(unsigned char mac[], fcrypt_ctx cx[1])
     unsigned int res = cx->mode;
 
     hmac_sha_end(mac, MAC_LENGTH(cx->mode), cx->auth_ctx);
-    memset(cx, 0, sizeof(fcrypt_ctx));	/* clear the encryption context	*/
-    return MAC_LENGTH(res);		/* return MAC length in bytes   */
+    memset(cx, 0, sizeof(fcrypt_ctx));    /* clear the encryption context    */
+    return MAC_LENGTH(res);        /* return MAC length in bytes   */
 }
 

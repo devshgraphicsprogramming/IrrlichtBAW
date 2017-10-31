@@ -11,44 +11,44 @@ namespace irr
 {
 namespace scene
 {
-	class CSceneNodeAnimatorFlyCircle : public ISceneNodeAnimator
-	{
-	public:
+    class CSceneNodeAnimatorFlyCircle : public ISceneNodeAnimator
+    {
+    public:
 
-		//! constructor
-		CSceneNodeAnimatorFlyCircle(uint32_t time,
-				const core::vector3df& center, float radius,
-				float speed, const core::vector3df& direction,
-				float radiusEllipsoid);
+        //! constructor
+        CSceneNodeAnimatorFlyCircle(uint32_t time,
+                const core::vector3df& center, float radius,
+                float speed, const core::vector3df& direction,
+                float radiusEllipsoid);
 
-		//! animates a scene node
-		virtual void animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs);
+        //! animates a scene node
+        virtual void animateNode(IDummyTransformationSceneNode* node, uint32_t timeMs);
 
-		//! Returns type of the scene node animator
-		virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_FLY_CIRCLE; }
+        //! Returns type of the scene node animator
+        virtual ESCENE_NODE_ANIMATOR_TYPE getType() const { return ESNAT_FLY_CIRCLE; }
 
-		//! Creates a clone of this animator.
-		/** Please note that you will have to drop
-		(IReferenceCounted::drop()) the returned pointer after calling
-		this. */
-		virtual ISceneNodeAnimator* createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager=0);
+        //! Creates a clone of this animator.
+        /** Please note that you will have to drop
+        (IReferenceCounted::drop()) the returned pointer after calling
+        this. */
+        virtual ISceneNodeAnimator* createClone(IDummyTransformationSceneNode* node, ISceneManager* newManager=0);
 
-	private:
-		// do some initial calculations
-		void init();
+    private:
+        // do some initial calculations
+        void init();
 
-		// circle center
-		core::vector3df Center;
-		// up-vector, normal to the circle's plane
-		core::vector3df Direction;
-		// Two helper vectors
-		core::vector3df VecU;
-		core::vector3df VecV;
-		float Radius;
-		float RadiusEllipsoid;
-		float Speed;
-		uint32_t StartTime;
-	};
+        // circle center
+        core::vector3df Center;
+        // up-vector, normal to the circle's plane
+        core::vector3df Direction;
+        // Two helper vectors
+        core::vector3df VecU;
+        core::vector3df VecV;
+        float Radius;
+        float RadiusEllipsoid;
+        float Speed;
+        uint32_t StartTime;
+    };
 
 
 } // end namespace scene

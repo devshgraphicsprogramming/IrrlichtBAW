@@ -28,37 +28,37 @@ namespace video
 
 //! Constructor
 COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(video::COpenGLDriver* driver,
-		int32_t& outMaterialTypeNr, const char* vertexShaderProgram,
-		const char* vertexShaderEntryPointName,
-		const char* pixelShaderProgram,
-		const char* pixelShaderEntryPointName,
-		const char* geometryShaderProgram,
-		const char* geometryShaderEntryPointName,
-		const char* controlShaderProgram,
-		const char* controlShaderEntryPointName,
-		const char* evaluationShaderProgram,
-		const char* evaluationShaderEntryPointName,
-		uint32_t patchVertices,
-		IShaderConstantSetCallBack* callback,
-		E_MATERIAL_TYPE baseMaterial,
+        int32_t& outMaterialTypeNr, const char* vertexShaderProgram,
+        const char* vertexShaderEntryPointName,
+        const char* pixelShaderProgram,
+        const char* pixelShaderEntryPointName,
+        const char* geometryShaderProgram,
+        const char* geometryShaderEntryPointName,
+        const char* controlShaderProgram,
+        const char* controlShaderEntryPointName,
+        const char* evaluationShaderProgram,
+        const char* evaluationShaderEntryPointName,
+        uint32_t patchVertices,
+        IShaderConstantSetCallBack* callback,
+        E_MATERIAL_TYPE baseMaterial,
         const char** xformFeedbackOutputs,
         const uint32_t& xformFeedbackOutputCount,
-		int32_t userData)
-	: Driver(driver), CallBack(callback), BaseMaterial(baseMaterial),
-		Program2(0), UserData(userData), tessellationPatchVertices(-1), activeUniformCount(0)
+        int32_t userData)
+    : Driver(driver), CallBack(callback), BaseMaterial(baseMaterial),
+        Program2(0), UserData(userData), tessellationPatchVertices(-1), activeUniformCount(0)
 {
-	#ifdef _DEBUG
-	setDebugName("COpenGLSLMaterialRenderer");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("COpenGLSLMaterialRenderer");
+    #endif
 
-	//entry points must always be main, and the compile target isn't selectable
-	//it is fine to ignore what has been asked for, as the compiler should spot anything wrong
-	//just check that GLSL is available
+    //entry points must always be main, and the compile target isn't selectable
+    //it is fine to ignore what has been asked for, as the compiler should spot anything wrong
+    //just check that GLSL is available
 
-	if (CallBack)
-		CallBack->grab();
+    if (CallBack)
+        CallBack->grab();
 
-	init(outMaterialTypeNr, vertexShaderProgram, pixelShaderProgram, geometryShaderProgram,
+    init(outMaterialTypeNr, vertexShaderProgram, pixelShaderProgram, geometryShaderProgram,
         controlShaderProgram,evaluationShaderProgram,patchVertices,xformFeedbackOutputs,xformFeedbackOutputCount);
 }
 
@@ -66,52 +66,52 @@ COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(video::COpenGLDriver* drive
 //! Destructor
 COpenGLSLMaterialRenderer::~COpenGLSLMaterialRenderer()
 {
-	if (CallBack)
-		CallBack->drop();
+    if (CallBack)
+        CallBack->drop();
 
-	if (Program2)
-	{
-		GLuint shaders[8];
-		GLint count;
-		COpenGLExtensionHandler::extGlGetAttachedShaders(Program2, 8, &count, shaders);
-		// avoid bugs in some drivers, which return larger numbers
-		count=core::min_(count,8);
-		for (GLint i=0; i<count; ++i)
-			COpenGLExtensionHandler::extGlDeleteShader(shaders[i]);
-		COpenGLExtensionHandler::extGlDeleteProgram(Program2);
-		Program2 = 0;
-	}
+    if (Program2)
+    {
+        GLuint shaders[8];
+        GLint count;
+        COpenGLExtensionHandler::extGlGetAttachedShaders(Program2, 8, &count, shaders);
+        // avoid bugs in some drivers, which return larger numbers
+        count=core::min_(count,8);
+        for (GLint i=0; i<count; ++i)
+            COpenGLExtensionHandler::extGlDeleteShader(shaders[i]);
+        COpenGLExtensionHandler::extGlDeleteProgram(Program2);
+        Program2 = 0;
+    }
 }
 
 
 void COpenGLSLMaterialRenderer::init(int32_t& outMaterialTypeNr,
-		const char* vertexShaderProgram,
-		const char* pixelShaderProgram,
-		const char* geometryShaderProgram,
-		const char* controlShaderProgram,
-		const char* evaluationShaderProgram,
-		uint32_t patchVertices,
+        const char* vertexShaderProgram,
+        const char* pixelShaderProgram,
+        const char* geometryShaderProgram,
+        const char* controlShaderProgram,
+        const char* evaluationShaderProgram,
+        uint32_t patchVertices,
         const char** xformFeedbackOutputs,
         const uint32_t& xformFeedbackOutputCount)
 {
-	outMaterialTypeNr = -1;
+    outMaterialTypeNr = -1;
 
-	if (!createProgram())
-		return;
+    if (!createProgram())
+        return;
 
-	if (vertexShaderProgram)
-		if (!createShader(GL_VERTEX_SHADER, vertexShaderProgram))
-			return;
+    if (vertexShaderProgram)
+        if (!createShader(GL_VERTEX_SHADER, vertexShaderProgram))
+            return;
 
-	if (pixelShaderProgram)
-		if (!createShader(GL_FRAGMENT_SHADER, pixelShaderProgram))
-			return;
+    if (pixelShaderProgram)
+        if (!createShader(GL_FRAGMENT_SHADER, pixelShaderProgram))
+            return;
 
-	if (geometryShaderProgram)
-	{
-		if (!createShader(GL_GEOMETRY_SHADER, geometryShaderProgram))
-			return;
-	}
+    if (geometryShaderProgram)
+    {
+        if (!createShader(GL_GEOMETRY_SHADER, geometryShaderProgram))
+            return;
+    }
 
     if (controlShaderProgram && evaluationShaderProgram)
     {
@@ -128,13 +128,13 @@ void COpenGLSLMaterialRenderer::init(int32_t& outMaterialTypeNr,
     if (xformFeedbackOutputCount>0&&xformFeedbackOutputs)
         COpenGLExtensionHandler::extGlTransformFeedbackVaryings(Program2,xformFeedbackOutputCount,xformFeedbackOutputs,GL_INTERLEAVED_ATTRIBS);
 
-	if (!linkProgram())
-		return;
+    if (!linkProgram())
+        return;
 
 
 
-	// register myself as new material
-	outMaterialTypeNr = Driver->addMaterialRenderer(this);
+    // register myself as new material
+    outMaterialTypeNr = Driver->addMaterialRenderer(this);
 
     activeUniformCount = 0;
     //get uniforms
@@ -172,7 +172,7 @@ void COpenGLSLMaterialRenderer::init(int32_t& outMaterialTypeNr,
         COpenGLExtensionHandler::extGlGetActiveUniform(Program2, i, maxlen, NULL, &length, &type, reinterpret_cast<GLchar*>(buf));
 
         pr.name = buf;
-		GLint index = COpenGLExtensionHandler::extGlGetUniformLocation(Program2,pr.name.c_str());
+        GLint index = COpenGLExtensionHandler::extGlGetUniformLocation(Program2,pr.name.c_str());
         pr.location = index;
         pr.length = length;
         pr.type = getIrrUniformType(type);
@@ -189,9 +189,9 @@ void COpenGLSLMaterialRenderer::init(int32_t& outMaterialTypeNr,
     {
         GLint oldProgram;
         glGetIntegerv(GL_CURRENT_PROGRAM,&oldProgram);
-		COpenGLExtensionHandler::extGlUseProgram(Program2);
+        COpenGLExtensionHandler::extGlUseProgram(Program2);
         CallBack->PostLink(this,(E_MATERIAL_TYPE)outMaterialTypeNr,constants);
-		COpenGLExtensionHandler::extGlUseProgram(oldProgram);
+        COpenGLExtensionHandler::extGlUseProgram(oldProgram);
     }
 
 #if _DEBUG
@@ -202,9 +202,9 @@ void COpenGLSLMaterialRenderer::init(int32_t& outMaterialTypeNr,
 
 bool COpenGLSLMaterialRenderer::OnRender(IMaterialRendererServices* service)
 {
-	// call callback to set shader constants
-	if (CallBack && Program2)
-		CallBack->OnSetConstants(this, UserData);
+    // call callback to set shader constants
+    if (CallBack && Program2)
+        CallBack->OnSetConstants(this, UserData);
 
     if (tessellationPatchVertices!=-1)
     {
@@ -215,30 +215,30 @@ bool COpenGLSLMaterialRenderer::OnRender(IMaterialRendererServices* service)
         COpenGLExtensionHandler::extGlPatchParameterfv(GL_PATCH_DEFAULT_INNER_LEVEL,inner);
     }
 
-	return true;
+    return true;
 }
 
 
 void COpenGLSLMaterialRenderer::OnSetMaterial(const video::SMaterial& material,
-				const video::SMaterial& lastMaterial,
-				bool resetAllRenderstates,
-				video::IMaterialRendererServices* services)
+                const video::SMaterial& lastMaterial,
+                bool resetAllRenderstates,
+                video::IMaterialRendererServices* services)
 {
     Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 
-	if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
-	{
-		COpenGLExtensionHandler::extGlUseProgram(Program2);
+    if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
+    {
+        COpenGLExtensionHandler::extGlUseProgram(Program2);
 
-		if (BaseMaterial==EMT_TRANSPARENT_ADD_COLOR)
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        if (BaseMaterial==EMT_TRANSPARENT_ADD_COLOR)
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         else if (BaseMaterial==EMT_TRANSPARENT_ALPHA_CHANNEL||BaseMaterial==EMT_TRANSPARENT_VERTEX_ALPHA)
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
-	//let callback know used material
-	if (CallBack)
-		CallBack->OnSetMaterial(this,material,lastMaterial);
+    //let callback know used material
+    if (CallBack)
+        CallBack->OnSetMaterial(this,material,lastMaterial);
 }
 
 
@@ -252,15 +252,15 @@ void COpenGLSLMaterialRenderer::OnUnsetMaterial()
 //! Returns if the material is transparent.
 bool COpenGLSLMaterialRenderer::isTransparent() const
 {
-	return BaseMaterial>=EMT_TRANSPARENT_ADD_COLOR&&BaseMaterial<=EMT_TRANSPARENT_VERTEX_ALPHA;
+    return BaseMaterial>=EMT_TRANSPARENT_ADD_COLOR&&BaseMaterial<=EMT_TRANSPARENT_VERTEX_ALPHA;
 }
 
 
 bool COpenGLSLMaterialRenderer::createProgram()
 {
-	Program2 = COpenGLExtensionHandler::extGlCreateProgram();
+    Program2 = COpenGLExtensionHandler::extGlCreateProgram();
 
-	return true;
+    return true;
 }
 
 
@@ -298,7 +298,7 @@ bool COpenGLSLMaterialRenderer::createShader(GLenum shaderType, const char* shad
 
     COpenGLExtensionHandler::extGlAttachShader(Program2, shaderHandle);
 
-	return true;
+    return true;
 }
 
 
@@ -354,16 +354,16 @@ bool COpenGLSLMaterialRenderer::linkProgram()
 
 
 
-	return true;
+    return true;
 }
 
 
 void COpenGLSLMaterialRenderer::setBasicRenderStates(const SMaterial& material,
-						const SMaterial& lastMaterial,
-						bool resetAllRenderstates)
+                        const SMaterial& lastMaterial,
+                        bool resetAllRenderstates)
 {
-	// forward
-	Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+    // forward
+    Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
 }
 
 void COpenGLSLMaterialRenderer::setShaderConstant(const void* data, int32_t location, E_SHADER_CONSTANT_TYPE type, uint32_t number)
@@ -591,7 +591,7 @@ void COpenGLSLMaterialRenderer::setShaderTextures(const int32_t* textureIndices,
 
 IVideoDriver* COpenGLSLMaterialRenderer::getVideoDriver()
 {
-	return Driver;
+    return Driver;
 }
 
 } // end namespace video

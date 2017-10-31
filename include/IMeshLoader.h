@@ -12,7 +12,7 @@ namespace irr
 {
 namespace io
 {
-	class IReadFile;
+    class IReadFile;
 } // end namespace io
 namespace scene
 {
@@ -26,17 +26,17 @@ class IMeshLoader : public virtual IReferenceCounted
 {
 public:
 
-	//! Destructor
-	virtual ~IMeshLoader() {}
+    //! Destructor
+    virtual ~IMeshLoader() {}
 
-	//! Returns true if the file might be loaded by this class.
-	/** This decision should be based on the file extension (e.g. ".cob")
-	only.
-	\param filename Name of the file to test.
-	\return True if the file might be loaded by this class. */
-	virtual bool isALoadableFileExtension(const io::path& filename) const = 0;
+    //! Returns true if the file might be loaded by this class.
+    /** This decision should be based on the file extension (e.g. ".cob")
+    only.
+    \param filename Name of the file to test.
+    \return True if the file might be loaded by this class. */
+    virtual bool isALoadableFileExtension(const io::path& filename) const = 0;
 
-	virtual ICPUMesh* createMesh(io::IReadFile* file) = 0;
+    virtual ICPUMesh* createMesh(io::IReadFile* file) = 0;
 };
 
 

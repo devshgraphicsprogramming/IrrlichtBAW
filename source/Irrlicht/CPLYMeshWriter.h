@@ -14,20 +14,20 @@ namespace scene
 {
 
 #ifndef NEW_MESHES
-	//! class to write PLY mesh files
-	class CPLYMeshWriter : public IMeshWriter
-	{
-	public:
+    //! class to write PLY mesh files
+    class CPLYMeshWriter : public IMeshWriter
+    {
+    public:
 
-		CPLYMeshWriter();
+        CPLYMeshWriter();
 
-		//! Returns the type of the mesh writer
-		virtual EMESH_WRITER_TYPE getType() const;
+        //! Returns the type of the mesh writer
+        virtual EMESH_WRITER_TYPE getType() const;
 
-		//! writes a mesh
-		virtual bool writeMesh(io::IWriteFile* file, scene::IMesh* mesh, int32_t flags=EMWF_NONE);
+        //! writes a mesh
+        virtual bool writeMesh(io::IWriteFile* file, scene::IMesh* mesh, int32_t flags=EMWF_NONE);
 
-	};
+    };
 #endif // NEW_MESHES
 
 } // end namespace

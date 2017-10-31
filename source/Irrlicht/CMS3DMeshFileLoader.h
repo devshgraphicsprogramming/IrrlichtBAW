@@ -19,26 +19,26 @@ class CMS3DMeshFileLoader : public IMeshLoader
 {
 public:
 
-	//! Constructor
-	CMS3DMeshFileLoader(video::IVideoDriver* driver);
+    //! Constructor
+    CMS3DMeshFileLoader(video::IVideoDriver* driver);
 
-	//! returns true if the file might be loadable by this class
-	//! based on the file extension (e.g. ".bsp")
-	virtual bool isALoadableFileExtension(const io::path& filename) const;
+    //! returns true if the file might be loadable by this class
+    //! based on the file extension (e.g. ".bsp")
+    virtual bool isALoadableFileExtension(const io::path& filename) const;
 
-	//! creates/loads an animated mesh from the file.
-	//! \return Pointer to the created mesh. Returns 0 if loading failed.
-	//! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-	//! See IReferenceCounted::drop() for more information.
-	virtual IAnimatedMesh* createMesh(io::IReadFile* file);
+    //! creates/loads an animated mesh from the file.
+    //! \return Pointer to the created mesh. Returns 0 if loading failed.
+    //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+    //! See IReferenceCounted::drop() for more information.
+    virtual IAnimatedMesh* createMesh(io::IReadFile* file);
 
 private:
 
-	core::stringc stripPathFromString(const core::stringc& inString, bool returnPath) const;
+    core::stringc stripPathFromString(const core::stringc& inString, bool returnPath) const;
 
-	bool load(io::IReadFile* file);
-	video::IVideoDriver* Driver;
-	CSkinnedMesh* AnimatedMesh;
+    bool load(io::IReadFile* file);
+    video::IVideoDriver* Driver;
+    CSkinnedMesh* AnimatedMesh;
 };
 
 } // end namespace scene

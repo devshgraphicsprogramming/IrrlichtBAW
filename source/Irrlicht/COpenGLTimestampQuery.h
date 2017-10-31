@@ -24,9 +24,9 @@ class COpenGLTimestampQuery : public IGPUTimestampQuery
             COpenGLExtensionHandler::extGlDeleteQueries(1,&object);
         }
 
-		virtual bool isQueryReady()
-		{
-		    if (ready)
+        virtual bool isQueryReady()
+        {
+            if (ready)
                 return true;
 
             GLuint available = GL_FALSE;
@@ -34,11 +34,11 @@ class COpenGLTimestampQuery : public IGPUTimestampQuery
             ready = available!=GL_FALSE;
 
             return ready;
-		}
+        }
 
         virtual uint64_t getTimestampWhenCompleted()
         {
-		    if (hasResult)
+            if (hasResult)
                 return cachedCompletedTime;
 
             COpenGLExtensionHandler::extGlGetQueryObjectui64v(object,GL_QUERY_RESULT,&cachedCompletedTime);

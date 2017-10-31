@@ -16,106 +16,106 @@ namespace scene
 
 //! constructor
 CLightSceneNode::CLightSceneNode(IDummyTransformationSceneNode* parent, ISceneManager* mgr, s32 id,
-		const core::vector3df& position, video::SColorf color, f32 radius)
+        const core::vector3df& position, video::SColorf color, f32 radius)
 : ILightSceneNode(parent, mgr, id, position), DriverLightIndex(-1), LightIsOn(true)
 {
-	#ifdef _DEBUG
-	setDebugName("CLightSceneNode");
-	#endif
+    #ifdef _DEBUG
+    setDebugName("CLightSceneNode");
+    #endif
 
-	LightData.DiffuseColor = color;
-	// set some useful specular color
-	LightData.SpecularColor = color.getInterpolated(video::SColor(255,255,255,255),0.7f);
+    LightData.DiffuseColor = color;
+    // set some useful specular color
+    LightData.SpecularColor = color.getInterpolated(video::SColor(255,255,255,255),0.7f);
 
-	setRadius(radius);
+    setRadius(radius);
 }
 
 
 //! pre render event
 void CLightSceneNode::OnRegisterSceneNode()
 {
-	doLightRecalc();
+    doLightRecalc();
 
-	if (IsVisible)
-		SceneManager->registerNodeForRendering(this, ESNRP_LIGHT);
+    if (IsVisible)
+        SceneManager->registerNodeForRendering(this, ESNRP_LIGHT);
 
-	ISceneNode::OnRegisterSceneNode();
+    ISceneNode::OnRegisterSceneNode();
 }
 
 
 //! render
 void CLightSceneNode::render()
 {
-	video::IVideoDriver* driver = SceneManager->getVideoDriver();
-	if (!driver)
-		return;
+    video::IVideoDriver* driver = SceneManager->getVideoDriver();
+    if (!driver)
+        return;
 
-	if ( DebugDataVisible & scene::EDS_BBOX )
-	{
-		driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
-		video::SMaterial m;
-		driver->setMaterial(m);
+    if ( DebugDataVisible & scene::EDS_BBOX )
+    {
+        driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
+        video::SMaterial m;
+        driver->setMaterial(m);
 
-		switch ( LightData.Type )
-		{
-			case video::ELT_POINT:
-			case video::ELT_SPOT:
-				driver->draw3DBox(BBox, LightData.DiffuseColor.toSColor());
-				break;
+        switch ( LightData.Type )
+        {
+            case video::ELT_POINT:
+            case video::ELT_SPOT:
+                driver->draw3DBox(BBox, LightData.DiffuseColor.toSColor());
+                break;
 
-			case video::ELT_DIRECTIONAL:
-				driver->draw3DLine(core::vector3df(0.f, 0.f, 0.f),
-						LightData.Direction * LightData.Radius,
-						LightData.DiffuseColor.toSColor());
-				break;
-			default:
-				break;
-		}
-	}
+            case video::ELT_DIRECTIONAL:
+                driver->draw3DLine(core::vector3df(0.f, 0.f, 0.f),
+                        LightData.Direction * LightData.Radius,
+                        LightData.DiffuseColor.toSColor());
+                break;
+            default:
+                break;
+        }
+    }
 
-	DriverLightIndex = driver->addDynamicLight(LightData);
-	setVisible(LightIsOn);
+    DriverLightIndex = driver->addDynamicLight(LightData);
+    setVisible(LightIsOn);
 }
 
 
 //! sets the light data
 void CLightSceneNode::setLightData(const video::SLight& light)
 {
-	LightData = light;
+    LightData = light;
 }
 
 
 //! \return Returns the light data.
 const video::SLight& CLightSceneNode::getLightData() const
 {
-	return LightData;
+    return LightData;
 }
 
 
 //! \return Returns the light data.
 video::SLight& CLightSceneNode::getLightData()
 {
-	return LightData;
+    return LightData;
 }
 
 void CLightSceneNode::setVisible(bool isVisible)
 {
-	ISceneNode::setVisible(isVisible);
+    ISceneNode::setVisible(isVisible);
 
-	if(DriverLightIndex < 0)
-		return;
-	video::IVideoDriver* driver = SceneManager->getVideoDriver();
-	if (!driver)
-		return;
+    if(DriverLightIndex < 0)
+        return;
+    video::IVideoDriver* driver = SceneManager->getVideoDriver();
+    if (!driver)
+        return;
 
-	LightIsOn = isVisible;
-	driver->turnLightOn((u32)DriverLightIndex, LightIsOn);
+    LightIsOn = isVisible;
+    driver->turnLightOn((u32)DriverLightIndex, LightIsOn);
 }
 
 //! returns the axis aligned bounding box of this node
 const core::aabbox3d<f32>& CLightSceneNode::getBoundingBox()
 {
-	return BBox;
+    return BBox;
 }
 
 
@@ -127,9 +127,9 @@ attenuation after the radius.
 \param radius The new radius. */
 void CLightSceneNode::setRadius(f32 radius)
 {
-	LightData.Radius=radius;
-	LightData.Attenuation.set(0.f, 1.f/radius, 0.f);
-	doLightRecalc();
+    LightData.Radius=radius;
+    LightData.Attenuation.set(0.f, 1.f/radius, 0.f);
+    doLightRecalc();
 }
 
 
@@ -137,7 +137,7 @@ void CLightSceneNode::setRadius(f32 radius)
 /** \return The current radius. */
 f32 CLightSceneNode::getRadius() const
 {
-	return LightData.Radius;
+    return LightData.Radius;
 }
 
 
@@ -145,7 +145,7 @@ f32 CLightSceneNode::getRadius() const
 /** \param type The new type. */
 void CLightSceneNode::setLightType(video::E_LIGHT_TYPE type)
 {
-	LightData.Type=type;
+    LightData.Type=type;
 }
 
 
@@ -153,7 +153,7 @@ void CLightSceneNode::setLightType(video::E_LIGHT_TYPE type)
 /** \return The current light type. */
 video::E_LIGHT_TYPE CLightSceneNode::getLightType() const
 {
-	return LightData.Type;
+    return LightData.Type;
 }
 
 
@@ -164,7 +164,7 @@ disable distinct lights for shadow casting for performance reasons.
 \param shadow True if this light shall cast shadows. */
 void CLightSceneNode::enableCastShadow(bool shadow)
 {
-	LightData.CastShadows=shadow;
+    LightData.CastShadows=shadow;
 }
 
 
@@ -172,53 +172,53 @@ void CLightSceneNode::enableCastShadow(bool shadow)
 /** \return True if light would cast shadows, else false. */
 bool CLightSceneNode::getCastShadow() const
 {
-	return LightData.CastShadows;
+    return LightData.CastShadows;
 }
 
 
 void CLightSceneNode::doLightRecalc()
 {
-	if ((LightData.Type == video::ELT_SPOT) || (LightData.Type == video::ELT_DIRECTIONAL))
-	{
-		LightData.Direction = core::vector3df(.0f,.0f,1.0f);
-		getAbsoluteTransformation().mulSub3x3With3x1(&LightData.Direction.X);
-		LightData.Direction.normalize();
-	}
-	if ((LightData.Type == video::ELT_SPOT) || (LightData.Type == video::ELT_POINT))
-	{
-		const f32 r = LightData.Radius * LightData.Radius * 0.5f;
-		BBox.MaxEdge.set( r, r, r );
-		BBox.MinEdge.set( -r, -r, -r );
-		//setAutomaticCulling( scene::EAC_BOX );
-		setAutomaticCulling( scene::EAC_OFF );
-		LightData.Position = getAbsolutePosition();
-	}
-	if (LightData.Type == video::ELT_DIRECTIONAL)
-	{
-		BBox.reset( 0, 0, 0 );
-		setAutomaticCulling( scene::EAC_OFF );
-	}
+    if ((LightData.Type == video::ELT_SPOT) || (LightData.Type == video::ELT_DIRECTIONAL))
+    {
+        LightData.Direction = core::vector3df(.0f,.0f,1.0f);
+        getAbsoluteTransformation().mulSub3x3With3x1(&LightData.Direction.X);
+        LightData.Direction.normalize();
+    }
+    if ((LightData.Type == video::ELT_SPOT) || (LightData.Type == video::ELT_POINT))
+    {
+        const f32 r = LightData.Radius * LightData.Radius * 0.5f;
+        BBox.MaxEdge.set( r, r, r );
+        BBox.MinEdge.set( -r, -r, -r );
+        //setAutomaticCulling( scene::EAC_BOX );
+        setAutomaticCulling( scene::EAC_OFF );
+        LightData.Position = getAbsolutePosition();
+    }
+    if (LightData.Type == video::ELT_DIRECTIONAL)
+    {
+        BBox.reset( 0, 0, 0 );
+        setAutomaticCulling( scene::EAC_OFF );
+    }
 }
 
 
 //! Creates a clone of this scene node and its children.
 ISceneNode* CLightSceneNode::clone(IDummyTransformationSceneNode* newParent, ISceneManager* newManager)
 {
-	if (!newParent)
-		newParent = Parent;
-	if (!newManager)
-		newManager = SceneManager;
+    if (!newParent)
+        newParent = Parent;
+    if (!newManager)
+        newManager = SceneManager;
 
-	CLightSceneNode* nb = new CLightSceneNode(newParent,
-		newManager, ID, RelativeTranslation, LightData.DiffuseColor, LightData.Radius);
+    CLightSceneNode* nb = new CLightSceneNode(newParent,
+        newManager, ID, RelativeTranslation, LightData.DiffuseColor, LightData.Radius);
 
-	nb->cloneMembers(this, newManager);
-	nb->LightData = LightData;
-	nb->BBox = BBox;
+    nb->cloneMembers(this, newManager);
+    nb->LightData = LightData;
+    nb->BBox = BBox;
 
-	if ( newParent )
-		nb->drop();
-	return nb;
+    if ( newParent )
+        nb->drop();
+    return nb;
 }
 
 } // end namespace scene
