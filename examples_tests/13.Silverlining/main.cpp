@@ -417,7 +417,7 @@ static void SetupCumulusMediocrisClouds()
     cumulusMediocrisLayer->SetThickness(200);
     cumulusMediocrisLayer->SetBaseLength(20000);
     cumulusMediocrisLayer->SetBaseWidth(20000);
-    cumulusMediocrisLayer->SetDensity(0.3);
+    cumulusMediocrisLayer->SetDensity(0.9);
     cumulusMediocrisLayer->SetLayerPosition(0, 0);
     cumulusMediocrisLayer->SeedClouds(*atm);
 
@@ -614,11 +614,11 @@ int main()
         // Instantiate an Atmosphere object. Substitute your own purchased license name and code here.
         atm = new Atmosphere("Soren Gronbech", "031d13061a492413034e2316171a");
 
-        silverLoader = new SilverLoader(device->getFileSystem(),"../../media/silverlining.zip");
+        silverLoader = new SilverLoader(device->getFileSystem(),"../../../../../client/silverlining.zip");
         ///atm->SetResourceLoader(silverLoader);
 
         int err;
-        std::string relativeResourceDir = "../../../../silverlining/Resources";
+        std::string relativeResourceDir = "../../../../../client/silverlining/";
     #ifdef WIN32
         std::replace(relativeResourceDir.begin(),relativeResourceDir.end(),'/','\\');
         err = atm->Initialize(Atmosphere::OPENGL32CORE, relativeResourceDir.c_str(), false, 0);
@@ -754,7 +754,16 @@ int main()
             //atm stuff after this get done twice for reflections
             atm->SetCameraMatrix((double*)mv);
             atm->SetProjectionMatrix((double*)proj);
-            atm->CullObjects(false);
+
+            core::matrix4 mpv_irr(driver->getTransform(video::EPTS_PROJ_VIEW));
+            double mvp[16];
+            for (size_t i=0; i<4; i++)
+            for (size_t j=0; j<4; j++)
+                mvp[i+j*4] = mpv_irr.pointer()[i*4+j];
+
+            SilverLining::Frustum f;
+            SilverLining::Matrix4(mvp).GetFrustum(f);
+            atm->CullObjects(f,false);
 
 
             COpenGLState preState = COpenGLState::collectGLState();
