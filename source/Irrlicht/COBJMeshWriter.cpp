@@ -53,6 +53,10 @@ EMESH_WRITER_TYPE COBJMeshWriter::getType() const
 	return EMWT_OBJ;
 }
 
+/*!
+* Writes indices to file. Note that indices are shared by all submeshes.
+* @param[in] allVertexCount Is needed to start from proper index (??)
+*/
 template <class I>
 inline void writeIndices(IMeshBuffer* buffer, io::IWriteFile* file, const uint32_t &allVertexCount)
 {

@@ -54,7 +54,7 @@
     <ProjectName>Irrlicht</ProjectName>
     <ProjectGuid>{E08E042A-6C45-411B-92BE-3CC31331019F}</ProjectGuid>
     <RootNamespace>Irrlicht</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SDL-Debug|Win32'" Label="Configuration">
@@ -900,6 +900,7 @@
     <ClInclude Include="..\..\include\IGUITreeView.h" />
     <ClInclude Include="..\..\include\IGUIWindow.h" />
     <ClInclude Include="..\..\include\vectorSIMD.h" />
+    <ClInclude Include="CBAWMeshWriter.h" />
     <ClInclude Include="CDefaultSceneNodeAnimatorFactory.h" />
     <ClInclude Include="CDefaultSceneNodeFactory.h" />
     <ClInclude Include="CGeometryCreator.h" />
@@ -1106,6 +1107,7 @@
     <None Include="..\..\readme.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CBAWMeshWriter.cpp" />
     <ClCompile Include="CDefaultSceneNodeAnimatorFactory.cpp" />
     <ClCompile Include="CDefaultSceneNodeFactory.cpp" />
     <ClCompile Include="CGeometryCreator.cpp" />
