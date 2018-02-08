@@ -9,6 +9,7 @@
 #include "IGPUMappedBuffer.h"
 #include "quaternion.h"
 #include "irrString.h"
+#include "CBawFile.h"
 
 namespace irr
 {
@@ -100,12 +101,96 @@ namespace scene
                 createAnimationKeys(inLevelFixedJoints);
             }
 
+			CFinalBoneHierarchy(const void* _bonesBegin, const void* _bonesEnd,
+				core::stringc* _boneNamesBegin, core::stringc* _boneNamesEnd,
+				const std::size_t* _levelsBegin, const std::size_t* _levelsEnd,
+				const float* _keyframesBegin, const float* _keyframesEnd,
+				const void* _interpAnimsBegin, const void* _interpAnimsEnd,
+				const void* _nonInterpAnimsBegin, const void* _nonInterpAnimsEnd)
+			: boneCount((BoneReferenceData*)_bonesEnd - (BoneReferenceData*)_bonesBegin), NumLevelsInHierarchy(_levelsEnd - _levelsBegin), keyframeCount(_keyframesEnd - _keyframesBegin)
+			{
+				_IRR_DEBUG_BREAK_IF(_bonesBegin > _bonesEnd ||
+					_boneNamesBegin > _boneNamesEnd ||
+					_levelsBegin > _levelsEnd ||
+					_keyframesBegin > _keyframesEnd ||
+					_interpAnimsBegin > _interpAnimsEnd ||
+					_nonInterpAnimsBegin > _nonInterpAnimsEnd
+				)
+				_IRR_DEBUG_BREAK_IF(_boneNamesBegin - _boneNamesEnd != boneCount)
+				_IRR_DEBUG_BREAK_IF((AnimationKeyData*)_interpAnimsBegin - (AnimationKeyData*)_interpAnimsEnd != keyframeCount)
+				_IRR_DEBUG_BREAK_IF((AnimationKeyData*)_nonInterpAnimsBegin - (AnimationKeyData*)_nonInterpAnimsEnd != keyframeCount)
+
+				boneNames = new core::stringc[boneCount];
+				boneFlatArray = (BoneReferenceData*)malloc(sizeof(BoneReferenceData)*boneCount);
+				boneTreeLevelEnd = (size_t*)malloc(sizeof(size_t)*NumLevelsInHierarchy);
+				keyframes = (float*)malloc(sizeof(float)*keyframeCount);
+				interpolatedAnimations = (AnimationKeyData*)malloc(sizeof(AnimationKeyData)*keyframeCount);
+				nonInterpolatedAnimations = (AnimationKeyData*)malloc(sizeof(AnimationKeyData)*keyframeCount);
+
+				for (size_t i = 0; i < boneCount; ++i)
+					boneNames[i] = _boneNamesBegin[i];
+				memcpy(boneFlatArray, _bonesBegin, sizeof(BoneReferenceData)*boneCount);
+				memcpy(boneTreeLevelEnd, _levelsBegin, sizeof(size_t)*NumLevelsInHierarchy);
+				memcpy(keyframes, _keyframesBegin, sizeof(float)*keyframeCount);
+				memcpy(interpolatedAnimations, _interpAnimsBegin, sizeof(AnimationKeyData)*keyframeCount);
+				memcpy(interpolatedAnimations, _nonInterpAnimsBegin, sizeof(AnimationKeyData)*keyframeCount);
+			}
+
+			//! Function filling blob's storage with the object's data. Meant to be used by exporters only.
+			/**
+			@param _dataPtr Pointer to pre-allocated memory (heap or stack - doesn't matter) of size sufficient to hold all object's data. This size can be calculated with core::FinalBoneHierarchyBlobV1::calcBlobSizeForObj().
+			@see @ref CBAWMeshFileLoader CBAWMeshWriter
+			*/
+			size_t serializeToBlob(void* _dataPtr) const
+			{
+				//! @todo @bug Not a bug but not looking nice either
+				if (!_dataPtr)
+					return 0;
+				
+				uint8_t* const ptr = (uint8_t*)_dataPtr;
+				((size_t*)(ptr + offsetof(core::FinalBoneHierarchyBlobV0, boneCount)))[0] = boneCount;
+				((size_t*)(ptr + offsetof(core::FinalBoneHierarchyBlobV0, numLevelsInHierarchy)))[0] = NumLevelsInHierarchy;
+				((size_t*)(ptr + offsetof(core::FinalBoneHierarchyBlobV0, keyframeCount)))[0] = keyframeCount;
+
+				memcpy(ptr + core::FinalBoneHierarchyBlobV0::calcBonesOffset(this), boneFlatArray, core::FinalBoneHierarchyBlobV0::calcBonesByteSize(this));
+				memcpy(ptr + core::FinalBoneHierarchyBlobV0::calcLevelsOffset(this), boneTreeLevelEnd, core::FinalBoneHierarchyBlobV0::calcLevelsByteSize(this));
+				memcpy(ptr + core::FinalBoneHierarchyBlobV0::calcKeyFramesOffset(this), keyframes, core::FinalBoneHierarchyBlobV0::calcKeyFramesByteSize(this));
+				memcpy(ptr + core::FinalBoneHierarchyBlobV0::calcInterpolatedAnimsOffset(this), interpolatedAnimations, core::FinalBoneHierarchyBlobV0::calcInterpolatedAnimsByteSize(this));
+				memcpy(ptr + core::FinalBoneHierarchyBlobV0::calcNonInterpolatedAnimsOffset(this), nonInterpolatedAnimations, core::FinalBoneHierarchyBlobV0::calcNonInterpolatedAnimsByteSize(this));
+				uint8_t* strPtr = ptr + core::FinalBoneHierarchyBlobV0::calcBoneNamesOffset(this);
+				for (size_t i = 0; i < boneCount; ++i)
+				{
+					memcpy(strPtr, boneNames[i].c_str(), boneNames[i].size() + 1);
+					strPtr += boneNames[i].size() + 1;
+				}
+
+				return core::FinalBoneHierarchyBlobV0::calcBlobSizeForObj(this);
+			}
+
+			inline size_t getSizeOfAllBoneNames() const
+			{
+				size_t sum = 0;
+				for (int i = 0; i < boneCount; ++i)
+					sum += boneNames[i].size()+1;
+				return sum;
+			}
+			static inline size_t getSizeOfSingleBone()
+			{
+				return sizeof(*boneFlatArray);
+			}
+			static inline size_t getSizeOfSingleAnimationData()
+			{
+				return sizeof(*interpolatedAnimations);
+			}
+
             inline const size_t& getBoneCount() const {return boneCount;}
 
             inline const BoneReferenceData* getBoneData() const
             {
                 return boneFlatArray;
             }
+
+			const size_t* getBoneTreeLevelEnd() const { return boneTreeLevelEnd; }
 
             inline const core::stringc& getBoneName(const size_t& boneID) const
             {
