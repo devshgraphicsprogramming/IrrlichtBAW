@@ -2,13 +2,13 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="MSAA" />
+		<Option title="LayeredCubeMapShadows" />
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Windows">
 				<Option platforms="Windows;" />
-				<Option output="./bin/MSAA" prefix_auto="0" extension_auto="1" />
+				<Option output="./bin/LayeredCubeMapShadows" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="./bin" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -41,7 +41,7 @@
 			</Target>
 			<Target title="Linux">
 				<Option platforms="Unix;" />
-				<Option output="./bin/MSAA" prefix_auto="0" extension_auto="0" />
+				<Option output="./bin/LayeredCubeMapShadows" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="./bin" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -53,10 +53,12 @@
 					<Add option="-msse3" />
 					<Add option="-mfpmath=sse" />
 					<Add option="-ggdb3" />
+					<Add option="-fsanitize=address" />
 					<Add option="-D_AMD64_" />
 				</Compiler>
 				<Linker>
 					<Add option="-msse3" />
+					<Add option="-fsanitize=address" />
 					<Add library="Irrlicht" />
 					<Add library="Xrandr" />
 					<Add library="GL" />
@@ -79,11 +81,14 @@
 			<Add option="-W" />
 			<Add directory="../../include" />
 		</Compiler>
+		<Unit filename="cubeMapLayerDispatch.geom" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mesh.frag" />
 		<Unit filename="mesh.vert" />
-		<Unit filename="postproc.frag" />
-		<Unit filename="screenquad.vert" />
+		<Unit filename="meshShadow.vert" />
+		<Unit filename="shadow.frag" />
+		<Unit filename="skinnedMesh.vert" />
+		<Unit filename="skinnedMeshShadow.vert" />
 		<Extensions>
 			<code_completion />
 			<debugger />

@@ -70,9 +70,6 @@ public:
         ETT_2D_ARRAY,
         ETT_CUBE_MAP,
         ETT_CUBE_MAP_ARRAY,
-        ETT_2D_MULTISAMPLE,
-        ETT_2D_MULTISAMPLE_ARRAY,
-        ETT_TEXTURE_BUFFER,
         ETT_COUNT
     };
     enum E_CUBE_MAP_FACE
