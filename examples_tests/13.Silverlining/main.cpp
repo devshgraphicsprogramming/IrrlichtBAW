@@ -471,9 +471,9 @@ static void SetupAtmosphericConditions()
     SetupCirrusClouds();
     //SetupCumulusCongestusClouds();
     //SetupStratusClouds();
-    SetupCumulonimbusClouds();
+    //SetupCumulonimbusClouds();
     //SetupCumulusMediocrisClouds();
-    ///SetupStratocumulusClouds();
+    SetupStratocumulusClouds();
     //SetupSandstorm();
 
     // Set up wind blowing northeast at 50 meters/sec
@@ -672,11 +672,11 @@ int main()
     }
 
     //! Little tutorial on Render Target Rendering
-    uint32_t texSize[] = {params.WindowSize.Width/1,params.WindowSize.Height/1};
+    uint32_t texSize[] = {params.WindowSize.Width/2,params.WindowSize.Height/2};
     video::IFrameBuffer* fbo = driver->addFrameBuffer();
-    video::ITexture* tex = driver->addTexture(ITexture::ETT_2D,texSize,1,"depth_attach",ECF_DEPTH32F);
+    video::ITexture* tex = device->getVideoDriver()->addTexture(ITexture::ETT_2D,texSize,1,"depth_attach",ECF_DEPTH32F);
     fbo->attach(EFAP_DEPTH_ATTACHMENT,tex);
-    tex = driver->addTexture(ITexture::ETT_2D,texSize,1,"color_attach",ECF_A16B16G16R16F);
+    tex = device->getVideoDriver()->addTexture(ITexture::ETT_2D,texSize,1,"color_attach",ECF_A16B16G16R16F);
     fbo->attach(EFAP_COLOR_ATTACHMENT0,tex);
 
     atm->SetViewport(0,0,tex->getSize()[0],tex->getSize()[1]);
@@ -881,6 +881,29 @@ int main()
 
     delete atm;
     delete silverLoader;
+
+    //create a screenshot
+	video::IImage* screenshot = driver->createImage(video::ECF_A8R8G8B8,params.WindowSize);
+    glReadPixels(0,0, params.WindowSize.Width,params.WindowSize.Height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, screenshot->getData());
+    {
+        // images are horizontally flipped, so we have to fix that here.
+        uint8_t* pixels = (uint8_t*)screenshot->getData();
+
+        const int32_t pitch=screenshot->getPitch();
+        uint8_t* p2 = pixels + (params.WindowSize.Height - 1) * pitch;
+        uint8_t* tmpBuffer = new uint8_t[pitch];
+        for (uint32_t i=0; i < params.WindowSize.Height; i += 2)
+        {
+            memcpy(tmpBuffer, pixels, pitch);
+            memcpy(pixels, p2, pitch);
+            memcpy(p2, tmpBuffer, pitch);
+            pixels += pitch;
+            p2 -= pitch;
+        }
+        delete [] tmpBuffer;
+    }
+	driver->writeImageToFile(screenshot,"./screenshot.png");
+	screenshot->drop();
 
 	device->drop();
 

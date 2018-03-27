@@ -660,8 +660,9 @@ bool CIrrDeviceLinux::createWindow()
 		return false;
 	}
 #ifdef _DEBUG
-	else
-		os::Printer::log("Visual chosen: ", core::longlongtoa(static_cast<uint32_t>(visual->visualid)), ELL_DEBUG);
+    //! ENABLE AFTER C++11
+	///else
+		///os::Printer::log("Visual chosen: ", std::to_string(static_cast<uint32_t>(visual->visualid)), ELL_DEBUG);
 #endif
 
 	// create color map
@@ -769,8 +770,12 @@ bool CIrrDeviceLinux::createWindow()
 
                 if (Context)
                 {
-                    if (CreationParams.AuxGLContexts)
-                        AuxContexts = new video::COpenGLDriver::SAuxContext[CreationParams.AuxGLContexts];
+                    AuxContexts = new video::COpenGLDriver::SAuxContext[CreationParams.AuxGLContexts+1];
+                    {
+                        reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts)[0].threadId = std::this_thread::get_id();
+                        reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts)[0].ctx = Context;
+                        reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts)[0].pbuff = NULL;
+                    }
 
                     const int pboAttribs[] =
                     {
@@ -780,9 +785,9 @@ bool CIrrDeviceLinux::createWindow()
                         None
                     };
 
-                    for (uint8_t i=0; i<CreationParams.AuxGLContexts; i++)
+                    for (uint8_t i=1; i<=CreationParams.AuxGLContexts; i++)
                     {
-                        reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts)[i].threadId = 0xdeadbeefbadc0ffeu;
+                        reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts)[i].threadId = std::thread::id(); //invalid ID
                         reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts)[i].ctx = pGlxCreateContextAttribsARB( display, bestFbc, Context, True, context_attribs );
                         reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts)[i].pbuff = glXCreatePbuffer( display, bestFbc, pboAttribs);
                     }
@@ -791,14 +796,13 @@ bool CIrrDeviceLinux::createWindow()
                     {
                         os::Printer::log("Could not make context current.", ELL_WARNING);
 
-                        for (uint8_t i=0; i<CreationParams.AuxGLContexts; i++)
+                        for (uint8_t i=1; i<=CreationParams.AuxGLContexts; i++)
                         {
                             glXDestroyPbuffer(display,reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts)[i].pbuff);
                             glXDestroyContext(display,reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts)[i].ctx);
                         }
 
-                        if (CreationParams.AuxGLContexts)
-                            delete [] reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts);
+                        delete [] reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts);
 
                         glXDestroyContext(display, Context);
                         glXMakeCurrent(display, None, NULL);

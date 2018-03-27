@@ -16,6 +16,7 @@
 #include "coreutil.h"
 
 #include "COpenGLStateManager.h"
+#include "COpenGLCubemapTexture.h"
 
 namespace irr
 {
@@ -177,7 +178,9 @@ static const char* const OpenGLFeatureStrings[] = {
 	"GL_ARB_texture_rectangle",
 	"GL_ARB_texture_rg",
 	"GL_ARB_texture_rgb10_a2ui",
+	"GL_ARB_texture_stencil8",
 	"GL_ARB_texture_storage",
+	"GL_ARB_texture_storage_multisample",
 	"GL_ARB_texture_swizzle",
 	"GL_ARB_texture_view",
 	"GL_ARB_timer_query",
@@ -611,7 +614,9 @@ class COpenGLExtensionHandler
 		IRR_ARB_texture_rectangle,
 		IRR_ARB_texture_rg,
 		IRR_ARB_texture_rgb10_a2ui,
+		IRR_ARB_texture_stencil8,
 		IRR_ARB_texture_storage,
+		IRR_ARB_texture_storage_multisample,
 		IRR_ARB_texture_swizzle,
 		IRR_ARB_texture_view,
 		IRR_ARB_timer_query,
@@ -954,8 +959,6 @@ class COpenGLExtensionHandler
 	static uint8_t MaxAnisotropy;
 	//! Number of user clipplanes
 	static uint8_t MaxUserClipPlanes;
-	//! Number of auxiliary buffers
-	static uint8_t MaxAuxBuffers;
 	//! Number of rendertargets available as MRTs
 	static uint8_t MaxMultipleRenderTargets;
 	//! Optimal number of indices per meshbuffer
@@ -1014,8 +1017,8 @@ class COpenGLExtensionHandler
     static void extGlTextureStorage2D(GLuint texture, GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
     static void extGlTextureStorage3D(GLuint texture, GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth);
     //multisample textures
-    ///static void extGlTextureStorage2DMultisample(GLuint texture, GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
-    ///static void extGlTextureStorage3DMultisample(GLuint texture, GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
+    static void extGlTextureStorage2DMultisample(GLuint texture, GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
+    static void extGlTextureStorage3DMultisample(GLuint texture, GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
     //texture update functions
     static void extGlTextureSubImage1D(GLuint texture, GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const void *pixels);
     static void extGlTextureSubImage2D(GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels);
@@ -1098,7 +1101,7 @@ class COpenGLExtensionHandler
 	static void extGlBindFramebuffer(GLenum target, GLuint framebuffer);
 	static GLenum extGlCheckNamedFramebufferStatus(GLuint framebuffer, GLenum target);
 	static void extGlNamedFramebufferTexture(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level);
-	static void extGlNamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer);
+	static void extGlNamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLenum textureType, GLint level, GLint layer);
 	static void extGlNamedFramebufferRenderbuffer(GLuint framebuffer, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
 	static void extGlBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
     static void extGlNamedFramebufferReadBuffer(GLuint framebuffer, GLenum mode);
@@ -1107,7 +1110,7 @@ class COpenGLExtensionHandler
 	static void extGlClearNamedFramebufferiv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLint* value);
 	static void extGlClearNamedFramebufferuiv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLuint* value);
 	static void extGlClearNamedFramebufferfv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLfloat* value);
-	static void extGlClearNamedFramebufferfi(GLuint framebuffer, GLenum buffer, GLfloat depth, GLint stencil);
+	static void extGlClearNamedFramebufferfi(GLuint framebuffer, GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
 
 	// renderbuffers
 	static void extGlDeleteRenderbuffers(GLsizei n, const GLuint *renderbuffers);
@@ -1213,6 +1216,9 @@ class COpenGLExtensionHandler
 	static void extGlBeginConditionalRender(GLuint id, GLenum mode);
 	static void extGlEndConditionalRender();
 
+	//
+	static void extGlTextureBarrier();
+
 	// generic vsync setting method for several extensions
 	static void extGlSwapInterval(int interval);
 
@@ -1247,11 +1253,15 @@ class COpenGLExtensionHandler
     static PFNGLTEXSTORAGE1DPROC pGlTexStorage1D;
     static PFNGLTEXSTORAGE2DPROC pGlTexStorage2D;
     static PFNGLTEXSTORAGE3DPROC pGlTexStorage3D;
+    static PFNGLTEXSTORAGE2DMULTISAMPLEPROC pGlTexStorage2DMultisample;
+    static PFNGLTEXSTORAGE3DMULTISAMPLEPROC pGlTexStorage3DMultisample;
     static PFNGLTEXBUFFERPROC pGlTexBuffer;
     static PFNGLTEXBUFFERRANGEPROC pGlTexBufferRange;
     static PFNGLTEXTURESTORAGE1DPROC pGlTextureStorage1D; //NULL
     static PFNGLTEXTURESTORAGE2DPROC pGlTextureStorage2D; //NULL
     static PFNGLTEXTURESTORAGE3DPROC pGlTextureStorage3D; //NULL
+    static PFNGLTEXTURESTORAGE2DMULTISAMPLEPROC pGlTextureStorage2DMultisample;
+    static PFNGLTEXTURESTORAGE3DMULTISAMPLEPROC pGlTextureStorage3DMultisample;
     static PFNGLTEXTUREBUFFERPROC pGlTextureBuffer; //NULL
     static PFNGLTEXTUREBUFFERRANGEPROC pGlTextureBufferRange; //NULL
     static PFNGLTEXTURESTORAGE1DEXTPROC pGlTextureStorage1DEXT;
@@ -1259,8 +1269,8 @@ class COpenGLExtensionHandler
     static PFNGLTEXTURESTORAGE3DEXTPROC pGlTextureStorage3DEXT;
     static PFNGLTEXTUREBUFFEREXTPROC pGlTextureBufferEXT;
     static PFNGLTEXTUREBUFFERRANGEEXTPROC pGlTextureBufferRangeEXT;
-    ///static PFNGLTEXTURESTORAGE2DMULTISAMPLEPROC pGlTextureStorage2DMultisample;
-    ///static PFNGLTEXTURESTORAGE3DMULTISAMPLEPROC pGlTextureStorage3DMultisample;
+    static PFNGLTEXTURESTORAGE2DMULTISAMPLEEXTPROC pGlTextureStorage2DMultisampleEXT;
+    static PFNGLTEXTURESTORAGE3DMULTISAMPLEEXTPROC pGlTextureStorage3DMultisampleEXT;
     static PFNGLTEXSUBIMAGE3DPROC pGlTexSubImage3D;
     static PFNGLMULTITEXSUBIMAGE1DEXTPROC pGlMultiTexSubImage1DEXT;
     static PFNGLMULTITEXSUBIMAGE2DEXTPROC pGlMultiTexSubImage2DEXT;
@@ -1382,6 +1392,8 @@ class COpenGLExtensionHandler
     static PFNGLFRAMEBUFFERTEXTURELAYERPROC pGlFramebufferTextureLayer;
     static PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC pGlNamedFramebufferTextureLayer; //NULL
     static PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC pGlNamedFramebufferTextureLayerEXT;
+	static PFNGLFRAMEBUFFERTEXTURE2DPROC pGlFramebufferTexture2D;
+	static PFNGLNAMEDFRAMEBUFFERTEXTURE2DEXTPROC pGlNamedFramebufferTexture2DEXT;
     static PFNGLDELETERENDERBUFFERSPROC pGlDeleteRenderbuffers;
     static PFNGLGENRENDERBUFFERSPROC pGlGenRenderbuffers;
     static PFNGLCREATERENDERBUFFERSPROC pGlCreateRenderbuffers; //NULL
@@ -1532,6 +1544,9 @@ class COpenGLExtensionHandler
     static PFNGLQUERYCOUNTERPROC pGlQueryCounter;
     static PFNGLBEGINCONDITIONALRENDERPROC pGlBeginConditionalRender;
     static PFNGLENDCONDITIONALRENDERPROC pGlEndConditionalRender;
+    //
+    static PFNGLTEXTUREBARRIERPROC pGlTextureBarrier;
+    static PFNGLTEXTUREBARRIERNVPROC pGlTextureBarrierNV;
     //
     static PFNGLBLENDEQUATIONEXTPROC pGlBlendEquationEXT;
     static PFNGLBLENDEQUATIONPROC pGlBlendEquation;
@@ -1904,9 +1919,6 @@ inline void COpenGLExtensionHandler::extGlTextureStorage2D(GLuint texture, GLenu
             case GL_TEXTURE_2D:
                 glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound);
                 break;
-            case GL_TEXTURE_2D_MULTISAMPLE:
-                glGetIntegerv(GL_TEXTURE_BINDING_2D_MULTISAMPLE, &bound);
-                break;
             case GL_TEXTURE_CUBE_MAP:
                 glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP, &bound);
                 break;
@@ -1958,9 +1970,6 @@ inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenu
             case GL_TEXTURE_2D_ARRAY:
                 glGetIntegerv(GL_TEXTURE_BINDING_2D_ARRAY, &bound);
                 break;
-            case GL_TEXTURE_2D_MULTISAMPLE_ARRAY:
-                glGetIntegerv(GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY, &bound);
-                break;
             case GL_TEXTURE_3D:
                 glGetIntegerv(GL_TEXTURE_BINDING_3D, &bound);
                 break;
@@ -1978,6 +1987,93 @@ inline void COpenGLExtensionHandler::extGlTextureStorage3D(GLuint texture, GLenu
         glTexStorage3D(target,levels,internalformat,width,height,depth);
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
         glBindTexture(target, bound);
+    }
+}
+
+inline void COpenGLExtensionHandler::extGlTextureStorage2DMultisample(GLuint texture, GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations)
+{
+    if (Version>=450||FeatureAvailable[IRR_ARB_direct_state_access])
+    {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+        if (pGlTextureStorage2DMultisample)
+            pGlTextureStorage2DMultisample(texture,samples,internalformat,width,height,fixedsamplelocations);
+#else
+        glTextureStorage2DMultisample(texture,samples,internalformat,width,height,fixedsamplelocations);
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+    }
+    else if (FeatureAvailable[IRR_EXT_direct_state_access])
+    {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+        if (pGlTextureStorage2DMultisampleEXT)
+            pGlTextureStorage2DMultisampleEXT(texture,target,samples,internalformat,width,height,fixedsamplelocations);
+#else
+        glTextureStorage2DMultisampleEXT(texture,target,samples,internalformat,width,height,fixedsamplelocations);
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+    }
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+    else if (pGlTexStorage2DMultisample)
+#else
+    else
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+    {
+        GLint bound;
+        if (target!=GL_TEXTURE_2D_MULTISAMPLE)
+        {
+            os::Printer::log("DevSH would like to ask you what are you doing!!??\n",ELL_ERROR);
+            return;
+        }
+        else
+            glGetIntegerv(GL_TEXTURE_BINDING_2D_MULTISAMPLE, &bound);
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, texture);
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+        pGlTexStorage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE,samples,internalformat,width,height,fixedsamplelocations);
+#else
+        glTexStorage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE,samples,internalformat,width,height,fixedsamplelocations);
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, bound);
+    }
+}
+inline void COpenGLExtensionHandler::extGlTextureStorage3DMultisample(GLuint texture, GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations)
+{
+    if (Version>=450||FeatureAvailable[IRR_ARB_direct_state_access])
+    {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+        if (pGlTextureStorage3DMultisample)
+            pGlTextureStorage3DMultisample(texture,samples,internalformat,width,height,depth,fixedsamplelocations);
+#else
+        glTextureStorage3DMultisample(texture,samples,internalformat,width,height,depth,fixedsamplelocations);
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+    }
+    else if (FeatureAvailable[IRR_EXT_direct_state_access])
+    {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+        if (pGlTextureStorage3DMultisampleEXT)
+            pGlTextureStorage3DMultisampleEXT(texture,target,samples,internalformat,width,height,depth,fixedsamplelocations);
+#else
+        glTextureStorage3DMultisampleEXT(texture,target,samples,internalformat,width,height,depth,fixedsamplelocations);
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+    }
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+    else if (pGlTexStorage3DMultisample)
+#else
+    else
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+    {
+        GLint bound;
+        if (target!=GL_TEXTURE_2D_MULTISAMPLE_ARRAY)
+        {
+            os::Printer::log("DevSH would like to ask you what are you doing!!??\n",ELL_ERROR);
+            return;
+        }
+        else
+            glGetIntegerv(GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY, &bound);
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, texture);
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+        pGlTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY,samples,internalformat,width,height,depth,fixedsamplelocations);
+#else
+        glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY,samples,internalformat,width,height,depth,fixedsamplelocations);
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, bound);
     }
 }
 
@@ -3210,7 +3306,7 @@ inline void COpenGLExtensionHandler::extGlNamedFramebufferTexture(GLuint framebu
     }
 }
 
-inline void COpenGLExtensionHandler::extGlNamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer)
+inline void COpenGLExtensionHandler::extGlNamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLenum textureType, GLint level, GLint layer)
 {
     if (Version>=450||FeatureAvailable[IRR_ARB_direct_state_access])
     {
@@ -3221,37 +3317,74 @@ inline void COpenGLExtensionHandler::extGlNamedFramebufferTextureLayer(GLuint fr
         glNamedFramebufferTextureLayer(framebuffer, attachment, texture, level, layer);
     #endif
     }
-    else if (FeatureAvailable[IRR_EXT_direct_state_access])
-    {
-    #ifdef _IRR_OPENGL_USE_EXTPOINTER_
-        if (pGlNamedFramebufferTextureLayerEXT)
-            pGlNamedFramebufferTextureLayerEXT(framebuffer, attachment, texture, level, layer);
-    #else
-        glNamedFramebufferTextureLayerEXT(framebuffer, attachment, texture, level, layer);
-    #endif
-    }
+	else if (textureType!=GL_TEXTURE_CUBE_MAP)
+	{
+		if (FeatureAvailable[IRR_EXT_direct_state_access])
+		{
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
-    else if (pGlFramebufferTextureLayer&&pGlBindFramebuffer)
+			if (pGlNamedFramebufferTextureLayerEXT)
+				pGlNamedFramebufferTextureLayerEXT(framebuffer, attachment, texture, level, layer);
 #else
-    else
+			glNamedFramebufferTextureLayerEXT(framebuffer, attachment, texture, level, layer);
+#endif
+		}
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+		else if (pGlFramebufferTextureLayer&&pGlBindFramebuffer)
+#else
+		else
 #endif // _IRR_OPENGL_USE_EXTPOINTER_
-    {
-        GLint bound;
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING,&bound);
+		{
+			GLint bound;
+			glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound);
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
-        if (bound!=framebuffer)
-	        pGlBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
-        pGlFramebufferTextureLayer(GL_FRAMEBUFFER,attachment,texture,level, layer);
-        if (bound!=framebuffer)
-	        pGlBindFramebuffer(GL_FRAMEBUFFER,bound);
+			if (bound != framebuffer)
+				pGlBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+			pGlFramebufferTextureLayer(GL_FRAMEBUFFER, attachment, texture, level, layer);
+			if (bound != framebuffer)
+				pGlBindFramebuffer(GL_FRAMEBUFFER, bound);
 #else
-        if (bound!=framebuffer)
-	        glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
-        glFramebufferTextureLayer(GL_FRAMEBUFFER,attachment,texture,level, layer);
-        if (bound!=framebuffer)
-	        glBindFramebuffer(GL_FRAMEBUFFER,bound);
+			if (bound != framebuffer)
+				glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+			glFramebufferTextureLayer(GL_FRAMEBUFFER, attachment, texture, level, layer);
+			if (bound != framebuffer)
+				glBindFramebuffer(GL_FRAMEBUFFER, bound);
 #endif // _IRR_OPENGL_USE_EXTPOINTER
-    }
+		}
+	}
+	else
+	{
+		if (FeatureAvailable[IRR_EXT_direct_state_access])
+		{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+			if (pGlNamedFramebufferTexture2DEXT)
+				pGlNamedFramebufferTexture2DEXT(framebuffer, attachment, COpenGLCubemapTexture::faceEnumToGLenum((ITexture::E_CUBE_MAP_FACE)layer), texture, level);
+#else
+			glNamedFramebufferTexture2DEXT(framebuffer, attachment, COpenGLCubemapTexture::faceEnumToGLenum((ITexture::E_CUBE_MAP_FACE)layer), texture, level);
+#endif
+		}
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+		else if (pGlFramebufferTexture2D&&pGlBindFramebuffer)
+#else
+		else
+#endif // _IRR_OPENGL_USE_EXTPOINTER_
+		{
+			GLint bound;
+			glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound);
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+			if (bound != framebuffer)
+				pGlBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+			pGlFramebufferTexture2D(GL_FRAMEBUFFER, attachment, COpenGLCubemapTexture::faceEnumToGLenum((ITexture::E_CUBE_MAP_FACE)layer), texture, level);
+			if (bound != framebuffer)
+				pGlBindFramebuffer(GL_FRAMEBUFFER, bound);
+#else
+			if (bound != framebuffer)
+				glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, COpenGLCubemapTexture::faceEnumToGLenum((ITexture::E_CUBE_MAP_FACE)layer), texture, level);
+			if (bound != framebuffer)
+				glBindFramebuffer(GL_FRAMEBUFFER, bound);
+#endif // _IRR_OPENGL_USE_EXTPOINTER
+		}
+	}
 }
 
 inline void COpenGLExtensionHandler::extGlBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
@@ -3691,15 +3824,15 @@ inline void COpenGLExtensionHandler::extGlClearNamedFramebufferfv(GLuint framebu
     }
 }
 
-inline void COpenGLExtensionHandler::extGlClearNamedFramebufferfi(GLuint framebuffer, GLenum buffer, GLfloat depth, GLint stencil)
+inline void COpenGLExtensionHandler::extGlClearNamedFramebufferfi(GLuint framebuffer, GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil)
 {
-/*    if (Version>=450||FeatureAvailable[IRR_ARB_direct_state_access])
+    if (Version>=450||FeatureAvailable[IRR_ARB_direct_state_access])
     {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlClearNamedFramebufferfi)
-            pGlClearNamedFramebufferfi(framebuffer, buffer, depth, stencil);
+            pGlClearNamedFramebufferfi(framebuffer, buffer, drawbuffer, depth, stencil);
 #else
-        glClearFramebufferfi(framebuffer, buffer, depth, stencil);
+        glClearNamedFramebufferfi(framebuffer, buffer, drawbuffer, depth, stencil);
 #endif
     }
     else
@@ -3711,12 +3844,12 @@ inline void COpenGLExtensionHandler::extGlClearNamedFramebufferfi(GLuint framebu
         extGlBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
         if (pGlClearBufferfi)
-            pGlClearBufferfi(buffer, depth, stencil);
+            pGlClearBufferfi(buffer, drawbuffer, depth, stencil);
 #else
-        glClearBufferfi(buffer, depth, stencil);
+        glClearBufferfi(buffer, drawbuffer, depth, stencil);
 #endif
         extGlBindFramebuffer(GL_FRAMEBUFFER,boundFBO);
-    }*/
+    }
 }
 
 
@@ -5296,6 +5429,24 @@ inline void COpenGLExtensionHandler::extGlEndConditionalRender()
 }
 
 
+inline void COpenGLExtensionHandler::extGlTextureBarrier()
+{
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
+	if (FeatureAvailable[IRR_ARB_texture_barrier])
+		pGlTextureBarrier();
+	else if (FeatureAvailable[IRR_NV_texture_barrier])
+		pGlTextureBarrierNV();
+#else
+	if (FeatureAvailable[IRR_ARB_texture_barrier])
+		glTextureBarrier();
+	else if (FeatureAvailable[IRR_NV_texture_barrier])
+		glTextureBarrierNV();
+#endif
+#ifdef _DEBUG
+    else
+        os::Printer::log("EVDF_TEXTURE_BARRIER Not Available!\n",ELL_ERROR);
+#endif // _DEBUG
+}
 
 
 inline void COpenGLExtensionHandler::extGlSwapInterval(int interval)

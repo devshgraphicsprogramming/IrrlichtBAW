@@ -217,11 +217,7 @@ std::vector<CImageData*> CImageLoaderPng::loadImage(io::IReadFile* file) const
 	// Convert RGBA to BGRA
 	if (ColorType==PNG_COLOR_TYPE_RGB_ALPHA)
 	{
-#ifdef __BIG_ENDIAN__
-		png_set_swap_alpha(png_ptr);
-#else
 		png_set_bgr(png_ptr);
-#endif
 	}
 
 	// Create the image structure to be filled by png data
@@ -252,7 +248,7 @@ std::vector<CImageData*> CImageLoaderPng::loadImage(io::IReadFile* file) const
 	for (uint32_t i=0; i<Height; ++i)
 	{
 		RowPointers[i]=data;
-		data += image->getPitch();
+		data += image->getPitchIncludingAlignment();
 	}
 
 	// for proper error handling

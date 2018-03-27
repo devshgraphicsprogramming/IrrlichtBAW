@@ -34,13 +34,13 @@ class CFileSystem : public IFileSystem
         virtual IReadFile* createAndOpenFile(const io::path& filename);
 
         //! Creates an IReadFile interface for accessing memory like a file.
-        virtual IReadFile* createMemoryReadFile(void* memory, int32_t len, const io::path& fileName, bool deleteMemoryWhenDropped = false);
+        virtual IReadFile* createMemoryReadFile(const void* memory, const size_t& len, const io::path& fileName, bool deleteMemoryWhenDropped = false);
 
         //! Creates an IReadFile interface for accessing files inside files
-        virtual IReadFile* createLimitReadFile(const io::path& fileName, IReadFile* alreadyOpenedFile, long pos, long areaSize);
+        virtual IReadFile* createLimitReadFile(const io::path& fileName, IReadFile* alreadyOpenedFile, const size_t& pos, const size_t& areaSize);
 
         //! Creates an IWriteFile interface for accessing memory like a file.
-        virtual IWriteFile* createMemoryWriteFile(void* memory, int32_t len, const io::path& fileName, bool deleteMemoryWhenDropped=false);
+        virtual IWriteFile* createMemoryWriteFile(void* memory, const size_t& len, const io::path& fileName, bool deleteMemoryWhenDropped=false);
 
         //! Opens a file for write access.
         virtual IWriteFile* createAndWriteFile(const io::path& filename, bool append=false);
@@ -99,18 +99,6 @@ class CFileSystem : public IFileSystem
 
         //! Converts a relative path to an absolute (unique) path, resolving symbolic links
         virtual io::path getAbsolutePath(const io::path& filename) const;
-
-        //! Returns the directory a file is located in.
-        /** \param filename: The file to get the directory from */
-        virtual io::path getFileDir(const io::path& filename) const;
-
-        //! Returns the base part of a filename, i.e. the name without the directory
-        //! part. If no directory is prefixed, the full name is returned.
-        /** \param filename: The file to get the basename from */
-        virtual io::path getFileBasename(const io::path& filename, bool keepExtension=true) const;
-
-        //! flatten a path and file name for example: "/you/me/../." becomes "/you"
-        virtual io::path& flattenFilename( io::path& directory, const io::path& root = "/" ) const;
 
         //! Get the relative filename, relative to the given directory
         virtual path getRelativeFilename(const path& filename, const path& directory) const;

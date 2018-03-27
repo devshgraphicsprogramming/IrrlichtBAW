@@ -44,6 +44,19 @@ CCPUSkinnedMesh::~CCPUSkinnedMesh()
 }
 
 
+void CCPUSkinnedMesh::setBoneReferenceHierarchy(CFinalBoneHierarchy* fbh)
+{
+	CFinalBoneHierarchy* referenceHierarchyOld = referenceHierarchy;
+
+	if (fbh)
+		fbh->grab();
+
+	referenceHierarchy = fbh;
+
+	if (referenceHierarchyOld)
+		referenceHierarchyOld->drop();
+}
+
 
 //! returns amount of mesh buffers.
 uint32_t CCPUSkinnedMesh::getMeshBufferCount() const
@@ -105,7 +118,7 @@ const std::vector<CCPUSkinnedMesh::SJoint*> &CCPUSkinnedMesh::getAllJoints() con
 
 void CCPUSkinnedMesh::checkForAnimation()
 {
-	uint32_t i,j;
+	uint32_t i;
 	//Check for animation...
 	HasAnimation = false;
 	for(i=0;i<AllJoints.size();++i)
@@ -430,6 +443,16 @@ scene::SCPUSkinMeshBuffer *CCPUSkinnedMesh::addMeshBuffer()
 	scene::SCPUSkinMeshBuffer *buffer=new scene::SCPUSkinMeshBuffer();
 	LocalBuffers.push_back(buffer);
 	return buffer;
+}
+
+
+void CCPUSkinnedMesh::addMeshBuffer(SCPUSkinMeshBuffer* buf)
+{
+	if (buf)
+	{
+		buf->grab();
+		LocalBuffers.push_back(buf);
+	}
 }
 
 

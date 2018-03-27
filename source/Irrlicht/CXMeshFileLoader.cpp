@@ -56,9 +56,9 @@ ICPUMesh* CXMeshFileLoader::createMesh(io::IReadFile* f)
 	if (!f)
 		return 0;
 
-#ifdef _XREADER_DEBUG
+//#ifdef _XREADER_DEBUG
 	uint32_t time = os::Timer::getRealTime();
-#endif
+//#endif
 
 	AnimatedMesh = new CCPUSkinnedMesh();
     ICPUMesh* retVal = NULL;
@@ -169,13 +169,13 @@ ICPUMesh* CXMeshFileLoader::createMesh(io::IReadFile* f)
 		AnimatedMesh->drop();
 		AnimatedMesh = 0;
 	}
-#ifdef _XREADER_DEBUG
+//#ifdef _XREADER_DEBUG
 	time = os::Timer::getRealTime() - time;
 	std::ostringstream tmpString("Time to load ");
 	tmpString.seekp(0,std::ios_base::end);
 	tmpString << (BinaryFormat ? "binary" : "ascii") << " X file: " << time << "ms";
 	os::Printer::log(tmpString.str());
-#endif
+//#endif
 	//Clear up
 
 	MajorVersion=0;
@@ -683,7 +683,7 @@ bool CXMeshFileLoader::readFileIntoMemory(io::IReadFile* file)
         std::string stmp;
         std::getline(fileContents,stmp);
 	}
-	FilePath = FileSystem->getFileDir(file->getFileName()) + "/";
+	FilePath = io::IFileSystem::getFileDir(file->getFileName()) + "/";
 
 	return true;
 }
@@ -1791,12 +1791,12 @@ bool CXMeshFileLoader::parseDataObjectMaterial(video::SMaterial& material)
 			// mesh path
 			else
 			{
-				TextureFileName=FilePath + FileSystem->getFileBasename(TextureFileName);
+				TextureFileName=FilePath + io::IFileSystem::getFileBasename(TextureFileName);
 				if (FileSystem->existFile(TextureFileName))
 					material.setTexture(textureLayer, SceneManager->getVideoDriver()->getTexture(TextureFileName));
 				// working directory
 				else
-					material.setTexture(textureLayer, SceneManager->getVideoDriver()->getTexture(FileSystem->getFileBasename(TextureFileName)));
+					material.setTexture(textureLayer, SceneManager->getVideoDriver()->getTexture(io::IFileSystem::getFileBasename(TextureFileName)));
 			}
 			++textureLayer;
 		}
@@ -1815,12 +1815,12 @@ bool CXMeshFileLoader::parseDataObjectMaterial(video::SMaterial& material)
 			// mesh path
 			else
 			{
-				TextureFileName=FilePath + FileSystem->getFileBasename(TextureFileName);
+				TextureFileName=FilePath + io::IFileSystem::getFileBasename(TextureFileName);
 				if (FileSystem->existFile(TextureFileName))
 					material.setTexture(1, SceneManager->getVideoDriver()->getTexture(TextureFileName));
 				// working directory
 				else
-					material.setTexture(1, SceneManager->getVideoDriver()->getTexture(FileSystem->getFileBasename(TextureFileName)));
+					material.setTexture(1, SceneManager->getVideoDriver()->getTexture(io::IFileSystem::getFileBasename(TextureFileName)));
 			}
 			if (textureLayer==1)
 				++textureLayer;
@@ -2542,12 +2542,8 @@ uint16_t CXMeshFileLoader::readBinWord()
 
     char P[2];
     fileContents.read(P,2);
-#ifdef __BIG_ENDIAN__
-	const uint16_t tmp = os::Byteswap::byteswap(*(uint16_t *)P);
-#else
-	const uint16_t tmp = *(uint16_t *)P;
-#endif
-	return tmp;
+
+    return *(uint16_t *)P;
 }
 
 
@@ -2558,12 +2554,8 @@ uint32_t CXMeshFileLoader::readBinDWord()
 
     char P[4];
     fileContents.read(P,4);
-#ifdef __BIG_ENDIAN__
-	const uint32_t tmp = os::Byteswap::byteswap(*(uint32_t *)P);
-#else
-	const uint32_t tmp = *(uint32_t *)P;
-#endif
-	return tmp;
+
+	return *(uint32_t *)P;
 }
 
 
@@ -2610,22 +2602,12 @@ float CXMeshFileLoader::readFloat()
 		{
 		    double tmp;
 		    fileContents.read(reinterpret_cast<char*>(&tmp),8);
-#ifdef __BIG_ENDIAN__
-			//TODO: Check if data is properly converted here
-			float ctmp[2];
-			ctmp[1] = os::Byteswap::byteswap(*reinterpret_cast<float*>(&tmp));
-			ctmp[0] = os::Byteswap::byteswap(*reinterpret_cast<float*>(&tmp)+4);
-			tmp = *reinterpret_cast<double*>(ctmp);
-#endif
 			return tmp;
 		}
 		else
 		{
 		    float tmp;
 		    fileContents.read(reinterpret_cast<char*>(&tmp),4);
-#ifdef __BIG_ENDIAN__
-			tmp = os::Byteswap::byteswap(tmp);
-#endif
 			return tmp;
 		}
 	}

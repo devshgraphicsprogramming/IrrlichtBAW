@@ -213,7 +213,6 @@ uint32_t COpenGLExtensionHandler::MaxArrayTextureLayers = 2048;
 uint8_t COpenGLExtensionHandler::MaxTextureUnits = 96;
 uint8_t COpenGLExtensionHandler::MaxAnisotropy = 8;
 uint8_t COpenGLExtensionHandler::MaxUserClipPlanes = 8;
-uint8_t COpenGLExtensionHandler::MaxAuxBuffers = 0;
 uint8_t COpenGLExtensionHandler::MaxMultipleRenderTargets = 4;
 uint32_t COpenGLExtensionHandler::MaxIndices = 65535;
 uint32_t COpenGLExtensionHandler::MaxVertices = 0xffffffffu;
@@ -253,20 +252,24 @@ PFNGLCREATETEXTURESPROC COpenGLExtensionHandler::pGlCreateTextures = NULL;
 PFNGLTEXSTORAGE1DPROC COpenGLExtensionHandler::pGlTexStorage1D = NULL;
 PFNGLTEXSTORAGE2DPROC COpenGLExtensionHandler::pGlTexStorage2D = NULL;
 PFNGLTEXSTORAGE3DPROC COpenGLExtensionHandler::pGlTexStorage3D = NULL;
+PFNGLTEXSTORAGE2DMULTISAMPLEPROC COpenGLExtensionHandler::pGlTexStorage2DMultisample = NULL;
+PFNGLTEXSTORAGE3DMULTISAMPLEPROC COpenGLExtensionHandler::pGlTexStorage3DMultisample = NULL;
 PFNGLTEXBUFFERPROC COpenGLExtensionHandler::pGlTexBuffer = NULL;
 PFNGLTEXBUFFERRANGEPROC COpenGLExtensionHandler::pGlTexBufferRange = NULL;
 PFNGLTEXTURESTORAGE1DPROC COpenGLExtensionHandler::pGlTextureStorage1D = NULL;
 PFNGLTEXTURESTORAGE2DPROC COpenGLExtensionHandler::pGlTextureStorage2D = NULL;
 PFNGLTEXTURESTORAGE3DPROC COpenGLExtensionHandler::pGlTextureStorage3D = NULL;
+PFNGLTEXTURESTORAGE2DMULTISAMPLEPROC COpenGLExtensionHandler::pGlTextureStorage2DMultisample = NULL;
+PFNGLTEXTURESTORAGE3DMULTISAMPLEPROC COpenGLExtensionHandler::pGlTextureStorage3DMultisample = NULL;
 PFNGLTEXTUREBUFFERPROC COpenGLExtensionHandler::pGlTextureBuffer = NULL;
 PFNGLTEXTUREBUFFERRANGEPROC COpenGLExtensionHandler::pGlTextureBufferRange = NULL;
 PFNGLTEXTURESTORAGE1DEXTPROC COpenGLExtensionHandler::pGlTextureStorage1DEXT = NULL;
 PFNGLTEXTURESTORAGE2DEXTPROC COpenGLExtensionHandler::pGlTextureStorage2DEXT = NULL;
 PFNGLTEXTURESTORAGE3DEXTPROC COpenGLExtensionHandler::pGlTextureStorage3DEXT = NULL;
+PFNGLTEXTURESTORAGE2DMULTISAMPLEEXTPROC COpenGLExtensionHandler::pGlTextureStorage2DMultisampleEXT = NULL;
+PFNGLTEXTURESTORAGE3DMULTISAMPLEEXTPROC COpenGLExtensionHandler::pGlTextureStorage3DMultisampleEXT = NULL;
 PFNGLTEXTUREBUFFEREXTPROC COpenGLExtensionHandler::pGlTextureBufferEXT = NULL;
 PFNGLTEXTUREBUFFERRANGEEXTPROC COpenGLExtensionHandler::pGlTextureBufferRangeEXT = NULL;
-        ///static PFNGLTEXTURESTORAGE2DMULTISAMPLEPROC COpenGLExtensionHandler::pGlTextureStorage2DMultisample = NULL;
-        ///static PFNGLTEXTURESTORAGE3DMULTISAMPLEPROC COpenGLExtensionHandler::pGlTextureStorage3DMultisample = NULL;
 PFNGLTEXSUBIMAGE3DPROC COpenGLExtensionHandler::pGlTexSubImage3D = NULL;
 PFNGLMULTITEXSUBIMAGE1DEXTPROC COpenGLExtensionHandler::pGlMultiTexSubImage1DEXT = NULL;
 PFNGLMULTITEXSUBIMAGE2DEXTPROC COpenGLExtensionHandler::pGlMultiTexSubImage2DEXT = NULL;
@@ -393,6 +396,8 @@ PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC COpenGLExtensionHandler::pGlNamedFramebuffer
 PFNGLFRAMEBUFFERTEXTURELAYERPROC COpenGLExtensionHandler::pGlFramebufferTextureLayer = NULL;
 PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC COpenGLExtensionHandler::pGlNamedFramebufferTextureLayer = NULL;
 PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC COpenGLExtensionHandler::pGlNamedFramebufferTextureLayerEXT = NULL;
+PFNGLFRAMEBUFFERTEXTURE2DPROC COpenGLExtensionHandler::pGlFramebufferTexture2D = NULL;
+PFNGLNAMEDFRAMEBUFFERTEXTURE2DEXTPROC COpenGLExtensionHandler::pGlNamedFramebufferTexture2DEXT = NULL;
 PFNGLDELETERENDERBUFFERSPROC COpenGLExtensionHandler::pGlDeleteRenderbuffers = NULL;
 PFNGLGENRENDERBUFFERSPROC COpenGLExtensionHandler::pGlGenRenderbuffers = NULL;
 PFNGLCREATERENDERBUFFERSPROC COpenGLExtensionHandler::pGlCreateRenderbuffers = NULL;
@@ -541,6 +546,9 @@ PFNGLGETQUERYBUFFEROBJECTUI64VPROC COpenGLExtensionHandler::pGlGetQueryBufferObj
 PFNGLQUERYCOUNTERPROC COpenGLExtensionHandler::pGlQueryCounter = NULL;
 PFNGLBEGINCONDITIONALRENDERPROC COpenGLExtensionHandler::pGlBeginConditionalRender = NULL;
 PFNGLENDCONDITIONALRENDERPROC COpenGLExtensionHandler::pGlEndConditionalRender = NULL;
+//
+PFNGLTEXTUREBARRIERPROC COpenGLExtensionHandler::pGlTextureBarrier = NULL;
+PFNGLTEXTUREBARRIERNVPROC COpenGLExtensionHandler::pGlTextureBarrierNV = NULL;
 //
 PFNGLBLENDEQUATIONEXTPROC COpenGLExtensionHandler::pGlBlendEquationEXT = NULL;
 PFNGLBLENDEQUATIONPROC COpenGLExtensionHandler::pGlBlendEquation = NULL;
@@ -752,7 +760,7 @@ void COpenGLExtensionHandler::dumpFramebufferFormats() const
 			for (int i=1; i<count; ++i)
 			{
 				memset(vals,0,sizeof(vals));
-#define tmplog(x,y) os::Printer::log(x, core::longlongtoa(y))
+#define tmplog(x,y) os::Printer::log(x, std::to_string(y))
 				const BOOL res = wglGetPixelFormatAttribiv_ARB(hdc,i,0,nums,atts,vals);
 				if (FALSE==res)
 					continue;
@@ -874,8 +882,6 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 
 	glGetIntegerv(GL_MAX_CLIP_DISTANCES, &num);
 	MaxUserClipPlanes=static_cast<uint8_t>(num);
-	glGetIntegerv(GL_AUX_BUFFERS, &num);
-	MaxAuxBuffers=static_cast<uint8_t>(num);
     glGetIntegerv(GL_MAX_DRAW_BUFFERS, &num);
     MaxMultipleRenderTargets = static_cast<uint8_t>(num);
 
@@ -900,6 +906,8 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 		pGlTextureStorage1D = NULL;
 		pGlTextureStorage2D = NULL;
 		pGlTextureStorage3D = NULL;
+		pGlTextureStorage2DMultisample = NULL;
+		pGlTextureStorage3DMultisample = NULL;
 		pGlTextureSubImage1D = NULL;
 		pGlTextureSubImage2D = NULL;
 		pGlTextureSubImage3D = NULL;
@@ -953,6 +961,7 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 		pGlBlendFuncIndexedAMD = NULL;
 		pGlBlendEquationIndexedAMD = NULL;
 		pGlBlendEquationiARB = NULL;
+		pGlCreateQueries = NULL;
 	}/*
     //! Non-DSA testing
     Version = 430;
@@ -961,6 +970,8 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
     pGlTextureStorage1DEXT = NULL;
     pGlTextureStorage2DEXT = NULL;
     pGlTextureStorage3DEXT = NULL;
+    pGlTextureStorage2DMultisampleEXT = NULL;
+    pGlTextureStorage3DMultisampleEXT = NULL;
     pGlTextureSubImage1DEXT = NULL;
     pGlTextureSubImage2DEXT = NULL;
     pGlTextureSubImage3DEXT = NULL;
@@ -998,6 +1009,7 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
     pGlVertexArrayVertexAttribIFormatEXT = NULL;
     pGlVertexArrayVertexAttribLFormatEXT = NULL;
     pGlVertexArrayVertexBindingDivisorEXT = NULL;
+    pGlCreateQueries = NULL;
 **/
 
     num=0;
@@ -1006,29 +1018,28 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 
     //num=100000000u;
 	//glGetIntegerv(GL_MAX_ELEMENTS_INDICES,&num);
-
+#ifdef WIN32
 #ifdef _DEBUG
 	if (FeatureAvailable[IRR_NVX_gpu_memory_info])
 	{
 		// undocumented flags, so use the RAW values
 		GLint val;
 		glGetIntegerv(0x9047, &val);
-		os::Printer::log("Dedicated video memory (kB)", core::longlongtoa(val));
+		os::Printer::log("Dedicated video memory (kB)", std::to_string(val));
 		glGetIntegerv(0x9048, &val);
-		os::Printer::log("Total video memory (kB)", core::longlongtoa(val));
+		os::Printer::log("Total video memory (kB)", std::to_string(val));
 		glGetIntegerv(0x9049, &val);
-		os::Printer::log("Available video memory (kB)", core::longlongtoa(val));
+		os::Printer::log("Available video memory (kB)", std::to_string(val));
 	}
-#ifdef GL_ATI_meminfo
 	if (FeatureAvailable[IRR_ATI_meminfo])
 	{
 		GLint val[4];
 		glGetIntegerv(GL_TEXTURE_FREE_MEMORY_ATI, val);
-		os::Printer::log("Free texture memory (kB)", core::longlongtoa(val[0]));
+		os::Printer::log("Free texture memory (kB)", std::to_string(val[0]));
 		glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, val);
-		os::Printer::log("Free VBO memory (kB)", core::longlongtoa(val[0]));
+		os::Printer::log("Free VBO memory (kB)", std::to_string(val[0]));
 		glGetIntegerv(GL_RENDERBUFFER_FREE_MEMORY_ATI, val);
-		os::Printer::log("Free render buffer memory (kB)", core::longlongtoa(val[0]));
+		os::Printer::log("Free render buffer memory (kB)", std::to_string(val[0]));
 	}
 #endif
 #endif
@@ -1119,11 +1130,15 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlTexStorage1D = (PFNGLTEXSTORAGE1DPROC) IRR_OGL_LOAD_EXTENSION( "glTexStorage1D");
     pGlTexStorage2D = (PFNGLTEXSTORAGE2DPROC) IRR_OGL_LOAD_EXTENSION( "glTexStorage2D");
     pGlTexStorage3D = (PFNGLTEXSTORAGE3DPROC) IRR_OGL_LOAD_EXTENSION( "glTexStorage3D");
+    pGlTexStorage2DMultisample = (PFNGLTEXSTORAGE2DMULTISAMPLEPROC) IRR_OGL_LOAD_EXTENSION( "glTexStorage2DMultisample");
+    pGlTexStorage3DMultisample = (PFNGLTEXSTORAGE3DMULTISAMPLEPROC) IRR_OGL_LOAD_EXTENSION( "glTexStorage3DMultisample");
     pGlTexBuffer = (PFNGLTEXBUFFERPROC) IRR_OGL_LOAD_EXTENSION( "glTexBuffer");
     pGlTexBufferRange = (PFNGLTEXBUFFERRANGEPROC) IRR_OGL_LOAD_EXTENSION( "glTexBufferRange");
     pGlTextureStorage1D = (PFNGLTEXTURESTORAGE1DPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage1D");
     pGlTextureStorage2D = (PFNGLTEXTURESTORAGE2DPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage2D");
     pGlTextureStorage3D = (PFNGLTEXTURESTORAGE3DPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage3D");
+    pGlTextureStorage2DMultisample = (PFNGLTEXTURESTORAGE2DMULTISAMPLEPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage2DMultisample");
+    pGlTextureStorage3DMultisample = (PFNGLTEXTURESTORAGE3DMULTISAMPLEPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage3DMultisample");
     pGlTextureBuffer = (PFNGLTEXTUREBUFFERPROC) IRR_OGL_LOAD_EXTENSION( "glTextureBuffer");
     pGlTextureBufferRange = (PFNGLTEXTUREBUFFERRANGEPROC) IRR_OGL_LOAD_EXTENSION( "glTextureBufferRange");
     pGlTextureStorage1DEXT = (PFNGLTEXTURESTORAGE1DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage1DEXT");
@@ -1131,8 +1146,8 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlTextureStorage3DEXT = (PFNGLTEXTURESTORAGE3DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage3DEXT");
     pGlTextureBufferEXT = (PFNGLTEXTUREBUFFEREXTPROC) IRR_OGL_LOAD_EXTENSION( "glTextureBufferEXT");
     pGlTextureBufferRangeEXT = (PFNGLTEXTUREBUFFERRANGEEXTPROC) IRR_OGL_LOAD_EXTENSION( "glTextureBufferRangeEXT");
-    ///PFNGLTEXTURESTORAGE2DMULTISAMPLEPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage2DMultisample");
-    ///PFNGLTEXTURESTORAGE3DMULTISAMPLEPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage3DMultisample");
+    pGlTextureStorage2DMultisampleEXT = (PFNGLTEXTURESTORAGE2DMULTISAMPLEEXTPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage2DMultisampleEXT");
+    pGlTextureStorage3DMultisampleEXT = (PFNGLTEXTURESTORAGE3DMULTISAMPLEEXTPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage3DMultisampleEXT");
     pGlTexSubImage3D = (PFNGLTEXSUBIMAGE3DPROC) IRR_OGL_LOAD_EXTENSION( "glTexSubImage3D");
     pGlMultiTexSubImage1DEXT = (PFNGLMULTITEXSUBIMAGE1DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glMultiTexSubImage1DEXT");
     pGlMultiTexSubImage2DEXT = (PFNGLMULTITEXSUBIMAGE2DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glMultiTexSubImage2DEXT");
@@ -1255,6 +1270,8 @@ void COpenGLExtensionHandler::loadFunctions()
 	pGlFramebufferTextureLayer = (PFNGLFRAMEBUFFERTEXTURELAYERPROC) IRR_OGL_LOAD_EXTENSION("glFramebufferTextureLayer");
 	pGlNamedFramebufferTextureLayer = (PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTextureLayer");
 	pGlNamedFramebufferTextureLayerEXT = (PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC) IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTextureLayerEXT");
+	pGlFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC)IRR_OGL_LOAD_EXTENSION("glFramebufferTexture2D");
+	pGlNamedFramebufferTexture2DEXT = (PFNGLNAMEDFRAMEBUFFERTEXTURE2DEXTPROC)IRR_OGL_LOAD_EXTENSION("glNamedFramebufferTexture2DEXT");
 	pGlDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glDeleteRenderbuffers");
 	pGlGenRenderbuffers = (PFNGLGENRENDERBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glGenRenderbuffers");
 	pGlCreateRenderbuffers = (PFNGLCREATERENDERBUFFERSPROC) IRR_OGL_LOAD_EXTENSION("glCreateRenderbuffers");
@@ -1405,6 +1422,10 @@ void COpenGLExtensionHandler::loadFunctions()
 	pGlBeginConditionalRender = (PFNGLBEGINCONDITIONALRENDERPROC) IRR_OGL_LOAD_EXTENSION("glBeginConditionalRender");
     pGlEndConditionalRender = (PFNGLENDCONDITIONALRENDERPROC) IRR_OGL_LOAD_EXTENSION("glEndConditionalRender");
 
+    if (FeatureAvailable[IRR_ARB_texture_barrier])
+        pGlTextureBarrier = (PFNGLTEXTUREBARRIERPROC) IRR_OGL_LOAD_EXTENSION("glTextureBarrier");
+    else if (FeatureAvailable[IRR_NV_texture_barrier])
+        pGlTextureBarrierNV = (PFNGLTEXTUREBARRIERNVPROC) IRR_OGL_LOAD_EXTENSION("glTextureBarrierNV");
 
 
     pGlDebugMessageControl = (PFNGLDEBUGMESSAGECONTROLPROC) IRR_OGL_LOAD_EXTENSION("glDebugMessageControl");
@@ -1438,25 +1459,18 @@ bool COpenGLExtensionHandler::queryFeature(const E_VIDEO_DRIVER_FEATURE &feature
 {
 	switch (feature)
 	{
-	case EVDF_STENCIL_BUFFER:
-	case EVDF_ARB_GLSL:
-	case EVDF_COLOR_MASK:
-		return true;
-	case EVDF_ALPHA_TO_COVERAGE:
-		return FeatureAvailable[IRR_ARB_multisample];
-	case EVDF_GEOMETRY_SHADER:
-		return true;
-	case EVDF_MRT_BLEND:
-	case EVDF_MRT_COLOR_MASK:
-		return FeatureAvailable[IRR_EXT_draw_buffers2] || FeatureAvailable[IRR_ARB_draw_buffers_blend];
-	case EVDF_MRT_BLEND_FUNC:
-		return FeatureAvailable[IRR_ARB_draw_buffers_blend] || FeatureAvailable[IRR_AMD_draw_buffers_blend];
-	case EVDF_OCCLUSION_QUERY:
-	case EVDF_POLYGON_OFFSET:
-	case EVDF_BLEND_OPERATIONS:
-		return true;
-	default:
-		return false;
+        case EVDF_ALPHA_TO_COVERAGE:
+            return FeatureAvailable[IRR_ARB_multisample]||true;
+        case EVDF_GEOMETRY_SHADER:
+            return FeatureAvailable[IRR_ARB_geometry_shader4]||true;
+        case EVDF_TESSELLATION_SHADER:
+            return FeatureAvailable[IRR_ARB_tessellation_shader]||true;
+        case EVDF_TEXTURE_BARRIER:
+            return FeatureAvailable[IRR_ARB_texture_barrier]||FeatureAvailable[IRR_NV_texture_barrier];
+        case EVDF_STENCIL_ONLY_TEXTURE:
+            return FeatureAvailable[IRR_ARB_texture_stencil8];
+        default:
+            return false;
 	};
 }
 

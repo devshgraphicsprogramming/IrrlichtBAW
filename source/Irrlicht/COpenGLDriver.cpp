@@ -15,6 +15,8 @@
 #include "COpenGL3DTexture.h"
 #include "COpenGL2DTextureArray.h"
 #include "COpenGLCubemapTexture.h"
+#include "COpenGLMultisampleTexture.h"
+#include "COpenGLMultisampleTextureArray.h"
 #include "COpenGLTextureBufferObject.h"
 
 #include "COpenGLRenderBuffer.h"
@@ -47,8 +49,7 @@ COpenGLDriver::COpenGLDriver(const irr::SIrrlichtCreationParameters& params,
 		io::IFileSystem* io, CIrrDeviceWin32* device)
 : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
 	CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
-	CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), CurrentXFormFeedback(0), XFormFeedbackRunning(false),
-	CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8), Params(params),
+	currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), ColorFormat(ECF_R8G8B8), Params(params),
 	HDc(0), Window(static_cast<HWND>(params.WindowId)), Win32Device(device),
 	DeviceType(EIDT_WIN32), AuxContexts(0)
 {
@@ -360,7 +361,7 @@ bool COpenGLDriver::initDriver(CIrrDeviceWin32* device)
             return false;
         }
     }
-	os::Printer::log("Pixel Format", core::longlongtoa(PixelFormat), ELL_DEBUG);
+	os::Printer::log("Pixel Format", std::to_string(PixelFormat), ELL_DEBUG);
 
 	int iAttribs[] =
 	{
@@ -388,11 +389,14 @@ bool COpenGLDriver::initDriver(CIrrDeviceWin32* device)
 		return false;
 	}
 
-	if (Params.AuxGLContexts)
-        AuxContexts = new SAuxContext[Params.AuxGLContexts];
-	for (size_t i=0; i<Params.AuxGLContexts; i++)
+    AuxContexts = new SAuxContext[Params.AuxGLContexts+1];
     {
-        AuxContexts[i].threadId = 0xdeadbeefbadc0ffeu;
+        AuxContexts[0].threadId = std::this_thread::get_id();
+        AuxContexts[0].ctx = hrc;
+    }
+	for (size_t i=1; i<=Params.AuxGLContexts; i++)
+    {
+        AuxContexts[i].threadId = std::thread::id(); //invalid ID
         AuxContexts[i].ctx = wglCreateContextAttribs_ARB(HDc, hrc, iAttribs);
     }
 
@@ -438,42 +442,32 @@ bool COpenGLDriver::initDriver(CIrrDeviceWin32* device)
 
 bool COpenGLDriver::initAuxContext()
 {
-    size_t threadId = GetCurrentThreadId();
-
     bool retval = false;
-    ctxInitMutex->Get();
-    for (size_t i=0; i<Params.AuxGLContexts; i++)
+    glContextMutex->Get();
+    SAuxContext* found = getThreadContext_helper(true,std::thread::id());
+    if (found)
     {
-        if (AuxContexts[i].threadId==0xdeadbeefbadc0ffeu)
-        {
-            retval = wglMakeCurrent((HDC)ExposedData.OpenGLWin32.HDc,AuxContexts[i].ctx);
-            if (retval)
-                AuxContexts[i].threadId = threadId;
-            break;
-        }
+        retval = wglMakeCurrent((HDC)ExposedData.OpenGLWin32.HDc,found->ctx);
+        if (retval)
+            found->threadId = std::this_thread::get_id();
     }
-    ctxInitMutex->Release();
+    glContextMutex->Release();
     return retval;
 }
 
 bool COpenGLDriver::deinitAuxContext()
 {
-    size_t threadId = GetCurrentThreadId();
-
     bool retval = false;
-    ctxInitMutex->Get();
-    for (size_t i=0; i<Params.AuxGLContexts; i++)
+    glContextMutex->Get();
+    SAuxContext* found = getThreadContext_helper(true);
+    if (found)
     {
-        if (AuxContexts[i].threadId==threadId)
-        {
-            glFinish();
-            retval = wglMakeCurrent(NULL,NULL);
-            if (retval)
-                AuxContexts[i].threadId = 0xdeadbeefbadc0ffeu;
-            break;
-        }
+        cleanUpContextBeforeDelete();
+        retval = wglMakeCurrent(NULL,NULL);
+        if (retval)
+            found->threadId = std::thread:id();
     }
-    ctxInitMutex->Release();
+    glContextMutex->Release();
     return retval;
 }
 
@@ -488,8 +482,7 @@ COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
 		io::IFileSystem* io, CIrrDeviceMacOSX *device)
 : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
 	CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
-	CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), CurrentXFormFeedback(0), XFormFeedbackRunning(false),
-	CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8),
+	currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), ColorFormat(ECF_R8G8B8),
 	Params(params),
 	OSXDevice(device), DeviceType(EIDT_OSX), AuxContexts(0)
 {
@@ -511,8 +504,7 @@ COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
 		io::IFileSystem* io, CIrrDeviceLinux* device)
 : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
 	CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
-	CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), CurrentXFormFeedback(0), XFormFeedbackRunning(false),
-	CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8),
+	currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), ColorFormat(ECF_R8G8B8),
 	Params(params), X11Device(device), DeviceType(EIDT_X11), AuxContexts(0)
 {
 	#ifdef _DEBUG
@@ -597,42 +589,32 @@ bool COpenGLDriver::initDriver(CIrrDeviceLinux* device, SAuxContext* auxCtxts)
 
 bool COpenGLDriver::initAuxContext()
 {
-    pthread_t threadId = pthread_self();
-
     bool retval = false;
-    ctxInitMutex->Get();
-    for (size_t i=0; i<Params.AuxGLContexts; i++)
+    glContextMutex->Get();
+    SAuxContext* found = getThreadContext_helper(true,std::thread::id());
+    if (found)
     {
-        if (AuxContexts[i].threadId==0xdeadbeefbadc0ffeu)
-        {
-            retval = glXMakeCurrent((Display*)ExposedData.OpenGLLinux.X11Display, AuxContexts[i].pbuff, AuxContexts[i].ctx);
-            if (retval)
-                AuxContexts[i].threadId = reinterpret_cast<const size_t&>(threadId);
-            break;
-        }
+        retval = glXMakeCurrent((Display*)ExposedData.OpenGLLinux.X11Display, found->pbuff, found->ctx);
+        if (retval)
+            found->threadId = std::this_thread::get_id();
     }
-    ctxInitMutex->Release();
+    glContextMutex->Release();
     return retval;
 }
 
 bool COpenGLDriver::deinitAuxContext()
 {
-    pthread_t threadId = pthread_self();
-
     bool retval = false;
-    ctxInitMutex->Get();
-    for (size_t i=0; i<Params.AuxGLContexts; i++)
+    glContextMutex->Get();
+    SAuxContext* found = getThreadContext_helper(true);
+    if (found)
     {
-        if (AuxContexts[i].threadId==reinterpret_cast<const size_t&>(threadId))
-        {
-            glFinish();
-            retval = glXMakeCurrent((Display*)ExposedData.OpenGLLinux.X11Display, None, NULL);
-            if (retval)
-                AuxContexts[i].threadId = 0xdeadbeefbadc0ffeu;
-            break;
-        }
+        cleanUpContextBeforeDelete();
+        retval = glXMakeCurrent((Display*)ExposedData.OpenGLLinux.X11Display, None, NULL);
+        if (retval)
+            found->threadId = std::thread::id();
     }
-    ctxInitMutex->Release();
+    glContextMutex->Release();
     return retval;
 }
 
@@ -648,8 +630,7 @@ COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
 		io::IFileSystem* io, CIrrDeviceSDL* device)
 : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
 	CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
-    CurrentFBO(0), CurrentVAO(0), currentIndirectDrawBuff(0),
-     lastValidatedIndirectBuffer(0), CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8),
+    currentIndirectDrawBuff(0), lastValidatedIndirectBuffer(0), ColorFormat(ECF_R8G8B8),
 	CurrentTarget(ERT_FRAME_BUFFER), Params(params),
 	SDLDevice(device), DeviceType(EIDT_SDL), AuxContexts(0)
 {
@@ -666,59 +647,20 @@ COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
 //! destructor
 COpenGLDriver::~COpenGLDriver()
 {
-    CurrentRendertargetSize = ScreenSize;
-    extGlBindFramebuffer(GL_FRAMEBUFFER, 0);
-    if (CurrentFBO)
-    {
-        CurrentFBO->drop();
-        CurrentFBO = NULL;
-    }
+    cleanUpContextBeforeDelete();
 
-    extGlBindTransformFeedback(GL_TRANSFORM_FEEDBACK,0);
-    if (CurrentXFormFeedback)
-    {
-        if (!CurrentXFormFeedback->isEnded())
-        {
-            assert(CurrentXFormFeedback->isActive());
-            CurrentXFormFeedback->endFeedback();
-            XFormFeedbackRunning = false;
-        }
-
-        CurrentXFormFeedback->drop();
-		CurrentXFormFeedback = NULL;
-    }
-
-    extGlUseProgram(0);
 	deleteMaterialRenders();
-
-    removeAllFrameBuffers();
     removeAllRenderBuffers();
-
-	CurrentTexture.clear();
 	// I get a blue screen on my laptop, when I do not delete the
 	// textures manually before releasing the dc. Oh how I love this.
 	deleteAllTextures();
 
-    extGlBindVertexArray(0);
-    if (CurrentVAO)
-        CurrentVAO->drop();
-
-	for(std::map<uint64_t,GLuint>::iterator it = SamplerMap.begin(); it != SamplerMap.end(); it++)
-    {
-        extGlDeleteSamplers(1,&it->second);
-    }
-    SamplerMap.clear();
-
-    glFinish();
-
-    ctxInitMutex->Get();
+    glContextMutex->Get();
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 	if (DeviceType == EIDT_WIN32)
 	{
-        for (size_t i=0; i<Params.AuxGLContexts; i++)
+        for (size_t i=1; i<=Params.AuxGLContexts; i++)
             wglDeleteContext(AuxContexts[i].ctx);
-        if (AuxContexts)
-            delete [] AuxContexts;
 
 		if (ExposedData.OpenGLWin32.HRc)
 		{
@@ -745,18 +687,17 @@ COpenGLDriver::~COpenGLDriver()
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
     if (DeviceType == EIDT_X11)
     {
-        for (size_t i=0; i<Params.AuxGLContexts; i++)
+        for (size_t i=1; i<=Params.AuxGLContexts; i++)
         {
-            assert(AuxContexts[i].threadId==0xdeadbeefbadc0ffeu);
+            assert(AuxContexts[i].threadId==std::thread::id());
             glXDestroyPbuffer((Display*)ExposedData.OpenGLLinux.X11Display,AuxContexts[i].pbuff);
             glXDestroyContext((Display*)ExposedData.OpenGLLinux.X11Display,AuxContexts[i].ctx);
         }
-        if (AuxContexts)
-            delete [] AuxContexts;
     }
 #endif // _IRR_COMPILE_WITH_X11_DEVICE_
-    ctxInitMutex->Release();
-    delete ctxInitMutex;
+    delete [] AuxContexts;
+    glContextMutex->Release();
+    delete glContextMutex;
 }
 
 
@@ -764,9 +705,89 @@ COpenGLDriver::~COpenGLDriver()
 // METHODS
 // -----------------------------------------------------------------------
 
+const COpenGLDriver::SAuxContext* COpenGLDriver::getThreadContext(const std::thread::id& tid) const
+{
+    glContextMutex->Get();
+    for (size_t i=0; i<=Params.AuxGLContexts; i++)
+    {
+        if (AuxContexts[i].threadId==tid)
+        {
+            glContextMutex->Release();
+            return AuxContexts+i;
+        }
+    }
+    glContextMutex->Release();
+    return NULL;
+}
+
+COpenGLDriver::SAuxContext* COpenGLDriver::getThreadContext_helper(const bool& alreadyLockedMutex, const std::thread::id& tid)
+{
+    if (!alreadyLockedMutex)
+        glContextMutex->Get();
+    for (size_t i=0; i<=Params.AuxGLContexts; i++)
+    {
+        if (AuxContexts[i].threadId==tid)
+        {
+            if (!alreadyLockedMutex)
+                glContextMutex->Release();
+            return AuxContexts+i;
+        }
+    }
+    if (!alreadyLockedMutex)
+        glContextMutex->Release();
+    return NULL;
+}
+
+void COpenGLDriver::cleanUpContextBeforeDelete()
+{
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+    found->CurrentRendertargetSize = ScreenSize;
+    extGlBindFramebuffer(GL_FRAMEBUFFER, 0);
+    if (found->CurrentFBO)
+    {
+        found->CurrentFBO->drop();
+        found->CurrentFBO = NULL;
+    }
+
+    extGlBindTransformFeedback(GL_TRANSFORM_FEEDBACK,0);
+    if (found->CurrentXFormFeedback)
+    {
+        if (!found->CurrentXFormFeedback->isEnded())
+        {
+            assert(found->CurrentXFormFeedback->isActive());
+            found->CurrentXFormFeedback->endFeedback();
+            found->XFormFeedbackRunning = false;
+        }
+
+        found->CurrentXFormFeedback->drop();
+		found->CurrentXFormFeedback = NULL;
+    }
+
+    extGlBindVertexArray(0);
+    if (found->CurrentVAO)
+        found->CurrentVAO->drop();
+
+    extGlUseProgram(0);
+    removeAllFrameBuffers();
+
+	found->CurrentTexture.clear();
+
+	for(std::map<uint64_t,GLuint>::iterator it = found->SamplerMap.begin(); it != found->SamplerMap.end(); it++)
+    {
+        extGlDeleteSamplers(1,&it->second);
+    }
+    found->SamplerMap.clear();
+
+    glFinish();
+}
+
+
 bool COpenGLDriver::genericDriverInit()
 {
-    ctxInitMutex = new FW_Mutex();
+    glContextMutex = new FW_Mutex();
 
 	Name=L"OpenGL ";
 	Name.append(glGetString(GL_VERSION));
@@ -840,35 +861,22 @@ bool COpenGLDriver::genericDriverInit()
 
 
 	glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE , &num);
-	MaxTextureSizes[ITexture::ETT_TEXTURE_BUFFER][0] = static_cast<uint32_t>(num);
+	///MaxTextureSizes[ITexture::ETT_TEXTURE_BUFFER][0] = static_cast<uint32_t>(num);
 
 
 	uint32_t i;
-	CurrentTexture.clear();
 	// load extensions
 	initExtensions(Params.Stencilbuffer);
-	if (queryFeature(EVDF_ARB_GLSL))
-	{
-		char buf[32];
-		const uint32_t maj = ShaderLanguageVersion/10;
-		snprintf(buf, 32, "%u.%u", maj, ShaderLanguageVersion-maj*10);
-		os::Printer::log("GLSL version", buf, ELL_INFORMATION);
-	}
-	else
-    {
-		os::Printer::log("GLSL not available.", ELL_ERROR);
-		return false;
-    }
+
+    char buf[32];
+    const uint32_t maj = ShaderLanguageVersion/10;
+    snprintf(buf, 32, "%u.%u", maj, ShaderLanguageVersion-maj*10);
+    os::Printer::log("GLSL version", buf, ELL_INFORMATION);
 
     if (Version<430)
     {
 		os::Printer::log("OpenGL version is less than 4.3", ELL_ERROR);
 		return false;
-    }
-
-    for (size_t i=0; i<MATERIAL_MAX_TEXTURES; i++)
-    {
-        CurrentSamplerHash[i] = 0xffffffffffffffffuLL;
     }
 
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -1665,7 +1673,7 @@ void COpenGLDriver::beginQuery(IQueryObject* query)
         return; //error
 
     COpenGLQuery* queryGL = dynamic_cast<COpenGLQuery*>(query);
-    if (queryGL->getGLHandle()==0)
+    if (queryGL->getGLHandle()==0||queryGL->isActive())
         return;
 
     if (currentQuery[query->getQueryObjectType()][0])
@@ -1686,7 +1694,7 @@ void COpenGLDriver::endQuery(IQueryObject* query)
         return; //error
 
     COpenGLQuery* queryGL = dynamic_cast<COpenGLQuery*>(query);
-    if (queryGL->getGLHandle()==0)
+    if (queryGL->getGLHandle()==0||!queryGL->isActive())
         return;
 
     if (currentQuery[query->getQueryObjectType()][0])
@@ -1707,7 +1715,7 @@ void COpenGLDriver::beginQuery(IQueryObject* query, const size_t& index)
         return; //error
 
     COpenGLQuery* queryGL = dynamic_cast<COpenGLQuery*>(query);
-    if (queryGL->getGLHandle()==0)
+    if (queryGL->getGLHandle()==0||queryGL->isActive())
         return;
 
     if (currentQuery[query->getQueryObjectType()][index])
@@ -1731,7 +1739,7 @@ void COpenGLDriver::endQuery(IQueryObject* query, const size_t& index)
         return; //error
 
     COpenGLQuery* queryGL = dynamic_cast<COpenGLQuery*>(query);
-    if (queryGL->getGLHandle()==0)
+    if (queryGL->getGLHandle()==0||!queryGL->isActive())
         return;
 
     if (currentQuery[query->getQueryObjectType()][index])
@@ -1753,12 +1761,16 @@ static inline uint8_t* buffer_offset(const long offset)
 
 void COpenGLDriver::drawMeshBuffer(scene::IGPUMeshBuffer* mb, IOcclusionQuery* query)
 {
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
 	if (!mb)
     {
-        if (CurrentVAO)
+        if (found->CurrentVAO)
         {
-            CurrentVAO->drop();
-            CurrentVAO = NULL;
+            found->CurrentVAO->drop();
+            found->CurrentVAO = NULL;
         }
         extGlBindVertexArray(0);
 		return;
@@ -1769,10 +1781,10 @@ void COpenGLDriver::drawMeshBuffer(scene::IGPUMeshBuffer* mb, IOcclusionQuery* q
     COpenGLVAO* meshLayoutVAO = static_cast<COpenGLVAO*>(mb->getMeshDataAndFormat());
 	if (!meshLayoutVAO)
     {
-        if (CurrentVAO)
+        if (found->CurrentVAO)
         {
-            CurrentVAO->drop();
-            CurrentVAO = NULL;
+            found->CurrentVAO->drop();
+            found->CurrentVAO = NULL;
         }
         extGlBindVertexArray(0);
 		return;
@@ -1809,14 +1821,14 @@ void COpenGLDriver::drawMeshBuffer(scene::IGPUMeshBuffer* mb, IOcclusionQuery* q
         return;
     }
 
-    if (CurrentVAO!=meshLayoutVAO)
+    if (found->CurrentVAO!=meshLayoutVAO)
     {
         meshLayoutVAO->grab();
         extGlBindVertexArray(meshLayoutVAO->getOpenGLName());
-        if (CurrentVAO)
-            CurrentVAO->drop();
+        if (found->CurrentVAO)
+            found->CurrentVAO->drop();
 
-        CurrentVAO = meshLayoutVAO;
+        found->CurrentVAO = meshLayoutVAO;
     }
 
 	GLenum indexSize=0;
@@ -1946,6 +1958,10 @@ void COpenGLDriver::drawArraysIndirect(scene::IGPUMeshDataFormatDesc* vao, scene
     if (!indirectDrawBuff)
         return;
 
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
     if (indirectDrawBuff!=currentIndirectDrawBuff)
     {
         indirectDrawBuff->grab();
@@ -1966,10 +1982,10 @@ void COpenGLDriver::drawArraysIndirect(scene::IGPUMeshDataFormatDesc* vao, scene
     COpenGLVAO* meshLayoutVAO = static_cast<COpenGLVAO*>(vao);
 	if (!meshLayoutVAO)
     {
-        if (CurrentVAO)
+        if (found->CurrentVAO)
         {
-            CurrentVAO->drop();
-            CurrentVAO = NULL;
+            found->CurrentVAO->drop();
+            found->CurrentVAO = NULL;
         }
         extGlBindVertexArray(0);
 		return;
@@ -1981,7 +1997,7 @@ void COpenGLDriver::drawArraysIndirect(scene::IGPUMeshDataFormatDesc* vao, scene
     COpenGLOcclusionQuery* queryGL = (static_cast<COpenGLOcclusionQuery*>(query));
 
     bool didConditional = false;
-    if (queryGL&&(queryGL->getGLHandle()!=0))
+    if (queryGL&&(queryGL->getGLHandle()!=0)&&(!queryGL->isActive()))
     {
         extGlBeginConditionalRender(queryGL->getGLHandle(),queryGL->getCondWaitModeGL());
         didConditional = true;
@@ -1995,14 +2011,14 @@ void COpenGLDriver::drawArraysIndirect(scene::IGPUMeshDataFormatDesc* vao, scene
         return;
     }
 
-    if (CurrentVAO!=meshLayoutVAO)
+    if (found->CurrentVAO!=meshLayoutVAO)
     {
         meshLayoutVAO->grab();
         extGlBindVertexArray(meshLayoutVAO->getOpenGLName());
-        if (CurrentVAO)
-            CurrentVAO->drop();
+        if (found->CurrentVAO)
+            found->CurrentVAO->drop();
 
-        CurrentVAO = meshLayoutVAO;
+        found->CurrentVAO = meshLayoutVAO;
     }
 
     GLenum primType = primitiveTypeToGL(mode);
@@ -2044,6 +2060,11 @@ void COpenGLDriver::drawIndexedIndirect(scene::IGPUMeshDataFormatDesc* vao, scen
     if (!indirectDrawBuff)
         return;
 
+
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
     if (indirectDrawBuff!=currentIndirectDrawBuff)
     {
         indirectDrawBuff->grab();
@@ -2064,10 +2085,10 @@ void COpenGLDriver::drawIndexedIndirect(scene::IGPUMeshDataFormatDesc* vao, scen
     COpenGLVAO* meshLayoutVAO = static_cast<COpenGLVAO*>(vao);
 	if (!meshLayoutVAO)
     {
-        if (CurrentVAO)
+        if (found->CurrentVAO)
         {
-            CurrentVAO->drop();
-            CurrentVAO = NULL;
+            found->CurrentVAO->drop();
+            found->CurrentVAO = NULL;
         }
         extGlBindVertexArray(0);
 		return;
@@ -2079,7 +2100,7 @@ void COpenGLDriver::drawIndexedIndirect(scene::IGPUMeshDataFormatDesc* vao, scen
     COpenGLOcclusionQuery* queryGL = (static_cast<COpenGLOcclusionQuery*>(query));
 
     bool didConditional = false;
-    if (queryGL&&(queryGL->getGLHandle()!=0))
+    if (queryGL&&(queryGL->getGLHandle()!=0)&&(!queryGL->isActive()))
     {
         extGlBeginConditionalRender(queryGL->getGLHandle(),queryGL->getCondWaitModeGL());
         didConditional = true;
@@ -2093,14 +2114,14 @@ void COpenGLDriver::drawIndexedIndirect(scene::IGPUMeshDataFormatDesc* vao, scen
         return;
     }
 
-    if (CurrentVAO!=meshLayoutVAO)
+    if (found->CurrentVAO!=meshLayoutVAO)
     {
         meshLayoutVAO->grab();
         extGlBindVertexArray(meshLayoutVAO->getOpenGLName());
-        if (CurrentVAO)
-            CurrentVAO->drop();
+        if (found->CurrentVAO)
+            found->CurrentVAO->drop();
 
-        CurrentVAO = meshLayoutVAO;
+        found->CurrentVAO = meshLayoutVAO;
     }
 
 	GLenum indexSize = type!=EIT_16BIT ? GL_UNSIGNED_INT:GL_UNSIGNED_SHORT;
@@ -2178,7 +2199,7 @@ inline GLint getTextureWrapMode(const uint8_t &clamp)
 }
 
 
-GLuint COpenGLDriver::constructSamplerInCache(const uint64_t &hashVal)
+GLuint COpenGLDriver::SAuxContext::constructSamplerInCache(const uint64_t &hashVal)
 {
     GLuint samplerHandle;
     extGlGenSamplers(1,&samplerHandle);
@@ -2223,9 +2244,9 @@ GLuint COpenGLDriver::constructSamplerInCache(const uint64_t &hashVal)
     return samplerHandle;
 }
 
-bool COpenGLDriver::setActiveTexture(uint32_t stage, video::IVirtualTexture* texture, const video::STextureSamplingParams &sampleParams)
+bool COpenGLDriver::SAuxContext::setActiveTexture(uint32_t stage, video::IVirtualTexture* texture, const video::STextureSamplingParams &sampleParams)
 {
-	if (stage >= MaxTextureUnits)
+	if (stage >= COpenGLExtensionHandler::MaxTextureUnits)
 		return false;
 
 
@@ -2297,7 +2318,7 @@ bool COpenGLDriver::setActiveTexture(uint32_t stage, video::IVirtualTexture* tex
 }
 
 
-void COpenGLDriver::STextureStageCache::remove(const IVirtualTexture* tex)
+void COpenGLDriver::SAuxContext::STextureStageCache::remove(const IVirtualTexture* tex)
 {
     for (int32_t i = MATERIAL_MAX_TEXTURES-1; i>= 0; --i)
     {
@@ -2311,7 +2332,7 @@ void COpenGLDriver::STextureStageCache::remove(const IVirtualTexture* tex)
     }
 }
 
-void COpenGLDriver::STextureStageCache::clear()
+void COpenGLDriver::SAuxContext::STextureStageCache::clear()
 {
     // Drop all the CurrentTexture handles
     for (uint32_t i=0; i<MATERIAL_MAX_TEXTURES; ++i)
@@ -2337,16 +2358,15 @@ bool orderByMip(CImageData* a, CImageData* b)
 video::ITexture* COpenGLDriver::createDeviceDependentTexture(const ITexture::E_TEXTURE_TYPE& type, const uint32_t* size, uint32_t mipmapLevels,
 			const io::path& name, ECOLOR_FORMAT format)
 {
+#ifdef _DEBUG
     //if the max coords are not 0, then there is something seriously wrong
     switch (type)
     {
         case ITexture::ETT_1D:
-        case ITexture::ETT_TEXTURE_BUFFER:
             assert(size[0]>0);
             break;
         case ITexture::ETT_2D:
         case ITexture::ETT_1D_ARRAY:
-        case ITexture::ETT_2D_MULTISAMPLE:
             assert(size[0]>0&&size[1]>0);
             break;
         case ITexture::ETT_CUBE_MAP:
@@ -2359,7 +2379,7 @@ video::ITexture* COpenGLDriver::createDeviceDependentTexture(const ITexture::E_T
             assert(size[0]>0&&size[1]>0&&size[2]>0);
             break;
     }
-
+#endif // _DEBUG
     //do the texture creation flag mumbo jumbo of death.
     if (mipmapLevels==0)
     {
@@ -2384,9 +2404,7 @@ video::ITexture* COpenGLDriver::createDeviceDependentTexture(const ITexture::E_T
                     if (maxSideLen < size[2])
                         maxSideLen = size[2];
                     break;
-                case ITexture::ETT_2D_MULTISAMPLE:
-                case ITexture::ETT_2D_MULTISAMPLE_ARRAY:
-                case ITexture::ETT_TEXTURE_BUFFER:
+                default:
                     maxSideLen = 1;
                     break;
             }
@@ -2414,11 +2432,9 @@ video::ITexture* COpenGLDriver::createDeviceDependentTexture(const ITexture::E_T
         case ITexture::ETT_CUBE_MAP:
             return new COpenGLCubemapTexture(COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(format),size,mipmapLevels,name);
             break;
-#ifdef _DEBUG
-        case ITexture::ETT_TEXTURE_BUFFER:
-            os::Printer::log("Use IVideoDriver::addTextureBufferObject() instead.", ELL_ERROR);
-            break;
-#endif
+        ///case ITexture::ETT_CUBE_MAP_ARRAY:
+            ///return new COpenGLCubemapArrayTexture(COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(format),size,mipmapLevels,name);
+            ///break;
         default:// ETT_CUBE_MAP, ETT_CUBE_MAP_ARRAY, ETT_TEXTURE_BUFFER
             break;
     }
@@ -2430,12 +2446,17 @@ video::ITexture* COpenGLDriver::createDeviceDependentTexture(const ITexture::E_T
 //! Sets a material. All 3d drawing functions draw geometry now using this material.
 void COpenGLDriver::setMaterial(const SMaterial& material)
 {
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
 	Material = material;
 	OverrideMaterial.apply(Material);
 
 	for (int32_t i = MaxTextureUnits-1; i>= 0; --i)
 	{
-		setActiveTexture(i, material.getTexture(i), material.TextureLayer[i].SamplingParams);
+		found->setActiveTexture(i, material.getTexture(i), material.TextureLayer[i].SamplingParams);
 	}
 }
 
@@ -2477,6 +2498,10 @@ bool COpenGLDriver::testGLError()
 //! sets the needed renderstates
 void COpenGLDriver::setRenderStates3DMode()
 {
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
 	if (CurrentRenderMode != ERM_3D)
 	{
 		// Reset Texture Stages
@@ -2499,15 +2524,15 @@ void COpenGLDriver::setRenderStates3DMode()
 			MaterialRenderers[Material.MaterialType].Renderer->OnSetMaterial(
 				Material, LastMaterial, ResetRenderStates, this);
 
-		if (CurrentXFormFeedback&&XFormFeedbackRunning)
+		if (found->CurrentXFormFeedback&&found->XFormFeedbackRunning)
         {
-            if (Material.MaterialType==CurrentXFormFeedback->getMaterialType())
+            if (Material.MaterialType==found->CurrentXFormFeedback->getMaterialType())
             {
-                if (!CurrentXFormFeedback->isActive())
-                    CurrentXFormFeedback->beginResumeFeedback();
+                if (!found->CurrentXFormFeedback->isActive())
+                    found->CurrentXFormFeedback->beginResumeFeedback();
             }
-            else if (CurrentXFormFeedback->isActive()) //Material Type not equal to intial
-                CurrentXFormFeedback->pauseFeedback();
+            else if (found->CurrentXFormFeedback->isActive()) //Material Type not equal to intial
+                found->CurrentXFormFeedback->pauseFeedback();
         }
 
 		LastMaterial = Material;
@@ -2623,8 +2648,7 @@ void COpenGLDriver::setBasicRenderStates(const SMaterial& material, const SMater
 			(material.ColorMask & ECP_ALPHA)?GL_TRUE:GL_FALSE);
 	}
 
-	if (queryFeature(EVDF_BLEND_OPERATIONS) &&
-		(resetAllRenderStates|| lastmaterial.BlendOperation != material.BlendOperation))
+	if (resetAllRenderStates|| lastmaterial.BlendOperation != material.BlendOperation)
 	{
 		if (material.BlendOperation==EBO_NONE)
 			glDisable(GL_BLEND);
@@ -2752,8 +2776,8 @@ ITexture* COpenGLDriver::addTexture(const ITexture::E_TEXTURE_TYPE& type, const 
     #endif // _DEBUG
             return NULL;
         }
-        else
-            candidateFormat = candidateFormat;
+        //else
+            //candidateFormat = candidateFormat;
     }
 
     //! Sort the mipchain!!!
@@ -2791,9 +2815,9 @@ ITexture* COpenGLDriver::addTexture(const ITexture::E_TEXTURE_TYPE& type, const 
     {
         CImageData* img = *it;
         if (img->getSliceMax()[0]>getMaxTextureSize(actualType)[0]||
-            (actualType==ITexture::ETT_2D||actualType==ITexture::ETT_1D_ARRAY||actualType==ITexture::ETT_CUBE_MAP||actualType==ITexture::ETT_2D_MULTISAMPLE)
+            (actualType==ITexture::ETT_2D||actualType==ITexture::ETT_1D_ARRAY||actualType==ITexture::ETT_CUBE_MAP)
                 &&img->getSliceMax()[1]>getMaxTextureSize(actualType)[1]||
-            (actualType==ITexture::ETT_3D||actualType==ITexture::ETT_2D_ARRAY||actualType==ITexture::ETT_CUBE_MAP_ARRAY||actualType==ITexture::ETT_2D_MULTISAMPLE_ARRAY)
+            (actualType==ITexture::ETT_3D||actualType==ITexture::ETT_2D_ARRAY||actualType==ITexture::ETT_CUBE_MAP_ARRAY)
                 &&img->getSliceMax()[2]>getMaxTextureSize(actualType)[2])
         {
 #ifdef _DEBUG
@@ -2824,6 +2848,32 @@ ITexture* COpenGLDriver::addTexture(const ITexture::E_TEXTURE_TYPE& type, const 
     return texture;
 }
 
+IMultisampleTexture* COpenGLDriver::addMultisampleTexture(const IMultisampleTexture::E_MULTISAMPLE_TEXTURE_TYPE& type, const uint32_t& samples, const uint32_t* size, ECOLOR_FORMAT format, const bool& fixedSampleLocations)
+{
+    //check to implement later on renderbuffer creation and attachment of textures to FBO
+    //if (!isFormatRenderable(glTex->getOpenGLInternalFormat()))
+        //return NULL;
+
+	IMultisampleTexture* tex;
+	switch (type)
+	{
+        case IMultisampleTexture::EMTT_2D:
+            tex = new COpenGLMultisampleTexture(COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(format),samples,size,fixedSampleLocations);
+            break;
+        case IMultisampleTexture::EMTT_2D_ARRAY:
+            tex = new COpenGLMultisampleTextureArray(COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(format),samples,size,fixedSampleLocations);
+            break;
+        default:
+            tex = NULL;
+            break;
+	}
+
+	if (tex)
+        CNullDriver::addMultisampleTexture(tex);
+
+	return tex;
+}
+
 ITextureBufferObject* COpenGLDriver::addTextureBufferObject(IGPUBuffer* buf, const ITextureBufferObject::E_TEXURE_BUFFER_OBJECT_FORMAT& format, const size_t& offset, const size_t& length)
 {
     COpenGLBuffer* buffer = dynamic_cast<COpenGLBuffer*>(buf);
@@ -2851,9 +2901,44 @@ IRenderBuffer* COpenGLDriver::addMultisampleRenderBuffer(const uint32_t& samples
 
 IFrameBuffer* COpenGLDriver::addFrameBuffer()
 {
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return NULL;
+
 	IFrameBuffer* fbo = new COpenGLFrameBuffer(this);
-	CNullDriver::addFrameBuffer(fbo);
+    found->FrameBuffers.push_back(fbo);
+    found->FrameBuffers.sort();
 	return fbo;
+}
+
+void COpenGLDriver::removeFrameBuffer(IFrameBuffer* framebuf)
+{
+    if (!framebuf)
+        return;
+
+    _IRR_CHECK_OWNING_THREAD(framebuf,return;);
+
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+    int32_t ix = found->FrameBuffers.binary_search(framebuf);
+    if (ix<0)
+        return;
+    found->FrameBuffers.erase(ix);
+
+    framebuf->drop();
+}
+
+void COpenGLDriver::removeAllFrameBuffers()
+{
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+	for (uint32_t i=0; i<found->FrameBuffers.size(); ++i)
+		found->FrameBuffers[i]->drop();
+    found->FrameBuffers.clear();
 }
 
 
@@ -2865,7 +2950,11 @@ void COpenGLDriver::removeTexture(ITexture* texture)
 
 	CNullDriver::removeTexture(texture);
 	// Remove this texture from CurrentTexture as well
-	CurrentTexture.remove(texture);
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+	found->CurrentTexture.remove(texture);
 }
 
 //! Only used by the internal engine. Used to notify the driver that
@@ -2945,9 +3034,10 @@ IVideoDriver* COpenGLDriver::getVideoDriver()
 
 
 
-void COpenGLDriver::blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out, bool copyDepth,
-									core::recti srcRect, core::recti dstRect,
-									bool bilinearFilter)
+void COpenGLDriver::blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out,
+                                        bool copyDepth, bool copyStencil,
+                                        core::recti srcRect, core::recti dstRect,
+                                        bool bilinearFilter)
 {
 	GLuint inFBOHandle = 0;
 	GLuint outFBOHandle = 0;
@@ -3023,7 +3113,7 @@ void COpenGLDriver::blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out, bool 
         else
             dstRect = core::recti(0,0,ScreenSize.Width,ScreenSize.Height);
 	}
-	if (srcRect==dstRect||copyDepth)
+	if (srcRect==dstRect||copyDepth||copyStencil) //and some checks for multisample
 		bilinearFilter = false;
 
     setViewPort(dstRect);
@@ -3036,7 +3126,7 @@ void COpenGLDriver::blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out, bool 
     extGlBlitNamedFramebuffer(inFBOHandle,outFBOHandle,
                         srcRect.UpperLeftCorner.X,srcRect.UpperLeftCorner.Y,srcRect.LowerRightCorner.X,srcRect.LowerRightCorner.Y,
                         dstRect.UpperLeftCorner.X,dstRect.UpperLeftCorner.Y,dstRect.LowerRightCorner.X,dstRect.LowerRightCorner.Y,
-						GL_COLOR_BUFFER_BIT|(copyDepth ? GL_DEPTH_BUFFER_BIT:0),
+						GL_COLOR_BUFFER_BIT|(copyDepth ? GL_DEPTH_BUFFER_BIT:0)|(copyStencil ? GL_STENCIL_BUFFER_BIT:0),
 						bilinearFilter ? GL_LINEAR:GL_NEAREST);
 }
 
@@ -3055,22 +3145,28 @@ uint32_t COpenGLDriver::getMaximalIndicesCount() const
 //! Sets multiple render targets
 bool COpenGLDriver::setRenderTarget(IFrameBuffer* frameBuffer, bool setNewViewport)
 {
-    if (frameBuffer==CurrentFBO)
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return false;
+
+    if (frameBuffer==found->CurrentFBO)
         return true;
 
     if (!frameBuffer)
     {
-        CurrentRendertargetSize = ScreenSize;
+        found->CurrentRendertargetSize = ScreenSize;
         extGlBindFramebuffer(GL_FRAMEBUFFER, 0);
-        if (CurrentFBO)
-            CurrentFBO->drop();
-        CurrentFBO = NULL;
+        if (found->CurrentFBO)
+            found->CurrentFBO->drop();
+        found->CurrentFBO = NULL;
 
         if (setNewViewport)
             setViewPort(core::recti(0,0,ScreenSize.Width,ScreenSize.Height));
 
         return true;
     }
+
+    _IRR_CHECK_OWNING_THREAD(frameBuffer,return false;);
 
     if (!frameBuffer->rebindRevalidate())
     {
@@ -3098,12 +3194,13 @@ bool COpenGLDriver::setRenderTarget(IFrameBuffer* frameBuffer, bool setNewViewpo
         }
     }
 
+    //! Get rid of this! OpenGL 4.3 is here!
     if (firstAttached)
     {
         os::Printer::log("FBO has no attachments! (We don't support that OpenGL 4.3 feature yet!).", ELL_ERROR);
         return false;
     }
-    CurrentRendertargetSize = newRTTSize;
+    found->CurrentRendertargetSize = newRTTSize;
 
 
     extGlBindFramebuffer(GL_FRAMEBUFFER, static_cast<COpenGLFrameBuffer*>(frameBuffer)->getOpenGLName());
@@ -3112,9 +3209,9 @@ bool COpenGLDriver::setRenderTarget(IFrameBuffer* frameBuffer, bool setNewViewpo
 
 
     frameBuffer->grab();
-    if (CurrentFBO)
-        CurrentFBO->drop();
-    CurrentFBO = static_cast<COpenGLFrameBuffer*>(frameBuffer);
+    if (found->CurrentFBO)
+        found->CurrentFBO->drop();
+    found->CurrentFBO = static_cast<COpenGLFrameBuffer*>(frameBuffer);
     ResetRenderStates=true; //! OPTIMIZE: Needed?
 
 
@@ -3125,68 +3222,99 @@ bool COpenGLDriver::setRenderTarget(IFrameBuffer* frameBuffer, bool setNewViewpo
 // returns the current size of the screen or rendertarget
 const core::dimension2d<uint32_t>& COpenGLDriver::getCurrentRenderTargetSize() const
 {
-	if (CurrentRendertargetSize.Width == 0)
+    const SAuxContext* found = getThreadContext();
+	if (!found || found->CurrentRendertargetSize.Width == 0)
 		return ScreenSize;
 	else
-		return CurrentRendertargetSize;
+		return found->CurrentRendertargetSize;
 }
 
 
 //! Clears the ZBuffer.
 void COpenGLDriver::clearZBuffer(const float &depth)
 {
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
     glDepthMask(GL_TRUE);
     LastMaterial.ZWriteEnable=true;
 
-    if (CurrentFBO)
-        extGlClearNamedFramebufferfv(CurrentFBO->getOpenGLName(),GL_DEPTH,0,&depth);
+    if (found->CurrentFBO)
+        extGlClearNamedFramebufferfv(found->CurrentFBO->getOpenGLName(),GL_DEPTH,0,&depth);
     else
         extGlClearNamedFramebufferfv(0,GL_DEPTH,0,&depth);
 }
 
 void COpenGLDriver::clearStencilBuffer(const int32_t &stencil)
 {
-    if (CurrentFBO)
-        extGlClearNamedFramebufferiv(CurrentFBO->getOpenGLName(),GL_STENCIL,0,&stencil);
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
+    if (found->CurrentFBO)
+        extGlClearNamedFramebufferiv(found->CurrentFBO->getOpenGLName(),GL_STENCIL,0,&stencil);
     else
         extGlClearNamedFramebufferiv(0,GL_STENCIL,0,&stencil);
 }
 
 void COpenGLDriver::clearZStencilBuffers(const float &depth, const int32_t &stencil)
 {
-    if (CurrentFBO)
-        extGlClearNamedFramebufferfi(CurrentFBO->getOpenGLName(),GL_DEPTH_STENCIL,depth,stencil);
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
+    if (found->CurrentFBO)
+        extGlClearNamedFramebufferfi(found->CurrentFBO->getOpenGLName(),GL_DEPTH_STENCIL,0,depth,stencil);
     else
-        extGlClearNamedFramebufferfi(0,GL_DEPTH_STENCIL,depth,stencil);
+        extGlClearNamedFramebufferfi(0,GL_DEPTH_STENCIL,0,depth,stencil);
 }
 
 void COpenGLDriver::clearColorBuffer(const E_FBO_ATTACHMENT_POINT &attachment, const int32_t* vals)
 {
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
     if (attachment<EFAP_COLOR_ATTACHMENT0)
         return;
 
-    if (CurrentFBO)
-        extGlClearNamedFramebufferiv(CurrentFBO->getOpenGLName(),GL_COLOR,attachment-EFAP_COLOR_ATTACHMENT0,vals);
+    if (found->CurrentFBO)
+        extGlClearNamedFramebufferiv(found->CurrentFBO->getOpenGLName(),GL_COLOR,attachment-EFAP_COLOR_ATTACHMENT0,vals);
     else
         extGlClearNamedFramebufferiv(0,GL_COLOR,attachment-EFAP_COLOR_ATTACHMENT0,vals);
 }
 void COpenGLDriver::clearColorBuffer(const E_FBO_ATTACHMENT_POINT &attachment, const uint32_t* vals)
 {
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
     if (attachment<EFAP_COLOR_ATTACHMENT0)
         return;
 
-    if (CurrentFBO)
-        extGlClearNamedFramebufferuiv(CurrentFBO->getOpenGLName(),GL_COLOR,attachment-EFAP_COLOR_ATTACHMENT0,vals);
+    if (found->CurrentFBO)
+        extGlClearNamedFramebufferuiv(found->CurrentFBO->getOpenGLName(),GL_COLOR,attachment-EFAP_COLOR_ATTACHMENT0,vals);
     else
         extGlClearNamedFramebufferuiv(0,GL_COLOR,attachment-EFAP_COLOR_ATTACHMENT0,vals);
 }
 void COpenGLDriver::clearColorBuffer(const E_FBO_ATTACHMENT_POINT &attachment, const float* vals)
 {
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
     if (attachment<EFAP_COLOR_ATTACHMENT0)
         return;
 
-    if (CurrentFBO)
-        extGlClearNamedFramebufferfv(CurrentFBO->getOpenGLName(),GL_COLOR,attachment-EFAP_COLOR_ATTACHMENT0,vals);
+    if (found->CurrentFBO)
+        extGlClearNamedFramebufferfv(found->CurrentFBO->getOpenGLName(),GL_COLOR,attachment-EFAP_COLOR_ATTACHMENT0,vals);
     else
         extGlClearNamedFramebufferfv(0,GL_COLOR,attachment-EFAP_COLOR_ATTACHMENT0,vals);
 }
@@ -3237,105 +3365,144 @@ ITransformFeedback* COpenGLDriver::createTransformFeedback()
 
 void COpenGLDriver::bindTransformFeedback(ITransformFeedback* xformFeedback)
 {
-    if (CurrentXFormFeedback==xformFeedback)
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
         return;
 
-    if (CurrentXFormFeedback)
+    bindTransformFeedback(xformFeedback,found);
+}
+
+void COpenGLDriver::bindTransformFeedback(ITransformFeedback* xformFeedback, SAuxContext* toContext)
+{
+    if (xformFeedback)
     {
-#ifdef _DEBUG
-        if (!CurrentXFormFeedback->isEnded())
-            os::Printer::log("FIDDLING WITH XFORM FEEDBACK BINDINGS WHILE BOUND XFORMFEEDBACK HASN't ENDED!\n",ELL_ERROR);
-#endif // _DEBUG
-        CurrentXFormFeedback->drop();
+        _IRR_CHECK_OWNING_THREAD(xformFeedback,return;);
     }
 
-    CurrentXFormFeedback = static_cast<COpenGLTransformFeedback*>(xformFeedback);
+    if (toContext->CurrentXFormFeedback==xformFeedback)
+        return;
 
-    if (!CurrentXFormFeedback)
+    if (toContext->CurrentXFormFeedback)
+    {
+#ifdef _DEBUG
+        if (!toContext->CurrentXFormFeedback->isEnded())
+            os::Printer::log("FIDDLING WITH XFORM FEEDBACK BINDINGS WHILE BOUND XFORMFEEDBACK HASN't ENDED!\n",ELL_ERROR);
+#endif // _DEBUG
+        toContext->CurrentXFormFeedback->drop();
+    }
+
+    toContext->CurrentXFormFeedback = static_cast<COpenGLTransformFeedback*>(xformFeedback);
+
+    if (!toContext->CurrentXFormFeedback)
     {
 	    extGlBindTransformFeedback(GL_TRANSFORM_FEEDBACK,0);
-		CurrentXFormFeedback = NULL;
+		toContext->CurrentXFormFeedback = NULL;
 	}
     else
     {
 #ifdef _DEBUG
-        if (!CurrentXFormFeedback->isEnded())
+        if (!toContext->CurrentXFormFeedback->isEnded())
             os::Printer::log("WHY IS A NOT PREVIOUSLY BOUND XFORM FEEDBACK STARTED!?\n",ELL_ERROR);
 #endif // _DEBUG
-        CurrentXFormFeedback->grab();
-        extGlBindTransformFeedback(GL_TRANSFORM_FEEDBACK,CurrentXFormFeedback->getOpenGLHandle());
+        toContext->CurrentXFormFeedback->grab();
+        extGlBindTransformFeedback(GL_TRANSFORM_FEEDBACK,toContext->CurrentXFormFeedback->getOpenGLHandle());
     }
 }
 
 void COpenGLDriver::beginTransformFeedback(ITransformFeedback* xformFeedback, const E_MATERIAL_TYPE& xformFeedbackShader, const scene::E_PRIMITIVE_TYPE& primType)
 {
+    if (xformFeedback)
+    {
+        _IRR_CHECK_OWNING_THREAD(xformFeedback,return;);
+    }
+
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
     //grabs a ref
-    bindTransformFeedback(xformFeedback);
+    bindTransformFeedback(xformFeedback,found);
     if (!xformFeedback)
     {
-        XFormFeedbackRunning = false;
+        found->XFormFeedbackRunning = false;
         return;
     }
 
 	switch (primType)
 	{
 		case scene::EPT_POINTS:
-            CurrentXFormFeedback->setPrimitiveType(GL_POINTS);
+            found->CurrentXFormFeedback->setPrimitiveType(GL_POINTS);
             break;
 		case scene::EPT_LINE_STRIP:
 		case scene::EPT_LINE_LOOP:
 			os::Printer::log("Not using PROPER TRANSFORM FEEDBACK primitive type (only EPT_POINTS, EPT_LINES and EPT_TRIANGLES allowed!)!\n",ELL_ERROR);
 		case scene::EPT_LINES:
-            CurrentXFormFeedback->setPrimitiveType(GL_LINES);
+            found->CurrentXFormFeedback->setPrimitiveType(GL_LINES);
             break;
 		case scene::EPT_TRIANGLE_STRIP:
 		case scene::EPT_TRIANGLE_FAN:
 			os::Printer::log("Not using PROPER TRANSFORM FEEDBACK primitive type (only EPT_POINTS, EPT_LINES and EPT_TRIANGLES allowed!)!\n",ELL_ERROR);
 		case scene::EPT_TRIANGLES:
-            CurrentXFormFeedback->setPrimitiveType(GL_TRIANGLES);
+            found->CurrentXFormFeedback->setPrimitiveType(GL_TRIANGLES);
             break;
 	}
-	CurrentXFormFeedback->setMaterialType(xformFeedbackShader);
+	found->CurrentXFormFeedback->setMaterialType(xformFeedbackShader);
 
-	XFormFeedbackRunning = true;
+	found->XFormFeedbackRunning = true;
 
 	if (Material.MaterialType==xformFeedbackShader)
 	{
         if (LastMaterial.MaterialType!=xformFeedbackShader)
             setRenderStates3DMode();
 
-		if (!CurrentXFormFeedback->isActive())
-			CurrentXFormFeedback->beginResumeFeedback();
+		if (!found->CurrentXFormFeedback->isActive())
+			found->CurrentXFormFeedback->beginResumeFeedback();
 	}
 }
 
 void COpenGLDriver::pauseTransformFeedback()
 {
-	XFormFeedbackRunning = false;
-    CurrentXFormFeedback->pauseFeedback();
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
+	found->XFormFeedbackRunning = false;
+    found->CurrentXFormFeedback->pauseFeedback();
 }
 
 void COpenGLDriver::resumeTransformFeedback()
 {
-	XFormFeedbackRunning = true;
-    CurrentXFormFeedback->beginResumeFeedback();
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
+	found->XFormFeedbackRunning = true;
+    found->CurrentXFormFeedback->beginResumeFeedback();
 }
 
 void COpenGLDriver::endTransformFeedback()
 {
-    if (!CurrentXFormFeedback)
+    SAuxContext* found = getThreadContext_helper(false);
+    if (!found)
+        return;
+
+
+    if (!found->CurrentXFormFeedback)
     {
         os::Printer::log("No Transform Feedback Object bound, possible redundant glEndTransform...!\n",ELL_ERROR);
         return;
     }
 #ifdef _DEBUG
-    if (!CurrentXFormFeedback->isActive())
+    if (!found->CurrentXFormFeedback->isActive())
         os::Printer::log("Ending an already paused transform feedback, the pause call is redundant!\n",ELL_ERROR);
 #endif // _DEBUG
-    CurrentXFormFeedback->endFeedback();
-	XFormFeedbackRunning = false;
+    found->CurrentXFormFeedback->endFeedback();
+	found->XFormFeedbackRunning = false;
     ///In the interest of binding speed we wont release the CurrentXFormFeedback
-    //bindTransformFeedback(NULL);
+    //bindTransformFeedback(NULL,found);
 }
 
 

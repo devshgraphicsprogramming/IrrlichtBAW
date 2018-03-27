@@ -452,12 +452,12 @@ namespace scene
 						texture = driver->getTexture(texName);
 					else if (FileSystem->existFile(surface->getTextureName()))
 						texture = driver->getTexture(surface->getTextureName());
-					else if (FileSystem->existFile(FileSystem->getFileBasename(surface->getTextureName())))
-						texture = driver->getTexture(FileSystem->getFileBasename(surface->getTextureName()));
-					else if (FileSystem->existFile(FileSystem->getFileDir(lmprefix)+"/"+surface->getTextureName()))
-						texture = driver->getTexture(FileSystem->getFileDir(lmprefix)+"/"+surface->getTextureName());
+					else if (FileSystem->existFile(IFileSystem::getFileBasename(surface->getTextureName())))
+						texture = driver->getTexture(io::IFileSystem::getFileBasename(surface->getTextureName()));
+					else if (FileSystem->existFile(io::IFileSystem::getFileDir(lmprefix)+"/"+surface->getTextureName()))
+						texture = driver->getTexture(io::IFileSystem::getFileDir(lmprefix)+"/"+surface->getTextureName());
 					else
-						texture = driver->getTexture(FileSystem->getFileDir(lmprefix)+"/"+FileSystem->getFileBasename(surface->getTextureName()));
+						texture = driver->getTexture(io::IFileSystem::getFileDir(lmprefix)+"/"+io::IFileSystem::getFileBasename(surface->getTextureName()));
 				}
 
 				//material
@@ -607,7 +607,7 @@ namespace scene
 	{
 		flags = pReader->readLong();
 		pReader->readString(textureName);
-		textureName.replace('\\', '/');
+		handleBackslashes(&textureName);
 
 		lightMapId = pReader->readLong();
 		pReader->readVec2f(&uvOffset);
@@ -819,9 +819,7 @@ namespace scene
 	{
 		int ret = 0;
 		readBuffer(&ret,sizeof(int));
-#ifdef __BIG_ENDIAN__
-		ret = os::Byteswap::byteswap(ret);
-#endif
+
 		return ret;
 	}
 
@@ -829,9 +827,7 @@ namespace scene
 	{
 		float ret = 0;
 		readBuffer(&ret,sizeof(float));
-#ifdef __BIG_ENDIAN__
-		ret = os::Byteswap::byteswap(ret);
-#endif
+
 		return ret;
 	}
 

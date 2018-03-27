@@ -84,6 +84,10 @@
 #include "CSMFMeshFileLoader.h"
 #endif
 
+#ifdef _IRR_COMPILE_WITH_BAW_LOADER_
+#include "CBAWMeshFileLoader.h"
+#endif
+
 #ifdef _IRR_COMPILE_WITH_COLLADA_WRITER_
 #include "CColladaMeshWriter.h"
 #endif
@@ -98,6 +102,10 @@
 
 #ifdef _IRR_COMPILE_WITH_PLY_WRITER_
 #include "CPLYMeshWriter.h"
+#endif
+
+#ifdef _IRR_COMPILE_WITH_BAW_WRITER_
+#include"CBAWMeshWriter.h"
 #endif
 
 #include "CBillboardSceneNode.h"
@@ -333,7 +341,9 @@ CSceneManager::CSceneManager(video::IVideoDriver* driver, io::IFileSystem* fs,
 	#ifdef _IRR_COMPILE_WITH_B3D_LOADER_
 	MeshLoaderList.push_back(new CB3DMeshFileLoader(this));
 	#endif
-
+	#ifdef _IRR_COMPILE_WITH_BAW_LOADER_
+	MeshLoaderList.push_back(new CBAWMeshFileLoader(this, FileSystem));
+	#endif
 
 	// factories
 	ISceneNodeFactory* factory = new CDefaultSceneNodeFactory(this);
@@ -1563,6 +1573,13 @@ IMeshWriter* CSceneManager::createMeshWriter(EMESH_WRITER_TYPE type)
 	case EMWT_PLY:
 #ifdef _IRR_COMPILE_WITH_PLY_WRITER_
 		return new CPLYMeshWriter();
+#else
+		return 0;
+#endif
+
+	case EMWT_BAW:
+#ifdef _IRR_COMPILE_WITH_BAW_WRITER_
+		return new CBAWMeshWriter(FileSystem);
 #else
 		return 0;
 #endif

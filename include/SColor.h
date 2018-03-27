@@ -34,6 +34,9 @@ namespace video
 
 		/** Floating Point formats. The following formats may only be used for render target textures. */
 
+		//!
+		ECF_R11G11B10F,
+
 		//! 16 bit floating point format using 16 bits for the red channel.
 		ECF_R16F,
 
@@ -82,6 +85,7 @@ namespace video
         ECF_DEPTH32F,
         ECF_DEPTH24_STENCIL8,
         ECF_DEPTH32F_STENCIL8,
+        ECF_STENCIL8,
 
 
 		//! Unknown color format:
@@ -101,6 +105,8 @@ namespace video
 			return 24;
 		case ECF_A8R8G8B8:
 			return 32;
+        case ECF_R11G11B10F:
+            return 32;
 		case ECF_R16F:
 			return 16;
 		case ECF_G16R16F:
@@ -154,11 +160,34 @@ namespace video
             return 32;
         case ECF_DEPTH32F_STENCIL8:
             return 40;
+        case ECF_STENCIL8:
+            return 8;
 		default:
 			return 0;
 		}
 	}
 
+	//! get
+	static uint32_t getCompressedFormatBlockSize(const ECOLOR_FORMAT format)
+	{
+		switch(format)
+		{
+            case ECF_RGB_BC1:
+            case ECF_RGBA_BC1:
+            case ECF_RGBA_BC2:
+            case ECF_RGBA_BC3:
+            case ECF_R_BC4:
+            case ECF_RG_BC5:
+                return 4;
+            default:
+                return 1;
+		}
+	}
+
+	static bool isFormatCompressed(const ECOLOR_FORMAT format)
+	{
+	    return getCompressedFormatBlockSize(format)!=1;
+	}
 
 	//! Creates a 16 bit A1R5G5B5 color
 	inline uint16_t RGBA16(uint32_t r, uint32_t g, uint32_t b, uint32_t a=0xFF)

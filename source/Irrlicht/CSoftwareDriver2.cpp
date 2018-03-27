@@ -513,17 +513,7 @@ void CBurningVideoDriver::setCurrentShader()
 //! queries the features of the driver, returns true if feature is available
 bool CBurningVideoDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 {
-	if (!FeatureEnabled[feature])
-		return false;
-
-	switch (feature)
-	{
-	case EVDF_STENCIL_BUFFER:
-		return true;
-
-	default:
-		return false;
-	}
+	return false;
 }
 
 
@@ -1988,7 +1978,7 @@ ITexture* CBurningVideoDriver::addTexture(const ITexture::E_TEXTURE_TYPE& type, 
         format = BURNINGSHADER_COLOR_FORMAT;
 
     //better safe than sorry
-    if (type!=ITexture::ETT_2D)
+    if (type!=ITexture::ETT_2D&&type!=ITexture::ETT_COUNT)
         return NULL;
     if (format!=BURNINGSHADER_COLOR_FORMAT)
         return NULL;

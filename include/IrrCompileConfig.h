@@ -429,6 +429,10 @@ tool <http://developer.nvidia.com/object/nvperfhud_home.html>. */
 #ifdef NO_IRR_COMPILE_WITH_STL_LOADER_
 #undef _IRR_COMPILE_WITH_STL_LOADER_
 #endif
+#define _IRR_COMPILE_WITH_BAW_LOADER_
+#ifdef NO_IRR_COMPILE_WITH_BAW_LOADER_
+#undef _IRR_COMPILE_WITH_BAW_LOADER_
+#endif
 //! Define _IRR_COMPILE_WITH_PLY_LOADER_ if you want to load Polygon (Stanford Triangle) files
 #ifndef NEW_MESHES
 #define _IRR_COMPILE_WITH_PLY_LOADER_
@@ -446,6 +450,11 @@ tool <http://developer.nvidia.com/object/nvperfhud_home.html>. */
 #define _IRR_COMPILE_WITH_STL_WRITER_
 #ifdef NO_IRR_COMPILE_WITH_STL_WRITER_
 #undef _IRR_COMPILE_WITH_STL_WRITER_
+#endif
+//! Define _IRR_COMPILE_WITH_BAW_WRITER_ if you want to write .baw files
+#define _IRR_COMPILE_WITH_BAW_WRITER_
+#ifdef NO_IRR_COMPILE_WITH_BAW_WRITER_
+#undef _IRR_COMPILE_WITH_BAW_WRITER_
 #endif
 #ifndef NEW_MESHES
 //! Define _IRR_COMPILE_WITH_OBJ_WRITER_ if you want to write .obj files
@@ -696,36 +705,9 @@ precision will be lower but speed higher. currently X86 only
 	#undef _IRR_WCHAR_FILESYSTEM
 #endif
 
-#if defined(__sparc__) || defined(__sun__)
-#define __BIG_ENDIAN__
-#endif
 
 #if defined(_IRR_SOLARIS_PLATFORM_)
 	#undef _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
-#endif
-
-//! Define __IRR_HAS_S64 if the irr::int64_t type should be enable (needs long long, available on most platforms, but not part of ISO C++ 98)
-#define __IRR_HAS_S64
-#ifdef NO__IRR_HAS_S64
-#undef __IRR_HAS_S64
-#endif
-
-#if defined(__BORLANDC__)
-	#include <tchar.h>
-
-	// Borland 5.5.1 does not have _strcmpi defined
-	#if __BORLANDC__ == 0x551
-	//    #define _strcmpi strcmpi
-		#undef _tfinddata_t
-		#undef _tfindfirst
-		#undef _tfindnext
-
-		#define _tfinddata_t __tfinddata_t
-		#define _tfindfirst  __tfindfirst
-		#define _tfindnext   __tfindnext
-		typedef long intptr_t;
-	#endif
-
 #endif
 
 #ifdef _DEBUG
@@ -741,6 +723,22 @@ precision will be lower but speed higher. currently X86 only
 		#undef _IRR_SCENEMANAGER_DEBUG
 	#endif
 #endif
+
+//! @see @ref CBlobsLoadingManager
+#define _IRR_ADD_BLOB_SUPPORT(BlobClassName, EnumValue, Function, ...) \
+case core::Blob::EnumValue:\
+	return core::BlobClassName::Function(__VA_ARGS__);
+
+//! Used inside CBlobsLoadingManager. Adds support of given blob types.
+#define _IRR_SUPPORTED_BLOBS(Function, ...) \
+_IRR_ADD_BLOB_SUPPORT(RawBufferBlobV0, EBT_RAW_DATA_BUFFER, Function, __VA_ARGS__)\
+_IRR_ADD_BLOB_SUPPORT(TexturePathBlobV0, EBT_TEXTURE_PATH, Function, __VA_ARGS__)\
+_IRR_ADD_BLOB_SUPPORT(MeshBlobV0, EBT_MESH, Function, __VA_ARGS__)\
+_IRR_ADD_BLOB_SUPPORT(SkinnedMeshBlobV0, EBT_SKINNED_MESH, Function, __VA_ARGS__)\
+_IRR_ADD_BLOB_SUPPORT(MeshBufferBlobV0, EBT_MESH_BUFFER, Function, __VA_ARGS__)\
+_IRR_ADD_BLOB_SUPPORT(SkinnedMeshBufferBlobV0, EBT_SKINNED_MESH_BUFFER, Function, __VA_ARGS__)\
+_IRR_ADD_BLOB_SUPPORT(MeshDataFormatDescBlobV0, EBT_DATA_FORMAT_DESC, Function, __VA_ARGS__)\
+_IRR_ADD_BLOB_SUPPORT(FinalBoneHierarchyBlobV0, EBT_FINAL_BONE_HIERARCHY, Function, __VA_ARGS__)
 
 #endif // __IRR_COMPILE_CONFIG_H_INCLUDED__
 
