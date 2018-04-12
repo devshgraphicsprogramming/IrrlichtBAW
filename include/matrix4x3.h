@@ -31,7 +31,7 @@ namespace core
     matrix4 concatenateBFollowedByA(const matrix4& other_a,const matrix4x3& other_b );
 
     matrix4 concatenatePreciselyBFollowedByA(const matrix4& other_a,const matrix4x3& other_b );
-
+
 	class matrix4x3
 	{
 		public:
@@ -577,7 +577,7 @@ namespace core
         return ret;
     }
 
-
+
 	inline matrix4x3& matrix4x3::setRotationRadians( const vector3df& rotation )
 	{
 		const float cr = cosf( rotation.X );
@@ -653,7 +653,7 @@ namespace core
 		return vector3df((float)X,(float)Y,(float)Z);
 	}
 
-	//! Sets matrix to rotation matrix defined by axis and angle, assuming LH rotation
+	//! Sets matrix to rotation matrix defined by axis and angle, assuming LH rotation
 	inline matrix4x3& matrix4x3::setRotationAxisRadians( const float& angle, const vector3df& axis )
 	{
  		const float c = cosf(angle);
@@ -674,7 +674,7 @@ namespace core
 
 		return *this;
 	}
-
+
 	inline matrix4x3& matrix4x3::setScale( const vector3df& scale )
 	{
 		column[0].X = scale.X;
@@ -691,7 +691,7 @@ namespace core
 	values. The best that we could do would be to arbitrarily make one scale
 	negative if one or three of them were negative.
 	FIXME - return the original values.
-	*/
+	*/
 	inline vector3df matrix4x3::getScale() const
 	{
 		// See http://www.robertblum.com/articles/2005/02/14/decomposing-matrices
@@ -703,7 +703,7 @@ namespace core
 	}
 
 
-	// Builds a left-handed look-at matrix.
+	// Builds a left-handed look-at matrix.
 	inline matrix4x3& matrix4x3::buildCameraLookAtMatrixLH(
 				const vector3df& position,
 				const vector3df& target,
@@ -739,7 +739,7 @@ namespace core
 	}
 
 
-	// Builds a right-handed look-at matrix.
+	// Builds a right-handed look-at matrix.
 	inline matrix4x3& matrix4x3::buildCameraLookAtMatrixRH(
 				const vector3df& position,
 				const vector3df& target,
@@ -775,7 +775,7 @@ namespace core
 	}
 
 
-	// creates a new matrix as interpolated matrix from this and the passed one.
+	// creates a new matrix as interpolated matrix from this and the passed one.
 	inline matrix4x3 mix(const core::matrix4x3& a, const core::matrix4x3& b, const float& x)
 	{
 		matrix4x3 mat ( matrix4x3::EM4CONST_NOTHING );
@@ -794,7 +794,7 @@ namespace core
 	\param to: vector to rotate to
 
 		http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix/index.htm
-	 */
+	 */
 	inline matrix4x3& matrix4x3::buildRotateFromTo(const core::vector3df& from, const core::vector3df& to)
 	{
 		// unit vectors
@@ -843,7 +843,7 @@ namespace core
 	\param translation: object final translation from center
 	\param axis: axis to rotate about
 	\param from: source vector to rotate from
-	 */
+	 */
 	inline void matrix4x3::buildAxisAlignedBillboard(
 				const core::vector3df& camPos,
 				const core::vector3df& center,
@@ -890,7 +890,7 @@ namespace core
 	}
 
 
-	//! Builds a combined matrix which translate to a center before rotation and translate afterwards
+	//! Builds a combined matrix which translate to a center before rotation and translate afterwards
 	inline void matrix4x3::setRotationCenter(const core::vector3df& center, const core::vector3df& translation)
 	{
 		column[3].X = -column[0].X*center.X - column[1].X*center.Y - column[2].X*center.Z + (center.X - translation.X );
