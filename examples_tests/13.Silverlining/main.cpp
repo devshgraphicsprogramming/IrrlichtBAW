@@ -612,7 +612,7 @@ int main()
     {
             COpenGLState preState = COpenGLState::collectGLState();
         // Instantiate an Atmosphere object. Substitute your own purchased license name and code here.
-        atm = new Atmosphere("Soren Gronbech", "031d13061a492413034e2316171a");
+        atm = new Atmosphere("YOURNAME", "YOURKEY");
 
         silverLoader = new SilverLoader(device->getFileSystem(),"../../../../../client/silverlining.zip");
         ///atm->SetResourceLoader(silverLoader);
