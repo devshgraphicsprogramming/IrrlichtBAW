@@ -2333,11 +2333,24 @@ namespace irr { namespace video
 
     namespace impl
     {
-    inline double lin2srgb(double _lin)
-    {
-        if (_lin <= 0.0031308) return _lin * 12.92;
-        return 1.055 * pow(_lin, 1./2.4) - 0.055;
-    }
+        template<typename T>
+        inline void lin2SRGB(T _lin[3])
+        {
+            static_assert(std::is_floating_point<T>::value, "lin2SRGB(): Only float, double, or long double type can be used!");
+            
+            for (uint32_t i = 0u; i < 3u; ++i)
+            {
+                T& s = _lin[i];
+                if (s <= 0.0031308) s *= 12.92;
+                else s = 1.055 * std::pow(s, 1./2.4) - 0.055;
+            }
+        }
+        
+        inline double lin2srgb(double _lin)
+        {
+            if (_lin <= 0.0031308) return _lin * 12.92;
+            return 1.055 * pow(_lin, 1./2.4) - 0.055;
+        }
     }
 
     template<>

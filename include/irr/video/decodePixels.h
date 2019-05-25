@@ -1271,51 +1271,16 @@ namespace irr { namespace video
         }
 
         template<typename T>
-        inline void SRGB2lin(T _srgb[3]);
-		
-        template<typename T>
-        inline void lin2SRGB(T _lin[3]);
-
-        template<>
-        inline void SRGB2lin<double>(double _srgb[3])
+        inline void SRGB2lin(T _srgb[3])
         {
+            static_assert(std::is_floating_point<T>::value, "SRGB2lin(): Only float, double, or long double type can be used!");
+            
             for (uint32_t i = 0u; i < 3u; ++i)
             {
-                double& s = _srgb[i];
+                T& s = _srgb[i];
                 if (s <= 0.04045) s /= 12.92;
                 else s = std::pow((s + 0.055) / 1.055, 2.4);
             }
-        }
-		
-        template<>
-        inline void lin2SRGB<double>(double _lin[3])
-        {
-            for (uint32_t i = 0u; i < 3u; ++i)
-            {
-                double& s = _lin[i];
-                if (s <= 0.0031308) s *= 12.92;
-                else s = 1.055 * std::pow(s, 1./2.4) - 0.055;
-            }
-        }
-
-        template<typename T>// T is int64_t or uint64_t
-        inline void SRGB2lin(T _srgb[3])
-        {
-            double s[3] { _srgb[0]/255., _srgb[1]/255., _srgb[2]/255. };
-            SRGB2lin<double>(s);
-            T* lin = _srgb;
-            for (uint32_t i = 0; i < 3u; ++i)
-                lin[i] = s[i] * 255.;
-        }
-
-        template<typename T>
-        inline void lin2SRGB(T _lin[3])
-        {
-            double s[3] { _lin[0]/255., _lin[1]/255., _lin[2]/255. };
-            lin2SRGB<double>(s);
-            T* srgb = _lin;
-            for (uint32_t i = 0; i < 3u; ++i)
-                srgb[i] = s[i] * 255.;
         }
     }
 
@@ -1332,7 +1297,7 @@ namespace irr { namespace video
     inline void decodePixels<asset::EF_BC1_RGB_SRGB_BLOCK, double>(const void* _pix[4], double* _output, uint32_t _x, uint32_t _y)
     {
         decodePixels<asset::EF_BC1_RGB_UNORM_BLOCK, double>(_pix, _output, _x, _y);
-        impl::SRGB2lin(_output);
+        impl::SRGB2lin<double>(_output);
     }
 
     template<>
@@ -1348,7 +1313,7 @@ namespace irr { namespace video
     inline void decodePixels<asset::EF_BC1_RGBA_SRGB_BLOCK, double>(const void* _pix[4], double* _output, uint32_t _x, uint32_t _y)
     {
         decodePixels<asset::EF_BC1_RGBA_UNORM_BLOCK, double>(_pix, _output, _x, _y);
-        impl::SRGB2lin(_output);
+        impl::SRGB2lin<double>(_output);
     }
 
     template<>
@@ -1365,7 +1330,7 @@ namespace irr { namespace video
     inline void decodePixels<asset::EF_BC2_SRGB_BLOCK, double>(const void* _pix[4], double* _output, uint32_t _x, uint32_t _y)
     {
         decodePixels<asset::EF_BC2_UNORM_BLOCK, double>(_pix, _output, _x, _y);
-        impl::SRGB2lin(_output);
+        impl::SRGB2lin<double>(_output);
     }
 
     template<>
@@ -1383,7 +1348,7 @@ namespace irr { namespace video
     inline void decodePixels<asset::EF_BC3_SRGB_BLOCK, double>(const void* _pix[4], double* _output, uint32_t _x, uint32_t _y)
     {
         decodePixels<asset::EF_BC3_UNORM_BLOCK, double>(_pix, _output, _x, _y);
-        impl::SRGB2lin(_output);
+        impl::SRGB2lin<double>(_output);
     }
 
     template<>

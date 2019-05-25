@@ -8,6 +8,7 @@
 #include "vectorSIMD.h"
 #include "coreutil.h"
 #include "irr/asset/EFormat.h"
+#include "irr/video/encodePixels.h"
 #include "irr/video/decodePixels.h"
 
 namespace irr
