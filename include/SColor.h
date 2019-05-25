@@ -420,18 +420,16 @@ namespace video
 		
 		inline static SColorf fromSRGB(SColorf&& input)
 		{
-			float color[3] = {input.r, input.g, input.b};
-			impl::SRGB2lin<float>(color);
+			impl::SRGB2lin<float>(*reinterpret_cast<float(*)[3]>(&input.r));
 			
-			return SColorf(color[0], color[1], color[2], input.getAlpha());
+			return SColorf(std::move(input));
 		}
 		
 		inline static SColorf toSRGB(SColorf&& input)
 		{
-			float color[3] = {input.r, input.g, input.b};
-			impl::lin2SRGB<float>(color);
+			impl::lin2SRGB<float>(*reinterpret_cast<float(*)[3]>(&input.r));
 			
-			return SColorf(color[0], color[1], color[2], input.getAlpha());
+			return SColorf(std::move(input));
 		}
 
 		//! Converts this color to a SColor without floats.
