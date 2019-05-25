@@ -124,6 +124,17 @@ class CImageData : public asset::IAsset
 
             setupMemory(inData,dataAllocatedWithMallocAndCanTake);
         }
+		
+        template<E_FORMAT srcFormat, E_FORMAT destFormat>
+        CImageData* createInConvertedFormat()
+        {
+            
+        }
+
+        CImageData* createInConvertedFormat(E_FORMAT destFormat)
+        {
+            
+        }
 
         //!
         inline void forgetAboutData() {data = NULL;}
