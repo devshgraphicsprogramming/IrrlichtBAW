@@ -21,11 +21,11 @@
 #endif
 
 #ifdef _IRR_COMPILE_WITH_BMP_LOADER_
-#include "irr/asset/CImageLoaderBMP.h"
+// #include "irr/asset/CImageLoaderBMP.h"
 #endif
 
 #ifdef _IRR_COMPILE_WITH_DDS_LOADER_
-#include "irr/asset/CImageLoaderDDS.h"
+// #include "irr/asset/CImageLoaderDDS.h"
 #endif
 
 #ifdef _IRR_COMPILE_WITH_JPG_LOADER_
@@ -62,10 +62,6 @@
 
 #ifdef _IRR_COMPILE_WITH_PNG_WRITER_
 #include "irr/asset/CImageWriterPNG.h"
-#endif
-
-#ifdef _IRR_COMPILE_WITH_BMP_WRITER_
-#include "irr/asset/CImageWriterBMP.h"
 #endif
 
 #include "irr/asset/IAssetManager.h"
@@ -135,18 +131,22 @@ void IrrlichtDevice::addLoadersAndWriters()
     }
 #endif
 #ifdef _IRR_COMPILE_WITH_BMP_LOADER_
+/*
     {
         auto ldr = new asset::CImageLoaderBMP();
         m_assetMgr->addAssetLoader(ldr);
         ldr->drop();
     }
+*/
 #endif
 #ifdef _IRR_COMPILE_WITH_DDS_LOADER_
+/*
     {
         auto ldr = new asset::CImageLoaderDDS();
         m_assetMgr->addAssetLoader(ldr);
         ldr->drop();
     }
+*/
 #endif
 #ifdef _IRR_COMPILE_WITH_JPG_LOADER_
     {
@@ -207,13 +207,6 @@ void IrrlichtDevice::addLoadersAndWriters()
 #ifdef _IRR_COMPILE_WITH_PNG_WRITER_
     {
         auto wtr = new asset::CImageWriterPNG();
-        m_assetMgr->addAssetWriter(wtr);
-        wtr->drop();
-    }
-#endif
-#ifdef _IRR_COMPILE_WITH_BMP_WRITER_
-    {
-        auto wtr = new asset::CImageWriterBMP();
         m_assetMgr->addAssetWriter(wtr);
         wtr->drop();
     }

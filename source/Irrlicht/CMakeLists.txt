@@ -133,7 +133,6 @@ set(IRRLICHT_SRCS_COMMON
 	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageLoaderJPG.cpp
 	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageLoaderPNG.cpp
 	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageLoaderTGA.cpp
-	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageWriterBMP.cpp
 	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageWriterJPG.cpp
 	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageWriterPNG.cpp
 	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageWriterTGA.cpp
