@@ -130,8 +130,6 @@ set(IRRLICHT_SRCS_COMMON
 	CColorConverter.cpp
 	CImage.cpp
 	${CMAKE_SOURCE_DIR}/src/irr/video/convertColor.cpp
-	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageLoaderBMP.cpp
-	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageLoaderDDS.cpp
 	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageLoaderJPG.cpp
 	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageLoaderPNG.cpp
 	${CMAKE_SOURCE_DIR}/src/irr/asset/CImageLoaderTGA.cpp
