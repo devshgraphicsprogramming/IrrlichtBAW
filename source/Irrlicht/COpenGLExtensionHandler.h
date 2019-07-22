@@ -1030,6 +1030,7 @@ class COpenGLExtensionHandler
 	static uint16_t ShaderLanguageVersion;
 
 	static bool IsIntelGPU;
+    //! Driver bug: https://devtalk.nvidia.com/default/topic/1030494/opengl/bug-amp-amp-spec-violation-checknamedframebufferstatus-returns-gl_framebuffer_incomplete_dimensions_ext-under-gl-4-5-core/
 	static bool needsDSAFramebufferHack;
 
 	//
