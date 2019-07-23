@@ -1,0 +1,61 @@
+#version 430 core
+
+//layout (location = 0) uniform mat4 uPrevVP;
+//layout (location = 1) uniform mat4 uInvVP;
+layout (location = 0) uniform vec2 uJitter;
+
+//layout (binding = 0) uniform sampler2D uDepthBuf;
+layout (binding = 1) uniform sampler2D uCurrentBuf;
+layout (binding = 2) uniform sampler2D uHistoryBuf;
+layout (binding = 3) uniform sampler2D uVelocityBuf;
+
+in vec2 TexCoords;
+
+layout (location = 0) out vec4 outScreen;  //what will be visible on screen
+layout (location = 1) out vec4 outHistory; //history for next frame
+
+float luminanceFromRGB(in vec3 color)
+{
+	return dot(color, vec3(0.299, 0.587, 0.114));
+}
+
+void main()
+{
+/*
+	float depth = texture(uDepthBuf, TexCoords).x; // linearize depth?
+	
+	vec4 clip = vec4(2.0*vec3(TexCoords, depth) - 1.0, 1.0);
+	vec4 world = invVP*clip;
+	world = world/world.w;
+	
+	vec4 q_cs = uPrevVP*world;
+	vec2 q_uv = 0.5*(q_cs.xy/q_cs.w) + 0.5;
+	vec2 vel = TexCoords - q_uv;
+*/
+	// it should sample nearest (depth) in 3x3 neighbourhood
+	vec2 vel = textureLod(uVelocityBuf, TexCoords, 0.0).xy;
+	
+	vec2 q_uv = TexCoords - vel;
+	
+	vec3 current = textureLod(uCurrentBuf, TexCoords, 0.0).rgb;
+	vec3 history = textureLod(uHistoryBuf, q_uv, 0.0).rgb;
+	// AABB clamping, better try (variance?) clipping later (TODO)
+	vec3 neigh0 = textureLodOffset(uCurrentBuf, TexCoords, 0.0, ivec2(1, 0)).rgb;
+	vec3 neigh1 = textureLodOffset(uCurrentBuf, TexCoords, 0.0, ivec2(0, 1)).rgb;
+	vec3 neigh2 = textureLodOffset(uCurrentBuf, TexCoords, 0.0, ivec2(-1, 0)).rgb;
+	vec3 neigh3 = textureLodOffset(uCurrentBuf, TexCoords, 0.0, ivec2(0, -1)).rgb;
+
+	vec3 aabb_min = min(current, min(neigh0, min(neigh1, min(neigh2, neigh3))));
+	vec3 aabb_max = max(current, max(neigh0, max(neigh1, max(neigh2, neigh3))));
+
+	history = clamp(history, aabb_min, aabb_max);
+	
+	vec3 current_unjittered = textureLod(uCurrentBuf, TexCoords-uJitter, 0.0).rgb;
+	
+	vec3 color = mix(current_unjittered, history, 0.7);
+	
+	outHistory = vec4(color, 1.0);
+	
+	// TODO fallback to motion blur (for fast moving fragments) and this will actually go to screen
+	outScreen = vec4(color, 1.0);
+}
