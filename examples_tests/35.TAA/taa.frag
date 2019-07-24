@@ -32,11 +32,10 @@ vec3 constrainHistSample(in vec3 hist, in vec3 aabb_min, in vec3 aabb_max)
 		return aabb_min; //return immediately if all neighbourhood samples were same color
 	// scale needed to transform unit sphere into ellipsoid insribed into the aabb
 	vec3 scale = 0.5*(aabb_max-aabb_min);
-	vec3 inv_scale = vec3(1.0)/scale;
 	vec3 center = 0.5*(aabb_min+aabb_max);
 	
 	// translate into ellipsoid's space and scale hist sample by inverse scale
-	vec3 hist_ = inv_scale*(hist - center);
+	vec3 hist_ = (hist - center)/scale;
 	float ray_len = chebyshevNorm(hist_);
 	if (ray_len > 1.0)
 	{
