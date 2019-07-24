@@ -281,9 +281,16 @@ int main()
     fbo->attach(video::EFAP_DEPTH_ATTACHMENT, depthBuf);
 
     video::SGPUMaterial TAAMaterial;
+    video::STextureSamplingParams sparams;
+    sparams.UseMipmaps = 0u;
+    sparams.MinFilter = sparams.MaxFilter = video::ETFT_NEAREST_NO_MIP;
+    sparams.TextureWrapU = sparams.TextureWrapV = video::ETC_MIRROR_CLAMP_TO_EDGE;
     TAAMaterial.setTexture(1u, colorBuf);
+    TAAMaterial.TextureLayer[1].SamplingParams = sparams;
     TAAMaterial.setTexture(2u, historyBuffers[1]);
+    TAAMaterial.TextureLayer[2].SamplingParams = sparams;
     TAAMaterial.setTexture(3u, velocityBuf);
+    TAAMaterial.TextureLayer[3].SamplingParams = sparams;
     TAAMaterial.MaterialType = TAAMaterialType;
 
 	uint64_t lastFPSTime = 0;
