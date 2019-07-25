@@ -4,7 +4,7 @@
 //layout (location = 1) uniform mat4 uInvVP;
 layout (location = 0) uniform vec2 uJitter;
 
-//layout (binding = 0) uniform sampler2D uDepthBuf;
+layout (binding = 0) uniform sampler2D uDepthBuf;
 layout (binding = 1) uniform sampler2D uCurrentBuf;
 layout (binding = 2) uniform sampler2D uHistoryBuf;
 layout (binding = 3) uniform sampler2D uVelocityBuf;
@@ -48,6 +48,35 @@ vec3 constrainHistSample(in vec3 hist, in vec3 aabb_min, in vec3 aabb_max)
 		return hist; // hist sample is within neighbourhood color space
 }
 
+//finds texel offset (relative to `uv`) of depth-wise closest fragment in 3x3 neighbourhood
+ivec2 closestFragmentOffsetIn3x3(in vec2 uv)
+{
+	vec3 d0 = vec3(-1.0, 1.0, textureLodOffset(uDepthBuf, uv, 0.0, ivec2(-1, 1)).x);
+	vec3 d1 = vec3(0.0, 1.0, textureLodOffset(uDepthBuf, uv, 0.0, ivec2(0, 1)).x);
+	vec3 d2 = vec3(1.0, 1.0, textureLodOffset(uDepthBuf, uv, 0.0, ivec2(1, 1)).x);
+	vec3 d3 = vec3(-1.0, 0.0, textureLodOffset(uDepthBuf, uv, 0.0, ivec2(-1, 0)).x);
+	vec3 d4 = vec3(0.0, 0.0, textureLod(uDepthBuf, uv, 0.0).x);
+	vec3 d5 = vec3(1.0, 0.0, textureLodOffset(uDepthBuf, uv, 0.0, ivec2(1, 0)).x);
+	vec3 d6 = vec3(-1.0, -1.0, textureLodOffset(uDepthBuf, uv, 0.0, ivec2(-1, -1)).x);
+	vec3 d7 = vec3(0.0, -1.0, textureLodOffset(uDepthBuf, uv, 0.0, ivec2(0, -1)).x);
+	vec3 d8 = vec3(1.0, -1.0, textureLodOffset(uDepthBuf, uv, 0.0, ivec2(1, -1)).x);
+	
+	//less = further from screen
+#define _CLOSEST(a, b) mix(a, b, a.z>b.z)
+	vec3 closest = d0;
+	closest = _CLOSEST(closest, d1);
+	closest = _CLOSEST(closest, d2);
+	closest = _CLOSEST(closest, d3);
+	closest = _CLOSEST(closest, d4);
+	closest = _CLOSEST(closest, d5);
+	closest = _CLOSEST(closest, d6);
+	closest = _CLOSEST(closest, d7);
+	closest = _CLOSEST(closest, d8);
+#undef _CLOSEST
+	
+	return ivec2(closest.xy);
+}
+
 void main()
 {
 /*
@@ -61,8 +90,8 @@ void main()
 	vec2 q_uv = 0.5*(q_cs.xy/q_cs.w) + 0.5;
 	vec2 vel = TexCoords - q_uv;
 */
-	// it should sample nearest (depth) in 3x3 neighbourhood
-	vec2 vel = textureLod(uVelocityBuf, TexCoords, 0.0).xy;
+	// TODO test later wether closestFragmentOffsetIn3x3() is worth it
+	vec2 vel = textureLodOffset(uVelocityBuf, TexCoords, 0.0, closestFragmentOffsetIn3x3(TexCoords)).xy;
 	
 	vec2 q_uv = TexCoords - vel;
 	

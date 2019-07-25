@@ -140,7 +140,7 @@ public:
         jitter.setTranslation(jitterOffset);
         m_VP = core::matrix4SIMD::concatenateBFollowedByA(jitter, m_VP);
 #endif//USE_JITTER
-
+        
         // will work only with assumption of static scenes (only camera movement) - i.e. world matrix is constant throughout frames
         // for it to work with moving objects, i would need to cache world matrices per scenenode somewhere
         auto world = services->getVideoDriver()->getTransform(video::E4X3TS_WORLD);
@@ -277,14 +277,16 @@ int main()
     auto tmpColorBuf = driver->createGPUTexture(video::ITexture::ETT_2D, WINDOWS_SIZE_array, 1u, asset::EF_R8G8B8_UNORM);
     auto depthBuf = driver->createGPUTexture(video::ITexture::ETT_2D, WINDOWS_SIZE_array, 1u, asset::EF_D16_UNORM);
 
+    //TODO maybe better to use separate fbo for each pass? (wouldn't need to reattach every pass every frame)
     video::IFrameBuffer* fbo = driver->addFrameBuffer();
-    fbo->attach(video::EFAP_DEPTH_ATTACHMENT, depthBuf);
 
     video::SGPUMaterial TAAMaterial;
     video::STextureSamplingParams sparams;
     sparams.UseMipmaps = 0u;
-    sparams.MinFilter = sparams.MaxFilter = video::ETFT_NEAREST_NO_MIP;
+    sparams.MinFilter = sparams.MaxFilter = video::ETFT_LINEAR_NO_MIP;
     sparams.TextureWrapU = sparams.TextureWrapV = video::ETC_MIRROR_CLAMP_TO_EDGE;
+    TAAMaterial.setTexture(0u, depthBuf);
+    TAAMaterial.TextureLayer[0].SamplingParams = sparams;
     TAAMaterial.setTexture(1u, colorBuf);
     TAAMaterial.TextureLayer[1].SamplingParams = sparams;
     TAAMaterial.setTexture(2u, historyBuffers[1]);
@@ -309,6 +311,7 @@ int main()
             for (auto node : meshSceneNodes)
                 node->setMaterialType(velBufMaterialType);
             fbo->attach(video::EFAP_COLOR_ATTACHMENT0, velocityBuf);
+            fbo->attach(video::EFAP_DEPTH_ATTACHMENT, depthBuf);
             driver->setRenderTarget(fbo);
             driver->clearZBuffer(clearDepth);
             driver->clearColorBuffer(video::EFAP_COLOR_ATTACHMENT0, clearVel);
@@ -321,6 +324,7 @@ int main()
         //first frame is without AA
         //and not AA'd result goes to 2nd frame as history buffer
         fbo->attach(video::EFAP_COLOR_ATTACHMENT0, g_FrameNum>0u ? colorBuf : historyBuffers[0]);
+        fbo->attach(video::EFAP_DEPTH_ATTACHMENT, depthBuf);
         driver->setRenderTarget(fbo);
         driver->clearZBuffer(clearDepth);
         driver->clearColorBuffer(video::EFAP_COLOR_ATTACHMENT0, clearColor);
@@ -331,6 +335,7 @@ int main()
         {
             fbo->attach(video::EFAP_COLOR_ATTACHMENT0, tmpColorBuf);
             fbo->attach(video::EFAP_COLOR_ATTACHMENT1, historyBuffers[g_FrameNum&1u]);
+            fbo->attach(video::EFAP_DEPTH_ATTACHMENT, static_cast<video::ITexture*>(nullptr));
             driver->setRenderTarget(fbo);
             driver->clearZBuffer(clearDepth);
             TAAMaterial.setTexture(2u, historyBuffers[(g_FrameNum+1u)&1u]);
