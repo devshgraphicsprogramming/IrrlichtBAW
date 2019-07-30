@@ -14,6 +14,8 @@ in vec2 TexCoords;
 layout (location = 0) out vec4 outScreen;  //what will be visible on screen
 layout (location = 1) out vec4 outHistory; //history for next frame
 
+#define SCREEN_SIZE vec2(1280.0, 720.0)
+
 float luminanceFromRGB(in vec3 color)
 {
 	return dot(color, vec3(0.299, 0.587, 0.114));
@@ -25,17 +27,20 @@ float chebyshevNorm(in vec3 v)
 	return max(v_.x, max(v_.y, v_.z));
 }
 
+#define invlerp(T, a, b, v) clamp((v - a)/(b - a), T(0.0), T(1.0))
+
 // clips history sample against neighbourhood color space
 vec3 constrainHistSample(in vec3 hist, in vec3 aabb_min, in vec3 aabb_max)
 {
-	if (aabb_min==aabb_max)
-		return aabb_min; //return immediately if all neighbourhood samples were same color
+	//if (any(aabb_min==aabb_max)) // commented-out because for some reason it's not enough in some cases, that's why there's max(scale,) in division
+	//	return aabb_min; //return immediately if all neighbourhood samples were same color
+	
 	// scale needed to transform unit sphere into ellipsoid insribed into the aabb
 	vec3 scale = 0.5*(aabb_max-aabb_min);
 	vec3 center = 0.5*(aabb_min+aabb_max);
 	
 	// translate into ellipsoid's space and scale hist sample by inverse scale
-	vec3 hist_ = (hist - center)/scale;
+	vec3 hist_ = (hist - center)/max(scale, vec3(0.0001));
 	float ray_len = chebyshevNorm(hist_);
 	if (ray_len > 1.0)
 	{
@@ -90,7 +95,7 @@ void main()
 	vec2 q_uv = 0.5*(q_cs.xy/q_cs.w) + 0.5;
 	vec2 vel = TexCoords - q_uv;
 */
-	// TODO test later wether closestFragmentOffsetIn3x3() is worth it
+	// TODO test later whether closestFragmentOffsetIn3x3() is worth it
 	vec2 vel = textureLodOffset(uVelocityBuf, TexCoords, 0.0, closestFragmentOffsetIn3x3(TexCoords)).xy;
 	
 	vec2 q_uv = TexCoords - vel;
@@ -109,11 +114,41 @@ void main()
 	
 	vec3 current_unjittered = textureLod(uCurrentBuf, TexCoords-uJitter, 0.0).rgb;
 	
-	// TODO use luma to vary interpolation factor as playdeadgames does
-	vec3 color = mix(current_unjittered, history, 0.7);
+	float lum = luminanceFromRGB(current_unjittered);
+	float lum_hist = luminanceFromRGB(history);
+	// Note: tweakable!
+	float weight = abs(lum-lum_hist)/max(lum, max(lum_hist, 0.2));
+	weight = 1.0 - weight;
+	weight = weight*weight;
+	
+	float lerpFactor = mix(0.5, 0.9, weight);
+	
+	vec3 color = mix(current_unjittered, history, lerpFactor);
 	
 	outHistory = vec4(color, 1.0);
 	
-	// TODO fallback to motion blur (for fast moving fragments) and this will actually go to screen
+#define VEL_NO_BLUR 20.0
+#define VEL_ONLY_BLUR 75.0
+	lerpFactor = invlerp(float, VEL_ONLY_BLUR, VEL_NO_BLUR, length(SCREEN_SIZE*vel));
+	if (lerpFactor != 1.0)
+	{
+		vec3 blurColor = current;
+		vec2 tap = vel*0.333;
+		//for (int i = -3; i > 0; ++i)
+		//	blurColor += textureLod(uCurrentBuf, TexCoords + i*tap, 0.0).rgb;
+		blurColor += textureLod(uCurrentBuf, TexCoords + -3.0*tap, 0.0).rgb;
+		blurColor += textureLod(uCurrentBuf, TexCoords + -2.0*tap, 0.0).rgb;
+		blurColor += textureLod(uCurrentBuf, TexCoords + -1.0*tap, 0.0).rgb;
+		//for (int i = 1; i < 4; ++i)
+		//	blurColor += textureLod(uCurrentBuf, TexCoords + i*tap, 0.0).rgb;
+		blurColor += textureLod(uCurrentBuf, TexCoords + 1.0*tap, 0.0).rgb;
+		blurColor += textureLod(uCurrentBuf, TexCoords + 2.0*tap, 0.0).rgb;
+		blurColor += textureLod(uCurrentBuf, TexCoords + 3.0*tap, 0.0).rgb;
+		
+		blurColor *= 0.1428; // blurColor /= 7.0;
+		
+		color = mix(blurColor, color, lerpFactor);
+	}
+	
 	outScreen = vec4(color, 1.0);
 }

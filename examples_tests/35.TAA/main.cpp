@@ -101,7 +101,7 @@ class VelocityBufCallBack : public video::IShaderConstantSetCallBack
     video::E_SHADER_CONSTANT_TYPE mvpUniformType = video::ESCT_FLOAT;
     video::E_SHADER_CONSTANT_TYPE prevMvpUniformType = video::ESCT_FLOAT;
 
-    core::matrix4SIMD m_VP;
+    core::matrix4SIMD m_prevVP, m_currVP;
 
 public:
     virtual void PostLink(video::IMaterialRendererServices* services, const video::E_MATERIAL_TYPE& materialType, const core::vector<video::SConstantLocationNamePair>& constants)
@@ -123,40 +123,33 @@ public:
 
     virtual void OnSetConstants(video::IMaterialRendererServices* services, int32_t userData)
     {
-        core::matrix4SIMD prevVP;
-        if (g_FrameNum==0u)
-        {
-            prevVP = m_VP = services->getVideoDriver()->getTransform(video::EPTS_PROJ_VIEW);
-        }
-        else
-        {
-            prevVP = m_VP;
-            m_VP = services->getVideoDriver()->getTransform(video::EPTS_PROJ_VIEW);
-        }
-#if USE_JITTER
-        core::matrix4SIMD jitter;
-        float jitterOffset[3]{0.f,0.f,0.f};
-        memcpy(jitterOffset, &JITTER_OFFSETS[g_FrameNum%JITTER_OFFSET_CNT].X, 8);
-        jitter.setTranslation(jitterOffset);
-        m_VP = core::matrix4SIMD::concatenateBFollowedByA(jitter, m_VP);
-#endif//USE_JITTER
-        
         // will work only with assumption of static scenes (only camera movement) - i.e. world matrix is constant throughout frames
-        // for it to work with moving objects, i would need to cache world matrices per scenenode somewhere
+        // for it to work with moving objects, i would need to cache world matrices per scenenode (or even per meshbuffer) somewhere
         auto world = services->getVideoDriver()->getTransform(video::E4X3TS_WORLD);
-        auto mvp = core::concatenateBFollowedByA(m_VP, world);
-        auto prevMVP = core::concatenateBFollowedByA(prevVP, world);
+        auto mvp = core::concatenateBFollowedByA(m_currVP, world);
+        auto prevMVP = core::concatenateBFollowedByA(m_prevVP, world);
         services->setShaderConstant(mvp.pointer(), mvpUniformLocation, mvpUniformType, 1);
         services->setShaderConstant(prevMVP.pointer(), prevMvpUniformLocation, prevMvpUniformType, 1);
     }
 
     virtual void OnUnsetMaterial() {}
+
+    void setCurrentVP(const core::matrix4SIMD& _vp)
+    {
+        m_currVP = _vp;
+    }
+    void setPrevVP(const core::matrix4SIMD& _vp) 
+    { 
+        m_prevVP = _vp;
+    }
 };
 
 class TAACallback : public video::IShaderConstantSetCallBack
 {
     int32_t jitterUniformLocation = 0;
     video::E_SHADER_CONSTANT_TYPE jitterUniformType = video::ESCT_FLOAT_VEC2;
+
+    core::vector2df m_jitter;
 
 public:
     virtual void PostLink(video::IMaterialRendererServices* services, const video::E_MATERIAL_TYPE& materialType, const core::vector<video::SConstantLocationNamePair>& constants)
@@ -167,7 +160,7 @@ public:
     {
         const float* jitter{};
 #if USE_JITTER
-        jitter = &JITTER_OFFSETS[g_FrameNum%JITTER_OFFSET_CNT].X;
+        jitter = &m_jitter.X;
 #else
         float zero[2]{};
         jitter = zero;
@@ -176,6 +169,8 @@ public:
     }
 
     virtual void OnUnsetMaterial() {}
+
+    void setJitterOffset(const core::vector2df& _jitter) { m_jitter = _jitter; }
 };
 
 int main()
@@ -246,7 +241,7 @@ int main()
     scene::ISceneNode* meshSceneNodes[2]{};
 
     asset::IAssetLoader::SAssetLoadParams lparams;
-    asset::ICPUMesh* cpumesh = static_cast<asset::ICPUMesh*>(am.getAsset("../../media/extrusionLogo_TEST_fixed.stl", lparams));
+    asset::ICPUMesh* cpumesh = static_cast<asset::ICPUMesh*>(am.getAsset("../../media/extrusionLogo_TEST_fixed.baw", lparams));
 
     if (cpumesh)
     {
@@ -256,7 +251,7 @@ int main()
         gpumesh->drop();
     }
 
-    cpumesh = static_cast<asset::ICPUMesh*>(am.getAsset("../../media/cow.obj", lparams));
+    cpumesh = static_cast<asset::ICPUMesh*>(am.getAsset("../../media/cow.baw", lparams));
 
     if (cpumesh)
     {
@@ -294,16 +289,39 @@ int main()
     TAAMaterial.setTexture(3u, velocityBuf);
     TAAMaterial.TextureLayer[3].SamplingParams = sparams;
     TAAMaterial.MaterialType = TAAMaterialType;
+    TAAMaterial.ZBuffer = video::ECFN_ALWAYS;
+    TAAMaterial.ZWriteEnable = false;
 
 	uint64_t lastFPSTime = 0;
 
+    core::matrix4SIMD prevVP, currVP;
 	while(!quit && device->run())
 	{
 		driver->beginScene(false, false, video::SColor(255,255,255,255) );
 
         const float clearVel[4]{ 0.f, 0.f, 0.f, 0.f };
-        const float clearColor[4]{ 0.f, 0.f, 1.f, 1.f };
+        const float clearColor[4]{ 0.9f, 0.9f, 0.9f, 1.f };
         const float clearDepth = 0.f;
+
+        //update prevVP and currVP before velocity pass
+        if (g_FrameNum==0u)
+        {
+            currVP = prevVP = driver->getTransform(video::EPTS_PROJ_VIEW);
+        }
+        else
+        {
+            prevVP = currVP;
+            currVP = driver->getTransform(video::EPTS_PROJ_VIEW);
+#if USE_JITTER
+            core::matrix4SIMD jitter;
+            float jitterOffset[3]{ 0.f,0.f,0.f };
+            memcpy(jitterOffset, &JITTER_OFFSETS[g_FrameNum%JITTER_OFFSET_CNT].X, 8);
+            jitter.setTranslation(jitterOffset);
+            currVP = core::matrix4SIMD::concatenateBFollowedByA(jitter, currVP);
+#endif//USE_JITTER
+        }
+        velBufCb->setPrevVP(prevVP);
+        velBufCb->setCurrentVP(currVP);
 
         // VELOCITY BUF PASS
         if (g_FrameNum > 0u) //first frame is without AA
@@ -333,6 +351,7 @@ int main()
         // AA PASS
         if (g_FrameNum > 0u) //first frame is without AA
         {
+            TAAcb->setJitterOffset(JITTER_OFFSETS[g_FrameNum%JITTER_OFFSET_CNT]);
             fbo->attach(video::EFAP_COLOR_ATTACHMENT0, tmpColorBuf);
             fbo->attach(video::EFAP_COLOR_ATTACHMENT1, historyBuffers[g_FrameNum&1u]);
             fbo->attach(video::EFAP_DEPTH_ATTACHMENT, static_cast<video::ITexture*>(nullptr));
@@ -361,6 +380,15 @@ int main()
 		}
         ++g_FrameNum;
 	}
+
+    driver->removeFrameBuffer(fbo);
+    velocityBuf->drop();
+    colorBuf->drop();
+    tmpColorBuf->drop();
+    depthBuf->drop();
+    historyBuffers[0]->drop();
+    historyBuffers[1]->drop();
+    fullscreenTriMeshBuf->drop();
     
 	device->drop();
 
