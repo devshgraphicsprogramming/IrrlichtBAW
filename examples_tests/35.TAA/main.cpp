@@ -311,6 +311,8 @@ int main()
         else
         {
             prevVP = currVP;
+            // TODO how to force driver to update view and projection matrices without smgr->drawAll()?
+            // without this fix, here i'm getting previous frame's VP to currVP (and so prevVP is 2 frames in the past)
             currVP = driver->getTransform(video::EPTS_PROJ_VIEW);
 #if USE_JITTER
             core::matrix4SIMD jitter;
