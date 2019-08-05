@@ -299,8 +299,11 @@ int main()
 	{
 		driver->beginScene(false, false, video::SColor(255,255,255,255) );
 
+        //force view and projection matrices update
+        camera->render();
+
         const float clearVel[4]{ 0.f, 0.f, 0.f, 0.f };
-        const float clearColor[4]{ 0.9f, 0.9f, 0.9f, 1.f };
+        const float clearColor[4]{ 0.0f, 0.0f, 1.0f, 1.f };
         const float clearDepth = 0.f;
 
         //update prevVP and currVP before velocity pass
@@ -311,8 +314,6 @@ int main()
         else
         {
             prevVP = currVP;
-            // TODO how to force driver to update view and projection matrices without smgr->drawAll()?
-            // without this fix, here i'm getting previous frame's VP to currVP (and so prevVP is 2 frames in the past)
             currVP = driver->getTransform(video::EPTS_PROJ_VIEW);
 #if USE_JITTER
             core::matrix4SIMD jitter;
