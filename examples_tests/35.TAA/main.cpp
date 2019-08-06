@@ -55,51 +55,14 @@ static const core::vector2df JITTER_OFFSETS[JITTER_OFFSET_CNT]{
 // GLOBAL VARS
 static uint32_t g_FrameNum = 0u;
 
-class SimpleCallBack : public video::IShaderConstantSetCallBack
-{
-    int32_t mvpUniformLocation;
-    int32_t cameraDirUniformLocation;
-    int32_t texUniformLocation[4];
-    video::E_SHADER_CONSTANT_TYPE mvpUniformType;
-    video::E_SHADER_CONSTANT_TYPE cameraDirUniformType;
-    video::E_SHADER_CONSTANT_TYPE texUniformType[4];
-public:
-    SimpleCallBack() : cameraDirUniformLocation(-1), cameraDirUniformType(video::ESCT_FLOAT_VEC3) {}
-
-    virtual void PostLink(video::IMaterialRendererServices* services, const video::E_MATERIAL_TYPE& materialType, const core::vector<video::SConstantLocationNamePair>& constants)
-    {
-        for (size_t i=0; i<constants.size(); i++)
-        {
-            if (constants[i].name=="MVP")
-            {
-                mvpUniformLocation = constants[i].location;
-                mvpUniformType = constants[i].type;
-            }
-            else if (constants[i].name=="cameraPos")
-            {
-                cameraDirUniformLocation = constants[i].location;
-                cameraDirUniformType = constants[i].type;
-            }
-        }
-    }
-
-    virtual void OnSetConstants(video::IMaterialRendererServices* services, int32_t userData)
-    {
-        core::vectorSIMDf modelSpaceCamPos;
-        modelSpaceCamPos.set(services->getVideoDriver()->getTransform(video::E4X3TS_WORLD_VIEW_INVERSE).getTranslation());
-        services->setShaderConstant(&modelSpaceCamPos,cameraDirUniformLocation,cameraDirUniformType,1);
-        services->setShaderConstant(services->getVideoDriver()->getTransform(video::EPTS_PROJ_VIEW_WORLD).pointer(),mvpUniformLocation,mvpUniformType,1);
-    }
-
-    virtual void OnUnsetMaterial() {}
-};
-
-class VelocityBufCallBack : public video::IShaderConstantSetCallBack
+class ColorVelocityPassCallBack : public video::IShaderConstantSetCallBack
 {
     int32_t mvpUniformLocation = -1;
     int32_t prevMvpUniformLocation = -1;
+    int32_t cameraDirUniformLocation = -1;
     video::E_SHADER_CONSTANT_TYPE mvpUniformType = video::ESCT_FLOAT;
     video::E_SHADER_CONSTANT_TYPE prevMvpUniformType = video::ESCT_FLOAT;
+    video::E_SHADER_CONSTANT_TYPE cameraDirUniformType = video::ESCT_FLOAT;
 
     core::matrix4SIMD m_prevVP, m_currVP;
 
@@ -118,6 +81,11 @@ public:
                 prevMvpUniformLocation = constants[i].location;
                 prevMvpUniformType = constants[i].type;
             }
+            else if (constants[i].name == "cameraPos")
+            {
+                cameraDirUniformLocation = constants[i].location;
+                cameraDirUniformType = constants[i].type;
+            }
         }
     }
 
@@ -130,6 +98,10 @@ public:
         auto prevMVP = core::concatenateBFollowedByA(m_prevVP, world);
         services->setShaderConstant(mvp.pointer(), mvpUniformLocation, mvpUniformType, 1);
         services->setShaderConstant(prevMVP.pointer(), prevMvpUniformLocation, prevMvpUniformType, 1);
+
+        core::vectorSIMDf modelSpaceCamPos;
+        modelSpaceCamPos.set(services->getVideoDriver()->getTransform(video::E4X3TS_WORLD_VIEW_INVERSE).getTranslation());
+        services->setShaderConstant(&modelSpaceCamPos, cameraDirUniformLocation, cameraDirUniformType, 1);
     }
 
     virtual void OnUnsetMaterial() {}
@@ -138,7 +110,7 @@ public:
     {
         m_currVP = _vp;
     }
-    void setPrevVP(const core::matrix4SIMD& _vp) 
+    void setPrevVP(const core::matrix4SIMD& _vp)
     { 
         m_prevVP = _vp;
     }
@@ -195,24 +167,16 @@ int main()
 
 	video::IVideoDriver* driver = device->getVideoDriver();
 
-    SimpleCallBack* cb = new SimpleCallBack();
-    video::E_MATERIAL_TYPE renderMaterialType = (video::E_MATERIAL_TYPE)driver->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
+    ColorVelocityPassCallBack* colVelPassCb = new ColorVelocityPassCallBack();
+    video::E_MATERIAL_TYPE colVelMaterialType = (video::E_MATERIAL_TYPE)driver->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
                                                         "../mesh.vert",
                                                         "","","",
                                                         "../mesh.frag",
                                                         3,video::EMT_SOLID,
-                                                        cb,
+                                                        colVelPassCb,
                                                         0);
-    cb->drop();
-    VelocityBufCallBack* velBufCb = new VelocityBufCallBack();
-    video::E_MATERIAL_TYPE velBufMaterialType = (video::E_MATERIAL_TYPE)driver->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
-                                                        "../velbuf.vert",
-                                                        "","","",
-                                                        "../velbuf.frag",
-                                                        3,video::EMT_SOLID,
-                                                        velBufCb,
-                                                        0);
-    velBufCb->drop();
+    colVelPassCb->drop();
+
     TAACallback* TAAcb = new TAACallback();
     video::E_MATERIAL_TYPE TAAMaterialType = (video::E_MATERIAL_TYPE)driver->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
                                                         "../quad.vert",
@@ -247,7 +211,7 @@ int main()
     {
         video::IGPUMesh* gpumesh = driver->getGPUObjectsFromAssets(&cpumesh, (&cpumesh)+1)[0];
         meshSceneNodes[0] = smgr->addMeshSceneNode(gpumesh);
-        meshSceneNodes[0]->setMaterialType(renderMaterialType);
+        meshSceneNodes[0]->setMaterialType(colVelMaterialType);
         gpumesh->drop();
     }
 
@@ -257,7 +221,7 @@ int main()
     {
         video::IGPUMesh* gpumesh = driver->getGPUObjectsFromAssets(&cpumesh, (&cpumesh)+1)[0];
         meshSceneNodes[1] = smgr->addMeshSceneNode(gpumesh,0,-1,core::vector3df(3.f,1.f,0.f));
-        meshSceneNodes[1]->setMaterialType(renderMaterialType);
+        meshSceneNodes[1]->setMaterialType(colVelMaterialType);
         gpumesh->drop();
     }
 
@@ -272,8 +236,19 @@ int main()
     auto tmpColorBuf = driver->createGPUTexture(video::ITexture::ETT_2D, WINDOWS_SIZE_array, 1u, asset::EF_R8G8B8_UNORM);
     auto depthBuf = driver->createGPUTexture(video::ITexture::ETT_2D, WINDOWS_SIZE_array, 1u, asset::EF_D16_UNORM);
 
-    //TODO maybe better to use separate fbo for each pass? (wouldn't need to reattach every pass every frame)
-    video::IFrameBuffer* fbo = driver->addFrameBuffer();
+    video::IFrameBuffer* fbo_1stFrame = driver->addFrameBuffer();
+    fbo_1stFrame->attach(video::EFAP_COLOR_ATTACHMENT0, historyBuffers[0]);
+    fbo_1stFrame->attach(video::EFAP_COLOR_ATTACHMENT1, velocityBuf);
+    fbo_1stFrame->attach(video::EFAP_DEPTH_ATTACHMENT, depthBuf);
+    video::IFrameBuffer* fbo_colVelPass = driver->addFrameBuffer();
+    fbo_colVelPass->attach(video::EFAP_COLOR_ATTACHMENT0, colorBuf);
+    fbo_colVelPass->attach(video::EFAP_COLOR_ATTACHMENT1, velocityBuf);
+    fbo_colVelPass->attach(video::EFAP_DEPTH_ATTACHMENT, depthBuf);
+    video::IFrameBuffer* fbo_TAA[2]{ driver->addFrameBuffer(), driver->addFrameBuffer() };
+    fbo_TAA[0]->attach(video::EFAP_COLOR_ATTACHMENT0, tmpColorBuf);
+    fbo_TAA[0]->attach(video::EFAP_COLOR_ATTACHMENT1, historyBuffers[0]);
+    fbo_TAA[1]->attach(video::EFAP_COLOR_ATTACHMENT0, tmpColorBuf);
+    fbo_TAA[1]->attach(video::EFAP_COLOR_ATTACHMENT1, historyBuffers[1]);
 
     video::SGPUMaterial TAAMaterial;
     video::STextureSamplingParams sparams;
@@ -300,7 +275,7 @@ int main()
 		driver->beginScene(false, false, video::SColor(255,255,255,255) );
 
         //force view and projection matrices update
-        camera->render();
+        camera->render();//this sets view matrix to all nans in 1st frame...
 
         const float clearVel[4]{ 0.f, 0.f, 0.f, 0.f };
         const float clearColor[4]{ 0.0f, 0.0f, 1.0f, 1.f };
@@ -323,42 +298,21 @@ int main()
             currVP = core::matrix4SIMD::concatenateBFollowedByA(jitter, currVP);
 #endif//USE_JITTER
         }
-        velBufCb->setPrevVP(prevVP);
-        velBufCb->setCurrentVP(currVP);
+        colVelPassCb->setPrevVP(prevVP);
+        colVelPassCb->setCurrentVP(currVP);
 
-        // VELOCITY BUF PASS
-        if (g_FrameNum > 0u) //first frame is without AA
-        {
-            for (auto node : meshSceneNodes)
-                node->setMaterialType(velBufMaterialType);
-            fbo->attach(video::EFAP_COLOR_ATTACHMENT0, velocityBuf);
-            fbo->attach(video::EFAP_DEPTH_ATTACHMENT, depthBuf);
-            driver->setRenderTarget(fbo);
-            driver->clearZBuffer(clearDepth);
-            driver->clearColorBuffer(video::EFAP_COLOR_ATTACHMENT0, clearVel);
-            smgr->drawAll();
-        }
-
-        // COLOR PASS
-        for (auto node : meshSceneNodes)
-            node->setMaterialType(renderMaterialType);
-        //first frame is without AA
-        //and not AA'd result goes to 2nd frame as history buffer
-        fbo->attach(video::EFAP_COLOR_ATTACHMENT0, g_FrameNum>0u ? colorBuf : historyBuffers[0]);
-        fbo->attach(video::EFAP_DEPTH_ATTACHMENT, depthBuf);
-        driver->setRenderTarget(fbo);
+        // COLOR+VELOCITY BUF PASS
+        driver->setRenderTarget(g_FrameNum>0u ? fbo_colVelPass : fbo_1stFrame);
         driver->clearZBuffer(clearDepth);
         driver->clearColorBuffer(video::EFAP_COLOR_ATTACHMENT0, clearColor);
+        driver->clearColorBuffer(video::EFAP_COLOR_ATTACHMENT1, clearVel);
         smgr->drawAll();
 
         // AA PASS
         if (g_FrameNum > 0u) //first frame is without AA
         {
             TAAcb->setJitterOffset(JITTER_OFFSETS[g_FrameNum%JITTER_OFFSET_CNT]);
-            fbo->attach(video::EFAP_COLOR_ATTACHMENT0, tmpColorBuf);
-            fbo->attach(video::EFAP_COLOR_ATTACHMENT1, historyBuffers[g_FrameNum&1u]);
-            fbo->attach(video::EFAP_DEPTH_ATTACHMENT, static_cast<video::ITexture*>(nullptr));
-            driver->setRenderTarget(fbo);
+            driver->setRenderTarget(fbo_TAA[g_FrameNum&1u]);
             driver->clearZBuffer(clearDepth);
             TAAMaterial.setTexture(2u, historyBuffers[(g_FrameNum+1u)&1u]);
             driver->setMaterial(TAAMaterial);
@@ -367,7 +321,7 @@ int main()
 
         // copy result to screen
         // needed because TAA pass needs to write not only to screen, but also to history buffer
-        driver->blitRenderTargets(fbo, nullptr, false, false);
+        driver->blitRenderTargets(g_FrameNum>0u ? fbo_colVelPass : fbo_1stFrame, nullptr, false, false);
 
 		driver->endScene();
 
@@ -384,7 +338,10 @@ int main()
         ++g_FrameNum;
 	}
 
-    driver->removeFrameBuffer(fbo);
+    driver->removeFrameBuffer(fbo_1stFrame);
+    driver->removeFrameBuffer(fbo_colVelPass);
+    driver->removeFrameBuffer(fbo_TAA[0]);
+    driver->removeFrameBuffer(fbo_TAA[1]);
     velocityBuf->drop();
     colorBuf->drop();
     tmpColorBuf->drop();
