@@ -1,7 +1,5 @@
-#include "CElementTransform.h"
-
 #include "../../ext/MitsubaLoader/ParserUtil.h"
-#include "../../ext/MitsubaLoader/PropertyElement.h"
+#include "../../ext/MitsubaLoader/CElementFactory.h"
 
 namespace irr
 {
@@ -10,76 +8,42 @@ namespace ext
 namespace MitsubaLoader
 {
 
-
-bool CElementTransform::processAttributes(const char** _atts)
+	
+template<>
+IElement* CElementFactory::createElement<CElementTransform>(const char** _atts, ParserManager* _util)
 {
-	if (IElement::areAttributesInvalid(_atts, 0u))
-		return false;
-
-	if (_atts && _atts[0])
-	{
-		if (!core::strcmpi(_atts[0], "name"))
-			name = _atts[1];
-		else
-			return false;
-	}
-
-	return true;
+	if (IElement::invalidAttributeCount(_atts, 2u))
+		return nullptr;
+	if (core::strcmpi(_atts[0], "name"))
+		return nullptr;
+	
+	return _util->objects.construct<CElementTransform>(_atts[1]);
 }
 
-bool CElementTransform::onEndTag(asset::IAssetLoader::IAssetLoaderOverride* _override)
+bool CElementTransform::addProperty(SNamedPropertyElement&& _property)
 {
-#ifdef NEW_MITSUBA
-	for (auto& property : properties)
+	switch (_property.type)
 	{
-		if (property.type == SPropertyElementData::Type::MATRIX)
-		{
-			matrix = core::concatenateBFollowedByA(matrix, CPropertyElementManager::retriveMatrix(property.value));
-		}
-		else
-		if (property.type == SPropertyElementData::Type::TRANSLATE)
-		{
-			core::vector3df_SIMD translate = CPropertyElementManager::retriveVector(property.value);
-			core::matrix4SIMD tmpMatrix;
-			tmpMatrix.setTranslation(translate);
-
-			matrix = core::concatenateBFollowedByA(tmpMatrix, matrix);
-		}
-		else
-		if (property.type == SPropertyElementData::Type::ROTATE)
-		{
-			core::vectorSIMDf rotVec = CPropertyElementManager::retriveVector(property.value);
-			core::quaternion rot(rotVec.x, rotVec.y, rotVec.z, rotVec.w);
-			
-			//not implemented yet
-			_IRR_DEBUG_BREAK_IF(true);
-			return false;
-			//matrix = core::concatenateBFollowedByA(rot.getMatrix(), matrix);
-		}
-		else
-		if (property.type == SPropertyElementData::Type::SCALE)
-		{
-			core::vector3df_SIMD scale = CPropertyElementManager::retriveVector(property.value);
-			core::matrix4SIMD tmpMatrix;
-			tmpMatrix.setScale(scale);
-
-			matrix = core::concatenateBFollowedByA(tmpMatrix, matrix);
-		}
-		else
-		if (property.type == SPropertyElementData::Type::LOOKAT)
-		{
-			core::matrix4SIMD tmpMatrix = CPropertyElementManager::retriveMatrix(property.value);
-
-			matrix = core::concatenateBFollowedByA(tmpMatrix, matrix);
-		}
-		else
-		{
-			ParserLog::invalidXMLFileStructure("wat is this?");
-			_IRR_DEBUG_BREAK_IF(true);
-			return false;
-		}
+		case SNamedPropertyElement::Type::MATRIX:
+			_IRR_FALLTHROUGH;
+		case SNamedPropertyElement::Type::TRANSLATE:
+			_IRR_FALLTHROUGH;
+		case SNamedPropertyElement::Type::ROTATE:
+			_IRR_FALLTHROUGH;
+		case SNamedPropertyElement::Type::SCALE:
+			_IRR_FALLTHROUGH;
+		case SNamedPropertyElement::Type::LOOKAT:
+			matrix = core::concatenateBFollowedByA(_property.mvalue, matrix);
+			break;
+		default:
+			{
+				ParserLog::invalidXMLFileStructure("The transform element does not take child property: "+_property.type);
+				_IRR_DEBUG_BREAK_IF(true);
+				return false;
+			}
+			break;
 	}
-#endif
+
 	return true;
 }
 

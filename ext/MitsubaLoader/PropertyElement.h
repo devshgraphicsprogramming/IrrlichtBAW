@@ -12,26 +12,6 @@ namespace ext
 namespace MitsubaLoader
 {
 
-struct CaseInsensitiveHash
-{
-	inline std::size_t operator()(const std::string& val) const
-	{
-		std::size_t seed = 0;
-		for (auto it=val.begin(); it!=val.end(); it++)
-		{
-			seed ^= ~std::size_t(std::tolower(*it)) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-		}
-		return seed;
-	}
-};
-struct CaseInsensitiveEquals
-{
-	inline bool operator()(const std::string& A, const std::string& B) const
-	{
-		return core::strcmpi(A,B)!=0;
-	}
-};
-
 struct SPropertyElementData
 {
 	enum Type
@@ -54,13 +34,21 @@ struct SPropertyElementData
 		INVALID
 	};
 
-	static const core::unordered_map<std::string,Type,CaseInsensitiveHash,CaseInsensitiveEquals> StringToType;
+	static const core::unordered_map<std::string,Type,core::CaseInsensitiveHash,core::CaseInsensitiveEquals> StringToType;
 	_IRR_STATIC_INLINE_CONSTEXPR uint32_t MaxAttributes = 4u;
 	static const char* attributeStrings[Type::INVALID][MaxAttributes];
 
-	SPropertyElementData() : type(Type::INVALID), name("")
+	SPropertyElementData() : type(Type::INVALID)
 	{
 		std::fill(mvalue.pointer(), mvalue.pointer() + 16, 0.f);
+	}
+	SPropertyElementData(const SNamedPropertyElement& other) : SPropertyElementData()
+	{
+		operator=(other);
+	}
+	SPropertyElementData(SNamedPropertyElement&& other) : SPropertyElementData()
+	{
+		operator=(std::move(other));
 	}
 	SPropertyElementData(const std::string& _type) : SPropertyElementData()
 	{
@@ -68,13 +56,25 @@ struct SPropertyElementData
 		if (found != StringToType.end())
 			type = found->second;
 	}
-	SPropertyElementData(const SPropertyElementData& other) : SPropertyElementData()
+	explicit SPropertyElementData(float value)				: type(FLOAT)	{ fvalue = value; }
+	explicit SPropertyElementData(int32_t value)			: type(INTEGER) { ivalue = value; }
+	explicit SPropertyElementData(bool value)				: type(BOOLEAN) { bvalue = value; }
+	//explicit SPropertyElementData(const std::string& value) : type(STRING) { #error }
+	explicit SPropertyElementData(Type _type, const core::vectorSIMDf& value) : type(INVALID)
 	{
-		operator=(other);
-	}
-	SPropertyElementData(SPropertyElementData&& other) : SPropertyElementData()
-	{
-		operator=(std::move(other));
+		switch (_type)
+		{
+			case Type::RGB:
+			case Type::SRGB:
+			case Type::VECTOR:
+			case Type::POINT:
+				type = _type;
+				vvalue = value;
+				break;
+			default:
+				assert(false);
+				break;
+		};
 	}
 	~SPropertyElementData()
 	{
@@ -82,45 +82,9 @@ struct SPropertyElementData
 			_IRR_ALIGNED_FREE((void*)svalue);
 	}
 
-	bool initialize(const char** _atts, const char** outputMatch)
-	{
-		if (type==Type::INVALID || !_atts)
-			return false;
-
-		for (auto it = _atts; *it; it++)
-		{
-			if (core::strcmpi(*it, "name"))
-			{
-				it++;
-				if (*it)
-				{
-					name = *it;
-					continue;
-				}
-				else
-					return false;
-			}
-
-			for (auto i=0u; i<MaxAttributes; i++)
-			if (core::strcmpi(*it, attributeStrings[type][i]))
-			{
-				it++;
-				if (!outputMatch[i] && *it)
-				{
-					outputMatch[i] = *it;
-					break;
-				}
-				else
-					return false;
-			}
-		}
-		return true;
-	}
-
 	inline SPropertyElementData& operator=(const SPropertyElementData& other)
 	{
 		type = other.type;
-		name = other.name;
 		switch (other.type)
 		{
 			case Type::FLOAT:
@@ -133,11 +97,13 @@ struct SPropertyElementData
 				bvalue = other.bvalue;
 				break;
 			case Type::STRING:
+			{
 				auto len = strlen(other.svalue);
 				auto* tmp = (char*)_IRR_ALIGNED_MALLOC(len+1u,64u);
 				memcpy(tmp,other.svalue,len);
 				tmp[len] = 0;
 				svalue = tmp;
+			}
 				break;
 			case Type::RGB:
 			case Type::SRGB:
@@ -165,47 +131,52 @@ struct SPropertyElementData
 	inline SPropertyElementData& operator=(SPropertyElementData&& other)
 	{
 		std::swap(type,other.type);
-		std::swap(name,other.name);
 		switch (other.type)
 		{
-		case Type::FLOAT:
-			fvalue = other.fvalue;
-			break;
-		case Type::INTEGER:
-			ivalue = other.ivalue;
-			break;
-		case Type::BOOLEAN:
-			bvalue = other.bvalue;
-			break;
-		case Type::STRING:
-			svalue = other.svalue;
-			break;
-		case Type::RGB:
-		case Type::SRGB:
-		case Type::VECTOR:
-		case Type::POINT:
-			vvalue = other.vvalue;
-			break;
-		case Type::SPECTRUM:
-		case Type::BLACKBODY:
-			assert(false);
-			break;
-		case Type::MATRIX:
-		case Type::TRANSLATE:
-		case Type::ROTATE:
-		case Type::SCALE:
-		case Type::LOOKAT:
-			mvalue = other.mvalue;
-			break;
-		default:
-			break;
+			case Type::FLOAT:
+				fvalue = other.fvalue;
+				break;
+			case Type::INTEGER:
+				ivalue = other.ivalue;
+				break;
+			case Type::BOOLEAN:
+				bvalue = other.bvalue;
+				break;
+			case Type::STRING:
+				svalue = other.svalue;
+				break;
+			case Type::RGB:
+			case Type::SRGB:
+			case Type::VECTOR:
+			case Type::POINT:
+				vvalue = other.vvalue;
+				break;
+			case Type::SPECTRUM:
+			case Type::BLACKBODY:
+				assert(false);
+				break;
+			case Type::MATRIX:
+			case Type::TRANSLATE:
+			case Type::ROTATE:
+			case Type::SCALE:
+			case Type::LOOKAT:
+				mvalue = other.mvalue;
+				break;
+			default:
+				break;
 		}
 		std::fill(other.mvalue.pointer(), other.mvalue.pointer() + 16, 0.f);
 		return *this;
 	}
 
+
+	template<uint32_t property_type>
+	struct get_typename;
+	template<uint32_t property_type>
+	const typename get_typename<property_type>::type& getProperty() const;
+
+
 	SPropertyElementData::Type type;
-	std::string name;
 	union
 	{
 		float				fvalue;
@@ -217,10 +188,121 @@ struct SPropertyElementData
 	};
 };
 
+struct SNamedPropertyElement : SPropertyElementData
+{
+	SNamedPropertyElement() : SPropertyElementData(), name("")
+	{
+		std::fill(mvalue.pointer(), mvalue.pointer() + 16, 0.f);
+	}
+	SNamedPropertyElement(const std::string& _type) : SNamedPropertyElement()
+	{
+		auto found = SPropertyElementData::StringToType.find(_type);
+		if (found != SPropertyElementData::StringToType.end())
+			type = found->second;
+	}
+	SNamedPropertyElement(const SNamedPropertyElement& other) : SNamedPropertyElement()
+	{
+		operator=(other);
+	}
+	SNamedPropertyElement(SNamedPropertyElement&& other) : SNamedPropertyElement()
+	{
+		operator=(std::move(other));
+	}
+	~SNamedPropertyElement()
+	{
+		if (type == Type::STRING)
+			_IRR_ALIGNED_FREE((void*)svalue);
+	}
+
+	bool initialize(const char** _atts, const char** outputMatch)
+	{
+		if (type == Type::INVALID || !_atts)
+			return false;
+
+		for (auto it = _atts; *it; it++)
+		{
+			if (core::strcmpi(*it, "name") == 0)
+			{
+				it++;
+				if (*it)
+				{
+					name = *it;
+					continue;
+				}
+				else
+					return false;
+			}
+
+			for (auto i = 0u; i < SPropertyElementData::MaxAttributes; i++)
+				if (core::strcmpi(*it, SPropertyElementData::attributeStrings[type][i]) == 0)
+				{
+					it++;
+					if (!outputMatch[i] && *it)
+					{
+						outputMatch[i] = *it;
+						break;
+					}
+					else
+						return false;
+				}
+		}
+		return true;
+	}
+
+	inline SNamedPropertyElement& operator=(const SNamedPropertyElement& other)
+	{
+		SPropertyElementData::operator=(other);
+		name = other.name;
+		return *this;
+	}
+	inline SNamedPropertyElement& operator=(SNamedPropertyElement&& other)
+	{
+		SPropertyElementData::operator=(std::move(other));
+		std::swap(name, other.name);
+		return *this;
+	}
+
+	std::string name;
+};
+
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::FLOAT>
+{ using type = float; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::INTEGER>
+{ using type = int32_t; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::BOOLEAN>
+{ using type = bool; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::STRING>
+{ using type = const char*; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::RGB>
+{ using type = core::vectorSIMDf; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::SRGB>
+{ using type = core::vectorSIMDf; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::VECTOR>
+{ using type = core::vectorSIMDf; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::POINT>
+{ using type = core::vectorSIMDf; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::SPECTRUM>
+{ using type = void; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::BLACKBODY>
+{ using type = void; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::MATRIX>
+{ using type = core::matrix4SIMD; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::TRANSLATE>
+{ using type = core::matrix4SIMD; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::ROTATE>
+{ using type = core::matrix4SIMD; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::SCALE>
+{ using type = core::matrix4SIMD; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::LOOKAT>
+{ using type = core::matrix4SIMD; };
+template<> struct SPropertyElementData::get_typename<SPropertyElementData::Type::INVALID>
+{ using type = void; };
+
+
 class CPropertyElementManager
 {
 	public:
-		static std::pair<bool, SPropertyElementData> createPropertyData(const char* _el, const char** _atts);
+		static std::pair<bool, SNamedPropertyElement> createPropertyData(const char* _el, const char** _atts);
 
 		static bool retrieveBooleanValue(const std::string& _data, bool& success);
 		static core::matrix4SIMD retrieveMatrix(const std::string& _data, bool& success);

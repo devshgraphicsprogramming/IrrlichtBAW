@@ -10,47 +10,39 @@ namespace ext
 namespace MitsubaLoader
 {
 
-
-enum class ESamplerType
-{
-	NONE,
-	INDEPENDENT,
-	STRATIFIED,
-	LDSAMPLER,
-	HALTON,
-	HAMMERSLEY,
-	SOBOL
-};
-
-struct SSamplerMetadata
-{
-	ESamplerType type;
-	int sampleCount;
-	union
-	{
-		int dimension;
-		int scramble;
-	};
-};
+class CGlobalMitsubaMetadata;
 
 class CElementSampler : public IElement
 {
-public:
-	CElementSampler()
-		:data({ESamplerType::NONE, 4, 4}) {};
+	public:
+		enum Type
+		{
+			INVALID,
+			INDEPENDENT,
+			STRATIFIED,
+			LDSAMPLER,
+			HALTON,
+			HAMMERSLEY,
+			SOBOL
+		};
 
-	virtual bool processAttributes(const char** _atts) override;
-	virtual bool onEndTag(asset::IAssetLoader::IAssetLoaderOverride* _override) override;
-	virtual IElement::Type getType() const override { return IElement::Type::SAMPLER; }
-	virtual std::string getLogName() const override { return "sampler"; }
+		CElementSampler(const char* id) : IElement(id), type(INVALID), sampleCount(4) {}
+		virtual ~CElementSampler() {}
 
-	SSamplerMetadata getMetadata() const { return data; };
+		bool addProperty(SPropertyElementData&& _property) override;
+		bool onEndTag(asset::IAssetLoader::IAssetLoaderOverride* _override, CGlobalMitsubaMetadata* globalMetadata) override;
+		IElement::Type getType() const override { return IElement::Type::SAMPLER; }
+		std::string getLogName() const override { return "sampler"; }
 
-private:
-	SSamplerMetadata data;
-
+		// make these public
+		Type type;
+		int32_t sampleCount;
+		union
+		{
+			int32_t dimension;
+			int32_t scramble;
+		};
 };
-
 
 
 }

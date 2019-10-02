@@ -13,7 +13,34 @@ namespace ext
 namespace MitsubaLoader
 {
 
-const core::unordered_map<std::string,SPropertyElementData::Type,CaseInsensitiveHash,CaseInsensitiveEquals> SPropertyElementData::StringToType = {
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::FLOAT>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::FLOAT>() const
+{ return fvalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::INTEGER>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::INTEGER>() const
+{ return ivalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::BOOLEAN>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::BOOLEAN>() const
+{ return bvalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::STRING>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::STRING>() const
+{ return svalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::RGB>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::RGB>() const
+{ return vvalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::SRGB>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::SRGB>() const
+{ return vvalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::VECTOR>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::VECTOR>() const
+{ return vvalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::POINT>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::POINT>() const
+{ return vvalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::MATRIX>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::MATRIX>() const
+{ return mvalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::TRANSLATE>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::TRANSLATE>() const
+{ return mvalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::ROTATE>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::ROTATE>() const
+{ return mvalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::SCALE>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::SCALE>() const
+{ return mvalue; }
+template<> const typename SPropertyElementData::get_typename<SPropertyElementData::Type::LOOKAT>::type& SPropertyElementData::getProperty<SPropertyElementData::Type::LOOKAT>() const
+{ return mvalue; }
+
+const core::unordered_map<std::string,SPropertyElementData::Type,core::CaseInsensitiveHash,core::CaseInsensitiveEquals> SPropertyElementData::StringToType = {
 	{"float",		SPropertyElementData::Type::FLOAT},
 	{"integer",		SPropertyElementData::Type::INTEGER},
 	{"boolean",		SPropertyElementData::Type::BOOLEAN},
@@ -48,15 +75,15 @@ const char* SPropertyElementData::attributeStrings[SPropertyElementData::Type::I
 	{"x","y","z"} // VECTOR
 };
 
-std::pair<bool, SPropertyElementData> CPropertyElementManager::createPropertyData(const char* _el, const char** _atts)
+std::pair<bool, SNamedPropertyElement> CPropertyElementManager::createPropertyData(const char* _el, const char** _atts)
 {
-	SPropertyElementData result(_el);
+	SNamedPropertyElement result(_el);
 
 	const char* desiredAttributes[SPropertyElementData::MaxAttributes] = { nullptr };
-	if (!result.initialize(desiredAttributes, _atts))
+	if (!result.initialize(_atts, desiredAttributes))
 	{
 		_IRR_DEBUG_BREAK_IF(true);
-		return std::make_pair(false, SPropertyElementData());
+		return std::make_pair(false, SNamedPropertyElement());
 	}
 
 	bool success = true;
@@ -77,10 +104,12 @@ std::pair<bool, SPropertyElementData> CPropertyElementManager::createPropertyDat
 			break;
 		case SPropertyElementData::Type::STRING:
 			FAIL_IF_ATTRIBUTE_NULL(0u)
-			auto len = strlen(desiredAttributes[0]);
-			auto* tmp = (char*)_IRR_ALIGNED_MALLOC(len + 1u, 64u);
-			strcpy(tmp, desiredAttributes[0]); tmp[len] = 0;
-			result.svalue = tmp;
+			{
+				auto len = strlen(desiredAttributes[0]);
+				auto* tmp = (char*)_IRR_ALIGNED_MALLOC(len + 1u, 64u);
+				strcpy(tmp, desiredAttributes[0]); tmp[len] = 0;
+				result.svalue = tmp;
+			}
 			break;
 		case SPropertyElementData::Type::RGB:
 			FAIL_IF_ATTRIBUTE_NULL(0u)
@@ -139,7 +168,7 @@ std::pair<bool, SPropertyElementData> CPropertyElementManager::createPropertyDat
 			result.vvalue = core::normalize(result.vvalue);
 			{
 				core::matrix3x4SIMD m;
-				m.setRotation(core::quaternion::fromAngleAxis(atof(desiredAttributes[0])*core::DEGTORAD,result.vvalue));
+				m.setRotation(core::quaternion::fromAngleAxis(core::radians(atof(desiredAttributes[0])),result.vvalue));
 ;				result.mvalue = core::matrix4SIMD(m);
 			}
 			break;
@@ -190,7 +219,7 @@ std::pair<bool, SPropertyElementData> CPropertyElementManager::createPropertyDat
 		return std::make_pair(true, result);
 
 	ParserLog::invalidXMLFileStructure("invalid element, name:\'" + result.name + "\'"); // in the future print values
-	return std::make_pair(false, SPropertyElementData());
+	return std::make_pair(false, SNamedPropertyElement());
 }
 
 bool CPropertyElementManager::retrieveBooleanValue(const std::string& _data, bool& success)

@@ -12,63 +12,76 @@ namespace ext
 namespace MitsubaLoader
 {
 
+class CGlobalMitsubaMetadata;
+
 class IElement
 {
 	public:
 		enum class Type
 		{
-			NONE,
-			SCENE,
-			SAMPLER,
-			FILM,
+			INTEGRATOR,
 			SENSOR,
+			FILM,
+			RFILTER,
+			SAMPLER,
+
+			SHAPE,
+			INSTANCE,
 			EMITTER,
 
 			//shapes
-			SHAPE,
-
-			//other
-			TRANSFORM,
+			BSDF,
 			TEXTURE,
-			MATERIAL,
-			MEDIUM
+
+			// those that should really be properties
+			TRANSFORM,
+			ANIMATION
 		};
-
 	public:
+		std::string id;
+
+		IElement(const char* _id) : id(_id ? _id:"") {}
 		virtual ~IElement() = default;
+	
+		virtual IElement::Type getType() const = 0;
+		virtual std::string getLogName() const = 0;
 
-		//! default implementation for elements that doesnt have any attributes
-		virtual bool processAttributes(const char** _atts)
-		{
-			if (_atts && _atts[0])
-				return false;
-
-			return true;
-		}
-
+		virtual bool addProperty(SNamedPropertyElement&& _property) = 0;
+		virtual bool onEndTag(asset::IAssetLoader::IAssetLoaderOverride* _override, CGlobalMitsubaMetadata* globalMetadata) = 0;
 		//! default implementation for elements that doesnt have any children
 		virtual bool processChildData(IElement* _child)
 		{
 			return !_child;
 		}
 		//
-	
-		virtual bool onEndTag(asset::IAssetLoader::IAssetLoaderOverride* _override) = 0;
-		virtual IElement::Type getType() const = 0;
-		virtual std::string getLogName() const = 0;
 
-		// TODO refactor
-		void addProperty(const SPropertyElementData& _property)
+		static inline bool getTypeString(std::add_lvalue_reference<const char*>::type outType, const char** _atts)
 		{
-			properties.emplace_back(_property);
+			const char* thrownAwayID;
+			return getTypeAndIDStrings(outType,thrownAwayID,_atts);
 		}
-
-		void addProperty(SPropertyElementData&& _property)
+		static inline bool getTypeAndIDStrings(std::add_lvalue_reference<const char*>::type outType, std::add_lvalue_reference<const char*>::type outID, const char** _atts)
 		{
-			properties.emplace_back(std::move(_property));
+			outType = nullptr;
+			outID = nullptr;
+			if (areAttributesInvalid(_atts,2u))
+				return false;
+			if (core::strcmpi(_atts[0],"type"))
+			{
+				if (!_atts[2] || core::strcmpi(_atts[2],"type"))
+					return false;
+				outType = _atts[3];
+				if (core::strcmpi(_atts[0], "id")==0)
+					outID = _atts[1];
+			}
+			else
+			{
+				outType = _atts[1];
+				if (_atts[2] && core::strcmpi(_atts[2],"id")==0)
+					outID = _atts[3];
+			}
+			return true;
 		}
-
-	protected:
 		static inline bool areAttributesInvalid(const char** _atts, uint32_t minAttrCount)
 		{
 			if (!_atts)
@@ -80,10 +93,19 @@ class IElement
 				i++;
 			}
 
-			return i < minAttrCount || (i % 2u == 0u);
+			return i < minAttrCount || (i % 2u);
 		}
+		static inline bool invalidAttributeCount(const char** _atts, uint32_t attrCount)
+		{
+			if (!_atts)
+				return true;
 
-		core::vector<SPropertyElementData> properties; // kill
+			for (uint32_t i=0u; i<attrCount; i++)
+			if (!_atts[i])
+				return true;
+			
+			return _atts[attrCount];
+		}
 };
 
 }
