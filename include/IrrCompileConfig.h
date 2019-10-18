@@ -140,6 +140,14 @@ the engine will no longer read .png images. */
 #undef _IRR_COMPILE_WITH_LIBPNG_
 #endif
 
+//! Define _IRR_COMPILE_WITH_GLI_ to enable compiling the engine using gli.
+/** This enables the engine to read ktx images. If you comment this out,
+the engine will no longer read .ktx images. */
+#define _IRR_COMPILE_WITH_GLI_
+#ifdef NO_IRR_COMPILE_WITH_GLI_
+#undef _IRR_COMPILE_WITH_GLI_
+#endif
+
 //! Uncomment the following line if you want to ignore the deprecated warnings
 //#define IGNORE_DEPRECATED_WARNING
 
@@ -224,6 +232,10 @@ the engine will no longer read .png images. */
 #define _IRR_COMPILE_WITH_TGA_LOADER_
 #ifdef NO_IRR_COMPILE_WITH_TGA_LOADER_
 #undef _IRR_COMPILE_WITH_TGA_LOADER_
+#endif
+#define _IRR_COMPILE_WITH_KTX_LOADER_
+#ifdef NO_IRR_COMPILE_WITH_KTX_LOADER_
+#undef _IRR_COMPILE_WITH_KTX_LOADER_
 #endif
 
 //! Define _IRR_COMPILE_WITH_JPG_WRITER_ if you want to write .jpg files
