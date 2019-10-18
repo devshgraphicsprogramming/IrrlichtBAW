@@ -201,6 +201,8 @@ set(IRRLICHT_SRCS_SERVER
 set(COMMON_INCLUDE_DIRS
 	${THIRD_PARTY_SOURCE_DIR}/convertutf
 	${THIRD_PARTY_SOURCE_DIR}/utfcpp/source
+	${THIRD_PARTY_SOURCE_DIR}/glm
+	${THIRD_PARTY_SOURCE_DIR}/gli
 	$<TARGET_PROPERTY:png_static,BINARY_DIR> #for dynamically generated pnglibconf.h
 	$<TARGET_PROPERTY:jpeg,BINARY_DIR> #for dynamically generated jconfig.h
 )

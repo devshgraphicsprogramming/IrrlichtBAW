@@ -32,6 +32,7 @@ update_git_submodule(./libjpeg-turbo)
 update_git_submodule(./libjpeg) # soon to be killed
 # exceptions that get automatically cloned
 update_git_submodule(./glm)
+update_git_submodule(./gli)
 update_git_submodule(./freetype2)
 update_git_submodule(./portable-file-dialogs)
 
@@ -158,6 +159,8 @@ option(GLM_TEST_ENABLE "Build unit tests" OFF)
 add_subdirectory(glm EXCLUDE_FROM_ALL)
 set(BUILD_SHARED_LIBS ${_OLD_BUILD_SHARED_LIBS})
 set(BUILD_STATIC_LIBS ${_OLD_BUILD_STATIC_LIBS})
+
+add_subdirectory(gli EXCLUDE_FROM_ALL)
 
 if (IRR_BUILD_MITSUBA_LOADER)
    update_git_submodule(./libexpat)

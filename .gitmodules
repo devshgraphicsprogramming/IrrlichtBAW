@@ -74,3 +74,6 @@
 	path = 3rdparty/CEGUI/glew
 	url = https://github.com/Perlmint/glew-cmake.git
 	branch = master
+[submodule "3rdparty/gli"]
+	path = 3rdparty/gli
+	url = https://github.com/achalpandeyy/gli.git
