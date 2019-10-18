@@ -183,7 +183,19 @@ option(IRR_BUILD_BULLET "Enable Bullet Physics building and integration?" OFF)
 
 option(IRR_BUILD_DOCS "Enable building documentation?" ON)
 
+option(IRR_COMPILE_WITH_GLI "Enable building with GLI?" ON)
+
+option(IRR_COMPILE_WITH_KTX_LOADER "Enable building with KTX LOADER?" ON)
+
 set(THIRD_PARTY_SOURCE_DIR "${PROJECT_SOURCE_DIR}/3rdparty")
+
+if(IRR_COMPILE_WITH_GLI)
+	add_definitions(-D_IRR_COMPILE_WITH_GLI_)
+endif()
+
+if(IRR_COMPILE_WITH_KTX_LOADER)
+	add_definitions(-D_IRR_COMPILE_WITH_KTX_LOADER_)
+endif()
 
 execute_process(COMMAND git submodule init
 		WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
