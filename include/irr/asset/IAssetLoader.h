@@ -78,6 +78,24 @@ public:
         ECF_DUPLICATE_REFERENCES = 0xffffffffffffffffull		//!< meaning identical as to ECF_DUPLICATE_TOP_LEVEL but for any asset in the chain
     };
 
+	//! Parameter flags for a loader
+	/**
+		These are extra flags that have an impact on extraordinary tasks while loading.
+
+		E_LOADER_PARAMETER_FLAGS::ELPF_NONE is default and means that there is nothing to perform.
+		E_LOADER_PARAMETER_FLAGS::ELPF_RIGHT_HANDED_MESHES specifies that a mesh will be flipped in such 
+		a way that it'll look correctly in right-handed camera system. If it isn't set, left-handed camera system
+		becomes valid.
+		E_LOADER_PARAMETER_FLAGS::ELPF_DONT_COMPILE_GLSL means that GLSL won't be compiled to SPIR-V if it is loaded or generated.
+	*/
+
+	enum E_LOADER_PARAMETER_FLAGS : uint64_t
+	{
+		ELPF_NONE = 0,											//!< default value, it doesn't do anything
+		ELPF_RIGHT_HANDED_MESHES = 0x1,							//!< specifies that a mesh will be flipped in such a way that it'll look correctly in right-handed camera system
+		ELPF_DONT_COMPILE_GLSL = 0x2							//!< it states that GLSL won't be compiled to SPIR-V if it is loaded or generated						
+	};
+
 	//! Struct storing important data used for Asset loading process
 	/**
 		Struct stores a key decryptionKey for potentially encrypted files, it is used to decrypt them. You can find an usage
@@ -91,13 +109,14 @@ public:
 
     struct SAssetLoadParams
     {
-        SAssetLoadParams(const size_t& _decryptionKeyLen = 0u, const uint8_t* _decryptionKey = nullptr, const E_CACHING_FLAGS& _cacheFlags = ECF_CACHE_EVERYTHING)
-            : decryptionKeyLen(_decryptionKeyLen), decryptionKey(_decryptionKey), cacheFlags(_cacheFlags)
+        SAssetLoadParams(const size_t& _decryptionKeyLen = 0u, const uint8_t* _decryptionKey = nullptr, const E_CACHING_FLAGS& _cacheFlags = ECF_CACHE_EVERYTHING, const E_LOADER_PARAMETER_FLAGS _loaderFlags = ELPF_NONE)
+            : decryptionKeyLen(_decryptionKeyLen), decryptionKey(_decryptionKey), cacheFlags(_cacheFlags), loaderFlags(_loaderFlags)
         {
         }
-        size_t decryptionKeyLen;			 //!< The size of decryptionKey
-        const uint8_t* decryptionKey;		 //!< The key it used to decrypt potentially encrypted files
-        const E_CACHING_FLAGS cacheFlags;	 //!< Flags defining rules during loading process
+        size_t decryptionKeyLen;				    	//!< The size of decryptionKey
+        const uint8_t* decryptionKey;				    //!< The key it used to decrypt potentially encrypted files
+        const E_CACHING_FLAGS cacheFlags;		     	//!< Flags defining rules during loading process
+		const E_LOADER_PARAMETER_FLAGS loaderFlags;		//!< Flags having an impact on extraordinary tasks during loading process
     };
 
     //! Struct for keeping the state of the current loadoperation for safe threading
