@@ -14,9 +14,13 @@ set(BSDF_VALIDATOR_LIBS
 	${CEGUI_LIBS}
 )
 
+set(BSDF_VALIDATOR_SOURCES
+	BSDFValidatorApp.cpp
+)
+
 
 irr_create_executable_project(
-	""
+	"${BSDF_VALIDATOR_SOURCES}"
 	""
 	"${IRR_EXT_CEGUI_INCLUDE_DIRS}"
 	"${BSDF_VALIDATOR_LIBS}"
