@@ -1,6 +1,5 @@
 # Code::Blocks files
 *.depend
-*.layout
 # Visual Studio Code
 .vscode/*
 # clion
@@ -21,7 +20,6 @@ build/*
 install/*
 # legacy temporary and output directories
 lib/*
-doctemp/*
 source/obj
 source/Irrlicht/libIrrlichtServer.a
 # stuff output by examples

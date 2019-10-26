@@ -1,6 +1,6 @@
-#version 330 core
+#version 430 core
 
-out vec4 pixelColor;
+layout(location = 0) out vec4 pixelColor;
 
 void main()
 {

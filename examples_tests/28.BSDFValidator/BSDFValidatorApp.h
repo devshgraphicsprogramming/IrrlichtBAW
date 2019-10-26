@@ -54,8 +54,8 @@ private:
     static constexpr const char* s_FunctionDefinitionFileDialogTitle = "Select Function Definitions";
     const std::vector<std::string> m_FunctionDefinitionFileDialogFilters =
     {
-            "Shaders (*.frag *.vert)",
-            "*.frag *.vert"
+            "Shaders (*.glsl)",
+            "*.glsl"
     };
 
     ext::cegui::GUIManager* m_GUI;
