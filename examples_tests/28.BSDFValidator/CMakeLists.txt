@@ -16,6 +16,7 @@ set(BSDF_VALIDATOR_LIBS
 
 set(BSDF_VALIDATOR_SOURCES
 	BSDFValidatorApp.cpp
+	ShaderManager.cpp
 )
 
 

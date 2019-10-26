@@ -27,12 +27,19 @@ SOFTWARE.
 #ifndef _IRR_BSDF_VALIDATOR_APP_INCLUDED_
 #define _IRR_BRDF_VALIDATOR_APP_INCLUDED_
 
+#include "SMaterial.h"
+
+/* !!!....TEMPORARY....!!! */
+#include "irr/video/IGPUMeshBuffer.h"
+
 #include <string>
 #include <vector>
 
 // Forward Declarations
+namespace irr { class ShaderManager; }
 namespace irr { class IrrlichtDevice; }
 namespace irr { namespace io { class IFileSystem; } }
+namespace irr { namespace video { class IVideoDriver; } }
 namespace irr { namespace ext { namespace cegui { class GUIManager; } } }
 namespace CEGUI { class EventArgs; }
 
@@ -42,14 +49,16 @@ namespace irr
 class BSDFValidatorApp
 {
 public:
-    BSDFValidatorApp(IrrlichtDevice& device);
+    BSDFValidatorApp(IrrlichtDevice* device);
+    ~BSDFValidatorApp();
 
     void RenderGUI();
+    void RenderMesh();
 
 private:
     void EventFunctionDefinitionBrowse(const CEGUI::EventArgs& e);
     
-    void LoadDefinitions(const std::string& path);
+    std::string LoadDefinitions(const std::string& path);
 
     static constexpr const char* s_FunctionDefinitionFileDialogTitle = "Select Function Definitions";
     const std::vector<std::string> m_FunctionDefinitionFileDialogFilters =
@@ -60,6 +69,12 @@ private:
 
     ext::cegui::GUIManager* m_GUI;
     io::IFileSystem* m_FileSystem;
+    irr::video::IVideoDriver* m_VideoDriver;
+    irr::ShaderManager* m_ShaderManager;
+    irr::video::SGPUMaterial m_Material;
+
+    /* !!!....TEMPORARY....!!! */
+    core::smart_refctd_ptr<irr::video::IGPUMeshBuffer> m_Mesh;
 };
 
 } // namespace irr
