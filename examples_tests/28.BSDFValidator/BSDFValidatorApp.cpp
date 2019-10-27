@@ -44,7 +44,7 @@ BSDFValidatorApp::BSDFValidatorApp(IrrlichtDevice* device)
 {
     m_GUI->init();
     m_GUI->createRootWindowFromLayout(
-        ext::cegui::readWindowLayout("../../media/BSDFValidator/MainWindow.layout")
+        ext::cegui::readWindowLayout("../MainWindow.layout")
     );
 
     // Setup Load Function Definitions Button
@@ -53,6 +53,12 @@ BSDFValidatorApp::BSDFValidatorApp(IrrlichtDevice* device)
         root->getChild("LoadDefinitionsButton"));
     loadDefinitionsButton->subscribeEvent(::CEGUI::PushButton::EventClicked,
         ::CEGUI::Event::Subscriber(&BSDFValidatorApp::EventFunctionDefinitionBrowse, this));
+
+    // Setup Reset Function Definitions Button
+    auto resetDefinitionsButton = static_cast<::CEGUI::PushButton*>(
+        root->getChild("ResetDefinitionsButton"));
+    resetDefinitionsButton->subscribeEvent(::CEGUI::PushButton::EventClicked,
+        ::CEGUI::Event::Subscriber(&BSDFValidatorApp::EventResetFunctionDefinitions, this));
 
     /* !!!....TEMPORARY....!!! */
     // This whole mesh business is just to check if the custom shaders
@@ -146,10 +152,19 @@ void BSDFValidatorApp::EventFunctionDefinitionBrowse(const CEGUI::EventArgs& e)
     {
         std::string functionDefinitions = LoadDefinitions(p.second);
         if (!functionDefinitions.empty())
+        {
+            m_ShaderManager->ResetShader();
             m_ShaderManager->UpdateShader(functionDefinitions);
+        }
         else
             std::cout << "Function Definitions are empty" << std::endl;
     }
+}
+
+void BSDFValidatorApp::EventResetFunctionDefinitions(const CEGUI::EventArgs& e)
+{
+    std::cout << "Resetting function definitions.." << std::endl;
+    m_ShaderManager->ResetShader();
 }
 
 std::string BSDFValidatorApp::LoadDefinitions(const std::string& path)
@@ -171,6 +186,8 @@ std::string BSDFValidatorApp::LoadDefinitions(const std::string& path)
     }
         
     std::cout << std::endl;
+
+    // Should I drop the input file?
     return functionDefinitions;
 }
 

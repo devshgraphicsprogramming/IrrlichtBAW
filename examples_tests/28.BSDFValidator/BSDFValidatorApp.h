@@ -57,6 +57,7 @@ public:
 
 private:
     void EventFunctionDefinitionBrowse(const CEGUI::EventArgs& e);
+    void EventResetFunctionDefinitions(const CEGUI::EventArgs& e);
     
     std::string LoadDefinitions(const std::string& path);
 

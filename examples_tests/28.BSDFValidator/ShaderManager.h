@@ -44,34 +44,37 @@ public:
 
     irr::video::E_MATERIAL_TYPE GetShader() const;
     void UpdateShader(const std::string& functionDefinitions);
+    void ResetShader();
 
 private:
+    // void CheckCompilationErrors();
+
     irr::video::IGPUProgrammingServices* m_Services;
     std::string m_FragmentShaderSource;
 
     static constexpr const char* VERTEX_SHADER_SOURCE =
         R"(#version 430 core
 
-        layout (location = 0) in vec3 vPosition;
+layout (location = 0) in vec3 vPosition;
 
-        void main()
-        {    
-            gl_Position = vec4(vPosition, 1.0);
-        }
+void main()
+{    
+    gl_Position = vec4(vPosition, 1.0);
+}
     )";
     static constexpr const char* FRAGMENT_SHADER_SOURCE =
         R"(#version 430 core
 
-        layout (location = 0) out vec4 pixelColor;
+layout (location = 0) out vec4 pixelColor;
 
-        vec3 bsdf_cos_eval();
-        vec3 bsdf_cos_sample();
-        vec3 bsdf_cos_sample_probability();
+vec3 bsdf_cos_eval();
+vec3 bsdf_cos_sample();
+vec3 bsdf_cos_sample_probability();
 
-        void main()
-        {
-            pixelColor = vec4(1.0, 1.0, 0.0, 1.0);
-        }
+void main()
+{
+    pixelColor = vec4(1.0, 1.0, 0.0, 1.0);
+}
     )";
 };
 

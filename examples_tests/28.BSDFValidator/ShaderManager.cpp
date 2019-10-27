@@ -49,12 +49,18 @@ irr::video::E_MATERIAL_TYPE ShaderManager::GetShader() const
 
 void ShaderManager::UpdateShader(const std::string& functionDefinitions)
 {
+    // Check for shader compile errors before appending
     m_FragmentShaderSource += '\n';
     m_FragmentShaderSource += functionDefinitions;
 
     /* !!!....TEMPORARY....!!! */
     std::cout << "Updated Shader:" << std::endl;
     std::cout << m_FragmentShaderSource << std::endl;
+}
+
+void ShaderManager::ResetShader()
+{
+    m_FragmentShaderSource = FRAGMENT_SHADER_SOURCE;
 }
 
 }   // namespace irr
