@@ -26,14 +26,10 @@ SOFTWARE.
 
 #include "ShaderManager.h"
 
-#include "SMaterial.h"
-#include "IGPUProgrammingServices.h"
+#include "irrlicht.h"
 
 #include <iostream>
 #include <string>
-
-namespace irr
-{
 
 ShaderManager::ShaderManager(irr::video::IGPUProgrammingServices* services)
     : m_Services(services), m_FragmentShaderSource(FRAGMENT_SHADER_SOURCE)
@@ -41,10 +37,12 @@ ShaderManager::ShaderManager(irr::video::IGPUProgrammingServices* services)
 
 irr::video::E_MATERIAL_TYPE ShaderManager::GetShader() const
 {
-    return static_cast<irr::video::E_MATERIAL_TYPE>(m_Services->addHighLevelShaderMaterial(
-        VERTEX_SHADER_SOURCE, nullptr, nullptr, nullptr,
-        m_FragmentShaderSource.c_str()
-    ));
+    int32_t result = m_Services->addHighLevelShaderMaterial(
+        VERTEX_SHADER_SOURCE, nullptr, nullptr, nullptr, m_FragmentShaderSource.c_str());
+    if (result < 0)
+        std::cout << "GLSL shader failed to compile" << std::endl;
+
+    return static_cast<irr::video::E_MATERIAL_TYPE>(result);
 }
 
 void ShaderManager::UpdateShader(const std::string& functionDefinitions)
@@ -62,5 +60,3 @@ void ShaderManager::ResetShader()
 {
     m_FragmentShaderSource = FRAGMENT_SHADER_SOURCE;
 }
-
-}   // namespace irr

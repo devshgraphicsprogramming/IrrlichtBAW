@@ -27,17 +27,11 @@ SOFTWARE.
 #ifndef _IRR_SHADER_MANAGER_INCLUDED_
 #define _IRR_SHADER_MANAGER_INCLUDED_
 
-#include "SMaterial.h"
+#include "irrlicht.h"
 
 #include <string>
 
-// Forward Declarations
-namespace irr { namespace video { class IGPUProgrammingServices; } }
-
-namespace irr
-{
-
-class ShaderManager
+class ShaderManager : public irr::core::IReferenceCounted
 {
 public:
     ShaderManager(irr::video::IGPUProgrammingServices* services);
@@ -77,7 +71,5 @@ void main()
 }
     )";
 };
-
-}   // namespace irr
 
 #endif  // _IRR_SHADER_MANAGER_INCLUDED_

@@ -26,25 +26,22 @@ SOFTWARE.
 
 #include "BSDFValidatorApp.h"
 
-#include "ShaderManager.h"
-#include "IrrlichtDevice.h"
 #include "../../ext/CEGUI/ExtCEGUI.h"
+#include "irrlicht.h"
 
 #include <iostream>
 #include <memory>
 
-namespace irr
-{
 
-BSDFValidatorApp::BSDFValidatorApp(IrrlichtDevice* device)
-    : m_GUI(ext::cegui::createGUIManager(device)),
+BSDFValidatorApp::BSDFValidatorApp(irr::IrrlichtDevice* device)
+    : m_GUI(irr::ext::cegui::createGUIManager(device)),
       m_FileSystem(device->getFileSystem()),
       m_VideoDriver(device->getVideoDriver()),
-      m_ShaderManager(new irr::ShaderManager(m_VideoDriver->getGPUProgrammingServices()))
+      m_ShaderManager(irr::core::make_smart_refctd_ptr<ShaderManager>(m_VideoDriver->getGPUProgrammingServices()))
 {
     m_GUI->init();
     m_GUI->createRootWindowFromLayout(
-        ext::cegui::readWindowLayout("../MainWindow.layout")
+        irr::ext::cegui::readWindowLayout("../MainWindow.layout")
     );
 
     // Setup Load Function Definitions Button
@@ -88,7 +85,7 @@ BSDFValidatorApp::BSDFValidatorApp(IrrlichtDevice* device)
     // Upload mesh to the GPU
     auto upStreamBuff = m_VideoDriver->getDefaultUpStreamingBuffer();
     const void* dataToPlace[2] = { vertices, indices };
-    uint32_t offsets[2] = { video::StreamingTransientDataBufferMT<>::invalid_address,video::StreamingTransientDataBufferMT<>::invalid_address };
+    uint32_t offsets[2] = { irr::video::StreamingTransientDataBufferMT<>::invalid_address, irr::video::StreamingTransientDataBufferMT<>::invalid_address };
     uint32_t alignments[2] = { sizeof(decltype(vertices[0u])),sizeof(decltype(indices[0u])) };
     uint32_t sizes[2] = { sizeof(vertices),sizeof(indices) };
     upStreamBuff->multi_place(2u, (const void* const*)dataToPlace, offsets, sizes, alignments);
@@ -96,39 +93,34 @@ BSDFValidatorApp::BSDFValidatorApp(IrrlichtDevice* device)
     if (upStreamBuff->needsManualFlushOrInvalidate())
     {
         auto upStreamMem = upStreamBuff->getBuffer()->getBoundMemory();
-        m_VideoDriver->flushMappedMemoryRanges({ video::IDriverMemoryAllocation::MappedMemoryRange(upStreamMem, offsets[0],sizes[0]),video::IDriverMemoryAllocation::MappedMemoryRange(upStreamMem,offsets[1],sizes[1]) });
+        m_VideoDriver->flushMappedMemoryRanges({ irr::video::IDriverMemoryAllocation::MappedMemoryRange(upStreamMem, offsets[0],sizes[0]), irr::video::IDriverMemoryAllocation::MappedMemoryRange(upStreamMem,offsets[1],sizes[1]) });
     }
 
-    m_Mesh = core::make_smart_refctd_ptr<video::IGPUMeshBuffer>();
+    m_Mesh = irr::core::make_smart_refctd_ptr<irr::video::IGPUMeshBuffer>();
 
     {
         // Define vertex attribute layout. 
         auto desc = m_VideoDriver->createGPUMeshDataFormatDesc();
 
         {
-            auto buff = core::smart_refctd_ptr<video::IGPUBuffer>(upStreamBuff->getBuffer());
+            auto buff = irr::core::smart_refctd_ptr<irr::video::IGPUBuffer>(upStreamBuff->getBuffer());
 
             // Position attribute.
-            desc->setVertexAttrBuffer(core::smart_refctd_ptr(buff), asset::EVAI_ATTR0, asset::EF_R32G32B32_SFLOAT, sizeof(VertexStruct), 0);
+            desc->setVertexAttrBuffer(irr::core::smart_refctd_ptr(buff), irr::asset::EVAI_ATTR0, irr::asset::EF_R32G32B32_SFLOAT, sizeof(VertexStruct), 0);
 
             desc->setIndexBuffer(std::move(buff));
         }
 
         m_Mesh->setIndexBufferOffset(offsets[1]);
-        m_Mesh->setIndexType(asset::EIT_16BIT);
+        m_Mesh->setIndexType(irr::asset::EIT_16BIT);
         m_Mesh->setIndexCount(6);
         m_Mesh->setMeshDataAndFormat(std::move(desc));
     }
 
-    m_VideoDriver->setTransform(video::E4X3TS_WORLD, core::matrix4x3());
+    m_VideoDriver->setTransform(irr::video::E4X3TS_WORLD, irr::core::matrix4x3());
 
     upStreamBuff->multi_free(2u, (uint32_t*)&offsets, (uint32_t*)&sizes, m_VideoDriver->placeFence());
 
-}
-
-BSDFValidatorApp::~BSDFValidatorApp()
-{
-    delete m_ShaderManager;
 }
 
 void BSDFValidatorApp::RenderGUI()
@@ -171,7 +163,7 @@ std::string BSDFValidatorApp::LoadDefinitions(const std::string& path)
 {
     std::cout << "The file to read is at path: " << path << std::endl;
 
-    io::IReadFile* file = m_FileSystem->createAndOpenFile(path.c_str());
+    irr::io::IReadFile* file = m_FileSystem->createAndOpenFile(path.c_str());
     std::unique_ptr<unsigned char> buffer(new unsigned char[file->getSize()]);
     file->read(buffer.get(), file->getSize());
 
@@ -184,11 +176,10 @@ std::string BSDFValidatorApp::LoadDefinitions(const std::string& path)
         functionDefinitions += buffer.get()[i];
         std::cout << buffer.get()[i];
     }
-        
     std::cout << std::endl;
 
-    // Should I drop the input file?
+    if (file)
+        file->drop();
+
     return functionDefinitions;
 }
-
-}   // irr

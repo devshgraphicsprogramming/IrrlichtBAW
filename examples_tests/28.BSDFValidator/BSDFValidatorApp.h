@@ -25,32 +25,22 @@ SOFTWARE.
 */
 
 #ifndef _IRR_BSDF_VALIDATOR_APP_INCLUDED_
-#define _IRR_BRDF_VALIDATOR_APP_INCLUDED_
+#define _IRR_BSDF_VALIDATOR_APP_INCLUDED_
 
-#include "SMaterial.h"
-
-/* !!!....TEMPORARY....!!! */
-#include "irr/video/IGPUMeshBuffer.h"
+#include "ShaderManager.h"
+#include "irrlicht.h"
 
 #include <string>
 #include <vector>
 
 // Forward Declarations
-namespace irr { class ShaderManager; }
-namespace irr { class IrrlichtDevice; }
-namespace irr { namespace io { class IFileSystem; } }
-namespace irr { namespace video { class IVideoDriver; } }
 namespace irr { namespace ext { namespace cegui { class GUIManager; } } }
 namespace CEGUI { class EventArgs; }
-
-namespace irr
-{
 
 class BSDFValidatorApp
 {
 public:
-    BSDFValidatorApp(IrrlichtDevice* device);
-    ~BSDFValidatorApp();
+    BSDFValidatorApp(irr::IrrlichtDevice* device);
 
     void RenderGUI();
     void RenderMesh();
@@ -68,16 +58,14 @@ private:
             "*.glsl"
     };
 
-    ext::cegui::GUIManager* m_GUI;
-    io::IFileSystem* m_FileSystem;
+    irr::ext::cegui::GUIManager* m_GUI;
+    irr::io::IFileSystem* m_FileSystem;
     irr::video::IVideoDriver* m_VideoDriver;
-    irr::ShaderManager* m_ShaderManager;
+    irr::core::smart_refctd_ptr<ShaderManager> m_ShaderManager;
     irr::video::SGPUMaterial m_Material;
 
     /* !!!....TEMPORARY....!!! */
-    core::smart_refctd_ptr<irr::video::IGPUMeshBuffer> m_Mesh;
+    irr::core::smart_refctd_ptr<irr::video::IGPUMeshBuffer> m_Mesh;
 };
-
-} // namespace irr
 
 #endif // _IRR_BSDF_VALIDATOR_APP_INCLUDED_
