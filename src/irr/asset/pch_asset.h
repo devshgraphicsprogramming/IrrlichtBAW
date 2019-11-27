@@ -15,6 +15,7 @@
 		#include "irr/asset/CImageLoaderJPG.h"
 		#include "irr/asset/CImageLoaderPNG.h"
 		#include "irr/asset/CImageLoaderTGA.h"
+        #include "irr/asset/CGLILoader.h"
 		// writers
 		#include "irr/asset/CImageWriterJPG.h"
 		#include "irr/asset/CImageWriterPNG.h"
