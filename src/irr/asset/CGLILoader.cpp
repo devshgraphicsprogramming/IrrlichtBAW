@@ -38,9 +38,6 @@ namespace irr
 			SContext ctx(_file->getSize());
 			ctx.file = _file;
 
-			//ctx.file->read(ctx.sourceCodeBuffer.get()->getPointer(), ctx.file->getSize());
-			//return SAssetBundle({std::move(ctx.sourceCodeBuffer)});
-
 			const char* filename = _file->getFileName().c_str();
 			gli::texture texture = gli::load(filename);
 			if (texture.empty())
@@ -53,7 +50,7 @@ namespace irr
 			gli::gl::format const format = GL.translate(texture.format(), texture.swizzles());
 			GLenum target = GL.translate(texture.target());
 			
-			GLuint textureName = 0;
+			/*GLuint textureName = 0;
 			glGenTextures(1, &textureName);
 			glBindTexture(target, textureName);
 			glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, 0);
@@ -61,13 +58,24 @@ namespace irr
 			glTexParameteri(target, GL_TEXTURE_SWIZZLE_R, format.Swizzles[0]);
 			glTexParameteri(target, GL_TEXTURE_SWIZZLE_G, format.Swizzles[1]);
 			glTexParameteri(target, GL_TEXTURE_SWIZZLE_B, format.Swizzles[2]);
-			glTexParameteri(target, GL_TEXTURE_SWIZZLE_A, format.Swizzles[3]);
+			glTexParameteri(target, GL_TEXTURE_SWIZZLE_A, format.Swizzles[3]);*/
 			
-			glm::tvec3<GLsizei> const extent(texture.extent());
+			glm::tvec3<GLsizei> const extent(texture.extent()); // it is on 0 level without specyfing it explicitly
 			GLsizei const totalFaces = static_cast<GLsizei>(texture.layers() * texture.faces());
+
+			ICPUImage::SCreationParams imageInfo;
+			imageInfo.format = format;
+			imageInfo.extent.width = extent.x;
+			imageInfo.extent.height = extent.y;
+			imageInfo.extent.depth = extent.z;
+			imageInfo.mipLevels = texture.levels();
+			imageInfo.arrayLayers = texture.layers();
+			imageInfo.samples = ICPUImage::ESCF_1_BIT;
+			imageInfo.flags = static_cast<IImage::E_CREATE_FLAGS>(0u);
 					
+			// to change
 			for (std::size_t layer = 0; layer < texture.layers(); ++layer)
-				for (std::size_t face = 0; face < Texture.faces(); ++face)
+				for (std::size_t face = 0; face < texture.faces(); ++face)
 					for (std::size_t level = 0; level < texture.levels(); ++level)
 					{
 						GLsizei const layerGL = static_cast<GLsizei>(layer);
@@ -78,10 +86,11 @@ namespace irr
 						{
 							case gli::TARGET_1D:
 							{
-								if (gli::is_compressed(texture.format()))
+								imageInfo.type = ICPUImage::ET_1D;
+								/*if (gli::is_compressed(texture.format()))
 									glCompressedTexSubImage1D(Target, static_cast<GLint>(Level), 0, Extent.x, Format.Internal, static_cast<GLsizei>(Texture.size(Level)),Texture.data(Layer, Face, Level));
 								else
-									glTexSubImage1D(Target, static_cast<GLint>(Level), 0, Extent.x, Format.External, Format.Type, Texture.data(Layer, Face, Level));
+									glTexSubImage1D(Target, static_cast<GLint>(Level), 0, Extent.x, Format.External, Format.Type, Texture.data(Layer, Face, Level));*/
 								break;
 							}
 
@@ -92,15 +101,17 @@ namespace irr
 
 							case gli::TARGET_2D:
 							{
+								imageInfo.type = ICPUImage::ET_2D;
 								break;
 							}
 
 							case gli::TARGET_CUBE:
 							{
-								if (gli::is_compressed(Texture.format()))
+								imageInfo.type = ICPUImage::ET_2D;
+								/*if (gli::is_compressed(Texture.format()))
 									glCompressedTexSubImage2D(Target, static_cast<GLint>(Level), 0, 0, Extent.x, Texture.target() == gli::TARGET_1D_ARRAY ? LayerGL : Extent.y, Format.Internal, static_cast<GLsizei>(Texture.size(Level)), Texture.data(Layer, Face, Level));
 								else
-									glTexSubImage2D(Target, static_cast<GLint>(Level), 0, 0, Extent.x, Texture.target() == gli::TARGET_1D_ARRAY ? LayerGL : Extent.y, Format.External, Format.Type, Texture.data(Layer, Face, Level));
+									glTexSubImage2D(Target, static_cast<GLint>(Level), 0, 0, Extent.x, Texture.target() == gli::TARGET_1D_ARRAY ? LayerGL : Extent.y, Format.External, Format.Type, Texture.data(Layer, Face, Level));*/
 								break;
 							}
 							
@@ -116,10 +127,10 @@ namespace irr
 
 							case gli::TARGET_CUBE_ARRAY:
 							{
-								if (gli::is_compressed(Texture.format()))
+								/*if (gli::is_compressed(Texture.format()))
 									glCompressedTexSubImage3D(Target, static_cast<GLint>(Level), 0, 0, 0, Extent.x, Extent.y, Texture.target() == gli::TARGET_3D ? Extent.z : LayerGL, Format.Internal, static_cast<GLsizei>(Texture.size(Level)), Texture.data(Layer, Face, Level));
 								else
-									glTexSubImage3D(Target, static_cast<GLint>(Level), 0, 0, 0, Extent.x, Extent.y, Texture.target() == gli::TARGET_3D ? Extent.z : LayerGL, Format.External, Format.Type, Texture.data(Layer, Face, Level));
+									glTexSubImage3D(Target, static_cast<GLint>(Level), 0, 0, 0, Extent.x, Extent.y, Texture.target() == gli::TARGET_3D ? Extent.z : LayerGL, Format.External, Format.Type, Texture.data(Layer, Face, Level));*/
 								break;
 							}
 					
@@ -130,7 +141,12 @@ namespace irr
 							}
 						}
 					}
-			// return TextureName;
+
+			ctx.file = nullptr;
+			core::smart_refctd_ptr<ICPUImage> image = nullptr;
+			image = ICPUImage::create(std::move(imageInfo));
+
+			return SAssetBundle({ image });
 		}
 
 		bool CBufferLoaderBIN::isALoadableFileFormat(io::IReadFile* _file) const
