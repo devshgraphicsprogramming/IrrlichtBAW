@@ -194,22 +194,21 @@ the engine will no longer read .png images. */
 #ifdef NO_IRR_COMPILE_WITH_PNG_LOADER_
 #undef _IRR_COMPILE_WITH_PNG_LOADER_
 #endif
-//! Define _IRR_COMPILE_WITH_DDS_LOADER_ if you want to load .dds files
-// Outcommented because
-// a) it doesn't compile on 64-bit currently
-// b) anyone enabling it should be aware that S3TC compression algorithm which might be used in that loader
-// is patented in the US by S3 and they do collect license fees when it's used in applications.
-// So if you are unfortunate enough to develop applications for US market and their broken patent system be careful.
-#define _IRR_COMPILE_WITH_DDS_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_DDS_LOADER_
-#undef _IRR_COMPILE_WITH_DDS_LOADER_
-#endif
 //! Define _IRR_COMPILE_WITH_TGA_LOADER_ if you want to load .tga files
 #define _IRR_COMPILE_WITH_TGA_LOADER_
 #ifdef NO_IRR_COMPILE_WITH_TGA_LOADER_
 #undef _IRR_COMPILE_WITH_TGA_LOADER_
 #endif
-
+//! Define _IRR_COMPILE_WITH_GLI_LOADER_ if you want to load .ktx, .dds and .kmg files
+// Pay attention:
+// a) DDS doesn't compile on 64-bit currently (not sure if it is true currently)
+// b) anyone enabling it should be aware that S3TC compression algorithm which might be used in that loader which loads DDS files
+// is patented in the US by S3 and they do collect license fees when it's used in applications.
+// So if you are unfortunate enough to develop applications for US market and their broken patent system be careful.
+#define _IRR_COMPILE_WITH_GLI_LOADER_
+#ifdef NO_IRR_COMPILE_WITH_GLI_LOADER_
+#undef _IRR_COMPILE_WITH_GLI_LOADER_
+#endif
 //! Define _IRR_COMPILE_WITH_JPG_WRITER_ if you want to write .jpg files
 #define _IRR_COMPILE_WITH_JPG_WRITER_
 #ifdef NO_IRR_COMPILE_WITH_JPG_WRITER_

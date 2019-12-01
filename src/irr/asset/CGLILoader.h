@@ -37,6 +37,8 @@ namespace irr
 				io::IReadFile* file;
 				core::smart_refctd_ptr<ICPUBuffer> sourceCodeBuffer;
 			};
+
+			inline E_FORMAT getTranslatedGLIFormat(const gli::texture& texture, const gli::gl& glVersion);
 		};
 	}
 }
