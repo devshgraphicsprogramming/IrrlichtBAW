@@ -30,7 +30,7 @@ namespace irr
 {
 	namespace asset
 	{
-		asset::SAssetBundle CBufferLoaderBIN::loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override, uint32_t _hierarchyLevel)
+		asset::SAssetBundle CGLILoader::loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override, uint32_t _hierarchyLevel)
 		{
 			if (!_file)
 				return {};
@@ -102,12 +102,12 @@ namespace irr
 			return SAssetBundle({ core::smart_refctd_ptr<IAsset>(rawImagesBundle, core::dont_grab) });
 		}
 
-		bool CBufferLoaderBIN::isALoadableFileFormat(io::IReadFile* _file) const
+		bool CGLILoader::isALoadableFileFormat(io::IReadFile* _file) const
 		{
 			return true; // gli provides a function to load files, but we can check files' signature actually if needed
 		}
 
-		inline E_FORMAT getTranslatedGLIFormat(const gli::texture& texture, const gli::gl& glVersion)
+		inline E_FORMAT CGLILoader::getTranslatedGLIFormat(const gli::texture& texture, const gli::gl& glVersion)
 		{
 			using namespace gli;
 			gli::gl::format formatToTranslate = glVersion.translate(texture.format(), texture.swizzles());

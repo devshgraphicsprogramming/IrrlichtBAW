@@ -5,30 +5,31 @@
 #pragma once
 
 #include "irr/asset/IAssetLoader.h"
-#include "irr/asset/ICPUMeshBuffer.h"
 
 namespace irr
 {
 	namespace asset
 	{
-		//! Binaryloader capable of loading source code in binary format
-		class CGLILoader final : public asset::IAssetLoader
+		//! Texture loader capable of loading in .ktx, .dds and .kmg file extensions
+		class CGLILoader : public asset::IAssetLoader
 		{
 		protected:
-			~CGLILoader();
+			virtual ~CGLILoader() {}
 
 		public:
-			bool isALoadableFileFormat(io::IReadFile* _file) const override;
+			CGLILoader() {}
 
-			const char** getAssociatedFileExtensions() const override
+			virtual bool isALoadableFileFormat(io::IReadFile* _file) const override;
+
+			virtual const char** getAssociatedFileExtensions() const override
 			{
 				static const char* extensions[]{ "ktx", "dds", "kmg", nullptr };
 				return extensions;
 			}
 
-			uint64_t getSupportedAssetTypesBitfield() const override { return asset::IAsset::ET_IMAGE; }
+			virtual uint64_t getSupportedAssetTypesBitfield() const override { return asset::IAsset::ET_IMAGE; }
 
-			asset::SAssetBundle loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) override;
+			virtual asset::SAssetBundle loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) override;
 
 		private:
 			struct SContext

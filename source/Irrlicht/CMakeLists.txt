@@ -130,6 +130,7 @@ set(IRRLICHT_SRCS_COMMON
 	${IRR_ROOT_PATH}/src/irr/asset/CImageWriterJPG.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/CImageWriterPNG.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/CImageWriterTGA.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CGLIWriter.cpp
 
 # Video
 	CFPSCounter.cpp

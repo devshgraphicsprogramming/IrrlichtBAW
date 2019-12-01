@@ -35,9 +35,9 @@
 #include "irr/asset/CImageLoaderTGA.h"
 #endif
 
-//#ifdef _IRR_COMPILE_WITH_GLI_LOADER_
+#ifdef _IRR_COMPILE_WITH_GLI_LOADER_
 #include "irr/asset/CGLILoader.h"
-//#endif
+#endif
 
 #ifdef _IRR_COMPILE_WITH_STL_WRITER_
 #include "irr/asset/CSTLMeshWriter.h"
@@ -61,6 +61,10 @@
 
 #ifdef _IRR_COMPILE_WITH_PNG_WRITER_
 #include "irr/asset/CImageWriterPNG.h"
+#endif
+
+#ifdef _IRR_COMPILE_WITH_GLI_WRITER_
+#include "irr/asset/CGLIWriter.h"
 #endif
 
 using namespace irr;
@@ -139,5 +143,8 @@ void IAssetManager::addLoadersAndWriters()
 #endif
 #ifdef _IRR_COMPILE_WITH_PNG_WRITER_
 	addAssetWriter(core::make_smart_refctd_ptr<asset::CImageWriterPNG>());
+#endif
+#ifdef _IRR_COMPILE_WITH_GLI_WRITER_
+	addAssetLoader(core::make_smart_refctd_ptr<asset::CGLIWriter>());
 #endif
 }

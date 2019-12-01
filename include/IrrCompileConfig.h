@@ -224,6 +224,11 @@ the engine will no longer read .png images. */
 #ifdef NO_IRR_COMPILE_WITH_TGA_WRITER_
 #undef _IRR_COMPILE_WITH_TGA_WRITER_
 #endif
+//! Define _IRR_COMPILE_WITH_GLI_WRITER_ if you want to write .ktx, .dds and .kmg files
+#define _IRR_COMPILE_WITH_GLI_WRITER_
+#ifdef NO_IRR_COMPILE_WITH_GLI_WRITER_
+#undef _IRR_COMPILE_WITH_GLI_WRITER_
+#endif
 
 //! Define __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_ if you want to open ZIP and GZIP archives
 /** ZIP reading has several more options below to configure. */
