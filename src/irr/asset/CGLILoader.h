@@ -11,7 +11,7 @@ namespace irr
 	namespace asset
 	{
 		//! Texture loader capable of loading in .ktx, .dds and .kmg file extensions
-		class CGLILoader : public asset::IAssetLoader
+		class CGLILoader final : public asset::IAssetLoader
 		{
 		protected:
 			virtual ~CGLILoader() {}
@@ -19,17 +19,17 @@ namespace irr
 		public:
 			CGLILoader() {}
 
-			virtual bool isALoadableFileFormat(io::IReadFile* _file) const override;
+			bool isALoadableFileFormat(io::IReadFile* _file) const override;
 
-			virtual const char** getAssociatedFileExtensions() const override
+			const char** getAssociatedFileExtensions() const override
 			{
 				static const char* extensions[]{ "ktx", "dds", "kmg", nullptr };
 				return extensions;
 			}
 
-			virtual uint64_t getSupportedAssetTypesBitfield() const override { return asset::IAsset::ET_IMAGE; }
+			uint64_t getSupportedAssetTypesBitfield() const override { return asset::IAsset::ET_IMAGE_VIEW; }
 
-			virtual asset::SAssetBundle loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) override;
+			asset::SAssetBundle loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) override;
 
 		private:
 			struct SContext
@@ -39,7 +39,7 @@ namespace irr
 				core::smart_refctd_ptr<ICPUBuffer> sourceCodeBuffer;
 			};
 
-			inline E_FORMAT getTranslatedGLIFormat(const gli::texture& texture, const gli::gl& glVersion);
+			inline static std::pair<E_FORMAT, ICPUImageView::SComponentMapping> getTranslatedGLIFormat(const gli::texture& texture, const gli::gl& glVersion);
 		};
 	}
 }
