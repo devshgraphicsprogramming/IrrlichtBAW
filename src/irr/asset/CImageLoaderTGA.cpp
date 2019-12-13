@@ -296,7 +296,71 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
     for (auto& img : images)
         img->drop();
     return SAssetBundle({core::smart_refctd_ptr<IAsset>(tex, core::dont_grab)});
+
+
+
 #else
+	core::vector<asset::ICPUImage*> images;
+
+	switch (header.ImageType)
+	{
+	case 1: // uncompressed color-mapped image
+	case 2: // uncompressed rgb image
+	case 3: // uncompressed grayscale image
+	case 10:
+	{
+		const uint64_t imageSize = header.ImageHeight * header.ImageWidth * header.PixelDepth / 8;
+		void* data = new uint8_t[imageSize];
+		core::smart_refctd_ptr<ICPUBuffer> imageBuffer(new ICPUBuffer(imageSize));
+		void* imageBufferDataPointer = imageBuffer->getPointer();
+		auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+
+		_file->read(data, imageSize);
+		imageBufferDataPointer = loadCompressedImage(_file, header);
+
+		ICPUImage::SCreationParams imgInfo;
+		imgInfo.type = ICPUImage::ET_2D;
+		imgInfo.extent.width = header.ImageWidth;
+		imgInfo.extent.height = header.ImageHeight;
+		imgInfo.extent.depth = 1u;
+		imgInfo.mipLevels = 1u;
+		imgInfo.arrayLayers = 1u;
+		imgInfo.samples = ICPUImage::ESCF_1_BIT;
+		imgInfo.format = asset::EF_R8G8B8A8_SRGB;
+		imgInfo.flags = static_cast<IImage::E_CREATE_FLAGS>(0u);
+
+		core::smart_refctd_ptr<ICPUImage> image = ICPUImage::create(std::move(imgInfo));
+		image.get()->setBufferAndRegions(std::move(imageBuffer), regions);
+
+		return { image };
+
+	}
+
+	//case 10: // run-length encoded (rle) true color image
+		/*data = loadcompressedimage(_file, header);
+		break;*/
+
+	//	return {};
+
+	case 0:
+	{
+		/*os::printer::log("the given tga doesn't have image data", _file->getfilename().c_str(), ell_error);
+		if (palette)
+			delete[] palette;*/
+
+		return {};
+	}
+
+	default:
+	{
+		/*os::printer::log("unsupported tga file type", _file->getfilename().c_str(), ell_error);
+		if (palette)
+			delete[] palette;*/
+
+		return {};
+	}
+	}
+
     return {};
 #endif
 }
