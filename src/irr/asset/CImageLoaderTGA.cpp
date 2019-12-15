@@ -300,7 +300,6 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 
 
 #else
-	core::vector<asset::ICPUImage*> images;
 
 	switch (header.ImageType)
 	{
@@ -312,12 +311,10 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 	case 10:
 	{
 		const uint64_t imageSize = header.ImageHeight * header.ImageWidth * header.PixelDepth / 8;
-		void* data = new uint8_t[imageSize];
-		core::smart_refctd_ptr<ICPUBuffer> imageBuffer(new ICPUBuffer(imageSize));
-		void* imageBufferDataPointer = imageBuffer->getPointer();
-
-		_file->read(data, imageSize);
-		imageBufferDataPointer = loadCompressedImage(_file, header);
+		auto imageBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(imageSize);
+		
+		uint8_t* data = static_cast<uint8_t*>(imageBuffer->getPointer());
+		data = loadCompressedImage(_file, header);
 
 		ICPUImage::SCreationParams imgInfo;
 		imgInfo.type = ICPUImage::ET_2D;
@@ -340,7 +337,7 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 		region.imageSubresource.baseArrayLayer = 0u;
 		region.imageSubresource.layerCount = 1u;
 		region.bufferOffset = 0u;
-		region.bufferRowLength = header.ImageWidth * header.PixelDepth / 8;
+		region.bufferRowLength = header.ImageWidth * header.PixelDepth;
 		region.bufferImageHeight = 0u; //tightly packed
 		region.imageOffset = { 0u, 0u, 0u };
 		region.imageExtent = image->getCreationParameters().extent;
