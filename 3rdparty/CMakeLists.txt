@@ -79,6 +79,17 @@ option(PNG_TESTS  "Build libpng tests" OFF)
 add_subdirectory(libpng libpng EXCLUDE_FROM_ALL)
 add_dependencies(png_static zlib) #CMake doesn't get it itself
 
+option(_IRR_COMPILE_WITH_GLI_ "Build with GLI library" ON)
+if(_IRR_COMPILE_WITH_GLI_)
+	set(_OLD_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+	set(_OLD_BUILD_STATIC_LIBS ${BUILD_STATIC_LIBS})
+	set(BUILD_SHARED_LIBS OFF)
+	set(BUILD_STATIC_LIBS OFF)
+	add_subdirectory(gli gli EXCLUDE_FROM_ALL)
+	set(BUILD_SHARED_LIBS ${_OLD_BUILD_SHARED_LIBS})
+	set(BUILD_STATIC_LIBS ${_OLD_BUILD_STATIC_LIBS})
+endif()
+
 irr_adjust_flags()
 
 add_library(zlib OBJECT

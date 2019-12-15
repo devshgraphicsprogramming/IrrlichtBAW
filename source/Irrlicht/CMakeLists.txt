@@ -34,6 +34,9 @@ endif()
 # include utility macros/functions
 include(common)
 
+option(_IRR_COMPILE_WITH_GLI_LOADER_ "Compile with GLI Loader" ON)
+option(_IRR_COMPILE_WITH_GLI_WRITER_ "Compile with GLI Writer" ON)
+
 irr_get_conf_dir(IRRLICHT_CONF_DIR_DEBUG Debug)
 irr_get_conf_dir(IRRLICHT_CONF_DIR_RELEASE Release)
 
@@ -187,7 +190,6 @@ set(COMMON_INCLUDE_DIRS
 	${THIRD_PARTY_SOURCE_DIR}/convertutf
 	${THIRD_PARTY_SOURCE_DIR}/utfcpp/source
 	${THIRD_PARTY_SOURCE_DIR}/glm
-	${THIRD_PARTY_SOURCE_DIR}/gli
 	$<TARGET_PROPERTY:png_static,BINARY_DIR> #for dynamically generated pnglibconf.h
 	$<TARGET_PROPERTY:jpeg,BINARY_DIR> #for dynamically generated jconfig.h
 )
@@ -231,6 +233,13 @@ macro(irr_target_link_libpng _trgt)
 	)
 	target_include_directories(${_trgt} PUBLIC ${IRR_ROOT_PATH}/3rdparty/libpng)
 endmacro()
+macro(irr_target_link_gli _trgt)
+	add_dependencies(${_trgt} gli)
+	target_link_libraries(${_trgt} INTERFACE
+		gli
+	)
+	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/gli)
+endmacro()
 
 # get function for cross-compiler PCH configuration
 include(add_pch)
@@ -252,6 +261,9 @@ irr_target_link_openssl(Irrlicht)
 irr_target_link_shaderc(Irrlicht)
 irr_target_link_libjpeg(Irrlicht)
 irr_target_link_libpng(Irrlicht)
+if(_IRR_COMPILE_WITH_GLI_)
+	irr_target_link_gli(Irrlicht)
+endif()
 
 target_link_libraries(Irrlicht INTERFACE ${OPENGL_gl_LIBRARY})
 if (UNIX)
@@ -328,6 +340,9 @@ irr_target_link_openssl(IrrlichtServer)
 irr_target_link_shaderc(IrrlichtServer)
 irr_target_link_libjpeg(IrrlichtServer)
 irr_target_link_libpng(IrrlichtServer)
+if(_IRR_COMPILE_WITH_GLI_)
+	irr_target_link_gli(IrrlichtServer)
+endif()
 
 target_include_directories(IrrlichtServer PUBLIC 
 	${IRR_ROOT_PATH}/include

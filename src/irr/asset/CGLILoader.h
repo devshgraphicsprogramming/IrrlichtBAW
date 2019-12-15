@@ -4,7 +4,12 @@
 
 #pragma once
 
+#include "IrrCompileConfig.h"
+
+#ifdef _IRR_COMPILE_WITH_GLI_LOADER_
+
 #include "irr/asset/IAssetLoader.h"
+#include "gli/gli.hpp"
 
 namespace irr
 {
@@ -43,3 +48,5 @@ namespace irr
 		};
 	}
 }
+
+#endif // _IRR_COMPILE_WITH_GLI_LOADER_

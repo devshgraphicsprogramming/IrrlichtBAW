@@ -20,11 +20,13 @@ SOFTWARE.
 
 #include "CGLIWriter.h"
 
-//#ifdef _IRR_COMPILE_WITH_GLI_
+#ifdef _IRR_COMPILE_WITH_GLI_WRITER_
+
+#ifdef _IRR_COMPILE_WITH_GLI_
 #include "gli/gli.hpp"
-//#else
-//	#error "Need GLI"
-//#endif
+#else
+#error "It requires GLI library"
+#endif
 
 namespace irr
 {
@@ -61,3 +63,5 @@ namespace irr
 		}
 	}
 }
+
+#endif // _IRR_COMPILE_WITH_GLI_WRITER_

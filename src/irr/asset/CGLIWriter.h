@@ -4,7 +4,12 @@
 
 #pragma once
 
+#include "IrrCompileConfig.h"
+
+#ifdef _IRR_COMPILE_WITH_GLI_WRITER_
+
 #include "irr/asset/IAssetLoader.h"
+#include "gli/gli.hpp"
 
 namespace irr
 {
@@ -25,11 +30,11 @@ namespace irr
 				return extensions;
 			}
 
-			uint64_t getSupportedAssetTypesBitfield() const override { return asset::IAsset::ET_IMAGE; }
+			uint64_t getSupportedAssetTypesBitfield() const override { return asset::IAsset::ET_IMAGE_VIEW; }
 
-			uint32_t getSupportedFlags() override { return asset::EWF_NONE; }
+			uint32_t getSupportedFlags() override { return asset::EWF_NONE | asset::EWF_BINARY | asset::EWF_COMPRESSED; }
 
-			uint32_t getForcedFlags() override { return 0u; }
+			uint32_t getForcedFlags() override { return asset::EWF_NONE | asset::EWF_BINARY | asset::EWF_COMPRESSED; }
 
 			bool writeAsset(io::IWriteFile* _file, const SAssetWriteParams& _params, IAssetWriterOverride* _override = nullptr) override;
 
@@ -41,3 +46,5 @@ namespace irr
 		};
 	}
 }
+
+#endif // _IRR_COMPILE_WITH_GLI_WRITER_

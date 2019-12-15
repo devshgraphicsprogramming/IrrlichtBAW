@@ -20,11 +20,13 @@ SOFTWARE.
 
 #include "CGLILoader.h"
 
-//#ifdef _IRR_COMPILE_WITH_GLI_
+#ifdef _IRR_COMPILE_WITH_GLI_LOADER_
+
+#ifdef _IRR_COMPILE_WITH_GLI_
 #include "gli/gli.hpp"
-//#else
-//	#error "Need GLI"
-//#endif
+#else
+#error "It requires GLI library"
+#endif
 
 namespace irr
 {
@@ -63,6 +65,7 @@ namespace irr
 				}
 				case gli::TARGET_1D_ARRAY:
 				{
+					baseImageType = IImage::ET_1D;
 					imageViewType = ICPUImageView::ET_1D_ARRAY;
 					break;
 				}
@@ -74,6 +77,7 @@ namespace irr
 				}
 				case gli::TARGET_2D_ARRAY:
 				{
+					baseImageType = IImage::ET_2D;
 					imageViewType = ICPUImageView::ET_2D_ARRAY;
 					break;
 				}
@@ -85,21 +89,19 @@ namespace irr
 				}
 				case gli::TARGET_CUBE:
 				{
+					baseImageType = IImage::ET_2D;
 					imageViewType = ICPUImageView::ET_CUBE_MAP;
 					break;
 				}
 				case gli::TARGET_CUBE_ARRAY:
 				{
+					baseImageType = IImage::ET_2D;
 					imageViewType = ICPUImageView::ET_CUBE_MAP_ARRAY;
-					break;
-				}
-				case gli::TARGET_COUNT:
-				{
-					imageViewType = ICPUImageView::ET_COUNT;
 					break;
 				}
 				default:
 				{
+					imageViewType = ICPUImageView::ET_COUNT;
 					assert(0);
 					break;
 				}
@@ -162,7 +164,9 @@ namespace irr
 						region.bufferRowLength = extent[0] * texelFormatByteSize;
 						region.bufferImageHeight = 0u; //tightly packed
 						region.imageOffset = { 0u, 0u, 0u };
-						region.imageExtent = {extent[0], extent[1], extent[2]};
+						region.imageExtent.width = extent[0];
+						region.imageExtent.height = extent[1];
+						region.imageExtent.depth = extent[2];
 					}
 
 				auto& viewImage = core::make_smart_refctd_ptr<ICPUImageView>(*(bundle.second->begin() + mipmapLevel));
@@ -186,7 +190,7 @@ namespace irr
 			gli::gl::format formatToTranslate = glVersion.translate(texture.format(), texture.swizzles());
 			ICPUImageView::SComponentMapping compomentMapping;
 
-			constexpr std::array<std::pair<gli::gl::swizzle, ICPUImageView::SComponentMapping::E_SWIZZLE>, 6> swizzlesMappingAPI =
+			static const core::unordered_map<gli::gl::swizzle, ICPUImageView::SComponentMapping::E_SWIZZLE> swizzlesMappingAPI =
 			{
 				std::make_pair(gl::SWIZZLE_RED, ICPUImageView::SComponentMapping::ES_R),
 				std::make_pair(gl::SWIZZLE_GREEN, ICPUImageView::SComponentMapping::ES_G),
@@ -432,3 +436,5 @@ namespace irr
 		}
 	}
 }
+
+#endif // _IRR_COMPILE_WITH_GLI_LOADER_
