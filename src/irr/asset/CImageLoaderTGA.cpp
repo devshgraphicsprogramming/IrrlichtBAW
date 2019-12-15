@@ -307,13 +307,14 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 	case 1: // uncompressed color-mapped image
 	case 2: // uncompressed rgb image
 	case 3: // uncompressed grayscale image
+
+	//it is temporary and for testing purpose
 	case 10:
 	{
 		const uint64_t imageSize = header.ImageHeight * header.ImageWidth * header.PixelDepth / 8;
 		void* data = new uint8_t[imageSize];
 		core::smart_refctd_ptr<ICPUBuffer> imageBuffer(new ICPUBuffer(imageSize));
 		void* imageBufferDataPointer = imageBuffer->getPointer();
-		auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
 
 		_file->read(data, imageSize);
 		imageBufferDataPointer = loadCompressedImage(_file, header);
@@ -330,7 +331,21 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 		imgInfo.flags = static_cast<IImage::E_CREATE_FLAGS>(0u);
 
 		core::smart_refctd_ptr<ICPUImage> image = ICPUImage::create(std::move(imgInfo));
-		image.get()->setBufferAndRegions(std::move(imageBuffer), regions);
+
+		auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+
+		ICPUImage::SBufferCopy& region = regions->front();
+
+		region.imageSubresource.mipLevel = 0u;
+		region.imageSubresource.baseArrayLayer = 0u;
+		region.imageSubresource.layerCount = 1u;
+		region.bufferOffset = 0u;
+		region.bufferRowLength = header.ImageWidth * header.PixelDepth / 8;
+		region.bufferImageHeight = 0u; //tightly packed
+		region.imageOffset = { 0u, 0u, 0u };
+		region.imageExtent = image->getCreationParameters().extent;
+
+		image->setBufferAndRegions(std::move(imageBuffer), regions);
 
 		return { image };
 
