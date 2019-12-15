@@ -24,7 +24,7 @@ uint8_t *CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHea
 	// I only changed the formatting a little bit.
 	int32_t bytesPerPixel = header.PixelDepth/8;
 	int32_t imageSize =  header.ImageHeight * header.ImageWidth * bytesPerPixel;
-	uint8_t* data = new uint8_t[imageSize];
+	uint8_t* data = _IRR_NEW_ARRAY(uint8_t, imageSize);
 	int32_t currentByte = 0;
 
 	while(currentByte < imageSize)
@@ -142,7 +142,6 @@ static void convertColorFlip(asset::CImageData **image, const T *src, bool flip)
 asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override, uint32_t _hierarchyLevel)
 {
 	STGAHeader header;
-	uint32_t *palette = 0;
 
 	_file->read(&header, sizeof(STGAHeader));
 
@@ -152,7 +151,8 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 
 	if (header.ColorMapType)
 	{
-		// create 32 bit palette
+		//TODO:
+		/*// create 32 bit palette
 		palette = new uint32_t[header.ColorMapLength];
 
 		// read color map
@@ -173,7 +173,7 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 				video::convertColor<EF_B8G8R8A8_SRGB, EF_R8G8B8A8_SRGB>(src_container, palette, header.ColorMapLength, 0u);
 				break;
 		}
-		delete [] colorMap;
+		delete [] colorMap;*/
 	}
 
 #ifndef NEW_SHADERS
@@ -301,59 +301,135 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 
 #else
 
+	const uint64_t imageSize = header.ImageHeight * header.ImageWidth * header.PixelDepth / 8;
+	auto imageBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(imageSize);
+
+	uint8_t* data = static_cast<uint8_t*>(imageBuffer->getPointer());
+
+	ICPUImage::SCreationParams imgInfo;
+	imgInfo.type = ICPUImage::ET_2D;
+	imgInfo.extent.width = header.ImageWidth;
+	imgInfo.extent.height = header.ImageHeight;
+	imgInfo.extent.depth = 1u;
+	imgInfo.mipLevels = 1u;
+	imgInfo.arrayLayers = 1u;
+	imgInfo.samples = ICPUImage::ESCF_1_BIT;
+	imgInfo.flags = static_cast<IImage::E_CREATE_FLAGS>(0u);
+
+	switch (header.PixelDepth)
+	{
+	case 8:
+	{
+		if (header.ImageType != 3)
+		{
+			os::Printer::log("Loading 8-bit non-grayscale is NOT supported.", ELL_ERROR);
+			return {};
+		}
+
+		imgInfo.format = asset::EF_R8_SRGB;
+
+		//TODO:
+		/* if (image) {
+			// Targa formats needs two y-axis flips. The first is a flip to get the Y conforms to OpenGL coords.
+			// The second flip is defined from within the .tga file itself (header.ImageDescriptor & 0x20).
+			if (flip) {
+				// Two flips (OpenGL + Targa) = no flipping. Don't flip the image at all in that case
+				convertColorFlip<uint8_t, EF_R8_SRGB, EF_R8_SRGB>(&image, data, false);
+			}
+			else {
+				// Do an OpenGL flip
+				convertColorFlip<uint8_t, EF_R8_SRGB, EF_R8_SRGB>(&image, data, true);
+			}
+		}*/
+	}
+	break;
+	case 16:
+	{
+		imgInfo.format = asset::EF_A1R5G5B5_UNORM_PACK16;
+
+		//TODO:
+		/*image = new asset::CImageData(nullptr, nullOffset, imageSize, 0, asset::EF_A1R5G5B5_UNORM_PACK16);
+		if (image) {
+			if (flip)
+				convertColorFlip<uint8_t, EF_A1R5G5B5_UNORM_PACK16, EF_A1R5G5B5_UNORM_PACK16>(&image, data, false);
+			else
+				convertColorFlip<uint8_t, EF_A1R5G5B5_UNORM_PACK16, EF_A1R5G5B5_UNORM_PACK16>(&image, data, true);
+		}*/
+	}
+	break;
+	case 24:
+	{
+		imgInfo.format = asset::EF_R8G8B8_SRGB;
+
+		//TODO:
+		/*if (image)
+		//	if (flip)
+		//		convertColorFlip<uint8_t, EF_B8G8R8_SRGB, EF_R8G8B8_SRGB>(&image, data, false);
+		//	else
+		//		convertColorFlip<uint8_t, EF_B8G8R8_SRGB, EF_R8G8B8_SRGB>(&image, data, true);*/
+	}
+	break;
+	case 32:
+	{
+		imgInfo.format = asset::EF_R8G8B8A8_SRGB;
+
+		//TODO:
+		/*if (image)
+			if (flip)
+				convertColorFlip<uint8_t, EF_B8G8R8A8_SRGB, EF_R8G8B8A8_SRGB>(&image, data, false);
+			else
+				convertColorFlip<uint8_t, EF_B8G8R8A8_SRGB, EF_R8G8B8A8_SRGB>(&image, data, true);*/
+	}
+	break;
+	default:
+		os::Printer::log("Unsupported TGA format", _file->getFileName().c_str(), ELL_ERROR);
+		break;
+	}
+
+	core::smart_refctd_ptr<ICPUImage> image = ICPUImage::create(std::move(imgInfo));
+
+	auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+
+	ICPUImage::SBufferCopy& region = regions->front();
+
+	region.imageSubresource.mipLevel = 0u;
+	region.imageSubresource.baseArrayLayer = 0u;
+	region.imageSubresource.layerCount = 1u;
+	region.bufferOffset = 0u;
+	region.bufferRowLength = header.ImageWidth;
+	region.bufferImageHeight = 0u; //tightly packed
+	region.imageOffset = { 0u, 0u, 0u };
+	region.imageExtent = image->getCreationParameters().extent;
+
+	
+
 	switch (header.ImageType)
 	{
 	case 1: // uncompressed color-mapped image
 	case 2: // uncompressed rgb image
 	case 3: // uncompressed grayscale image
-
-	//it is temporary and for testing purpose
-	case 10:
 	{
-		const uint64_t imageSize = header.ImageHeight * header.ImageWidth * header.PixelDepth / 8;
-		auto imageBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(imageSize);
-		
-		uint8_t* data = static_cast<uint8_t*>(imageBuffer->getPointer());
-		data = loadCompressedImage(_file, header);
-
-		ICPUImage::SCreationParams imgInfo;
-		imgInfo.type = ICPUImage::ET_2D;
-		imgInfo.extent.width = header.ImageWidth;
-		imgInfo.extent.height = header.ImageHeight;
-		imgInfo.extent.depth = 1u;
-		imgInfo.mipLevels = 1u;
-		imgInfo.arrayLayers = 1u;
-		imgInfo.samples = ICPUImage::ESCF_1_BIT;
-		imgInfo.format = asset::EF_R8G8B8A8_SRGB;
-		imgInfo.flags = static_cast<IImage::E_CREATE_FLAGS>(0u);
-
-		core::smart_refctd_ptr<ICPUImage> image = ICPUImage::create(std::move(imgInfo));
-
-		auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
-
-		ICPUImage::SBufferCopy& region = regions->front();
-
-		region.imageSubresource.mipLevel = 0u;
-		region.imageSubresource.baseArrayLayer = 0u;
-		region.imageSubresource.layerCount = 1u;
-		region.bufferOffset = 0u;
-		region.bufferRowLength = header.ImageWidth * header.PixelDepth;
-		region.bufferImageHeight = 0u; //tightly packed
-		region.imageOffset = { 0u, 0u, 0u };
-		region.imageExtent = image->getCreationParameters().extent;
+		_file->read(data, imageSize);
 
 		image->setBufferAndRegions(std::move(imageBuffer), regions);
 
 		return { image };
-
 	}
 
-	//case 10: // run-length encoded (rle) true color image
-		/*data = loadcompressedimage(_file, header);
-		break;*/
+	case 10:
+	{
+		memcpy(data, loadCompressedImage(_file, header), imageSize);
 
-	//	return {};
+		//temporary
+		for (uint8_t* texel = data; texel <= (data + (imageSize)); texel += (header.PixelDepth/8))
+		{
+			std::swap(*texel, *(texel + 2));
+		}
 
+		image->setBufferAndRegions(std::move(imageBuffer), regions);
+
+		return { image };
+	}
 	case 0:
 	{
 		/*os::printer::log("the given tga doesn't have image data", _file->getfilename().c_str(), ell_error);
