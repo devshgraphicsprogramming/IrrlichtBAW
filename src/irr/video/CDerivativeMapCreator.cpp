@@ -118,6 +118,7 @@ CDerivativeMapCreator::CDerivativeMapCreator(video::IVideoDriver* _driver) : m_d
 
 core::smart_refctd_ptr<video::IGPUImageView> CDerivativeMapCreator::createDerivMapFromBumpMap(video::IGPUImageView* _bumpMap, float _heightFactor, bool _texWrapRepeat) const
 {
+    // TODO (?)
 #ifdef NEW_MESHES
 	return nullptr;
 #else
