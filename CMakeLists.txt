@@ -35,6 +35,10 @@ if (IRR_COMPILE_WITH_CUDA)
 	enable_language(CUDA)
 endif()
 
+#resource embedding
+if(_IRR_RESOURCE_COMPILE_EVEN_IN_DEBUG)
+	add_subdirectory(src/irr/resource)
+endif()
 
 #
 get_filename_component(IRR_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}" ABSOLUTE)
