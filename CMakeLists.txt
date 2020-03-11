@@ -36,8 +36,10 @@ if (IRR_COMPILE_WITH_CUDA)
 endif()
 
 #resource embedding
-if(_IRR_RESOURCE_COMPILE_EVEN_IN_DEBUG)
-	add_subdirectory(src/irr/resource)
+OPTION(IRR_EMBED_BUILTIN_RESOURCES "Embed builtin resources?" ON)
+
+if(IRR_EMBED_BUILTIN_RESOURCES)
+	add_subdirectory(src/irr/builtin)
 endif()
 
 #

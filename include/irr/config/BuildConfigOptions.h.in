@@ -21,5 +21,6 @@
 
 // extra config
 #cmakedefine __IRR_FAST_MATH
+#cmakedefine _IRR_EMBED_BUILTIN_RESOURCES
 
 #endif //__IRR_BUILD_CONFIG_OPTIONS_H_INCLUDED__
