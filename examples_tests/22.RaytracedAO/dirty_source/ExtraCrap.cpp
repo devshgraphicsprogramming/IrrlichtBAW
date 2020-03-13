@@ -21,9 +21,7 @@ using namespace irr::scene;
 
 const std::string raygenShaderExtensions = R"======(
 #version 430 core
-#define LIGHT_ELEMENT_COUNT 16
-#extension GL_NV_shader_thread_group: enable
-#extension GL_NV_shader_thread_shuffle: enable
+#extension GL_ARB_shader_group_vote : require
 )======";
 
 const std::string lightStruct = R"======(
@@ -65,25 +63,16 @@ layout(binding = 1, std430) restrict readonly buffer CumulativeLightPDF
 	uint lightCDF[];
 };
 
-#if LIGHT_ELEMENT_COUNT==1
-	#define LIGHT_DATA_TYPE SLight
-#elif LIGHT_ELEMENT_COUNT==4
-	#define LIGHT_DATA_TYPE vec4
-#elif LIGHT_ELEMENT_COUNT==16
-	#define LIGHT_DATA_TYPE float
-#else
-	#error "NPOT"
-#endif
 layout(binding = 2, std430, row_major) restrict readonly buffer Lights
 {
-	LIGHT_DATA_TYPE lights[];
+	SLight lights[];
 };
 
 
 #define kPI 3.14159265358979323846
 
 
-#define FLT_MIN -1.17549449e-38
+#define FLT_MIN 1.175494351e-38
 #define FLT_MAX 3.402823466e+38
 
 float linearizeZBufferVal(in float nonLinearZBufferVal)
@@ -232,72 +221,116 @@ uint upper_bound(in uint key, uint size)
 }
 
 
-vec3 light_sample(out vec3 incoming, in uint sampleIx, in uint scramble, inout float maxT, inout bool alive, in vec3 position)
+vec3 special_triangle_sampling_slerp(in vec3 start, in vec3 end, in float dp, in float ct)
+{
+	float sdp = sqrt(1.0 - dp*dp);
+	float st = sqrt(max(1.0 - ct*ct,0.0));
+	float t = st/(st*(1.0-dp)+ct*sdp);
+	return dp>0.9999 ? start:normalize(mix(start,end,t));
+}
+
+//Gram-Schmidt method
+vec3 orthogonalize(in vec3 a, in vec3 b) {
+    //we assume that a is normalized
+	return normalize(b - dot(a,b)*a);
+}
+
+//Function which does triangle sampling proportional to their solid angle.
+//You can find more information and pseudocode here:
+void sampleSphericalTriangle2(inout vec3 color, out vec3 incoming, in vec3 A, in vec3 B, in vec3 C, in vec2 solidSample)
+{
+	//calculate internal angles of spherical triangle: alpha, beta and gamma
+	vec3 BA = orthogonalize(A, B-A);
+	vec3 CA = orthogonalize(A, C-A);
+	vec3 AB = orthogonalize(B, A-B);
+	vec3 CB = orthogonalize(B, C-B);
+	vec3 BC = orthogonalize(C, B-C);
+	vec3 AC = orthogonalize(C, A-C);
+	float alpha = acos(clamp(dot(BA, CA), -1.0, 1.0));
+	float beta = acos(clamp(dot(AB, CB), -1.0, 1.0));
+	float gamma = acos(clamp(dot(BC, AC), -1.0, 1.0));
+
+	//calculate arc lengths for edges of spherical triangle
+	float a = acos(clamp(dot(B, C), -1.0, 1.0));
+	float b = acos(clamp(dot(C, A), -1.0, 1.0));
+	float c = acos(clamp(dot(A, B), -1.0, 1.0));
+
+	float area = alpha + beta + gamma - kPI;
+	color *= area;
+
+	//Use one random variable to select the new area.
+	float area_S = solidSample.x*area;
+
+	//Save the sine and cosine of the angle delta
+	float p = sin(area_S - alpha);
+	float q = cos(area_S - alpha);
+
+	// Compute the pair(u; v) that determines sin(beta_s) and cos(beta_s)
+	float u = q - cos(alpha);
+	float v = p + sin(alpha)*cos(c);
+
+	//Compute the s coordinate as normalized arc length from A to C_s.
+	float cs = ((v*q - u*p)*cos(alpha) - v) / ((v*p + u*q)*sin(alpha));
+
+	//Compute the third vertex of the sub - triangle.
+	vec3 C_s = special_triangle_sampling_slerp(A, C, dot(A,C), clamp(cs, -1.0, 1.0));
+
+	float BC_s = dot(B, C_s);
+	float tcos = 1.0 - solidSample.y * (1.0 - BC_s);
+	incoming = special_triangle_sampling_slerp(B, C_s, BC_s, tcos);
+	//incoming = mix(incoming,A,isnan(incoming));
+}
+
+void light_sample(out vec3 incoming, inout float maxT, inout vec3 throughput, in uint sampleIx, in uint scramble, in vec3 position)
 {
 	uint lightIDSample = ugen_uniform_sample1(0u,sampleIx,scramble);
 	vec2 lightSurfaceSample = gen_uniform_sample2(2u,sampleIx,scramble);
 
 	uint lightID = upper_bound(lightIDSample,uint(lightCDF.length()-1));
 
-	SLight light;
-#if LIGHT_ELEMENT_COUNT>1 && defined(GL_NV_shader_thread_group) && defined(GL_NV_shader_thread_shuffle)
-	uint lightAddr = lightID*LIGHT_ELEMENT_COUNT;
-
-	uint loIx = gl_ThreadInWarpNV & uint(LIGHT_ELEMENT_COUNT-1);
-	
-	LIGHT_DATA_TYPE tmp[LIGHT_ELEMENT_COUNT];
-	for (int i=0; i<LIGHT_ELEMENT_COUNT; i++)
-	{
-		uint baseOffset = shuffleNV(lightAddr,uint(i),LIGHT_ELEMENT_COUNT);
-		tmp[i] = lights[baseOffset+loIx];
-	}
-	for (int i=0; i<LIGHT_ELEMENT_COUNT; i++)
-	{
-		LIGHT_DATA_TYPE tmp2[LIGHT_ELEMENT_COUNT];
-		for (int j=0; j<LIGHT_ELEMENT_COUNT; j++)
-			tmp2[j] = shuffleNV(tmp[i],uint(j),LIGHT_ELEMENT_COUNT);
-		if (loIx==i)
-		{
-			#if LIGHT_ELEMENT_COUNT==16
-				light.factor = vec3(tmp2[0],tmp2[1],tmp2[2]);
-				light.vertices[0] = vec3(tmp2[4],tmp2[5],tmp2[6]);
-				light.vertices[1] = vec3(tmp2[8],tmp2[9],tmp2[10]);
-				light.vertices[2] = vec3(tmp2[12],tmp2[13],tmp2[14]);
-			#else
-				light.factor = tmp2[0].rgb;
-				light.vertices[0] = tmp2[1].rgb;
-				light.vertices[1] = tmp2[2].rgb;
-				light.vertices[2] = tmp2[3].rgb;
-			#endif
-		}
-	}
-#else
-	light = lights[lightID];
-#endif
+	SLight light = lights[lightID];
 
 #define SHADOW_RAY_LEN 0.93
-	vec3 pointOnSurface = light.vertices[0];
 	vec3 shortEdge = light.vertices[1];
 	vec3 longEdge = light.vertices[2];
 
-	lightSurfaceSample.x = sqrt(lightSurfaceSample.x);
-
-	pointOnSurface += (shortEdge*(1.0-lightSurfaceSample.y)+longEdge*lightSurfaceSample.y)*lightSurfaceSample.x;
-
+	vec3 dirToV0 = light.vertices[0]-position;
 	vec3 negLightNormal = cross(shortEdge,longEdge);
 
-	incoming = pointOnSurface-position;
-	float incomingInvLen = inversesqrt(dot(incoming,incoming));
-	incoming *= incomingInvLen;
+	bool alive = dot(negLightNormal,dirToV0)>FLT_MIN;
+	if (anyInvocationARB(alive))
+	{
+	#define SAMPLE_SPHERICAL_TRIANGLE 0
+	#define SAMPLE_SURFACE_TRIANGLE 1
 
-	maxT = SHADOW_RAY_LEN/incomingInvLen;
+	#define SAMPLE_MODE SAMPLE_SPHERICAL_TRIANGLE
 
-	// 1.0/light_probability already baked into the light factor
-	float factor = 0.5*max(dot(negLightNormal,incoming),0.0)*incomingInvLen*incomingInvLen;
+	#if SAMPLE_MODE==SAMPLE_SPHERICAL_TRIANGLE
+		vec3 dirToV0 = light.vertices[0]-position;
 
-	alive = factor>=FLT_MIN; // or other minimum
+		vec3 p[3];
+		p[0] = normalize(dirToV0);
+		p[1] = normalize(dirToV0+shortEdge);
+		p[2] = normalize(dirToV0+longEdge);
 
-	return light.factor*factor;
+		sampleSphericalTriangle2(light.factor,incoming,p[0],p[1],p[2],lightSurfaceSample);
+		maxT = alive ? SHADOW_RAY_LEN*dot(p[0],negLightNormal)/dot(incoming,negLightNormal):0.0;
+
+		throughput = light.factor;
+	#elif SAMPLE_MODE==SAMPLE_SURFACE_TRIANGLE
+		lightSurfaceSample.x = sqrt(lightSurfaceSample.x);
+		incoming = dirToV0+(shortEdge*(1.0-lightSurfaceSample.y)+longEdge*lightSurfaceSample.y)*lightSurfaceSample.x;
+
+		float incomingLen2 = dot(incoming,incoming);
+		float incomingInvLen = inversesqrt(incomingLen2);
+		incoming *= incomingInvLen;
+		maxT = SHADOW_RAY_LEN/incomingInvLen;
+
+		throughput = light.factor*0.5*max(dot(negLightNormal,incoming),0.0)*incomingInvLen*incomingInvLen;
+	#else
+		#error "Unsupported Light Domain Sampling Scheme!"
+	#endif
+	}
 }
 
 void main()
@@ -327,18 +360,22 @@ void main()
 
 		RadeonRays_ray newray;
 		newray.time = 0.0;
-		newray.mask = alive ? -1:0;
+		newray.mask = -1;
 		for (uint i=0u; i<uImageWidth_ImageArea_TotalImageSamples_Samples.w; i++)
 		{
 			vec4 throughput = vec4(0.0,0.0,0.0,-1.0);
 			float error = GET_MAGNITUDE(1.0-revdepth)*0.1;
 
-			newray.maxT = FLT_MAX;
+			newray.maxT = 0.0;
 			if (alive)
-				throughput.rgb = light_sample(newray.direction,uSamplesComputed+i,scramble,newray.maxT,alive,position);
+				light_sample(newray.direction,newray.maxT,throughput.rgb,uSamplesComputed+i,scramble,position);
 
 			newray.origin = position+newray.direction*error/maxAbs3(newray.direction);
+#ifndef RADEON_RAYS_ACTIVE_FLAG_BUG_FIXED
+			newray._active = 1;
+#else
 			newray._active = alive ? 1:0;
+#endif
 			newray.backfaceCulling = int(packHalf2x16(throughput.ab));
 			newray.useless_padding = int(packHalf2x16(throughput.gr));
 
@@ -434,6 +471,7 @@ void main()
 		acc = imageLoad(framebuffer,pixelCoord);
 
 	vec3 color = vec3(0.0);
+#if 0
 	uvec2 groupLocation = gl_WorkGroupID.xy*WORK_GROUP_DIM;
 	for (uint i=0u; i<uImageWidth_ImageArea_TotalImageSamples_Samples.w; i+=RAYS_IN_CACHE)
 	{
@@ -471,9 +509,25 @@ void main()
 		for (uint j=i; j<min(uImageWidth_ImageArea_TotalImageSamples_Samples.w,i+RAYS_IN_CACHE); j++)
 		{
 			uint rayID = baseID+j*uImageWidth_ImageArea_TotalImageSamples_Samples.y;
-			hit[rayID] = -1;
+			hit[rayID] = 0;
 		}
 	}
+#else
+	for (uint i=0u; i<uImageWidth_ImageArea_TotalImageSamples_Samples.w; i++)
+	{
+		int rayID = pixelCoord.x+pixelCoord.y*int(uImageWidth_ImageArea_TotalImageSamples_Samples[0])+int(i*uImageWidth_ImageArea_TotalImageSamples_Samples[1]);
+
+		if (hit[rayID]<0)
+		{
+			vec3 raydiance = vec4(unpackHalf2x16(rays[rayID].useless_padding),unpackHalf2x16(rays[rayID].backfaceCulling)).gra;
+			// TODO: sophisticated BSDF eval
+			raydiance *= max(dot(vec3(rays[rayID].direction),normal),0.0)/kPI;
+			color += raydiance;
+		}
+
+		hit[rayID] = 0;
+	}
+#endif
 
 	if (alive)
 	{
@@ -1511,3 +1565,64 @@ void Renderer::render()
 		m_driver->setViewPort(oldVP);
 	}
 }
+
+
+
+
+
+
+
+#if 0
+
+void sampleSphericalTriangle(in vec3 A, in vec3 B, in vec3 C, in float Xi1, in float Xi2, out vec3 w, out float wPdf)
+{
+	A = normalize(A);
+	B = normalize(B);
+	C = normalize(C);
+
+	float AB = dot(A, B);
+	float AC = dot(A, C);
+	float BC = dot(B, C);
+
+	float AB2 = AB * AB;
+	float AC2 = AC * AC;
+	float BC2 = BC * BC;
+
+
+	float calpha = (BC - AB * AC) * inversesqrt((1.0 - AB2) * (1.0 - AC2));
+	float cbeta = (AC - AB * BC) * inversesqrt((1.0 - AB2) * (1.0 - BC2));
+	float cgamma = (AB - AC * BC) * inversesqrt((1.0 - AC2) * (1.0 - BC2));
+
+	float salpha = sqrt(max(1.0 - calpha * calpha, 0.0));
+	float sbeta = sqrt(max(1.0 - cbeta * cbeta, 0.0));
+	float sgamma = sqrt(max(1.0 - cgamma * cgamma, 0.0));
+
+	float area = PI - acos(calpha * (cbeta * cgamma - sbeta * sgamma) - salpha * (sbeta * cgamma + cbeta * sgamma));
+	wPdf = 1.0 / area;
+
+
+	// TODO: Optimize this sampling part
+	float cSubArea = cos(Xi1 * area);
+	float sSubArea = sqrt(1.0 - cSubArea * cSubArea);
+
+	vec2 pq;
+	pq[0] = sSubArea * calpha - cSubArea * salpha;
+	pq[1] = cSubArea * calpha + sSubArea * salpha;
+
+	float u = pq[1] - calpha;
+	float v = pq[0] + salpha * AB;
+
+	float cs = ((v * pq[1] - u * pq[0]) * calpha - v) / ((v * pq[0] + u * pq[1]) * salpha);
+	vec3 C_s = special_sampling_slerp(A, C, AC, clamp(cs, -1.0, 1.0));
+
+	float BC_s = dot(B, C_s);
+	float tcos = 1.0 - Xi2 * (1.0 - BC_s);
+	vec3 P = special_sampling_slerp(B, C_s, BC_s, tcos);
+
+	w = P;
+}
+
+
+
+
+#endif
