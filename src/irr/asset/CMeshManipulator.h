@@ -11,7 +11,6 @@ namespace irr
 {
 namespace asset
 {
-
 //! An interface for easy manipulation of meshes.
 /** Scale, set alpha value, flip surfaces, and so on. This exists for fixing
 problems with wrong imported or exported meshes quickly after loading. It is

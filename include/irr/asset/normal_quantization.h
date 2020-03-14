@@ -15,6 +15,28 @@ namespace irr
 {
 namespace asset
 {
+	struct QuantNormalHash
+	{
+		size_t operator()(const core::vectorSIMDf& vec) const noexcept
+		{
+			static constexpr uint32_t primeNumber1 = 73856093;
+			static constexpr uint32_t primeNumber2 = 19349663;
+			static constexpr uint32_t primeNumber3 = 83492791;
+
+			return	((static_cast<size_t>(vec.x * std::numeric_limits<uint32_t>::max())* primeNumber1) ^
+				(static_cast<size_t>(vec.y * std::numeric_limits<uint32_t>::max())* primeNumber2) ^
+				(static_cast<size_t>(vec.z * std::numeric_limits<uint32_t>::max())* primeNumber3))& (std::numeric_limits<size_t>::max());
+		}
+	};
+
+	struct QuantNormalEqualTo
+	{
+		bool operator()(const core::vectorSIMDf& lval, const core::vectorSIMDf& rval) const noexcept
+		{
+			return (lval == rval).all();
+		}
+	};
+
 	struct QuantizationCacheEntryBase
 	{
 		core::vectorSIMDf key;
@@ -57,6 +79,11 @@ namespace asset
 	extern core::vector<QuantizationCacheEntry8_8_8>        normalCacheFor8_8_8Quant;
 	extern core::vector<QuantizationCacheEntry16_16_16>     normalCacheFor16_16_16Quant;
 	extern core::vector<QuantizationCacheEntryHalfFloat>    normalCacheForHalfFloatQuant;
+
+	extern core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor2_10_10_10QuantUm;
+	extern core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor8_8_8QuantUm;
+	extern core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor16_16_16QuantUm;
+	extern core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheForHalfFloatQuantUm;
 
     inline core::vectorSIMDf findBestFit(const uint32_t& bits, const core::vectorSIMDf& normal)
     {
@@ -144,11 +171,16 @@ namespace asset
 	{
         QuantizationCacheEntry2_10_10_10 dummySearchVal;
         dummySearchVal.key = normal;
-        auto found = std::lower_bound(normalCacheFor2_10_10_10Quant.begin(),normalCacheFor2_10_10_10Quant.end(),dummySearchVal);
+        /*auto found = std::lower_bound(normalCacheFor2_10_10_10Quant.begin(),normalCacheFor2_10_10_10Quant.end(),dummySearchVal);
         if (found!=normalCacheFor2_10_10_10Quant.end()&&(found->key==normal).all())
         {
             return found->value;
-        }
+        }*/
+
+		auto found = normalCacheFor2_10_10_10QuantUm.find(normal);
+
+		if (found != normalCacheFor2_10_10_10QuantUm.end() && (found->first == normal).all())
+			return found->second;
 
 		constexpr uint32_t quantizationBits = 10u;
 		const auto xorflag = core::vectorSIMDu32((0x1u<<quantizationBits)-1u);
@@ -160,7 +192,7 @@ namespace asset
         uint32_t bestFit = snormVec[0]|(snormVec[1]<<quantizationBits)|(snormVec[2]<<(quantizationBits*2u));
 
 		dummySearchVal.value = bestFit;
-        normalCacheFor2_10_10_10Quant.insert(found,dummySearchVal);
+        normalCacheFor2_10_10_10QuantUm.insert(std::make_pair(found->first, bestFit));
 
 
 	    return bestFit;
@@ -188,7 +220,7 @@ namespace asset
 		dummySearchVal.value = bestFit;
 		normalCacheFor8_8_8Quant.insert(found, dummySearchVal);
 
-	    return *reinterpret_cast<uint32_t*>(bestFit);
+		return bestFit;
 	}
 
 	inline uint64_t quantizeNormal16_16_16(const core::vectorSIMDf& normal)
