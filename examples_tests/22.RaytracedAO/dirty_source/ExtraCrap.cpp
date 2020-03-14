@@ -110,20 +110,16 @@ float GET_MAGNITUDE(in float val)
 	return uintBitsToFloat(floatBitsToUint(x)&2139095040u);
 }
 
-float ULP1(in float val, in uint accuracy)
+float ULP_NEXT(in float val, in uint accuracy)
 {
 	float x = abs(val);
-	return uintBitsToFloat(floatBitsToUint(x) + accuracy)-x;
+	return uintBitsToFloat(floatBitsToUint(x) + accuracy);
 }
-float ULP2(in vec2 val, in uint accuracy)
+
+float ULP(in float val, in uint accuracy)
 {
-	float x = maxAbs2(val);
-	return uintBitsToFloat(floatBitsToUint(x) + accuracy)-x;
-}
-float ULP3(in vec3 val, in uint accuracy)
-{
-	float x = maxAbs3(val);
-	return uintBitsToFloat(floatBitsToUint(x) + accuracy)-x;
+	float next = ULP_NEXT(val,accuracy);
+	return abs(next-val);
 }
 
 
@@ -290,7 +286,6 @@ void light_sample(out vec3 incoming, inout float maxT, inout vec3 throughput, in
 
 	SLight light = lights[lightID];
 
-#define SHADOW_RAY_LEN 0.93
 	vec3 shortEdge = light.vertices[1];
 	vec3 longEdge = light.vertices[2];
 
@@ -303,18 +298,20 @@ void light_sample(out vec3 incoming, inout float maxT, inout vec3 throughput, in
 	#define SAMPLE_SPHERICAL_TRIANGLE 0
 	#define SAMPLE_SURFACE_TRIANGLE 1
 
-	#define SAMPLE_MODE SAMPLE_SPHERICAL_TRIANGLE
+	#define SAMPLE_MODE SAMPLE_SURFACE_TRIANGLE
 
 	#if SAMPLE_MODE==SAMPLE_SPHERICAL_TRIANGLE
 		vec3 dirToV0 = light.vertices[0]-position;
+		float dirToV0InvLen = inversesqrt(dot(dirToV0,dirToV0));
 
 		vec3 p[3];
-		p[0] = normalize(dirToV0);
+		p[0] = dirToV0*dirToV0InvLen;
 		p[1] = normalize(dirToV0+shortEdge);
 		p[2] = normalize(dirToV0+longEdge);
 
 		sampleSphericalTriangle2(light.factor,incoming,p[0],p[1],p[2],lightSurfaceSample);
-		maxT = alive ? SHADOW_RAY_LEN*dot(p[0],negLightNormal)/dot(incoming,negLightNormal):0.0;
+	#define SHADOW_RAY_LEN 0.9999
+		maxT = alive ? SHADOW_RAY_LEN*dot(p[0],negLightNormal)/(dot(incoming,negLightNormal)*dirToV0InvLen):0.0;
 
 		throughput = light.factor;
 	#elif SAMPLE_MODE==SAMPLE_SURFACE_TRIANGLE
@@ -324,7 +321,7 @@ void light_sample(out vec3 incoming, inout float maxT, inout vec3 throughput, in
 		float incomingLen2 = dot(incoming,incoming);
 		float incomingInvLen = inversesqrt(incomingLen2);
 		incoming *= incomingInvLen;
-		maxT = SHADOW_RAY_LEN/incomingInvLen;
+		maxT = 1.0/incomingInvLen;
 
 		throughput = light.factor*0.5*max(dot(negLightNormal,incoming),0.0)*incomingInvLen*incomingInvLen;
 	#else
@@ -370,12 +367,12 @@ void main()
 			if (alive)
 				light_sample(newray.direction,newray.maxT,throughput.rgb,uSamplesComputed+i,scramble,position);
 
-			newray.origin = position+newray.direction*error/maxAbs3(newray.direction);
-#ifndef RADEON_RAYS_ACTIVE_FLAG_BUG_FIXED
-			newray._active = 1;
-#else
-			newray._active = alive ? 1:0;
-#endif
+			error = error/maxAbs3(newray.direction);
+			newray.origin = position+newray.direction*error;
+			newray.maxT -= ULP_NEXT(error,2000u);
+
+			newray._active = newray.maxT>FLT_MIN ? 1:0;
+
 			newray.backfaceCulling = int(packHalf2x16(throughput.ab));
 			newray.useless_padding = int(packHalf2x16(throughput.gr));
 
