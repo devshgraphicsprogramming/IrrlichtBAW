@@ -31,8 +31,8 @@ core::vector<QuantizationCacheEntryHalfFloat> normalCacheForHalfFloatQuant;
 
 core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor2_10_10_10QuantUm;
 core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor8_8_8QuantUm;
-core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor16_16_16QuantUm;
-core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheForHalfFloatQuantUm;
+core::unordered_map<core::vectorSIMDf, uint64_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor16_16_16QuantUm;
+core::unordered_map<core::vectorSIMDf, uint64_t, QuantNormalHash, QuantNormalEqualTo> normalCacheForHalfFloatQuantUm;
 
 
 //! Flips the direction of surfaces. Changes backfacing triangles to frontfacing

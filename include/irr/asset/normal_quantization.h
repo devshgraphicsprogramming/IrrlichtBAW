@@ -82,8 +82,8 @@ namespace asset
 
 	extern core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor2_10_10_10QuantUm;
 	extern core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor8_8_8QuantUm;
-	extern core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor16_16_16QuantUm;
-	extern core::unordered_map<core::vectorSIMDf, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheForHalfFloatQuantUm;
+	extern core::unordered_map<core::vectorSIMDf, uint64_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor16_16_16QuantUm;
+	extern core::unordered_map<core::vectorSIMDf, uint64_t, QuantNormalHash, QuantNormalEqualTo> normalCacheForHalfFloatQuantUm;
 
     inline core::vectorSIMDf findBestFit(const uint32_t& bits, const core::vectorSIMDf& normal)
     {
@@ -169,14 +169,6 @@ namespace asset
 
 	inline uint32_t quantizeNormal2_10_10_10(const core::vectorSIMDf &normal)
 	{
-        QuantizationCacheEntry2_10_10_10 dummySearchVal;
-        dummySearchVal.key = normal;
-        /*auto found = std::lower_bound(normalCacheFor2_10_10_10Quant.begin(),normalCacheFor2_10_10_10Quant.end(),dummySearchVal);
-        if (found!=normalCacheFor2_10_10_10Quant.end()&&(found->key==normal).all())
-        {
-            return found->value;
-        }*/
-
 		auto found = normalCacheFor2_10_10_10QuantUm.find(normal);
 
 		if (found != normalCacheFor2_10_10_10QuantUm.end() && (found->first == normal).all())
@@ -191,21 +183,17 @@ namespace asset
         
         uint32_t bestFit = snormVec[0]|(snormVec[1]<<quantizationBits)|(snormVec[2]<<(quantizationBits*2u));
 
-		dummySearchVal.value = bestFit;
-        normalCacheFor2_10_10_10QuantUm.insert(std::make_pair(found->first, bestFit));
-
+        normalCacheFor2_10_10_10QuantUm.insert(std::make_pair(normal, bestFit));
 
 	    return bestFit;
 	}
 
 	inline uint32_t quantizeNormal888(const core::vectorSIMDf &normal)
 	{
-		QuantizationCacheEntry8_8_8 dummySearchVal;
-		dummySearchVal.key = normal;
-		auto found = std::lower_bound(normalCacheFor8_8_8Quant.begin(), normalCacheFor8_8_8Quant.end(), dummySearchVal);
-		if (found != normalCacheFor8_8_8Quant.end() && (found->key == normal).all())
+		auto found = normalCacheFor8_8_8QuantUm.find(normal);
+		if (found != normalCacheFor8_8_8QuantUm.end() && (found->first == normal).all())
 		{
-			return found->value;
+			return found->second;
 		}
 		
 		constexpr uint32_t quantizationBits = 8u;
@@ -217,20 +205,17 @@ namespace asset
         
         uint32_t bestFit = snormVec[0]|(snormVec[1]<<quantizationBits)|(snormVec[2]<<(quantizationBits*2u));
 
-		dummySearchVal.value = bestFit;
-		normalCacheFor8_8_8Quant.insert(found, dummySearchVal);
+		normalCacheFor8_8_8QuantUm.insert(std::make_pair(normal, bestFit));
 
 		return bestFit;
 	}
 
 	inline uint64_t quantizeNormal16_16_16(const core::vectorSIMDf& normal)
 	{
-		QuantizationCacheEntry16_16_16 dummySearchVal;
-		dummySearchVal.key = normal;
-		auto found = std::lower_bound(normalCacheFor16_16_16Quant.begin(), normalCacheFor16_16_16Quant.end(), dummySearchVal);
-		if (found != normalCacheFor16_16_16Quant.end() && (found->key == normal).all())
+		auto found = normalCacheFor16_16_16QuantUm.find(normal);
+		if (found != normalCacheFor16_16_16QuantUm.end() && (found->first == normal).all())
 		{
-			return found->value;
+			return found->second;
 		}
 
 		uint16_t bestFit[4]{0u,0u,0u,0u};
@@ -246,20 +231,17 @@ namespace asset
 		bestFit[1] = snormVec[1];
 		bestFit[2] = snormVec[2];
 
-		dummySearchVal.value = *reinterpret_cast<uint64_t*>(bestFit);
-		normalCacheFor16_16_16Quant.insert(found, dummySearchVal);
+		normalCacheFor16_16_16QuantUm.insert(std::make_pair(normal, reinterpret_cast<uint64_t>(bestFit)));
 
 		return *reinterpret_cast<uint64_t*>(bestFit);
 	}
 
 	inline uint64_t quantizeNormalHalfFloat(const core::vectorSIMDf& normal)
 	{
-		QuantizationCacheEntryHalfFloat dummySearchVal;
-		dummySearchVal.key = normal;
-		auto found = std::lower_bound(normalCacheForHalfFloatQuant.begin(), normalCacheForHalfFloatQuant.end(), dummySearchVal);
-		if (found != normalCacheForHalfFloatQuant.end() && (found->key == normal).all())
+		auto found = normalCacheForHalfFloatQuantUm.find(normal);
+		if (found != normalCacheForHalfFloatQuantUm.end() && (found->first == normal).all())
 		{
-			return found->value;
+			return found->second;
 		}
 
 		uint16_t bestFit[4] {
@@ -269,8 +251,8 @@ namespace asset
 			0u
 		};
 
-		dummySearchVal.value = *reinterpret_cast<uint64_t*>(bestFit);
-		normalCacheForHalfFloatQuant.insert(found, dummySearchVal);
+		
+		normalCacheForHalfFloatQuantUm.insert(std::make_pair(normal, reinterpret_cast<uint64_t>(bestFit)));
 
 		return *reinterpret_cast<uint64_t*>(bestFit);
 	}
