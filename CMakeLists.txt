@@ -20,6 +20,8 @@ cmake_minimum_required(VERSION 3.14)
 
 project(Irrlicht LANGUAGES CXX C)
 
+add_definitions("/D_ENABLE_EXTENDED_ALIGNED_STORAGE")
+
 option(IRR_COMPILE_WITH_CUDA "Compile with CUDA interop?" OFF)
 
 # CUDA test

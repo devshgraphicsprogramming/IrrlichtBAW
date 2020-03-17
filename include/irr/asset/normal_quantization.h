@@ -10,11 +10,31 @@
 #include <fstream>
 #include <iterator>
 #include <algorithm>
+#include <iostream>
 
 namespace irr
 {
 namespace asset
 {
+	struct VectorUV
+	{
+		float u;
+		float v;
+	};
+
+	inline VectorUV mapToBarycentric(const core::vectorSIMDf& vec)
+	{
+		//normal to A = [1,0,0], B = [0,1,0], C = [0,0,1] triangle
+		static const core::vector3df_SIMD n(0.577f, 0.577f, 0.577f);
+
+		//point of intersection of vec and triangle - ( n dot A ) / (n dot vec) ) * vec
+		const float r = 0.577f / core::dot(n, vec).x;
+		
+		//[0, 1, 0] + u * [1, -1, 0] + v * [0, -1, 1] = P, so u = Px and v = Py
+		return { r * vec.x, r * vec.z };
+	}
+
+
 	struct QuantNormalHash
 	{
 		size_t operator()(const core::vectorSIMDf& vec) const noexcept
@@ -169,13 +189,17 @@ namespace asset
 
 	inline uint32_t quantizeNormal2_10_10_10(const core::vectorSIMDf &normal)
 	{
-		auto found = normalCacheFor2_10_10_10QuantUm.find(normal);
+		//won't work yet
+		auto found = normalCacheFor2_10_10_10QuantUm.find(core::abs(normal));
 
-		if (found != normalCacheFor2_10_10_10QuantUm.end() && (found->first == normal).all())
+		if (found != normalCacheFor2_10_10_10QuantUm.end() && (found->first == core::abs(normal)).all())
+		{
+
 			return found->second;
+		}
 
 		constexpr uint32_t quantizationBits = 10u;
-		const auto xorflag = core::vectorSIMDu32((0x1u<<quantizationBits)-1u);
+		const auto xorflag = core::vectorSIMDu32((0x1u<<quantizationBits)-1);
         core::vectorSIMDf fit = findBestFit(quantizationBits, normal);
 		auto negativeMask = normal < core::vectorSIMDf(0.f);
 		auto absIntFit = core::vectorSIMDu32(core::abs(fit))^core::mix(core::vectorSIMDu32(0u),core::vectorSIMDu32(xorflag),negativeMask);
