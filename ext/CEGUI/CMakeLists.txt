@@ -1,12 +1,20 @@
 include(../../cmake/common.cmake)
 update_git_submodule(./stb)
 
-
+# to remove later, only adding my source
 set(IRR_EXT_CEGUI_H
   ExtCEGUI.h
 	CEGUIOpenGLState.h
 	CEGUIOpenGLClip.h
 	Helpers.h
+	"IrrlichtBaW/include/ExtGeometryBuffer.h"
+	"IrrlichtBaW/include/ExtImageCodec.h"
+	"IrrlichtBaW/include/ExtRenderer.h"
+	"IrrlichtBaW/include/ExtRenderTarget.h"
+	"IrrlichtBaW/include/ExtShaders.h"
+	"IrrlichtBaW/include/ExtTexture.h"
+	"IrrlichtBaW/include/ExtTextureTarget.h"
+	"IrrlichtBaW/include/ExtViewportTarget.h"
 )
 
 set(IRR_EXT_CEGUI_SRC
@@ -14,6 +22,12 @@ set(IRR_EXT_CEGUI_SRC
 	CEGUIOpenGLState.cpp
 	CEGUIOpenGLClip.cpp
 	Helpers.cpp
+	"IrrlichtBaW/src/ExtGeometryBuffer.cpp"
+	"IrrlichtBaW/src/ExtImageCodec.cpp"
+	"IrrlichtBaW/src/ExtRenderer.cpp"
+	"IrrlichtBaW/src/ExtTexture.cpp"
+	"IrrlichtBaW/src/ExtTextureTarget.cpp"
+	"IrrlichtBaW/src/ExtViewportTarget.cpp"
 )
 
 set(IRR_EXT_CEGUI_EXTERNAL_INCLUDE
