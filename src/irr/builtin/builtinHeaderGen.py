@@ -10,7 +10,7 @@
 import sys
 
 # for getting the file size
-# import os
+import os
 
 if  len(sys.argv) < 4 :
     print(sys.argv[0] + " - Incorrect argument count")
@@ -21,6 +21,7 @@ else:
     cmakeSourceDir = sys.argv[2]
     resourcePaths = sys.argv[3].split(';')
     print(sys.argv[3])
+
     #opening a file
     outp = open(outputFilename,"w+")
 
@@ -49,9 +50,9 @@ else:
 
     #Iterating through input list
     for x in resourcePaths:
-        outp.write('\n\t\template std::pair<const uint8_t*, size_t> get_resource<IRR_CORE_UNIQUE_STRING_LITERAL_TYPE("%s")>();' % x)
+        outp.write('\n\t\ttemplate std::pair<const uint8_t*, size_t> get_resource<IRR_CORE_UNIQUE_STRING_LITERAL_TYPE("%s")>();' % x)
 
 
-    outp.write("\t}\n}")
+    outp.write("\n\t}\n}")
 
     outp.close()

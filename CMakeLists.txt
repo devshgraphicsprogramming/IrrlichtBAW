@@ -35,13 +35,6 @@ if (IRR_COMPILE_WITH_CUDA)
 	enable_language(CUDA)
 endif()
 
-#resource embedding
-OPTION(IRR_EMBED_BUILTIN_RESOURCES "Embed builtin resources?" ON)
-
-if(IRR_EMBED_BUILTIN_RESOURCES)
-	add_subdirectory(src/irr/builtin)
-endif()
-
 #
 get_filename_component(IRR_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}" ABSOLUTE)
 
@@ -248,4 +241,11 @@ endif()
 
 if(IRR_BUILD_DOCS)
 	add_subdirectory(docs)
+endif()
+
+#resource embedding
+OPTION(IRR_EMBED_BUILTIN_RESOURCES "Embed built-in resources?" ON)
+
+if(IRR_EMBED_BUILTIN_RESOURCES)
+	add_subdirectory(src/irr/builtin)
 endif()

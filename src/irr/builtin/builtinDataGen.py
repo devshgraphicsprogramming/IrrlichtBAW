@@ -32,9 +32,9 @@ else:
   
     # writing binary  data of all files in a loop
     for x in resourcePaths:
-        outp.write('\n\ttemplate std::pair<uint8_t*,size_t> get_resource<IRR_CORE_UNIQUE_STRING_LITERAL_TYPE("%s")>()' % x)
-        outp.write('\n\t{')
-        outp.write('\n\t\tstatic const uint8_t data[] = {\n')
+        outp.write('\ntemplate std::pair<uint8_t*,size_t> get_resource<IRR_CORE_UNIQUE_STRING_LITERAL_TYPE("%s")>()' % x)
+        outp.write('\n{')
+        outp.write('\n\tstatic const uint8_t data[] = {\n')
         
         with open(cmakeSourceDir+'/'+x, "rb") as f:
             index = 0
@@ -43,12 +43,12 @@ else:
                 outp.write("0x%s, " % byte.hex())
                 index += 1  
                 if index % 20 == 0 :
-                    outp.write("\n")
+                    outp.write("\n\t")
                 byte = f.read(1)
         # end of file byte
         outp.write("0x0")
-        outp.write('\n\t\t};')
-        outp.write('\n\t\treturn {data,sizeof(data)};')
-        outp.write('\n\t}\n\n')
+        outp.write('\n\t};')
+        outp.write('\n\treturn { data, sizeof(data) };')
+        outp.write('\n}')
 
     outp.close()
