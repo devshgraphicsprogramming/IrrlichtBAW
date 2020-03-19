@@ -13,6 +13,7 @@ function(irr_add_builtin_resource)
   add_custom_target(builtin_resources DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/builtinResources.h" "${CMAKE_CURRENT_SOURCE_DIR}/builtinResourceData.cpp")
   add_dependencies(Irrlicht builtin_resources)
 
+
 endfunction()
 
 

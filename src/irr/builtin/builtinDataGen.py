@@ -28,11 +28,13 @@ else:
   
     outp.write("#include \"irr/builtin/builtinResources.h\"\n\n")
     outp.write("using namespace irr;\n")
-    outp.write("using namespace irr/builtin;\n\n")
+    outp.write("using namespace irr::builtin;\n\n")
+    outp.write("namespace irr {\n")
+    outp.write("\tnamespace builtin {\n\n")
   
     # writing binary  data of all files in a loop
     for x in resourcePaths:
-        outp.write('\ntemplate std::pair<uint8_t*,size_t> get_resource<IRR_CORE_UNIQUE_STRING_LITERAL_TYPE("%s")>()' % x)
+        outp.write('\ntemplate<> const std::pair<const uint8_t*, size_t> get_resource<IRR_CORE_UNIQUE_STRING_LITERAL_TYPE("%s")>()' % x)
         outp.write('\n{')
         outp.write('\n\tstatic const uint8_t data[] = {\n')
         
@@ -50,5 +52,8 @@ else:
         outp.write('\n\t};')
         outp.write('\n\treturn { data, sizeof(data) };')
         outp.write('\n}')
+        outp.write('\ntemplate const std::pair<const uint8_t*, size_t> get_resource<IRR_CORE_UNIQUE_STRING_LITERAL_TYPE("%s")>();\n\n\n'%x)
 
+    outp.write("\n\t}")
+    outp.write("\n}")
     outp.close()
