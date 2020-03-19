@@ -10,7 +10,7 @@
 import sys
 
 # for getting the file size
-# import os
+import os
 
 if  len(sys.argv) < 4 :
     print(sys.argv[0] + " - Incorrect argument count")
@@ -22,12 +22,13 @@ else:
     resourcePaths = sys.argv[3].split(';')
     print(sys.argv[3])
     #opening a file
+
+
     outp = open(outputFilename,"w+")
   
-    outp.write("#include irr/builtin/builtinResources.h\n\n")
+    outp.write("#include \"irr/builtin/builtinResources.h\"\n\n")
     outp.write("using namespace irr;\n")
     outp.write("using namespace irr/builtin;\n\n")
-    outp.write("namespace irr { \n\tnamespace builtin {\n")
   
     # writing binary  data of all files in a loop
     for x in resourcePaths:
@@ -50,5 +51,4 @@ else:
         outp.write('\n\t\treturn {data,sizeof(data)};')
         outp.write('\n\t}\n\n')
 
-    outp.write( "\t}\n}\n")
     outp.close()
