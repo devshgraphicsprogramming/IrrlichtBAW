@@ -268,9 +268,11 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
         return width;
     };
 
-    const uint32_t texelFormatBytesize = getTexelOrBlockBytesize(image->getCreationParameters().format);
+	const auto creationImageParams = image->getCreationParameters();
+	const auto texelFormatBytesize = getTexelOrBlockBytesize(creationImageParams.format);
+	const auto bufferRowLenghtPitch = calcPitchInBlocks(Width, texelFormatBytesize);
+	auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(bufferRowLenghtPitch * creationImageParams.extent.height * getTexelOrBlockBytesize(creationImageParams.format));
 
-    auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(image->getImageDataSizeInBytes());
     auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
     ICPUImage::SBufferCopy& region = regions->front();
     //region.imageSubresource.aspectMask = ...; //waits for Vulkan
@@ -278,7 +280,7 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
     region.imageSubresource.baseArrayLayer = 0u;
     region.imageSubresource.layerCount = 1u;
     region.bufferOffset = 0u;
-    region.bufferRowLength = calcPitchInBlocks(Width, texelFormatBytesize);
+    region.bufferRowLength = bufferRowLenghtPitch;
     region.bufferImageHeight = 0u; //tightly packed
     region.imageOffset = { 0u, 0u, 0u };
     region.imageExtent = image->getCreationParameters().extent;
