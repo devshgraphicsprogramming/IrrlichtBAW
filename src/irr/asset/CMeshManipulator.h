@@ -5,8 +5,6 @@
 #ifndef __C_MESH_MANIPULATOR_H_INCLUDED__
 #define __C_MESH_MANIPULATOR_H_INCLUDED__
 
-#define _ENABLE_EXTENDED_ALIGNED_STORAGE
-
 #include "irr/asset/IMeshManipulator.h"
 
 namespace irr
