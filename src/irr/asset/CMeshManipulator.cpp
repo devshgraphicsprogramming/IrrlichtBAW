@@ -24,10 +24,10 @@ namespace asset
 {
 
 // declared as extern in SVertexManipulator.h
-core::unordered_map<VectorUV, uint32_t, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor2_10_10_10QuantUm;
-core::unordered_map<VectorUV, Vector16u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor8_8_8QuantUm;
-core::unordered_map<VectorUV, Vector16u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor16_16_16QuantUm;
-core::unordered_map<VectorUV, uint64_t, QuantNormalHashUV, QuantNormalEqualTo> normalCacheForHalfFloatQuantUm;
+core::unordered_map<VectorUV, uint32_t, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor2_10_10_10Quant;
+core::unordered_map<VectorUV, Vector16u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor8_8_8Quant;
+core::unordered_map<VectorUV, Vector16u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor16_16_16Quant;
+core::unordered_map<VectorUV, uint64_t, QuantNormalHashUV, QuantNormalEqualTo> normalCacheForHalfFloatQuant;
 
 
 //! Flips the direction of surfaces. Changes backfacing triangles to frontfacing
