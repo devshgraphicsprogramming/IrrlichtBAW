@@ -1168,7 +1168,7 @@ void IrrlichtBaWRendererApp::renderMesh()
 
 void IrrlichtBaWRendererApp::update()
 {
-    //updateMaterial();
+    updateMaterial();
 }
 
 void IrrlichtBaWRendererApp::loadTextureSlot(ETEXTURE_SLOT slot, core::smart_refctd_ptr<irr::video::IGPUImageView> _texture, const std::string& _texName)

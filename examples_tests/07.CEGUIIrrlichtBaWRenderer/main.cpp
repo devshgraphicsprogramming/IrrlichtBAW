@@ -51,7 +51,7 @@ int main()
         driver->beginScene(true, true, video::SColor(255,0,0,0) );
 
         // needed for camera to move
-        smgr->drawAll();
+        //smgr->drawAll();
 
         irrlichtBawApp->update();
         //irrlichtBawApp->renderMesh();
