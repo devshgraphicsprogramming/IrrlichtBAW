@@ -20,7 +20,9 @@ cmake_minimum_required(VERSION 3.14)
 
 project(Irrlicht LANGUAGES CXX C)
 
-add_definitions("/D_ENABLE_EXTENDED_ALIGNED_STORAGE")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	option(ENABLE_EXTENDED_ALIGNED_STORAGE "" ON)
+endif()
 
 option(IRR_COMPILE_WITH_CUDA "Compile with CUDA interop?" OFF)
 
@@ -233,6 +235,10 @@ execute_process(COMMAND git submodule sync --recursive
 add_subdirectory(${THIRD_PARTY_SOURCE_DIR})
 
 add_subdirectory(source/Irrlicht) # Irrlicht code
+
+if(ENABLE_EXTENDED_ALIGNED_STORAGE)
+	add_definitions("/D_ENABLE_EXTENDED_ALIGNED_STORAGE")
+endif()
 
 if(IRR_BUILD_TOOLS)
 	add_subdirectory(tools) # convert2BAW
