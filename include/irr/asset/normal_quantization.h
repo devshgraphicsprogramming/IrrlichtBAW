@@ -34,6 +34,13 @@ namespace asset
 		uint16_t z;
 	};
 
+	struct Vector8u
+	{
+		uint8_t x;
+		uint8_t y;
+		uint8_t z;
+	};
+
 	inline VectorUV mapToBarycentric(const core::vectorSIMDf& vec)
 	{
 		//normal to A = [1,0,0], B = [0,1,0], C = [0,0,1] triangle
@@ -79,8 +86,8 @@ namespace asset
 			static constexpr size_t primeNumber1 = 18446744073709551557;
 			static constexpr size_t primeNumber2 = 4611686018427388273;
 
-			return  ((static_cast<size_t>(vec.u * std::numeric_limits<size_t>::max())* primeNumber1) ^
-				(static_cast<size_t>(vec.v * std::numeric_limits<size_t>::max())* primeNumber2));
+			return  ((static_cast<size_t>(static_cast<double>(vec.u) * std::numeric_limits<size_t>::max())* primeNumber1) ^
+				(static_cast<size_t>(static_cast<double>(vec.v) * std::numeric_limits<size_t>::max())* primeNumber2));
 		}
 	};
 
@@ -99,9 +106,8 @@ namespace asset
 
 	// defined in CMeshManipulator.cpp
 	extern core::unordered_map<VectorUV, uint32_t, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor2_10_10_10Quant;
-	extern core::unordered_map<VectorUV, Vector16u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor8_8_8Quant;
+	extern core::unordered_map<VectorUV, Vector8u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor8_8_8Quant;
 	extern core::unordered_map<VectorUV, Vector16u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor16_16_16Quant;
-	extern core::unordered_map<VectorUV, uint64_t, QuantNormalHashUV, QuantNormalEqualTo> normalCacheForHalfFloatQuant;
 
     inline core::vectorSIMDf findBestFit(const uint32_t& bits, const core::vectorSIMDf& normal)
     {
@@ -196,7 +202,6 @@ namespace asset
 		if (found != normalCacheFor2_10_10_10Quant.end() && (found->first == mapToBarycentric(core::abs(normal))))
 		{
 			const uint32_t absVec = found->second;
-
 			auto vec = core::vectorSIMDu32(absVec, absVec >> quantizationBits, absVec >> quantizationBits * 2) & xorflag;
 
 			return restoreSign<uint32_t>(vec, xorflag, negativeMask, quantizationBits);
@@ -213,7 +218,7 @@ namespace asset
 	    return restoreSign<uint32_t>(absIntFit, xorflag, negativeMask, quantizationBits);
 	}
 
-	inline uint32_t quantizeNormal888(const core::vectorSIMDf &normal)
+	inline uint32_t quantizeNormal888(const core::vectorSIMDf& normal)
 	{
 		constexpr uint32_t quantizationBits = 8u;
 		const auto xorflag = core::vectorSIMDu32((0x1u << quantizationBits) - 1u);
@@ -223,18 +228,19 @@ namespace asset
 		if (found != normalCacheFor8_8_8Quant.end() && (found->first == mapToBarycentric(normal)))
 		{
 			const auto absVec = core::vectorSIMDu32(found->second.x, found->second.y, found->second.z);
+
 			return restoreSign<uint32_t>(absVec, xorflag, negativeMask, quantizationBits);
 		}
 
 		core::vectorSIMDf fit = findBestFit(quantizationBits, normal);
 
 		auto absIntFit = core::vectorSIMDu32(core::abs(fit)) & xorflag;
-        
-		Vector16u bestFit = { absIntFit[0], absIntFit[1], absIntFit[2] };
+
+		Vector8u bestFit = { absIntFit[0], absIntFit[1], absIntFit[2] };
 
 		normalCacheFor8_8_8Quant.insert(std::make_pair(mapToBarycentric(normal), bestFit));
 
-	    return restoreSign<uint32_t>(absIntFit, xorflag, negativeMask, quantizationBits);
+		return restoreSign<uint32_t>(absIntFit, xorflag, negativeMask, quantizationBits);
 	}
 
 	inline uint64_t quantizeNormal16_16_16(const core::vectorSIMDf& normal)
@@ -247,6 +253,7 @@ namespace asset
 		if (found != normalCacheFor16_16_16Quant.end() && (found->first == mapToBarycentric(normal)))
 		{
 			const auto absVec = core::vectorSIMDu32(found->second.x, found->second.y, found->second.z);
+
 			return restoreSign<uint64_t>(absVec, xorflag, negativeMask, quantizationBits);
 		}
 		
@@ -258,29 +265,6 @@ namespace asset
 		normalCacheFor16_16_16Quant.insert(std::make_pair(mapToBarycentric(normal), bestFit));
 
 		return restoreSign<uint64_t>(absIntFit, xorflag, negativeMask, quantizationBits);
-	}
-
-	inline uint64_t quantizeNormalHalfFloat(const core::vectorSIMDf& normal)
-	{
-		//won't work
-
-		auto found = normalCacheForHalfFloatQuant.find(mapToBarycentric(normal));
-		if (found != normalCacheForHalfFloatQuant.end() && (found->first == mapToBarycentric(normal)))
-		{
-			return found->second;
-		}
-
-		uint16_t bestFit[4] {
-			core::Float16Compressor::compress(normal.x),
-			core::Float16Compressor::compress(normal.y),
-			core::Float16Compressor::compress(normal.z),
-			0u
-		};
-
-		
-		normalCacheForHalfFloatQuant.insert(std::make_pair(mapToBarycentric(normal), reinterpret_cast<uint64_t>(bestFit)));
-
-		return *reinterpret_cast<uint64_t*>(bestFit);
 	}
 
 } // end namespace scene

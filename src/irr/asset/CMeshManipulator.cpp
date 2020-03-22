@@ -25,10 +25,8 @@ namespace asset
 
 // declared as extern in SVertexManipulator.h
 core::unordered_map<VectorUV, uint32_t, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor2_10_10_10Quant;
-core::unordered_map<VectorUV, Vector16u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor8_8_8Quant;
+core::unordered_map<VectorUV, Vector8u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor8_8_8Quant;
 core::unordered_map<VectorUV, Vector16u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor16_16_16Quant;
-core::unordered_map<VectorUV, uint64_t, QuantNormalHashUV, QuantNormalEqualTo> normalCacheForHalfFloatQuant;
-
 
 //! Flips the direction of surfaces. Changes backfacing triangles to frontfacing
 //! triangles and vice versa.
@@ -1482,15 +1480,10 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
         case EF_R16G16_SFLOAT:
         case EF_R16G16B16_SFLOAT:
         case EF_R16G16B16A16_SFLOAT:
-			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT) -> core::vectorSIMDf {
-				uint8_t buf[32];
-				((uint64_t*)buf)[0] = quantizeNormalHalfFloat(_in);
+            //no implementation
+            _IRR_DEBUG_BREAK_IF(true);
+            assert(false);
 
-				core::vectorSIMDf retval;
-				ICPUMeshBuffer::getAttribute(retval, buf, EF_R16G16B16A16_SFLOAT);
-				retval.w = 1.f;
-				return retval;
-			};
 			break;
         default: 
             quantFunc = nullptr;
