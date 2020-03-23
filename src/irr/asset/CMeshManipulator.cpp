@@ -1534,6 +1534,19 @@ core::smart_refctd_ptr<ICPUBuffer> IMeshManipulator::idxBufferFromTrianglesFanTo
 	return nullptr;
 }
 
+void IMeshManipulator::loadNormalQuantCacheFromBuffer(E_QUANT_NORM_CACHE_TYPE type, asset::ICPUBuffer* buffer)
+{
+
+}
+void IMeshManipulator::addCacheContentsFromBuffer(E_QUANT_NORM_CACHE_TYPE type, asset::ICPUBuffer* buffer)
+{
+
+}
+void IMeshManipulator::saveCacheToFile(const std::string& path)
+{
+
+}
+
 } // end namespace scene
 } // end namespace irr
 

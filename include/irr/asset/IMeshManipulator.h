@@ -71,6 +71,13 @@ namespace asset
 		};
 		typedef std::function<bool(const IMeshManipulator::SSNGVertexData&, const IMeshManipulator::SSNGVertexData&, ICPUMeshBuffer*)> VxCmpFunction;
 
+		enum E_QUANT_NORM_CACHE_TYPE
+		{
+			Q_2_10_10_10,
+			Q_8_8_8,
+			Q_16_16_16
+		};
+
 	public:
 		//! Flips the direction of surfaces.
 		/** Changes backfacing triangles to frontfacing
@@ -363,6 +370,15 @@ namespace asset
 
 			return retval;
 		}
+		//!
+		static void loadNormalQuantCacheFromBuffer(E_QUANT_NORM_CACHE_TYPE type, asset::ICPUBuffer* buffer);
+
+		//!
+		static void addCacheContentsFromBuffer(E_QUANT_NORM_CACHE_TYPE type, asset::ICPUBuffer* buffer);
+
+		//!
+		static void saveCacheToFile(const std::string& path);
+
     protected:
 };
 

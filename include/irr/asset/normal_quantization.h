@@ -6,7 +6,6 @@
 #define __IRR_NORMAL_QUANTIZATION_H_INCLUDED__
 
 #include "irr/core/math/glslFunctions.tcc"
-#include <vector>
 #include <fstream>
 #include <iterator>
 #include <algorithm>
