@@ -66,20 +66,7 @@ namespace asset
 		return restoredAsInt;
 	}
 
-	//will remove later
 	struct QuantNormalHash
-	{
-		size_t operator()(const core::vectorSIMDf& vec) const noexcept
-		{
-			static constexpr size_t primeNumber1 = 73856093;
-			static constexpr size_t primeNumber2 = 19349663;
-
-			return  ((static_cast<size_t>(vec.x * std::numeric_limits<size_t>::max())* primeNumber1) ^
-			         (static_cast<size_t>(vec.y * std::numeric_limits<size_t>::max())* primeNumber2));
-		}
-	};
-
-	struct QuantNormalHashUV
 	{
 		size_t operator()(const VectorUV& vec) const noexcept
 		{
@@ -105,9 +92,9 @@ namespace asset
 	};
 
 	// defined in CMeshManipulator.cpp
-	extern core::unordered_map<VectorUV, uint32_t, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor2_10_10_10Quant;
-	extern core::unordered_map<VectorUV, Vector8u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor8_8_8Quant;
-	extern core::unordered_map<VectorUV, Vector16u, QuantNormalHashUV, QuantNormalEqualTo> normalCacheFor16_16_16Quant;
+	extern core::unordered_map<VectorUV, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor2_10_10_10Quant;
+	extern core::unordered_map<VectorUV, Vector8u, QuantNormalHash, QuantNormalEqualTo> normalCacheFor8_8_8Quant;
+	extern core::unordered_map<VectorUV, Vector16u, QuantNormalHash, QuantNormalEqualTo> normalCacheFor16_16_16Quant;
 
     inline core::vectorSIMDf findBestFit(const uint32_t& bits, const core::vectorSIMDf& normal)
     {
