@@ -5,7 +5,11 @@ namespace irr
 namespace asset
 {
 
-core::vectorSIMDf CQuantNormalCache::findBestFit(const uint32_t& bits, const core::vectorSIMDf& normal) const
+core::unordered_map<VectorUV, uint32_t, QuantNormalHash, QuantNormalEqualTo> CQuantNormalCache::normalCacheFor2_10_10_10Quant;
+core::unordered_map<VectorUV, Vector8u, QuantNormalHash, QuantNormalEqualTo> CQuantNormalCache::normalCacheFor8_8_8Quant;
+core::unordered_map<VectorUV, Vector16u, QuantNormalHash, QuantNormalEqualTo> CQuantNormalCache::normalCacheFor16_16_16Quant;
+
+core::vectorSIMDf CQuantNormalCache::findBestFit(const uint32_t& bits, const core::vectorSIMDf& normal)
 {
 	core::vectorSIMDf fittingVector = normal;
 	fittingVector.makeSafe3D();
@@ -87,7 +91,7 @@ core::vectorSIMDf CQuantNormalCache::findBestFit(const uint32_t& bits, const cor
 	return bestFit;
 }
 
-uint32_t CQuantNormalCache::quantizeNormal2_10_10(const core::vectorSIMDf& normal)
+uint32_t CQuantNormalCache::quantizeNormal2_10_10_10(const core::vectorSIMDf& normal)
 {
 	constexpr uint32_t quantizationBits = 10u;
 	const auto xorflag = core::vectorSIMDu32((0x1u << quantizationBits) - 1u);

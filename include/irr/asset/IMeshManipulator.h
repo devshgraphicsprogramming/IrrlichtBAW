@@ -370,6 +370,7 @@ namespace asset
 
 			return retval;
 		}
+		
 		//!
 		static void loadNormalQuantCacheFromBuffer(E_QUANT_NORM_CACHE_TYPE type, asset::ICPUBuffer* buffer);
 

@@ -12,7 +12,7 @@
 
 #include "os.h"
 #include "irr/asset/asset.h"
-#include "irr/asset/normal_quantization.h"
+#include "CQuantNormalCache.h"
 #include "irr/asset/CMeshManipulator.h"
 #include "irr/asset/CSmoothNormalGenerator.h"
 #include "irr/asset/CForsythVertexCacheOptimizer.h"
@@ -22,11 +22,6 @@ namespace irr
 {
 namespace asset
 {
-
-// declared as extern in SVertexManipulator.h
-core::unordered_map<VectorUV, uint32_t, QuantNormalHash, QuantNormalEqualTo> normalCacheFor2_10_10_10Quant;
-core::unordered_map<VectorUV, Vector8u, QuantNormalHash, QuantNormalEqualTo> normalCacheFor8_8_8Quant;
-core::unordered_map<VectorUV, Vector16u, QuantNormalHash, QuantNormalEqualTo> normalCacheFor16_16_16Quant;
 
 //! Flips the direction of surfaces. Changes backfacing triangles to frontfacing
 //! triangles and vice versa.
@@ -1443,7 +1438,7 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
         case EF_R8G8B8A8_SNORM:
 			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT) -> core::vectorSIMDf {
 				uint8_t buf[32];
-				((uint32_t*)buf)[0] = quantizeNormal888(_in);
+				((uint32_t*)buf)[0] = CQuantNormalCache::quantizeNormal8_8_8(_in);
 
 				core::vectorSIMDf retval;
 				ICPUMeshBuffer::getAttribute(retval, buf, EF_R8G8B8A8_SNORM);
@@ -1454,7 +1449,7 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
 		case EF_A2B10G10R10_SINT_PACK32: // RGB10_A2
 			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT) -> core::vectorSIMDf {
 				uint8_t buf[32];
-				((uint32_t*)buf)[0] = quantizeNormal2_10_10_10(_in);
+				((uint32_t*)buf)[0] = CQuantNormalCache::quantizeNormal2_10_10_10(_in);
 
 				core::vectorSIMDf retval;
 				ICPUMeshBuffer::getAttribute(retval, buf, EF_A2B10G10R10_SINT_PACK32);
@@ -1468,7 +1463,7 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
         case EF_R16G16B16A16_SNORM:
 			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT) -> core::vectorSIMDf {
 				uint8_t buf[32];
-				((uint64_t*)buf)[0] = quantizeNormal16_16_16(_in);
+				((uint64_t*)buf)[0] = CQuantNormalCache::quantizeNormal16_16_16(_in);
 
 				core::vectorSIMDf retval;
 				ICPUMeshBuffer::getAttribute(retval, buf, EF_R16G16B16A16_SNORM);
