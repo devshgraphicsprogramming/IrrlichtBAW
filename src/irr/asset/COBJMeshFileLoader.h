@@ -9,6 +9,7 @@
 #include "irr/asset/ICPUMeshBuffer.h"
 #include "irr/asset/IAssetLoader.h"
 #include "irr/asset/CMTLPipelineMetadata.h"
+#include "CQuantNormalCache.h"
 
 namespace irr
 {
@@ -134,6 +135,8 @@ private:
 
 	IAssetManager* AssetManager;
 	io::IFileSystem* FileSystem;
+
+    CQuantNormalCache quantNormalCache;
 
 	template<typename aType>
 	static inline void performActionBasedOnOrientationSystem(aType& varToHandle, void (*performOnCertainOrientation)(aType& varToHandle))

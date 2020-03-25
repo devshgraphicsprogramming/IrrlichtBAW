@@ -5,11 +5,7 @@ namespace irr
 namespace asset
 {
 
-core::unordered_map<VectorUV, uint32_t, QuantNormalHash, QuantNormalEqualTo> CQuantNormalCache::normalCacheFor2_10_10_10Quant;
-core::unordered_map<VectorUV, Vector8u, QuantNormalHash, QuantNormalEqualTo> CQuantNormalCache::normalCacheFor8_8_8Quant;
-core::unordered_map<VectorUV, Vector16u, QuantNormalHash, QuantNormalEqualTo> CQuantNormalCache::normalCacheFor16_16_16Quant;
-
-core::vectorSIMDf CQuantNormalCache::findBestFit(const uint32_t& bits, const core::vectorSIMDf& normal)
+core::vectorSIMDf CQuantNormalCache::findBestFit(const uint32_t& bits, const core::vectorSIMDf& normal) const
 {
 	core::vectorSIMDf fittingVector = normal;
 	fittingVector.makeSafe3D();
@@ -96,10 +92,11 @@ uint32_t CQuantNormalCache::quantizeNormal2_10_10_10(const core::vectorSIMDf& no
 	constexpr uint32_t quantizationBits = 10u;
 	const auto xorflag = core::vectorSIMDu32((0x1u << quantizationBits) - 1u);
 	const auto negativeMask = normal < core::vectorSIMDf(0.0f);
+	const VectorUV uvMappedNormal = mapToBarycentric(normal);
 
-	auto found = normalCacheFor2_10_10_10Quant.find(mapToBarycentric(core::abs(normal)));
+	auto found = normalCacheFor2_10_10_10Quant.find(uvMappedNormal);
 
-	if (found != normalCacheFor2_10_10_10Quant.end() && (found->first == mapToBarycentric(core::abs(normal))))
+	if (found != normalCacheFor2_10_10_10Quant.end() && (found->first == uvMappedNormal))
 	{
 		const uint32_t absVec = found->second;
 		auto vec = core::vectorSIMDu32(absVec, absVec >> quantizationBits, absVec >> quantizationBits * 2)& xorflag;
@@ -113,7 +110,7 @@ uint32_t CQuantNormalCache::quantizeNormal2_10_10_10(const core::vectorSIMDf& no
 
 	uint32_t absBestFit = absIntFit[0] | (absIntFit[1] << quantizationBits) | (absIntFit[2] << (quantizationBits * 2u));
 
-	normalCacheFor2_10_10_10Quant.insert(std::make_pair(mapToBarycentric(core::abs(normal)), absBestFit));
+	normalCacheFor2_10_10_10Quant.insert(std::make_pair(uvMappedNormal, absBestFit));
 
 	return restoreSign<uint32_t>(absIntFit, xorflag, negativeMask, quantizationBits);
 }
@@ -167,17 +164,18 @@ uint64_t CQuantNormalCache::quantizeNormal16_16_16(const core::vectorSIMDf& norm
 	return restoreSign<uint64_t>(absIntFit, xorflag, negativeMask, quantizationBits);
 }
 
-void CQuantNormalCache::insertIntoCache2_10_10_10(const core::vectorSIMDf& key, const uint32_t quantizedNormal)
+void CQuantNormalCache::insertIntoCache2_10_10_10(const core::vectorSIMDf& normal, const uint32_t quantizedNormal)
 {
-
+	normalCacheFor2_10_10_10Quant.insert(std::make_pair(mapToBarycentric(normal), quantizedNormal));
 }
-void CQuantNormalCache::insertIntoCache8_8_8(const core::vectorSIMDf& key, const uint32_t quantizedNormal)
-{
 
+void CQuantNormalCache::insertIntoCache8_8_8(const core::vectorSIMDf& normal, const uint32_t quantizedNormal)
+{
+	//TODO
 }
-void CQuantNormalCache::insertIntoCache16_16_16(const core::vectorSIMDf& key, const uint32_t quantizedNormal)
+void CQuantNormalCache::insertIntoCache16_16_16(const core::vectorSIMDf& normal, const uint64_t quantizedNormal)
 {
-
+	//TODO
 }
 
 

@@ -285,7 +285,7 @@ asset::SAssetBundle COBJMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 					core::vectorSIMDf simdNormal;
 					simdNormal.set(normalsBuffer[Idx[2]].data);
                     simdNormal.makeSafe3D();
-					v.normal32bit = asset::CQuantNormalCache::quantizeNormal2_10_10_10(simdNormal);
+					v.normal32bit = quantNormalCache.quantizeNormal2_10_10_10(simdNormal);
                 }
 				else
 				{

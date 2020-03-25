@@ -71,7 +71,7 @@ namespace asset
 		};
 		typedef std::function<bool(const IMeshManipulator::SSNGVertexData&, const IMeshManipulator::SSNGVertexData&, ICPUMeshBuffer*)> VxCmpFunction;
 
-		enum E_QUANT_NORM_CACHE_TYPE
+		enum class E_QUANT_NORM_CACHE_TYPE
 		{
 			Q_2_10_10_10,
 			Q_8_8_8,

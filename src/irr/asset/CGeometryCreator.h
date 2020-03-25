@@ -6,6 +6,7 @@
 #define __C_GEOMETRY_CREATOR_H_INCLUDED__
 
 #include "irr/asset/IGeometryCreator.h"
+#include "CQuantNormalCache.h"
 
 namespace irr
 {
@@ -33,7 +34,7 @@ class CGeometryCreator : public IGeometryCreator
 			void setUv(uint8_t u, uint8_t v) { uv[0] = u; uv[1] = v; }
 		} PACK_STRUCT;
 
-		private:
+	private:
 		struct RectangleVertex
 		{
 			RectangleVertex(const core::vector3df_SIMD& _pos, const video::SColor& _color, const core::vector2du32_SIMD _uv, const core::vector3df_SIMD _normal)
@@ -80,6 +81,8 @@ class CGeometryCreator : public IGeometryCreator
 
 
 		using SphereVertex = CylinderVertex;
+
+		mutable CQuantNormalCache quantNormalCache;
 
 	public:
 		return_type createCubeMesh(const core::vector3df& size) const override;
