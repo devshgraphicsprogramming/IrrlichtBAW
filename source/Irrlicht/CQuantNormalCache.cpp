@@ -92,7 +92,7 @@ uint32_t CQuantNormalCache::quantizeNormal2_10_10_10(const core::vectorSIMDf& no
 	constexpr uint32_t quantizationBits = 10u;
 	const auto xorflag = core::vectorSIMDu32((0x1u << quantizationBits) - 1u);
 	const auto negativeMask = normal < core::vectorSIMDf(0.0f);
-	const VectorUV uvMappedNormal = mapToBarycentric(normal);
+	const VectorUV uvMappedNormal = mapToBarycentric(core::abs(normal));
 
 	auto found = normalCacheFor2_10_10_10Quant.find(uvMappedNormal);
 
