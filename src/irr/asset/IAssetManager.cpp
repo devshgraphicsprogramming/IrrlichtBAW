@@ -63,6 +63,9 @@
 #include "irr/asset/CImageWriterPNG.h"
 #endif
 
+#ifdef _IRR_EMBED_BUILTIN_RSOURCES_
+#include "irr/builtin/builtinResources.h"
+#endif
 using namespace irr;
 using namespace asset;
 

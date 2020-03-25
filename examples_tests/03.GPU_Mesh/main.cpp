@@ -6,10 +6,11 @@
 
 //! I advise to check out this file, its a basic input handler
 #include "../../ext/ScreenShot/ScreenShot.h"
-
+#include "../../src/irr/builtin/builtinResources.h"
 
 using namespace irr;
 using namespace core;
+
 
 
 class SimpleCallBack : public video::IShaderConstantSetCallBack
@@ -33,7 +34,6 @@ public:
 
     virtual void OnUnsetMaterial() {}
 };
-
 #include "irr/irrpack.h"
 struct VertexStruct
 {
@@ -49,9 +49,14 @@ int main()
 	printf("Please select the background:\n");
 	printf(" (0 : default) Use SkyDome\n");
 	printf(" (1) Use SkyBox\n");
+	
+	std::cout << (size_t)irr::builtin::get_resource<IRR_CORE_UNIQUE_STRING_LITERAL_TYPE("src/irr/builtin/shader1.txt")>().second << " <-- Resource's second element"<<"\n";
+
+
 
 	uint8_t c = 0;
 	std::cin >> c;
+
 
 	// create device with full flexibility over creation parameters
 	// you can add more parameters if desired, check irr::SIrrlichtCreationParameters
@@ -242,7 +247,7 @@ int main()
 	//create a screenshot
 	{
 		core::rect<uint32_t> sourceRect(0, 0, params.WindowSize.Width, params.WindowSize.Height);
-		ext::ScreenShot::dirtyCPUStallingScreenshot(device, "screenshot.png", sourceRect, asset::EF_R8G8B8_SRGB);
+		//ext::ScreenShot::dirtyCPUStallingScreenshot(device, "screenshot.png", sourceRect, asset::EF_R8G8B8_SRGB);
 	}
 
 	device->drop();
