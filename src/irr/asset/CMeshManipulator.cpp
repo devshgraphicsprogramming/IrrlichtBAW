@@ -1530,14 +1530,80 @@ core::smart_refctd_ptr<ICPUBuffer> IMeshManipulator::idxBufferFromTrianglesFanTo
 	return nullptr;
 }
 
-void IMeshManipulator::loadNormalQuantCacheFromBuffer(E_QUANT_NORM_CACHE_TYPE type, asset::ICPUBuffer* buffer)
+bool IMeshManipulator::loadNormalQuantCacheFromBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferRange<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache)
 {
+    const uint64_t bufferSize = buffer.buffer.get()->getSize();
+    const uint64_t offset = buffer.offset;
+    const size_t cacheElementSize = quantNormalCache.getCacheElementSize(type);
 
+    uint8_t* buffPointer = static_cast<uint8_t*>(buffer.buffer.get()->getPointer());
+    const uint8_t* const bufferRangeEnd = buffPointer + offset + buffer.size;
+
+    if (bufferRangeEnd > buffPointer + bufferSize)
+    {
+        os::Printer::log("cannot read from this buffer - invalid range", ELL_ERROR);
+        return false;
+    }
+    
+    size_t quantVecSize = 0u;
+    switch (type)
+    {
+    case E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10:
+        quantVecSize = sizeof(uint32_t);
+        break;
+    case E_QUANT_NORM_CACHE_TYPE::Q_8_8_8:
+        quantVecSize = sizeof(CQuantNormalCache::Vector8u);
+        break;
+    case E_QUANT_NORM_CACHE_TYPE::Q_16_16_16:
+        quantVecSize = sizeof(CQuantNormalCache::Vector16u);
+        break;
+    }
+
+    buffPointer += offset;
+    while (buffPointer < bufferRangeEnd)
+    {
+        CQuantNormalCache::VectorUV key{ *reinterpret_cast<float*>(buffPointer),* reinterpret_cast<float*>(buffPointer + sizeof(float)) };
+        buffPointer += sizeof(CQuantNormalCache::VectorUV);
+
+        switch (type)
+        {
+        case E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10:
+        {
+            uint32_t vec;
+            memcpy(&vec, buffPointer, quantVecSize);
+            buffPointer += quantVecSize;
+
+            quantNormalCache.insertIntoCache2_10_10_10(key, vec);
+        }
+        break;
+        case E_QUANT_NORM_CACHE_TYPE::Q_8_8_8:
+        {
+            CQuantNormalCache::Vector8u vec;
+            memcpy(&vec, buffPointer, quantVecSize);
+            buffPointer += quantVecSize;
+
+            quantNormalCache.insertIntoCache8_8_8(key, vec);
+        }
+        break;
+        case E_QUANT_NORM_CACHE_TYPE::Q_16_16_16:
+        {
+            CQuantNormalCache::Vector16u vec;
+            memcpy(&vec, buffPointer, quantVecSize);
+            buffPointer += quantVecSize;
+
+            quantNormalCache.insertIntoCache16_16_16(key, vec);
+        }
+        break;
+        }
+    }
+
+    return true;
 }
 void IMeshManipulator::addCacheContentsFromBuffer(E_QUANT_NORM_CACHE_TYPE type, asset::ICPUBuffer* buffer)
 {
 
 }
+
 bool IMeshManipulator::saveCacheToBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferBinding<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache)
 {
     const uint64_t bufferSize = buffer.buffer.get()->getSize();

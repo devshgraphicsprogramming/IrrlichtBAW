@@ -72,9 +72,9 @@ public:
 	uint32_t quantizeNormal8_8_8(const core::vectorSIMDf& normal);
 	uint64_t quantizeNormal16_16_16(const core::vectorSIMDf& normal);
 
-	void insertIntoCache2_10_10_10(const core::vectorSIMDf& key, const uint32_t quantizedNormal);
-	void insertIntoCache8_8_8(const core::vectorSIMDf& key, const uint32_t quantizedNormal);
-	void insertIntoCache16_16_16(const core::vectorSIMDf& key, const uint64_t quantizedNormal);
+	void insertIntoCache2_10_10_10(const VectorUV key, const uint32_t quantizedNormal);
+	void insertIntoCache8_8_8(const VectorUV key, const Vector8u quantizedNormal);
+	void insertIntoCache16_16_16(const VectorUV key, const Vector16u quantizedNormal);
 
 	inline size_t getCacheSizeInBytes(E_QUANT_NORM_CACHE_TYPE type) const
 	{

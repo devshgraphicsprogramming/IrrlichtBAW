@@ -166,18 +166,18 @@ uint64_t CQuantNormalCache::quantizeNormal16_16_16(const core::vectorSIMDf& norm
 	return restoreSign<uint64_t>(absIntFit, xorflag, negativeMask, quantizationBits);
 }
 
-void CQuantNormalCache::insertIntoCache2_10_10_10(const core::vectorSIMDf& normal, const uint32_t quantizedNormal)
+void CQuantNormalCache::insertIntoCache2_10_10_10(const VectorUV key, const uint32_t quantizedNormal)
 {
-	normalCacheFor2_10_10_10Quant.insert(std::make_pair(mapToBarycentric(normal), quantizedNormal));
+	normalCacheFor2_10_10_10Quant.insert(std::make_pair(key, quantizedNormal));
 }
 
-void CQuantNormalCache::insertIntoCache8_8_8(const core::vectorSIMDf& normal, const uint32_t quantizedNormal)
+void CQuantNormalCache::insertIntoCache8_8_8(const VectorUV key, const Vector8u quantizedNormal)
 {
-	//TODO
+	normalCacheFor8_8_8Quant.insert(std::make_pair(key, quantizedNormal));
 }
-void CQuantNormalCache::insertIntoCache16_16_16(const core::vectorSIMDf& normal, const uint64_t quantizedNormal)
+void CQuantNormalCache::insertIntoCache16_16_16(const VectorUV key, const Vector16u quantizedNormal)
 {
-	//TODO
+	normalCacheFor16_16_16Quant.insert(std::make_pair(key, quantizedNormal));
 }
 
 
