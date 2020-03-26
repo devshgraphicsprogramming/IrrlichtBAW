@@ -1538,9 +1538,69 @@ void IMeshManipulator::addCacheContentsFromBuffer(E_QUANT_NORM_CACHE_TYPE type, 
 {
 
 }
-void IMeshManipulator::saveCacheToFile(const std::string& path)
+bool IMeshManipulator::saveCacheToBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferBinding<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache)
 {
+    const uint64_t bufferSize = buffer.buffer.get()->getSize();
+    const uint64_t offset = buffer.offset;
 
+    if (bufferSize + offset > quantNormalCache.getCacheSizeInBytes(type))
+    {
+        os::Printer::log("Cannot save cache to buffer - not enough space", ELL_ERROR);
+        return false;
+    }
+
+    uint8_t* buffPointer = static_cast<uint8_t*>(buffer.buffer.get()->getPointer()) + offset;
+
+    switch (type)
+    {
+    case E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10:
+    {
+        auto cache = quantNormalCache.getCache2_10_10_10();
+
+        for (auto it = cache.begin(); it != cache.end(); it++)
+        {
+            memcpy(buffPointer, &(it->first), sizeof(CQuantNormalCache::VectorUV));
+            buffPointer += sizeof(CQuantNormalCache::VectorUV);
+
+            memcpy(buffPointer, &(it->second), sizeof(uint32_t));
+            buffPointer += sizeof(uint32_t);
+        }
+
+        return true;
+    }
+    case E_QUANT_NORM_CACHE_TYPE::Q_8_8_8:
+    {
+        auto cache = quantNormalCache.getCache8_8_8();
+
+        for (auto it = cache.begin(); it != cache.end(); it++)
+        {
+            memcpy(buffPointer, &(it->first), sizeof(CQuantNormalCache::VectorUV));
+            buffPointer += sizeof(CQuantNormalCache::VectorUV);
+
+            memcpy(buffPointer, &(it->second), sizeof(CQuantNormalCache::Vector8u));
+            buffPointer += sizeof(CQuantNormalCache::Vector8u);
+        }
+
+        return true;
+    }
+    case E_QUANT_NORM_CACHE_TYPE::Q_16_16_16:
+    {
+        auto cache = quantNormalCache.getCache16_16_16();
+
+        for (auto it = cache.begin(); it != cache.end(); it++)
+        {
+            memcpy(buffPointer, &(it->first), sizeof(CQuantNormalCache::VectorUV));
+            buffPointer += sizeof(CQuantNormalCache::VectorUV);
+
+            memcpy(buffPointer, &(it->second), sizeof(CQuantNormalCache::Vector16u));
+            buffPointer += sizeof(CQuantNormalCache::Vector16u);
+        }
+
+        return true;
+    }
+    }
+
+    return false;
 }
 
 } // end namespace scene

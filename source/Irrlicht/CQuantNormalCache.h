@@ -8,18 +8,16 @@ namespace irr
 namespace asset 
 {
 
+enum class E_QUANT_NORM_CACHE_TYPE
+{
+	Q_2_10_10_10,
+	Q_8_8_8,
+	Q_16_16_16
+};
+
 class CQuantNormalCache
 { 
 public:
-	uint32_t quantizeNormal2_10_10_10(const core::vectorSIMDf& normal);
-	uint32_t quantizeNormal8_8_8(const core::vectorSIMDf& normal);
-	uint64_t quantizeNormal16_16_16(const core::vectorSIMDf& normal);
-
-	void insertIntoCache2_10_10_10(const core::vectorSIMDf& key, const uint32_t quantizedNormal);
-	void insertIntoCache8_8_8(const core::vectorSIMDf& key, const uint32_t quantizedNormal);
-	void insertIntoCache16_16_16(const core::vectorSIMDf& key, const uint64_t quantizedNormal);
-
-private:
 	struct VectorUV
 	{
 		float u;
@@ -70,6 +68,53 @@ private:
 		}
 	};
 
+	uint32_t quantizeNormal2_10_10_10(const core::vectorSIMDf& normal);
+	uint32_t quantizeNormal8_8_8(const core::vectorSIMDf& normal);
+	uint64_t quantizeNormal16_16_16(const core::vectorSIMDf& normal);
+
+	void insertIntoCache2_10_10_10(const core::vectorSIMDf& key, const uint32_t quantizedNormal);
+	void insertIntoCache8_8_8(const core::vectorSIMDf& key, const uint32_t quantizedNormal);
+	void insertIntoCache16_16_16(const core::vectorSIMDf& key, const uint64_t quantizedNormal);
+
+	inline size_t getCacheSizeInBytes(E_QUANT_NORM_CACHE_TYPE type) const
+	{
+		constexpr size_t normCacheElementSize2_10_10_10 = sizeof(VectorUV) + sizeof(uint32_t);
+		constexpr size_t normCacheElementSize8_8_8      = sizeof(VectorUV) + sizeof(Vector8u);
+		constexpr size_t normCacheElementSize16_16_16   = sizeof(VectorUV) + sizeof(Vector16u);
+
+		switch (type)
+		{
+		case E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10:
+			return normalCacheFor2_10_10_10Quant.size() * normCacheElementSize2_10_10_10;
+
+		case E_QUANT_NORM_CACHE_TYPE::Q_8_8_8:
+			return normalCacheFor8_8_8Quant.size() * normCacheElementSize8_8_8;
+
+		case E_QUANT_NORM_CACHE_TYPE::Q_16_16_16:
+			return normalCacheFor16_16_16Quant.size() * normCacheElementSize16_16_16;
+		}
+	}
+
+	inline size_t getCacheElementSize(E_QUANT_NORM_CACHE_TYPE type) const
+	{
+		switch (type)
+		{
+		case E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10:
+			return sizeof(VectorUV) + sizeof(uint32_t);
+
+		case E_QUANT_NORM_CACHE_TYPE::Q_8_8_8:
+			return sizeof(VectorUV) + sizeof(Vector8u);
+
+		case E_QUANT_NORM_CACHE_TYPE::Q_16_16_16:
+			return sizeof(VectorUV) + sizeof(Vector16u);
+		}
+	}
+
+	inline auto& getCache2_10_10_10() { return normalCacheFor2_10_10_10Quant; }
+	inline auto& getCache8_8_8()      { return normalCacheFor8_8_8Quant; }
+	inline auto& getCache16_16_16()   { return normalCacheFor16_16_16Quant; }
+
+private:
 	inline VectorUV mapToBarycentric(const core::vectorSIMDf& vec) const
 	{
 		//normal to A = [1,0,0], B = [0,1,0], C = [0,0,1] triangle

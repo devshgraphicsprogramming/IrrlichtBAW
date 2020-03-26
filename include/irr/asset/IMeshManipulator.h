@@ -18,6 +18,9 @@ namespace irr
 {
 namespace asset
 {
+	class CQuantNormalCache;
+	enum class E_QUANT_NORM_CACHE_TYPE;
+
 	//! An interface for easy manipulation of meshes.
 	/** Scale, set alpha value, flip surfaces, and so on. This exists for
 	fixing problems with wrong imported or exported meshes quickly after
@@ -70,13 +73,6 @@ namespace asset
 			core::vector3df_SIMD parentTriangleFaceNormal;			//
 		};
 		typedef std::function<bool(const IMeshManipulator::SSNGVertexData&, const IMeshManipulator::SSNGVertexData&, ICPUMeshBuffer*)> VxCmpFunction;
-
-		enum class E_QUANT_NORM_CACHE_TYPE
-		{
-			Q_2_10_10_10,
-			Q_8_8_8,
-			Q_16_16_16
-		};
 
 	public:
 		//! Flips the direction of surfaces.
@@ -378,7 +374,7 @@ namespace asset
 		static void addCacheContentsFromBuffer(E_QUANT_NORM_CACHE_TYPE type, asset::ICPUBuffer* buffer);
 
 		//!
-		static void saveCacheToFile(const std::string& path);
+		static bool saveCacheToBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferBinding<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
 
     protected:
 };

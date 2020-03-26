@@ -120,9 +120,10 @@ uint32_t CQuantNormalCache::quantizeNormal8_8_8(const core::vectorSIMDf& normal)
 	constexpr uint32_t quantizationBits = 8u;
 	const auto xorflag = core::vectorSIMDu32((0x1u << quantizationBits) - 1u);
 	auto negativeMask = normal < core::vectorSIMDf(0.f);
+	const VectorUV uvMappedNormal = mapToBarycentric(core::abs(normal));
 
-	auto found = normalCacheFor8_8_8Quant.find(mapToBarycentric(normal));
-	if (found != normalCacheFor8_8_8Quant.end() && (found->first == mapToBarycentric(normal)))
+	auto found = normalCacheFor8_8_8Quant.find(uvMappedNormal);
+	if (found != normalCacheFor8_8_8Quant.end() && (found->first == uvMappedNormal))
 	{
 		const auto absVec = core::vectorSIMDu32(found->second.x, found->second.y, found->second.z);
 
@@ -135,7 +136,7 @@ uint32_t CQuantNormalCache::quantizeNormal8_8_8(const core::vectorSIMDf& normal)
 
 	Vector8u bestFit = { absIntFit[0], absIntFit[1], absIntFit[2] };
 
-	normalCacheFor8_8_8Quant.insert(std::make_pair(mapToBarycentric(normal), bestFit));
+	normalCacheFor8_8_8Quant.insert(std::make_pair(uvMappedNormal, bestFit));
 
 	return restoreSign<uint32_t>(absIntFit, xorflag, negativeMask, quantizationBits);
 }
@@ -145,9 +146,10 @@ uint64_t CQuantNormalCache::quantizeNormal16_16_16(const core::vectorSIMDf& norm
 	constexpr uint32_t quantizationBits = 10u;
 	const auto xorflag = core::vectorSIMDu32((0x1u << quantizationBits) - 1u);
 	auto negativeMask = normal < core::vectorSIMDf(0.f);
+	const VectorUV uvMappedNormal = mapToBarycentric(core::abs(normal));
 
-	auto found = normalCacheFor16_16_16Quant.find(mapToBarycentric(normal));
-	if (found != normalCacheFor16_16_16Quant.end() && (found->first == mapToBarycentric(normal)))
+	auto found = normalCacheFor16_16_16Quant.find(uvMappedNormal);
+	if (found != normalCacheFor16_16_16Quant.end() && (found->first == uvMappedNormal))
 	{
 		const auto absVec = core::vectorSIMDu32(found->second.x, found->second.y, found->second.z);
 
@@ -159,7 +161,7 @@ uint64_t CQuantNormalCache::quantizeNormal16_16_16(const core::vectorSIMDf& norm
 
 	Vector16u bestFit = { absIntFit[0], absIntFit[1], absIntFit[2] };
 
-	normalCacheFor16_16_16Quant.insert(std::make_pair(mapToBarycentric(normal), bestFit));
+	normalCacheFor16_16_16Quant.insert(std::make_pair(uvMappedNormal, bestFit));
 
 	return restoreSign<uint64_t>(absIntFit, xorflag, negativeMask, quantizationBits);
 }
