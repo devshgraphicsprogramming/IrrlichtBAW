@@ -6,15 +6,11 @@
 #include "CBAWMeshWriter.h"
 
 #include "irr/core/core.h"
+#include "irr/asset/asset.h"
 #include "os.h"
 
 #include "IFileSystem.h"
 #include "IWriteFile.h"
-
-#include "irr/asset/ICPUTexture.h"
-#include "irr/asset/ICPUSkinnedMesh.h"
-#include "irr/asset/ICPUSkinnedMeshBuffer.h"
-#include "CFinalBoneHierarchy.h"
 
 
 #include "lz4/lib/lz4.h"
@@ -95,6 +91,7 @@ struct LzmaMemMngmnt
         const float comprLvl = _ctx.writerOverride->getAssetCompressionLevel(_ctx.inner, _obj, 1u);
 		tryWrite(&data, _file, _ctx, sizeof(data), _headerIdx, flags, encrPwd, comprLvl);
 	}
+#ifndef NEW_SHADERS
 	template<>
 	void CBAWMeshWriter::exportAsBlob<ICPUTexture>(ICPUTexture* _obj, uint32_t _headerIdx, io::IWriteFile* _file, SContext& _ctx)
 	{
@@ -111,6 +108,7 @@ struct LzmaMemMngmnt
         const float comprLvl = _ctx.writerOverride->getAssetCompressionLevel(_ctx.inner, _obj, 2u);
 		tryWrite(&path[0], _file, _ctx, len, _headerIdx, flags, encrPwd, comprLvl);
 	}
+#endif
 	template<>
 	void CBAWMeshWriter::exportAsBlob<CFinalBoneHierarchy>(CFinalBoneHierarchy* _obj, uint32_t _headerIdx, io::IWriteFile* _file, SContext& _ctx)
 	{
@@ -122,6 +120,7 @@ struct LzmaMemMngmnt
 		if ((uint8_t*)data != stackData)
 			_IRR_ALIGNED_FREE(data);
 	}
+#ifndef NEW_SHADERS
 	template<>
 	void CBAWMeshWriter::exportAsBlob<IMeshDataFormatDesc<ICPUBuffer> >(IMeshDataFormatDesc<ICPUBuffer>* _obj, uint32_t _headerIdx, io::IWriteFile* _file, SContext& _ctx)
 	{
@@ -129,6 +128,7 @@ struct LzmaMemMngmnt
 
 		tryWrite(&data, _file, _ctx, sizeof(data), _headerIdx, EWF_NONE);
 	}
+#endif
 	template<>
 	void CBAWMeshWriter::exportAsBlob<ICPUBuffer>(ICPUBuffer* _obj, uint32_t _headerIdx, io::IWriteFile* _file, SContext& _ctx)
 	{
@@ -141,6 +141,7 @@ struct LzmaMemMngmnt
 
 	bool CBAWMeshWriter::writeAsset(io::IWriteFile* _file, const SAssetWriteParams& _params, IAssetWriterOverride* _override)
 	{
+#ifndef NEW_SHADERS
         if (!_file)
             return false;
 
@@ -224,10 +225,14 @@ struct LzmaMemMngmnt
 		_file->seek(prevPos);
 
 		return true;
+#else
+        return false;
+#endif
 	}
 
 	uint32_t CBAWMeshWriter::genHeaders(const ICPUMesh* _mesh, SContext& _ctx)
 	{
+#ifndef NEW_SHADERS
 		_ctx.headers.clear();
 
 		//! @Anastazluk this will all need to change to robustly support arbitrary serialization
@@ -336,6 +341,9 @@ struct LzmaMemMngmnt
 			}
 		}
 		return _ctx.headers.size();
+#else
+    return 0u;
+#endif
 	}
 
 	void CBAWMeshWriter::calcAndPushNextOffset(uint32_t _blobSize, SContext& _ctx) const

@@ -6,9 +6,9 @@
 #include "CSceneManager.h"
 #include "IVideoDriver.h"
 #include "IFileSystem.h"
-#include "IMaterialRenderer.h"
 #include "IReadFile.h"
 #include "IWriteFile.h"
+#include "IrrlichtDevice.h"
 
 #include "os.h"
 
@@ -19,9 +19,6 @@
 
 #include "CCameraSceneNode.h"
 #include "CMeshSceneNode.h"
-#include "CMeshSceneNodeInstanced.h"
-#include "CSkyBoxSceneNode.h"
-#include "CSkyDomeSceneNode.h"
 
 #include "CSceneNodeAnimatorRotation.h"
 #include "CSceneNodeAnimatorFlyCircle.h"
@@ -177,7 +174,7 @@ CSceneManager::CSceneManager(IrrlichtDevice* device, video::IVideoDriver* driver
         reqs.mappingCapability = video::IDriverMemoryAllocation::EMCAF_NO_MAPPING_ACCESS;
         reqs.prefersDedicatedAllocation = true;
         reqs.requiresDedicatedAllocation = true;
-        redundantMeshDataBuf = core::smart_refctd_ptr<video::IGPUBuffer>(SceneManager->getVideoDriver()->createGPUBufferOnDedMem(reqs,true),core::dont_grab);
+        redundantMeshDataBuf = SceneManager->getVideoDriver()->createGPUBufferOnDedMem(reqs,true);
         if (redundantMeshDataBuf)
             redundantMeshDataBuf->updateSubRange(video::IDriverMemoryAllocation::MemoryRange(0,reqs.vulkanReqs.size),tmpMem);
         _IRR_ALIGNED_FREE(tmpMem);
@@ -233,42 +230,6 @@ IrrlichtDevice * CSceneManager::getDevice()
     return Device;
 }
 
-//! adds a test scene node for test purposes to the scene. It is a simple cube of (1,1,1) size.
-//! the returned pointer must not be dropped.
-IMeshSceneNode* CSceneManager::addCubeSceneNode(float size, IDummyTransformationSceneNode* parent,
-		int32_t id, const core::vector3df& position,
-		const core::vector3df& rotation, const core::vector3df& scale)
-{
-	if (!parent)
-		parent = this;
-
-	auto* geomCreator = Device->getAssetManager()->getGeometryCreator();
-	auto cpumesh = geomCreator->createCubeMesh(core::vector3df(size));
-	auto res = SceneManager->getVideoDriver()->getGPUObjectsFromAssets(&cpumesh.get(), (&cpumesh.get()) + 1);
-	assert(res->size());
-
-	// its okay to std::move because this was the only copy of the refctd array 
-	return addMeshSceneNode(std::move(res->front()),parent,id,position,rotation,scale);
-}
-
-
-//! Adds a sphere scene node for test purposes to the scene.
-IMeshSceneNode* CSceneManager::addSphereSceneNode(float radius, int32_t polyCount,
-		IDummyTransformationSceneNode* parent, int32_t id, const core::vector3df& position,
-		const core::vector3df& rotation, const core::vector3df& scale)
-{
-	if (!parent)
-		parent = this;
-
-	auto* geomCreator = Device->getAssetManager()->getGeometryCreator();
-	auto cpumesh = geomCreator->createSphereMesh(radius, polyCount, polyCount);
-	auto res = SceneManager->getVideoDriver()->getGPUObjectsFromAssets(&cpumesh.get(), (&cpumesh.get()) + 1);
-	assert(res->size());
-
-	// its okay to std::move because ths was the only copy of the rectd array
-	return addMeshSceneNode(std::move(res->front()), parent, id, position, rotation, scale);
-}
-
 //! adds a scene node for rendering a static mesh
 //! the returned pointer must not be dropped.
 IMeshSceneNode* CSceneManager::addMeshSceneNode(core::smart_refctd_ptr<video::IGPUMesh>&& mesh, IDummyTransformationSceneNode* parent, int32_t id,
@@ -292,11 +253,14 @@ IMeshSceneNodeInstanced* CSceneManager::addMeshSceneNodeInstanced(IDummyTransfor
 {
 	if (!parent)
 		parent = this;
-
+#ifdef NEW_SHADERS
+	return nullptr;
+#else
 	CMeshSceneNodeInstanced* node = new CMeshSceneNodeInstanced(parent, this, id, position, rotation, scale);
 	node->drop();
 
 	return node;
+#endif
 }
 
 //! adds a scene node for rendering an animated mesh model
@@ -409,39 +373,39 @@ ICameraSceneNode* CSceneManager::addCameraSceneNodeFPS(IDummyTransformationScene
 
 //! Adds a skybox scene node. A skybox is a big cube with 6 textures on it and
 //! is drawn around the camera position.
-ISceneNode* CSceneManager::addSkyBoxSceneNode(	core::smart_refctd_ptr<video::ITexture>&& top,
-												core::smart_refctd_ptr<video::ITexture>&& bottom,
-												core::smart_refctd_ptr<video::ITexture>&& left,
-												core::smart_refctd_ptr<video::ITexture>&& right,
-												core::smart_refctd_ptr<video::ITexture>&& front,
-												core::smart_refctd_ptr<video::ITexture>&& back,
-												IDummyTransformationSceneNode* parent, int32_t id)
+IMeshSceneNode* CSceneManager::addSkyBoxSceneNode(core::smart_refctd_ptr<video::IGPUImageView>&& cubemap, IDummyTransformationSceneNode* parent, int32_t id)
 {
 	if (!parent)
 		parent = this;
-
+#ifdef NEW_SHADERS
+	return nullptr;
+#else
 	ISceneNode* node = new CSkyBoxSceneNode(std::move(top), std::move(bottom), std::move(left), std::move(right),
 											std::move(front), std::move(back), core::smart_refctd_ptr(redundantMeshDataBuf), 0, parent, this, id);
 
 	node->drop();
 	return node;
+#endif
 }
 
 
 //! Adds a skydome scene node. A skydome is a large (half-) sphere with a
 //! panoramic texture on it and is drawn around the camera position.
-ISceneNode* CSceneManager::addSkyDomeSceneNode(	core::smart_refctd_ptr<video::IVirtualTexture>&& texture, uint32_t horiRes,
-	uint32_t vertRes, float texturePercentage, float spherePercentage, float radius, IDummyTransformationSceneNode* parent,
-	int32_t id)
+IMeshSceneNode* CSceneManager::addSkyDomeSceneNode(	core::smart_refctd_ptr<video::IGPUImageView>&& texture, uint32_t horiRes,
+													uint32_t vertRes, float texturePercentage, float spherePercentage, float radius,
+													IDummyTransformationSceneNode* parent, int32_t id)
 {
 	if (!parent)
 		parent = this;
-
+#ifdef NEW_SHADERS
+	return nullptr;
+#else
 	ISceneNode* node = new CSkyDomeSceneNode(std::move(texture), horiRes, vertRes,
 		texturePercentage, spherePercentage, radius, parent, this, id);
 
 	node->drop();
 	return node;
+#endif
 }
 
 //! Adds a dummy transformation scene node to the scene tree.
@@ -519,15 +483,11 @@ bool CSceneManager::isCulled(ISceneNode* node) const
     if (tbox.MinEdge==tbox.MaxEdge)
         return true;
 
-    auto cullMode = node->getAutomaticCulling();
-    if (cullMode & (scene::EAC_BOX|scene::EAC_FRUSTUM_BOX))
+    if (node->getAutomaticCulling())
     {
 		node->getAbsoluteTransformation().transformBoxEx(tbox);
-        // can be seen by a bounding box ?
-        if ((cullMode & scene::EAC_BOX) && !tbox.intersectsWithBox(cam->getViewFrustum()->getBoundingBox()))
-            return true;
         // can be seen by cam pyramid planes ?
-        if ((cullMode & scene::EAC_FRUSTUM_BOX) && !cam->getViewFrustum()->intersectsAABB(tbox))
+        if (cam->getViewFrustum()->intersectsAABB(tbox))
             return true;
 	}
 
@@ -538,88 +498,8 @@ bool CSceneManager::isCulled(ISceneNode* node) const
 //! registers a node for rendering it at a specific time.
 uint32_t CSceneManager::registerNodeForRendering(ISceneNode* node, E_SCENE_NODE_RENDER_PASS pass)
 {
-	uint32_t taken = 0;
-
-	switch(pass)
-	{
-		// take camera if it is not already registered
-		case ESNRP_CAMERA:
-			{
-				taken = 1;
-				for (uint32_t i = 0; i != CameraList.size(); ++i)
-				{
-					if (CameraList[i] == node)
-					{
-						taken = 0;
-						break;
-					}
-				}
-				if (taken)
-				{
-					CameraList.push_back(node);
-				}
-			}
-			break;
-
-		case ESNRP_SKY_BOX:
-			SkyBoxList.push_back(node);
-			taken = 1;
-			break;
-		case ESNRP_SOLID:
-			if (!isCulled(node))
-			{
-				SolidNodeList.push_back(node);
-				taken = 1;
-			}
-			break;
-		case ESNRP_TRANSPARENT:
-			if (!isCulled(node))
-			{
-				TransparentNodeList.push_back(TransparentNodeEntry(node, ActiveCamera->getAbsolutePosition()));
-				taken = 1;
-			}
-			break;
-		case ESNRP_TRANSPARENT_EFFECT:
-			if (!isCulled(node))
-			{
-				TransparentEffectNodeList.push_back(TransparentNodeEntry(node, ActiveCamera->getAbsolutePosition()));
-				taken = 1;
-			}
-			break;
-		case ESNRP_AUTOMATIC:
-			if (!isCulled(node))
-			{
-	#ifdef REIMPLEMENT_THIS
-				taken = 0;
-				const uint32_t count = node->getMaterialCount();
-				for (uint32_t i=0; i<count; ++i)
-				{
-					video::IMaterialRenderer* rnd =
-						Driver->getMaterialRenderer(node->getMaterial(i).MaterialType);
-					if (rnd && rnd->isTransparent())
-					{
-						// register as transparent node
-						TransparentNodeEntry e(node, ActiveCamera->getAbsolutePosition());
-						TransparentNodeList.push_back(e);
-						taken = 1;
-						break;
-					}
-				}
-	#endif
-				// not transparent, register as solid
-				if (!taken)
-				{
-					SolidNodeList.push_back(node);
-					taken = 1;
-				}
-			}
-			break;
-
-		default: // ignore this one
-			break;
-	}
-
-	return taken;
+	assert(false);
+	return 0;
 }
 
 //!
@@ -650,12 +530,13 @@ void CSceneManager::drawAll()
 
 	uint32_t i; // new ISO for scoping problem in some compilers
 
+#ifndef NEW_SHADERS
 	// reset all transforms
 	Driver->setMaterial(video::SGPUMaterial());
 	Driver->setTransform(video::EPTS_PROJ,core::matrix4SIMD());
 	Driver->setTransform(video::E4X3TS_VIEW,core::matrix3x4SIMD());
 	Driver->setTransform(video::E4X3TS_WORLD,core::matrix3x4SIMD());
-
+#endif
 	// do animations and other stuff.
 	OnAnimate(std::chrono::duration_cast<std::chrono::milliseconds>(Timer->getTime()).count());
 
@@ -926,8 +807,10 @@ void CSceneManager::removeAll()
 	ISceneNode::removeAll();
 	setActiveCamera(0);
 	// Make sure the driver is reset, might need a more complex method at some point
+#ifndef NEW_SHADERS
 	if (Driver)
 		Driver->setMaterial(video::SGPUMaterial());
+#endif
 }
 
 

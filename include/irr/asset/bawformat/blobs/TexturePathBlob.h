@@ -6,13 +6,15 @@
 #ifndef __IRR_TEXTURE_PATH_BLOB_H_INCLUDED__
 #define __IRR_TEXTURE_PATH_BLOB_H_INCLUDED__
 
-//! kill this whole file soon
+//! kill this whole file soon (upgrade BaW format to V3)
+#ifndef NEW_SHADERS
+#include "irr/asset/ICPUTexture.h"
 
 namespace irr
 {
 namespace video
 {
-	class IVirtualTexture;
+	class IRenderableVirtualTexture;
 }
 namespace asset
 {
@@ -26,9 +28,10 @@ using TexturePathBlobV1 = TexturePathBlobV0;
 using TexturePathBlobV2 = TexturePathBlobV1;
 
 template<>
-struct CorrespondingBlobTypeFor<video::IVirtualTexture> { typedef TexturePathBlobV2 type; };
+struct CorrespondingBlobTypeFor<video::IRenderableVirtualTexture> { typedef TexturePathBlobV2 type; };
 
 }
 } // irr::asset
+#endif
 
 #endif

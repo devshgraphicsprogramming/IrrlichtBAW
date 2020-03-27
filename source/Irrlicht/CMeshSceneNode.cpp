@@ -7,7 +7,6 @@
 #include "ISceneManager.h"
 #include "ICameraSceneNode.h"
 #include "IAnimatedMesh.h"
-#include "IMaterialRenderer.h"
 #include "IFileSystem.h"
 
 namespace irr
@@ -59,11 +58,12 @@ void CMeshSceneNode::OnRegisterSceneNode()
 				if (!mb || mb->getIndexCount()<1)
                     continue;
 
-				video::IMaterialRenderer* rnd = driver->getMaterialRenderer(mb->getMaterial().MaterialType);
-
+#ifndef NEW_SHADERS
+				video::IMaterialRenderer* rnd = driver->getMaterialRenderer(0);
 				if (rnd && rnd->isTransparent())
 					++transparentCount;
 				else
+#endif
 					++solidCount;
 
 				if (solidCount && transparentCount)
@@ -96,6 +96,7 @@ void CMeshSceneNode::render()
 
 	++PassCount;
 
+#ifndef NEW_SHADERS
 	if (canProceedPastFence())
     {
         driver->setTransform(video::E4X3TS_WORLD, core::matrix3x4SIMD().set(AbsoluteTransformation));
@@ -107,7 +108,7 @@ void CMeshSceneNode::render()
             {
                 const video::SGPUMaterial& material = mb->getMaterial();
 
-                video::IMaterialRenderer* rnd = driver->getMaterialRenderer(material.MaterialType);
+                video::IMaterialRenderer* rnd = driver->getMaterialRenderer(0);
                 bool transparent = (rnd && rnd->isTransparent());
 
                 // only render transparent buffer if this is the transparent render pass
@@ -120,6 +121,28 @@ void CMeshSceneNode::render()
             }
         }
     }
+
+	// for debug purposes only:
+	if (DebugDataVisible && PassCount==1)
+	{
+        driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
+
+		video::SGPUMaterial m;
+		driver->setMaterial(m);
+
+		// show mesh
+		if (DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY)
+		{
+			m.Wireframe = true;
+			driver->setMaterial(m);
+
+			for (uint32_t g=0; g<Mesh->getMeshBufferCount(); ++g)
+			{
+				driver->drawMeshBuffer(Mesh->getMeshBuffer(g));
+			}
+		}
+	}
+#endif
 }
 
 

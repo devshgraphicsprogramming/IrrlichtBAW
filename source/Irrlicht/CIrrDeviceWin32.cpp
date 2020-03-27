@@ -35,19 +35,9 @@ namespace irr
 {
 	namespace video
 	{
-		#ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
-		IVideoDriver* createDirectX8Driver(const irr::SIrrlichtCreationParameters& params,
-			io::IFileSystem* io, HWND window);
-		#endif
-
-		#ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
-		IVideoDriver* createDirectX9Driver(const irr::SIrrlichtCreationParameters& params,
-			io::IFileSystem* io, HWND window);
-		#endif
-
 		#ifdef _IRR_COMPILE_WITH_OPENGL_
 		IVideoDriver* createOpenGLDriver(const irr::SIrrlichtCreationParameters& params,
-			io::IFileSystem* io, CIrrDeviceWin32* device);
+			io::IFileSystem* io, CIrrDeviceWin32* device, const asset::IGLSLCompiler* glslcomp);
 		#endif
 	}
 } // end namespace irr
@@ -1106,7 +1096,7 @@ void CIrrDeviceWin32::createDriver()
 		#ifdef _IRR_COMPILE_WITH_OPENGL_
 		switchToFullScreen();
 
-		VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this);
+		VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this, getAssetManager()->getGLSLCompiler());
 		if (!VideoDriver)
 		{
 			os::Printer::log("Could not create OpenGL driver.", ELL_ERROR);
@@ -1118,7 +1108,7 @@ void CIrrDeviceWin32::createDriver()
 
 	case video::EDT_NULL:
 		// create null driver
-		VideoDriver = video::createNullDriver(this, FileSystem, CreationParams.WindowSize);
+		VideoDriver = video::createNullDriver(this, FileSystem, CreationParams);
 		break;
 
 	default:
@@ -1323,33 +1313,6 @@ CIrrDeviceWin32::CCursorControl* CIrrDeviceWin32::getWin32CursorControl()
 	return Win32CursorControl;
 }
 
-
-//! \return Returns a pointer to a list with all video modes supported
-//! by the gfx adapter.
-video::IVideoModeList* CIrrDeviceWin32::getVideoModeList()
-{
-	if (!VideoModeList->getVideoModeCount())
-	{
-		// enumerate video modes.
-		DWORD i=0;
-		DEVMODE mode;
-		memset(&mode, 0, sizeof(mode));
-		mode.dmSize = sizeof(mode);
-
-		while (EnumDisplaySettings(NULL, i, &mode))
-		{
-			VideoModeList->addMode(core::dimension2d<uint32_t>(mode.dmPelsWidth, mode.dmPelsHeight),
-				mode.dmBitsPerPel);
-
-			++i;
-		}
-
-		if (EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &mode))
-			VideoModeList->setDesktop(mode.dmBitsPerPel, core::dimension2d<uint32_t>(mode.dmPelsWidth, mode.dmPelsHeight));
-	}
-
-	return VideoModeList;
-}
 
 typedef BOOL (WINAPI *PGPI)(DWORD, DWORD, DWORD, DWORD, PDWORD);
 // Needed for old windows apis

@@ -15,9 +15,11 @@ class ICPUMesh : public IMesh<ICPUMeshBuffer>, public BlobSerializable, public I
 {
 	public:
 		//! These are not absolute constants, just the most common situation, there may be setups of assets/resources with completely different relationships.
-		_IRR_STATIC_INLINE_CONSTEXPR uint32_t MESHBUFFER_HIERARCHYLEVELS_BELOW = 1u; // mesh->meshbuffer->texture
-		// TODO: after shader pipeline change to 5, mesh->meshbuffer->descriptorset->imageview
-		_IRR_STATIC_INLINE_CONSTEXPR uint32_t IMAGEVIEW_HIERARCHYLEVELS_BELOW = 2u; // mesh->meshbuffer->texture
+		_IRR_STATIC_INLINE_CONSTEXPR uint32_t MESHBUFFER_HIERARCHYLEVELS_BELOW = 1u;//mesh->meshbuffer
+        _IRR_STATIC_INLINE_CONSTEXPR uint32_t PIPELINE_HIERARCHYLEVELS_BELOW = MESHBUFFER_HIERARCHYLEVELS_BELOW+1u;//meshbuffer->pipeline
+        _IRR_STATIC_INLINE_CONSTEXPR uint32_t DESC_SET_HIERARCHYLEVELS_BELOW = MESHBUFFER_HIERARCHYLEVELS_BELOW+1u;//meshbuffer->ds
+		_IRR_STATIC_INLINE_CONSTEXPR uint32_t IMAGEVIEW_HIERARCHYLEVELS_BELOW = DESC_SET_HIERARCHYLEVELS_BELOW+1u;//ds->imageview
+        _IRR_STATIC_INLINE_CONSTEXPR uint32_t IMAGE_HIERARCHYLEVELS_BELOW = IMAGEVIEW_HIERARCHYLEVELS_BELOW+1u;//imageview->image
 
 		//! recalculates the bounding box
 		virtual void recalculateBoundingBox(const bool recomputeSubBoxes = false)
@@ -56,7 +58,16 @@ class ICPUMesh : public IMesh<ICPUMeshBuffer>, public BlobSerializable, public I
 			return CorrespondingBlobTypeFor<ICPUMesh>::type::createAndTryOnStack(this, _stackPtr, _stackSize);
 		}
 
-		virtual void convertToDummyObject() override {}
+		virtual void convertToDummyObject(uint32_t referenceLevelsBelowToConvert=0u) override
+		{
+            if (isDummyObjectForCacheAliasing)
+                return;
+            convertToDummyObject_common(referenceLevelsBelowToConvert);
+
+			if (referenceLevelsBelowToConvert)
+			for (auto i=0u; i<getMeshBufferCount(); i++)
+				getMeshBuffer(i)->convertToDummyObject(referenceLevelsBelowToConvert-1u);
+		}
 		virtual IAsset::E_TYPE getAssetType() const override { return IAsset::ET_MESH; }
 
 		virtual size_t conservativeSizeEstimate() const override { return getMeshBufferCount()*sizeof(void*); }

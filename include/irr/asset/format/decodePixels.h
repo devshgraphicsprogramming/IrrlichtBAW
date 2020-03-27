@@ -131,7 +131,7 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_R8_USCALED, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint8_t& pix = reinterpret_cast<const uint8_t*>(_pix[0])[0];
-        _output[0] = ((pix >> 0) & 0xffULL);
+        _output[0] = static_cast<double>((pix >> 0) & 0xffULL);
     }
 
     template<>
@@ -175,8 +175,8 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_R8G8_USCALED, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint16_t& pix = reinterpret_cast<const uint16_t*>(_pix[0])[0];
-        _output[0] = ((pix >> 0) & 0xffULL);
-        _output[1] = ((pix >> 8) & 0xffULL);
+        _output[0] = static_cast<double>((pix >> 0) & 0xffULL);
+        _output[1] = static_cast<double>((pix >> 8) & 0xffULL);
     }
 
     template<>
@@ -225,9 +225,9 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_R8G8B8_USCALED, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint32_t& pix = reinterpret_cast<const uint32_t*>(_pix[0])[0];
-        _output[0] = ((pix >> 0) & 0xffULL);
-        _output[1] = ((pix >> 8) & 0xffULL);
-        _output[2] = ((pix >> 16) & 0xffULL);
+        _output[0] = static_cast<double>((pix >> 0) & 0xffULL);
+        _output[1] = static_cast<double>((pix >> 8) & 0xffULL);
+        _output[2] = static_cast<double>((pix >> 16) & 0xffULL);
     }
 
     template<>
@@ -279,9 +279,9 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_B8G8R8_USCALED, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint32_t& pix = reinterpret_cast<const uint32_t*>(_pix[0])[0];
-        _output[2] = ((pix >> 0) & 0xffULL);
-        _output[1] = ((pix >> 8) & 0xffULL);
-        _output[0] = ((pix >> 16) & 0xffULL);
+        _output[2] = static_cast<double>((pix >> 0) & 0xffULL);
+        _output[1] = static_cast<double>((pix >> 8) & 0xffULL);
+        _output[0] = static_cast<double>((pix >> 16) & 0xffULL);
     }
 
     template<>
@@ -335,10 +335,10 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_R8G8B8A8_USCALED, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint32_t& pix = reinterpret_cast<const uint32_t*>(_pix[0])[0];
-        _output[0] = ((pix >> 0) & 0xffULL);
-        _output[1] = ((pix >> 8) & 0xffULL);
-        _output[2] = ((pix >> 16) & 0xffULL);
-        _output[3] = ((pix >> 24) & 0xffULL);
+        _output[0] = static_cast<double>((pix >> 0) & 0xffULL);
+        _output[1] = static_cast<double>((pix >> 8) & 0xffULL);
+        _output[2] = static_cast<double>((pix >> 16) & 0xffULL);
+        _output[3] = static_cast<double>((pix >> 24) & 0xffULL);
     }
 
     template<>
@@ -395,10 +395,10 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_B8G8R8A8_USCALED, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint32_t& pix = reinterpret_cast<const uint32_t*>(_pix[0])[0];
-        _output[2] = ((pix >> 0) & 0xffULL);
-        _output[1] = ((pix >> 8) & 0xffULL);
-        _output[0] = ((pix >> 16) & 0xffULL);
-        _output[3] = ((pix >> 24) & 0xffULL);
+        _output[2] = static_cast<double>((pix >> 0) & 0xffULL);
+        _output[1] = static_cast<double>((pix >> 8) & 0xffULL);
+        _output[0] = static_cast<double>((pix >> 16) & 0xffULL);
+        _output[3] = static_cast<double>((pix >> 24) & 0xffULL);
     }
 
     template<>
@@ -451,10 +451,10 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_A8B8G8R8_USCALED_PACK32, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint32_t& pix = reinterpret_cast<const uint32_t*>(_pix[0])[0];
-        _output[0] = ((pix >> 0) & 0xffULL);
-        _output[1] = ((pix >> 8) & 0xffULL);
-        _output[2] = ((pix >> 16) & 0xffULL);
-        _output[3] = ((pix >> 24) & 0xffULL);
+        _output[0] = static_cast<double>((pix >> 0) & 0xffULL);
+        _output[1] = static_cast<double>((pix >> 8) & 0xffULL);
+        _output[2] = static_cast<double>((pix >> 16) & 0xffULL);
+        _output[3] = static_cast<double>((pix >> 24) & 0xffULL);
     }
 
     template<>
@@ -515,10 +515,10 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_A2R10G10B10_USCALED_PACK32, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint32_t& pix = reinterpret_cast<const uint32_t*>(_pix[0])[0];
-        _output[2] = ((pix >> 0) & 0x3ffULL);
-        _output[1] = ((pix >> 10) & 0x3ffULL);
-        _output[0] = ((pix >> 20) & 0x3ffULL);
-        _output[3] = ((pix >> 30) & 0x3ULL);
+        _output[2] = static_cast<double>((pix >> 0) & 0x3ffULL);
+        _output[1] = static_cast<double>((pix >> 10) & 0x3ffULL);
+        _output[0] = static_cast<double>((pix >> 20) & 0x3ffULL);
+        _output[3] = static_cast<double>((pix >> 30) & 0x3ULL);
     }
 
     template<>
@@ -575,10 +575,10 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_A2B10G10R10_USCALED_PACK32, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint32_t& pix = reinterpret_cast<const uint32_t*>(_pix[0])[0];
-        _output[0] = ((pix >> 0) & 0x3ffULL);
-        _output[1] = ((pix >> 10) & 0x3ffULL);
-        _output[2] = ((pix >> 20) & 0x3ffULL);
-        _output[3] = ((pix >> 30) & 0x3ULL);
+        _output[0] = static_cast<double>((pix >> 0) & 0x3ffULL);
+        _output[1] = static_cast<double>((pix >> 10) & 0x3ffULL);
+        _output[2] = static_cast<double>((pix >> 20) & 0x3ffULL);
+        _output[3] = static_cast<double>((pix >> 30) & 0x3ULL);
     }
 
     template<>
@@ -629,7 +629,7 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_R16_USCALED, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint16_t& pix = reinterpret_cast<const uint16_t*>(_pix[0])[0];
-        _output[0] = ((pix >> 0) & 0xffffULL);
+		_output[0] = ((pix >> 0) & 0xffffULL);
     }
 
     template<>
@@ -673,8 +673,8 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_R16G16_USCALED, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint32_t& pix = reinterpret_cast<const uint32_t*>(_pix[0])[0];
-        _output[0] = ((pix >> 0) & 0xffffULL);
-        _output[1] = ((pix >> 16) & 0xffffULL);
+        _output[0] = static_cast<double>((pix >> 0) & 0xffffULL);
+        _output[1] = static_cast<double>((pix >> 16) & 0xffffULL);
     }
 
     template<>
@@ -723,9 +723,9 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_R16G16B16_USCALED, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint64_t& pix = reinterpret_cast<const uint64_t*>(_pix[0])[0];
-        _output[0] = ((pix >> 0) & 0xffffULL);
-        _output[1] = ((pix >> 16) & 0xffffULL);
-        _output[2] = ((pix >> 32) & 0xffffULL);
+        _output[0] = static_cast<double>((pix >> 0) & 0xffffULL);
+        _output[1] = static_cast<double>((pix >> 16) & 0xffffULL);
+        _output[2] = static_cast<double>((pix >> 32) & 0xffffULL);
     }
 
     template<>
@@ -779,10 +779,10 @@ namespace irr { namespace video // why is this in the video namespace!?
     inline void decodePixels<asset::EF_R16G16B16A16_USCALED, double>(const void* _pix[4], double* _output, uint32_t _blockX, uint32_t _blockY)
     {
         const uint64_t& pix = reinterpret_cast<const uint64_t*>(_pix[0])[0];
-        _output[0] = ((pix >> 0) & 0xffffULL);
-        _output[1] = ((pix >> 16) & 0xffffULL);
-        _output[2] = ((pix >> 32) & 0xffffULL);
-        _output[3] = ((pix >> 48) & 0xffffULL);
+        _output[0] = static_cast<double>((pix >> 0) & 0xffffULL);
+        _output[1] = static_cast<double>((pix >> 16) & 0xffffULL);
+        _output[2] = static_cast<double>((pix >> 32) & 0xffffULL);
+        _output[3] = static_cast<double>((pix >> 48) & 0xffffULL);
     }
 
     template<>
@@ -1035,7 +1035,7 @@ namespace irr { namespace video // why is this in the video namespace!?
         {
             const uint64_t& pix = reinterpret_cast<const uint64_t*>(_pix)[0];
             for (uint32_t i = 0u; i < chCnt; ++i)
-                _output[i] = core::Float16Compressor::decompress(pix >> i*16);
+				_output[i] = core::Float16Compressor::decompress(pix >> i * 16);
         }
     }
 	    template<>
@@ -1157,20 +1157,20 @@ namespace irr { namespace video // why is this in the video namespace!?
                     struct { uint64_t r, g, b, a; };
                     uint64_t c[4];
                 };
-            } p[4];
+			} p[4];
 
             uint16_t r0, g0, b0, r1, g1, b1;
 
             const void* input = &col.c0;
             decodePixels<asset::EF_B5G6R5_UNORM_PACK16, uint64_t>(&input, p[0].c, 0u, 0u);
-            r0 = p[0].r;
-            g0 = p[0].g;
-            b0 = p[0].b;
+			r0 = p[0].r;
+			g0 = p[0].g;
+			b0 = p[0].b;
             input = &col.c1;
             decodePixels<asset::EF_B5G6R5_UNORM_PACK16, uint64_t>(&input, p[1].c, 0u, 0u);
-            r1 = p[1].r;
-            g1 = p[1].g;
-            b1 = p[1].b;
+			r1 = p[1].r;
+			g1 = p[1].g;
+			b1 = p[1].b;
             if (col.c0 > col.c1)
             {
                 p[2].r = (2 * r0 + 1 * r1) / 3;
@@ -1197,7 +1197,7 @@ namespace irr { namespace video // why is this in the video namespace!?
             const uint32_t idx = 4u*_y + _x;
             const uint32_t cw = 3u & (col.lut >> (2u * idx));
             for (uint32_t i = 0u; i < (_alpha ? 4u : 3u); ++i)
-                _output[i] = p[cw].c[i];
+				_output[i] = p[cw].c[i];
         }
         template<typename T>
         inline void decodeBC2(const void* _pix, T* _output, uint32_t _x, uint32_t _y)
@@ -1297,7 +1297,7 @@ namespace irr { namespace video // why is this in the video namespace!?
             SRGB2lin<double>(s);
             T* lin = _srgb;
             for (uint32_t i = 0; i < 3u; ++i)
-                lin[i] = s[i] * 255.;
+				lin[i] = s[i] * 255.;
         }
 
         template<typename T>
@@ -1307,7 +1307,7 @@ namespace irr { namespace video // why is this in the video namespace!?
             lin2SRGB<double>(s);
             T* srgb = _lin;
             for (uint32_t i = 0; i < 3u; ++i)
-                srgb[i] = s[i] * 255.;
+				srgb[i] = s[i] * 255.;
         }
     }
 

@@ -47,10 +47,7 @@
 #include "quaternion.h"
 #include "rect.h"
 #include "dimension2d.h"
-#include "ECullingTypes.h"
-#include "EDebugSceneTypes.h"
 #include "EDriverTypes.h"
-#include "EMaterialTypes.h"
 #include "ESceneNodeAnimatorTypes.h"
 #include "ESceneNodeTypes.h"
 #include "IAnimatedMesh.h"
@@ -61,12 +58,8 @@
 #include "IEventReceiver.h"
 #include "IFileList.h"
 #include "IFileSystem.h"
-#include "IGPUProgrammingServices.h"
 #include "ILogger.h"
-#include "IMaterialRenderer.h"
-#include "IMaterialRendererServices.h"
 #include "IMeshSceneNode.h"
-#include "IMeshSceneNodeInstanced.h"
 #include "IOSOperator.h"
 #include "IReadFile.h"
 #include "IrrlichtDevice.h"
@@ -76,15 +69,9 @@
 #include "ISceneNodeAnimator.h"
 #include "ISceneNodeAnimatorCameraFPS.h"
 #include "ISceneNodeAnimatorCameraMaya.h"
-#include "IShaderConstantSetCallBack.h"
 #include "ISkinnedMeshSceneNode.h"
-#include "ITexture.h"
-#include "ITextureBufferObject.h"
-#include "IMultisampleTexture.h"
 #include "ITimer.h"
-#include "ITransformFeedback.h"
 #include "IVideoDriver.h"
-#include "IVideoModeList.h"
 #include "IWriteFile.h"
 #include "Keycodes.h"
 #include "splines.h"
@@ -95,7 +82,6 @@
 #include "SExposedVideoData.h"
 #include "SIrrCreationParameters.h"
 #include "SKeyMap.h"
-#include "SMaterial.h"
 #include "SViewFrustum.h"
 
 
@@ -122,7 +108,7 @@ namespace irr
 	\return Returns pointer to the created IrrlichtDevice or null if the
 	device could not be created.
 	*/
-	extern "C" IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDevice(
+	core::smart_refctd_ptr<IrrlichtDevice> createDevice(
 		video::E_DRIVER_TYPE deviceType = video::EDT_OPENGL,
 		// parantheses are necessary for some compilers
 		const core::dimension2d<uint32_t>& windowSize = (core::dimension2d<uint32_t>(640,480)),
@@ -131,16 +117,6 @@ namespace irr
 		bool stencilbuffer = false,
 		bool vsync = false,
 		IEventReceiver* receiver = 0);
-
-	//! typedef for Function Pointer
-	typedef IrrlichtDevice* (IRRCALLCONV *funcptr_createDevice )(
-			video::E_DRIVER_TYPE deviceType,
-			const core::dimension2d<uint32_t>& windowSize,
-			uint32_t bits,
-			bool fullscreen,
-			bool stencilbuffer,
-			bool vsync,
-			IEventReceiver* receiver);
 
 
 	//! Creates an Irrlicht device with the option to specify advanced parameters.
@@ -151,11 +127,7 @@ namespace irr
 	See irr::SIrrlichtCreationParameters for details.
 	\return Returns pointer to the created IrrlichtDevice or null if the
 	device could not be created. */
-	extern "C" IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDeviceEx(
-		const SIrrlichtCreationParameters& parameters);
-
-	//! typedef for Function Pointer
-	typedef IrrlichtDevice* (IRRCALLCONV *funcptr_createDeviceEx )( const SIrrlichtCreationParameters& parameters );
+	core::smart_refctd_ptr<IrrlichtDevice> createDeviceEx(const SIrrlichtCreationParameters& parameters);
 
 
 	// THE FOLLOWING IS AN EMPTY LIST OF ALL SUB NAMESPACES

@@ -10,8 +10,6 @@
 #include "IrrCompileConfig.h"
 #include "CLogger.h"
 #include "irr/asset/CIncludeHandler.h"
-#include "irr/asset/CGLSLScanBuiltinIncludeLoader.h"
-#include "irr/asset/CGLSLSkinningBuiltinIncludeLoader.h"
 
 namespace irr
 {
@@ -20,7 +18,7 @@ CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters& params)
 : IrrlichtDevice(), VideoDriver(0), SceneManager(0),
 	Timer(0), CursorControl(0), UserReceiver(params.EventReceiver),
 	Logger(0), Operator(0), FileSystem(0),
-	InputReceivingSceneManager(0), VideoModeList(0),
+	InputReceivingSceneManager(0),
 	CreationParams(params), Close(false)
 {
 	Timer = new ITimer();
@@ -40,29 +38,17 @@ CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters& params)
 	os::Printer::Logger = Logger;
 
 	FileSystem = io::createFileSystem();
-	VideoModeList = new video::CVideoModeList();
 
 	core::stringc s = "Irrlicht Engine version ";
 	s.append(getVersion());
 	os::Printer::log(s.c_str(), ELL_INFORMATION);
 
 	checkVersion(params.SDK_version_do_not_use);
-
-    IncludeHandler = core::make_smart_refctd_ptr<asset::CIncludeHandler>(FileSystem);
-
-    //add builtin loaders
-    asset::IBuiltinIncludeLoader* builtinLdr = new asset::CGLSLScanBuiltinIncludeLoader();
-    IncludeHandler->addBuiltinIncludeLoader(builtinLdr);
-    builtinLdr->drop();
-    builtinLdr = new asset::CGLSLSkinningBuiltinIncludeLoader();
-    IncludeHandler->addBuiltinIncludeLoader(builtinLdr);
-    builtinLdr->drop();
 }
 
 
 CIrrDeviceStub::~CIrrDeviceStub()
 {
-	VideoModeList->drop();
 	FileSystem->drop();
 
 	if (Operator)
@@ -127,14 +113,6 @@ const char* CIrrDeviceStub::getVersion() const
 gui::ICursorControl* CIrrDeviceStub::getCursorControl()
 {
 	return CursorControl;
-}
-
-
-//! \return Returns a pointer to a list with all video modes supported
-//! by the gfx adapter.
-video::IVideoModeList* CIrrDeviceStub::getVideoModeList()
-{
-	return VideoModeList;
 }
 
 

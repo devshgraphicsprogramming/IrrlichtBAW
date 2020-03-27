@@ -27,10 +27,30 @@ namespace impl
 	};
 }
 
-template<typename T, class allocator = core::allocator<T>, class CRTP=void>
+//! Class for array type, that allocates memory one time dynamically for specified constant amount of objects
+/**
+	An array is allocated dynamically, not on stack, so compared to std::array its size can be determined at runtime,
+	but there is no case in you can change the size of such an array.
+
+	The adventage of this class is that it has constant storage size,
+	so only one allocation is performed once compared to std::vector (member and data storage on single allocation),
+	instead of unnecessary 2 allocations std::vector performs.
+
+	As a consequence
+	
+	\code{.cpp}
+	sizeof(dynamic_array<T,allocator>) 
+	\endcode
+	
+	is completely meaningless since the size isn't known on compile-time, and it can only be allocated on the heap and is furthermore non-copyable.
+
+	@see core::refctd_dynamic_array
+*/
+template<typename T, class allocator = core::allocator<typename std::remove_const<T>::type>, class CRTP=void>
 class IRR_FORCE_EBO dynamic_array : public impl::dynamic_array_base<T,allocator>
 {
 		using base_t = impl::dynamic_array_base<T,allocator>;
+		_IRR_STATIC_INLINE_CONSTEXPR bool is_const = std::is_const<T>::value;
 
 	public:
 		using allocator_type = allocator;
@@ -69,7 +89,7 @@ class IRR_FORCE_EBO dynamic_array : public impl::dynamic_array_base<T,allocator>
 		}
 
 	public:
-		_IRR_STATIC_INLINE_CONSTEXPR size_t dummy_item_count = sizeof(base_t)/sizeof(T);
+		_IRR_STATIC_INLINE_CONSTEXPR size_t dummy_item_count = (sizeof(base_t)+sizeof(T)-1ull)/sizeof(T);
 
 		virtual ~dynamic_array()
 		{
@@ -122,7 +142,7 @@ class IRR_FORCE_EBO dynamic_array : public impl::dynamic_array_base<T,allocator>
 
         static inline void operator delete(void* ptr) noexcept
         {
-			return allocator().deallocate(reinterpret_cast<pointer>(ptr));
+			allocator().deallocate(reinterpret_cast<pointer>(ptr));
         }
 		// size hint is ill-formed
 		static void operator delete(void* ptr, std::size_t sz) = delete;
@@ -161,25 +181,31 @@ class IRR_FORCE_EBO dynamic_array : public impl::dynamic_array_base<T,allocator>
 			return !((*this) != _other);
 		}
 
-		inline iterator begin() noexcept { return data(); }
-		inline const_iterator begin() const noexcept { return data(); }
-		inline iterator end() noexcept { return data()+size(); }
-		inline const_iterator end() const noexcept { return data()+size(); }
-		inline const_iterator cend() const noexcept { return data()+size(); }
-		inline const_iterator cbegin() const noexcept { return data(); }
+		template<typename U=T, typename = typename std::enable_if<!is_const>::type>
+		inline iterator			begin() noexcept { return data(); }
+		inline const_iterator	begin() const noexcept { return data(); }
+		template<typename U=T, typename = typename std::enable_if<!is_const>::type>
+		inline iterator			end() noexcept { return data()+size(); }
+		inline const_iterator	end() const noexcept { return data()+size(); }
+		inline const_iterator	cend() const noexcept { return data()+size(); }
+		inline const_iterator	cbegin() const noexcept { return data(); }
 
-		inline size_t size() const noexcept { return base_t::item_count; }
-		inline bool empty() const noexcept { return !size(); }
+		inline size_t			size() const noexcept { return base_t::item_count; }
+		inline bool				empty() const noexcept { return !size(); }
 
-		inline const T& operator[](size_t ix) const noexcept { return data()[ix]; }
-		inline T& operator[](size_t ix) noexcept { return data()[ix]; }
-
-		inline T& front() noexcept { return *begin(); }
-		inline const T& front() const noexcept { return *begin(); }
-		inline T& back() noexcept { return *(end()-1); }
-		inline const T& back() const noexcept { return *(end()-1); }
-		inline pointer data() noexcept { return reinterpret_cast<T*>(this)+dummy_item_count; }
-		inline const_pointer data() const noexcept { return reinterpret_cast<const T*>(this)+dummy_item_count; }
+		inline const T&			operator[](size_t ix) const noexcept { return data()[ix]; }
+		template<typename U=T, typename = typename std::enable_if<!is_const>::type>
+		inline T&				operator[](size_t ix) noexcept { return data()[ix]; }
+		
+		template<typename U=T, typename = typename std::enable_if<!is_const>::type>
+		inline T&				front() noexcept { return *begin(); }
+		inline const T&			front() const noexcept { return *begin(); }
+		template<typename U=T, typename = typename std::enable_if<!is_const>::type>
+		inline T&				back() noexcept { return *(end()-1); }
+		inline const T&			back() const noexcept { return *(end()-1); }
+		template<typename U=T, typename = typename std::enable_if<!is_const>::type>
+		inline pointer			data() noexcept { return reinterpret_cast<T*>(this)+dummy_item_count; }
+		inline const_pointer	data() const noexcept { return reinterpret_cast<const T*>(this)+dummy_item_count; }
 };
 
 }

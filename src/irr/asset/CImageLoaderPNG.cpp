@@ -10,8 +10,7 @@
 #   include "libpng/png.h"
 #endif // _IRR_COMPILE_WITH_LIBPNG_
 
-#include "irr/asset/ICPUTexture.h"
-#include "irr/asset/CImageData.h"
+#include "irr/asset/ICPUImageView.h"
 #include "CReadFile.h"
 #include "os.h"
 
@@ -79,11 +78,13 @@ bool CImageLoaderPng::isALoadableFileFormat(io::IReadFile* _file) const
 // load in the image data
 asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override, uint32_t _hierarchyLevel)
 {
-    core::vector<asset::CImageData*> images;
 #ifdef _IRR_COMPILE_WITH_LIBPNG_
 	if (!_file)
         return {};
-	
+
+	uint32_t imageSize[3] = { 1,1,1 };
+	uint32_t& Width = imageSize[0];
+	uint32_t& Height = imageSize[1];
 	//Used to point to image rows
 	uint8_t** RowPointers = 0;
 
@@ -125,7 +126,7 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 	{
 		png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
 		if (RowPointers)
-			delete [] RowPointers;
+			_IRR_DELETE_ARRAY(RowPointers, Height);
         return {};
 	}
 
@@ -136,9 +137,6 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 
 	png_read_info(png_ptr, info_ptr); // Read the info section of the png _file
 
-	uint32_t imageSize[3] = {1,1,1};
-	uint32_t& Width = imageSize[0];
-	uint32_t& Height = imageSize[1];
 	int32_t BitDepth;
 	int32_t ColorType;
 	{
@@ -203,22 +201,30 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 	}
 
 	// Create the image structure to be filled by png data
-	uint32_t nullOffset[3] = {0,0,0};
-	asset::CImageData* image = nullptr;
+    ICPUImage::SCreationParams imgInfo;
+    imgInfo.type = ICPUImage::ET_2D;
+    imgInfo.extent.width = Width;
+    imgInfo.extent.height = Height;
+    imgInfo.extent.depth = 1u;
+    imgInfo.mipLevels = 1u;
+    imgInfo.arrayLayers = 1u;
+    imgInfo.samples = ICPUImage::ESCF_1_BIT;
+    imgInfo.flags = static_cast<IImage::E_CREATE_FLAGS>(0u);
+    core::smart_refctd_ptr<ICPUImage> image = nullptr;
 
 	bool lumaAlphaType = false;
 	switch (ColorType) {
 		case PNG_COLOR_TYPE_RGB_ALPHA:
-			image = new asset::CImageData(nullptr, nullOffset, imageSize, 0, asset::EF_R8G8B8A8_SRGB);
+            imgInfo.format = EF_R8G8B8A8_SRGB;
 			break;
 		case PNG_COLOR_TYPE_RGB:
-			image = new asset::CImageData(nullptr, nullOffset, imageSize, 0, asset::EF_R8G8B8_SRGB);
+            imgInfo.format = EF_R8G8B8_SRGB;
 			break;
 		case PNG_COLOR_TYPE_GRAY:
-			image = new asset::CImageData(nullptr, nullOffset, imageSize, 0, asset::EF_R8_SRGB);
+            imgInfo.format = EF_R8_SRGB;
 			break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
-			image = new asset::CImageData(nullptr, nullOffset, imageSize, 0, asset::EF_R8G8B8A8_SRGB);
+            imgInfo.format = EF_R8G8B8A8_SRGB;
 			lumaAlphaType = true;
 			break;
 		default:
@@ -228,6 +234,8 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 			}
 	}
 	
+    image = ICPUImage::create(std::move(imgInfo));
+
 	if (!image)
 	{
 		os::Printer::log("LOAD PNG: Internal PNG create image struct failure\n", _file->getFileName().c_str(), ELL_ERROR);
@@ -236,29 +244,61 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 	}
 
 	// Create array of pointers to rows in image data
-	RowPointers = new png_bytep[Height];
+    RowPointers = _IRR_NEW_ARRAY(png_bytep, Height);
 	if (!RowPointers)
 	{
 		os::Printer::log("LOAD PNG: Internal PNG create row pointers failure\n", _file->getFileName().c_str(), ELL_ERROR);
 		png_destroy_read_struct(&png_ptr, nullptr, nullptr);
-		image->drop();
         return {};
 	}
 
+	// OpenGL cannot transfer rows with arbitrary padding
+    static const uint32_t MAX_PITCH_ALIGNMENT = 8u;
+    // try with largest alignment first
+    auto calcPitchInBlocks = [](uint32_t width, uint32_t blockByteSize) -> uint32_t
+    {
+		auto rowByteSize = width*blockByteSize;
+		for (uint32_t _alignment=MAX_PITCH_ALIGNMENT; _alignment>1u; _alignment>>=1u)
+		{
+			auto paddedSize = core::alignUp(rowByteSize, _alignment);
+			if (paddedSize % blockByteSize)
+				continue;
+			return paddedSize/blockByteSize;
+		}
+        return width;
+    };
+
+    const uint32_t texelFormatBytesize = getTexelOrBlockBytesize(image->getCreationParameters().format);
+
+    auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(image->getImageDataSizeInBytes());
+    auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+    ICPUImage::SBufferCopy& region = regions->front();
+    //region.imageSubresource.aspectMask = ...; //waits for Vulkan
+    region.imageSubresource.mipLevel = 0u;
+    region.imageSubresource.baseArrayLayer = 0u;
+    region.imageSubresource.layerCount = 1u;
+    region.bufferOffset = 0u;
+    region.bufferRowLength = calcPitchInBlocks(Width, texelFormatBytesize);
+    region.bufferImageHeight = 0u; //tightly packed
+    region.imageOffset = { 0u, 0u, 0u };
+    region.imageExtent = image->getCreationParameters().extent;
+
 	// Fill array of pointers to rows in image data
-	const uint32_t pitch = image->getPitchIncludingAlignment();
-	uint8_t* data = reinterpret_cast<uint8_t*>(image->getData());
+	const uint32_t pitch = region.bufferRowLength*texelFormatBytesize;
+	uint8_t* data = reinterpret_cast<uint8_t*>(texelBuffer->getPointer());
 	for (uint32_t i=0; i<Height; ++i)
 	{
 		RowPointers[i] = (png_bytep)data;
 		data += pitch;
 	}
 
+    image->setBufferAndRegions(std::move(texelBuffer), regions);
+
 	// for proper error handling
 	if (setjmp(png_jmpbuf(png_ptr)))
 	{
 		png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
-		delete [] RowPointers;
+        _IRR_DELETE_ARRAY(RowPointers, Height);
 		image->drop();
         return {};
 	}
@@ -269,7 +309,7 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 	png_read_end(png_ptr, nullptr);
 	if (lumaAlphaType)
 	{
-		assert(image->getColorFormat()==asset::EF_R8G8B8A8_SRGB);
+		assert(image->getCreationParameters().format==asset::EF_R8G8B8A8_SRGB);
 		for (uint32_t i=0u; i<Height; ++i)
 		for (uint32_t j=0u; j<Width;)
 		{
@@ -281,16 +321,13 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 			out |= (in&0xffu) << 8u;
 		}
 	}
-	delete [] RowPointers;
+    _IRR_DELETE_ARRAY(RowPointers, Height);
 	png_destroy_read_struct(&png_ptr,&info_ptr, 0); // Clean up memory
-
-	images.push_back(image);
+#else
+    return {};
 #endif // _IRR_COMPILE_WITH_LIBPNG_
 
-    ICPUTexture* tex = ICPUTexture::create(images, _file->getFileName().c_str());
-    for (auto& img : images)
-        img->drop();
-    return SAssetBundle({core::smart_refctd_ptr<IAsset>(tex, core::dont_grab)});
+    return SAssetBundle({image});
 }
 
 

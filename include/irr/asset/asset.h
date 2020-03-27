@@ -4,6 +4,8 @@
 // dependencies
 #include "irr/system/system.h"
 
+// utils
+#include "irr/asset/asset_utils.h"
 
 // format
 #include "irr/asset/format/EFormat.h"
@@ -18,15 +20,13 @@
 #include "irr/asset/IMesh.h"
 
 // images
-#include "irr/asset/CImageData.h"
-#include "irr/asset/ICPUTexture.h"
+#include "irr/asset/ICPUImage.h"
+#include "irr/asset/ICPUImageView.h"
 // shaders
-#include "irr/asset/ShaderCommons.h"
 #include "irr/asset/ShaderRes.h"
 #include "irr/asset/IIncluder.h"
 #include "irr/asset/IIncludeHandler.h"
 #include "irr/asset/IBuiltinIncludeLoader.h"
-#include "irr/asset/IParsedShaderSource.h"
 #include "irr/asset/IGLSLCompiler.h"
 #include "irr/asset/ISPIR_VProgram.h"
 #include "irr/asset/ICPUShader.h"

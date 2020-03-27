@@ -6,7 +6,6 @@
 #include "irr/asset/bawformat/CBAWFile.h"
 
 #include "irr/asset/ICPUBuffer.h"
-#include "irr/asset/ICPUTexture.h"
 #include "irr/asset/ICPUSkinnedMesh.h"
 #include "irr/asset/ICPUSkinnedMeshBuffer.h"
 #include "irr/asset/bawformat/legacy/CBAWLegacy.h"
@@ -30,11 +29,13 @@ size_t SizedBlob<VariableSizeBlob, RawBufferBlobV0, ICPUBuffer>::calcBlobSizeFor
 	return _obj->getSize();
 }
 
+#ifndef NEW_SHADERS
 template<>
 size_t SizedBlob<VariableSizeBlob, TexturePathBlobV0, ICPUTexture>::calcBlobSizeForObj(const ICPUTexture* _obj)
 {
 	return _obj->getSourceFilename().size();
 }
+#endif
 
 MeshBlobV0::MeshBlobV0(const asset::ICPUMesh* _mesh) : box(_mesh->getBoundingBox()), meshBufCnt(_mesh->getMeshBufferCount())
 {
@@ -65,6 +66,7 @@ size_t SizedBlob<VariableSizeBlob, SkinnedMeshBlobV0, asset::ICPUSkinnedMesh>::c
 
 MeshBufferBlobV0::MeshBufferBlobV0(const asset::ICPUMeshBuffer* _mb)
 {
+#ifndef NEW_SHADERS
 	memcpy(&mat, &_mb->getMaterial(), sizeof(video::SCPUMaterial));
 	_mb->getMaterial().serializeBitfields(mat.bitfieldsPtr());
 	for (size_t i = 0; i < _IRR_MATERIAL_MAX_TEXTURES_; ++i)
@@ -80,6 +82,7 @@ MeshBufferBlobV0::MeshBufferBlobV0(const asset::ICPUMeshBuffer* _mb)
 	baseInstance = _mb->getBaseInstance();
 	primitiveType = _mb->getPrimitiveType();
 	posAttrId = _mb->getPositionAttributeIx();
+#endif
 }
 
 template<>
@@ -90,6 +93,7 @@ size_t SizedBlob<FixedSizeBlob, MeshBufferBlobV0, asset::ICPUMeshBuffer>::calcBl
 
 SkinnedMeshBufferBlobV0::SkinnedMeshBufferBlobV0(const asset::ICPUSkinnedMeshBuffer* _smb)
 {
+#ifndef NEW_SHADERS
 	memcpy(&mat, &_smb->getMaterial(), sizeof(video::SCPUMaterial));
 	_smb->getMaterial().serializeBitfields(mat.bitfieldsPtr());
 	for (size_t i = 0; i < _IRR_MATERIAL_MAX_TEXTURES_; ++i)
@@ -108,6 +112,7 @@ SkinnedMeshBufferBlobV0::SkinnedMeshBufferBlobV0(const asset::ICPUSkinnedMeshBuf
 	indexValMin = _smb->getIndexMinBound();
 	indexValMax = _smb->getIndexMaxBound();
 	maxVertexBoneInfluences = _smb->getMaxVertexBoneInfluences();
+#endif
 }
 
 template<>
@@ -249,7 +254,7 @@ size_t FinalBoneHierarchyBlobV2::calcNonInterpolatedAnimsByteSize() const
 
 
 // .baw VERSION 1
-
+#ifndef NEW_SHADERS
 MeshDataFormatDescBlobV1::MeshDataFormatDescBlobV1(const asset::IMeshDataFormatDesc<asset::ICPUBuffer>* _desc) : attrDivisor{0u}
 {
     static_assert(VERTEX_ATTRIB_CNT == EVAI_COUNT, "VERTEX_ATTRIB_CNT != EVAI_COUNT");
@@ -289,7 +294,7 @@ MeshDataFormatDescBlobV1::MeshDataFormatDescBlobV1(const asset::legacyv0::MeshDa
 
     idxBufPtr = _v0blob.idxBufPtr;
 }
-
+#endif
 
 
 bool encAes128gcm(const void* _input, size_t _inSize, void* _output, size_t _outSize, const unsigned char* _key, const unsigned char* _iv, void* _tag)

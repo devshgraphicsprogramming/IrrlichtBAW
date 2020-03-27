@@ -84,9 +84,9 @@ namespace asset
 			auto XXXXX = [&](auto idx) -> std::array<uint32_t,3u>
 			{
 				uint32_t offset;
-				switch (mb->getPrimitiveType())
+				switch (mb->getPipeline()->getPrimitiveAssemblyParams().primitiveType)
 				{
-					case EPT_TRIANGLES:
+					case EPT_TRIANGLE_LIST:
 						offset = triangleIx*3u;
 						if (idx)
 						{
@@ -149,7 +149,7 @@ namespace asset
 
 		//
 		static core::smart_refctd_ptr<ICPUMeshBuffer> calculateSmoothNormals(ICPUMeshBuffer* inbuffer, bool makeNewMesh = false, float epsilon = 1.525e-5f,
-				E_VERTEX_ATTRIBUTE_ID normalAttrID = E_VERTEX_ATTRIBUTE_ID::EVAI_ATTR3, 
+				uint32_t normalAttrID = 3u, 
 				VxCmpFunction vxcmp = [](const IMeshManipulator::SSNGVertexData& v0, const IMeshManipulator::SSNGVertexData& v1, ICPUMeshBuffer* buffer) 
 				{ 
 					static constexpr float cosOf45Deg = 0.70710678118f;
@@ -303,38 +303,39 @@ namespace asset
 		/** \param meshbuffer Input mesh buffer
 		\param Outputted Number of polygons in mesh buffer, if successful.
 		\return If successfully can provide information */
-		template<typename T>
-		static inline bool getPolyCount(uint32_t& outCount, IMeshBuffer<T>* meshbuffer)
+        template<typename ...MeshbufTemplParams>
+		static inline bool getPolyCount(uint32_t& outCount, IMeshBuffer<MeshbufTemplParams...>* meshbuffer)
 		{
 			outCount = 0;
 			if (!meshbuffer)
 				return false;
+            if (!meshbuffer->getPipeline())
+                return false;
+
+            const E_PRIMITIVE_TOPOLOGY primType = meshbuffer->getPipeline()->getPrimitiveAssemblyParams().primitiveType;
 
 			uint32_t trianglecount;
 
-			switch (meshbuffer->getPrimitiveType())
+			switch (primType)
 			{
-				case EPT_POINTS:
-					trianglecount = meshbuffer->getIndexCount();
-					break;
-				case EPT_LINE_STRIP:
-					trianglecount = meshbuffer->getIndexCount() - 1;
-					break;
-				case EPT_LINE_LOOP:
-					trianglecount = meshbuffer->getIndexCount();
-					break;
-				case EPT_LINES:
-					trianglecount = meshbuffer->getIndexCount() / 2;
-					break;
-				case EPT_TRIANGLE_STRIP:
-					trianglecount = meshbuffer->getIndexCount() - 2;
-					break;
-				case EPT_TRIANGLE_FAN:
-					trianglecount = meshbuffer->getIndexCount() - 2;
-					break;
-				case EPT_TRIANGLES:
-					trianglecount = meshbuffer->getIndexCount() / 3;
-					break;
+			case EPT_POINT_LIST:
+				trianglecount = meshbuffer->getIndexCount();
+				break;
+			case EPT_LINE_STRIP:
+				trianglecount = meshbuffer->getIndexCount() - 1;
+				break;
+			case EPT_LINE_LIST:
+				trianglecount = meshbuffer->getIndexCount() / 2;
+				break;
+			case EPT_TRIANGLE_STRIP:
+				trianglecount = meshbuffer->getIndexCount() - 2;
+				break;
+			case EPT_TRIANGLE_FAN:
+				trianglecount = meshbuffer->getIndexCount() - 2;
+				break;
+			case EPT_TRIANGLE_LIST:
+				trianglecount = meshbuffer->getIndexCount() / 3;
+				break;
 			}
 
 			outCount = trianglecount;
@@ -348,7 +349,7 @@ namespace asset
 		template<typename T>
 		static inline bool getPolyCount(uint32_t& outCount, IMesh<T>* mesh)
 		{
-			outCount = 0;
+			outCount = 0u;
 			if (!mesh)
 				return false;
 
@@ -356,10 +357,8 @@ namespace asset
 			for (uint32_t g = 0; g < mesh->getMeshBufferCount(); ++g)
 			{
 				uint32_t trianglecount;
-				if (getPolyCount(trianglecount, mesh->getMeshBuffer(g)))
-					outCount += trianglecount;
-				else
-					retval = false;
+				retval = retval && getPolyCount(trianglecount, mesh->getMeshBuffer(g));
+                outCount += trianglecount;
 			}
 
 			return retval;

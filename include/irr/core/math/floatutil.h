@@ -67,6 +67,46 @@ IRR_FORCE_INLINE T HALF_PI()
 	return PI<T>() * T(0.5);
 }
 
+namespace impl
+{
+    constexpr uint32_t NAN_U32      = 0x7FFFFFFFu;
+    constexpr uint32_t INFINITY_U32 = 0x7F800000u;
+}
+
+//! don't get rid of these, -ffast-math breaks inf and NaN handling on GCC
+template<typename T>
+T nan();
+
+template<>
+IRR_FORCE_INLINE float nan<float>() {return reinterpret_cast<const float&>(impl::NAN_U32);}
+
+
+template<typename T>
+T infinity();
+
+template<>
+IRR_FORCE_INLINE float infinity<float>() {return reinterpret_cast<const float&>(impl::INFINITY_U32);}
+
+
+template<typename T>
+bool isnan(T val);
+
+template<>
+IRR_FORCE_INLINE bool isnan<float>(float val) 
+{
+    //all exponent bits set, at least one mantissa bit set
+    return (reinterpret_cast<uint32_t&>(val)&0x7fffffffu) > 0x7f800000u;
+}
+
+template<typename T>
+bool isinf(T val);
+
+template<>
+IRR_FORCE_INLINE bool isinf<float>(float val)
+{
+    //all exponent bits set, none mantissa bit set
+    return (reinterpret_cast<uint32_t&>(val)&0x7fffffffu) == 0x7f800000u;
+}
 
 union FloatIntUnion32
 {
@@ -144,9 +184,9 @@ inline float unpack11bitFloat(uint32_t _fp)
 		return f32;
 	}
 	else if (exp == 31 && !mant)
-		return INFINITY;
+		return core::infinity<float>();
 	else if (exp == 31 && mant)
-		return NAN;
+		return core::nan<float>();
 
 	return -1.f;
 }
@@ -208,9 +248,9 @@ inline float unpack10bitFloat(uint32_t _fp)
 		return f32;
 	}
 	else if (exp == 31 && !mant)
-		return INFINITY;
+		return core::infinity<float>();
 	else if (exp == 31 && mant)
-		return NAN;
+		return core::nan<float>();
 	return -1.f;
 }
 

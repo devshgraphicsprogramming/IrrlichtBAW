@@ -9,7 +9,8 @@
 #include "CImageLoaderTGA.h"
 #include "IWriteFile.h"
 #include "irr/asset/format/convertColor.h"
-#include "irr/asset/ICPUTexture.h"
+#include "irr/asset/ICPUImageView.h"
+#include "os.h"
 
 #include "os.h"
 
@@ -27,6 +28,7 @@ CImageWriterTGA::CImageWriterTGA()
 
 bool CImageWriterTGA::writeAsset(io::IWriteFile* _file, const SAssetWriteParams& _params, IAssetWriterOverride* _override)
 {
+#ifndef NEW_SHADERS
     if (!_override)
         getDefaultOverride(_override);
 
@@ -181,6 +183,9 @@ bool CImageWriterTGA::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 		return false;
 
 	return imageHeader.ImageHeight <= y;
+#else
+    return false;
+#endif//NEW_SHADERS
 }
 
 } // namespace video

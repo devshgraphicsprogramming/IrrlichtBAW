@@ -118,7 +118,7 @@ template<class T>
 IRR_FORCE_INLINE T sign(const T& a)
 {
 	auto isneg = a < T(0);
-	using bool_type = std::remove_reference<decltype(isneg)>::type;
+	using bool_type = typename std::remove_reference<decltype(isneg)>::type;
 	T half_sign = core::mix<T,bool_type>(T(1),T(-1),isneg);
 	auto iszero = a == T(0);
 	return core::mix<T,bool_type>(half_sign,T(0),iszero);
@@ -257,6 +257,7 @@ IRR_FORCE_INLINE T lerp(const T& a, const T& b, const U& t)
 
 
 // TODO : step,smoothstep,isnan,isinf,floatBitsToInt,floatBitsToUint,intBitsToFloat,uintBitsToFloat,frexp,ldexp
+// extra note, GCC breaks isfinite, isinf, isnan, isnormal, signbit in -ffast-math so need to implement ourselves
 // TODO : packUnorm2x16, packSnorm2x16, packUnorm4x8, packSnorm4x8, unpackUnorm2x16, unpackSnorm2x16, unpackUnorm4x8, unpackSnorm4x8, packHalf2x16, unpackHalf2x16, packDouble2x32, unpackDouble2x32
 // MOVE : faceforward, reflect, refract, any, all, not
 template<typename T>
@@ -331,7 +332,16 @@ IRR_FORCE_INLINE int32_t findMSB<uint32_t>(uint32_t x);
 template<>
 IRR_FORCE_INLINE int32_t findMSB<uint64_t>(uint64_t x);
 
-
+template<typename INT_TYPE>
+IRR_FORCE_INLINE uint32_t bitCount(INT_TYPE x);
+template<>
+IRR_FORCE_INLINE uint32_t bitCount(uint32_t x);
+template<>
+IRR_FORCE_INLINE uint32_t bitCount(uint64_t x);
+template<>
+IRR_FORCE_INLINE uint32_t bitCount(int32_t x) {return core::bitCount(static_cast<const uint32_t&>(x));}
+template<>
+IRR_FORCE_INLINE uint32_t bitCount(int64_t x) {return core::bitCount(static_cast<const uint64_t&>(x));}
 
 // Extras
 

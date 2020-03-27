@@ -13,13 +13,14 @@ namespace irr
 namespace asset
 {
 
-template<typename> class IMeshDataFormatDesc; // is this the type we should be using?
+//template<typename> class IMeshDataFormatDesc; // is this the type we should be using?
 
 namespace legacyv0
 {
 	struct MeshDataFormatDescBlobV0;
 }
 
+#ifndef NEW_SHADERS
 #include "irr/irrpack.h"
 struct IRR_FORCE_EBO MeshDataFormatDescBlobV1 : TypedBlob<MeshDataFormatDescBlobV1, IMeshDataFormatDesc<ICPUBuffer> >, FixedSizeBlob<MeshDataFormatDescBlobV1, IMeshDataFormatDesc<ICPUBuffer> >
 {
@@ -56,7 +57,7 @@ inline size_t SizedBlob<FixedSizeBlob, MeshDataFormatDescBlobV2, IMeshDataFormat
 {
     return sizeof(MeshDataFormatDescBlobV2);
 }
-
+#endif
 
 }
 } // irr::asset

@@ -20,403 +20,664 @@ namespace irr
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 
 #include "CNullDriver.h"
-#include "IMaterialRendererServices.h"
 // also includes the OpenGL stuff
-#include "COpenGLExtensionHandler.h"
+#include "COpenGLFrameBuffer.h"
 #include "COpenGLDriverFence.h"
-#include "COpenGLTransformFeedback.h"
-#include "COpenGLVAOSpec.h"
-#include "irr/video/CCUDAHandler.h"
 #include "COpenCLHandler.h"
+#include "irr/video/COpenGLSpecializedShader.h"
+#include "irr/video/COpenGLRenderpassIndependentPipeline.h"
+#include "irr/video/COpenGLDescriptorSet.h"
+#include "irr/video/COpenGLPipelineLayout.h"
+#include "irr/video/COpenGLComputePipeline.h"
 
 #include <map>
 #include "FW_Mutex.h"
 
 namespace irr
 {
-
 namespace video
 {
-	class COpenGLTexture;
-	class COpenGLFrameBuffer;
 
-	class COpenGLDriver : public CNullDriver, public IMaterialRendererServices, public COpenGLExtensionHandler
-	{
+    enum GL_STATE_BITS : uint32_t
+    {
+        // has to be flushed before constants are pushed (before `extGlProgramUniform*`)
+        GSB_PIPELINE = 1u << 0,
+        GSB_RASTER_PARAMETERS = 1u << 1,
+        // we want the two to happen together and just before a draw (set VAO first, then binding)
+        GSB_VAO_AND_VERTEX_INPUT = 1u << 2,
+        // flush just before (indirect)dispatch or (multi)(indirect)draw, textures and samplers first, then storage image, then SSBO, finally UBO
+        GSB_DESCRIPTOR_SETS = 1u << 3,
+        // GL_DISPATCH_INDIRECT_BUFFER 
+        GSB_DISPATCH_INDIRECT = 1u << 4,
+        GSB_PUSH_CONSTANTS = 1u << 5,
+        GSB_PIXEL_PACK_UNPACK = 1u << 6,
+        // flush everything
+        GSB_ALL = ~0x0u
+    };
+
+
+struct SOpenGLState
+{
+    struct SVAO {
+        GLuint GLname;
+        uint64_t lastValidated;
+    };
+    struct HashVAOPair
+    {
+        COpenGLRenderpassIndependentPipeline::SVAOHash first;
+        SVAO second;
+
+        inline bool operator<(const HashVAOPair& rhs) const { return first < rhs.first; }
+    };
+    struct SDescSetBnd {
+        core::smart_refctd_ptr<const COpenGLPipelineLayout> pplnLayout;
+        core::smart_refctd_ptr<const COpenGLDescriptorSet> set;
+        core::smart_refctd_dynamic_array<uint32_t> dynamicOffsets;
+    };
+
+    using SGraphicsPipelineHash = std::array<GLuint, COpenGLRenderpassIndependentPipeline::SHADER_STAGE_COUNT>;
+
+    struct {
+        struct {
+            core::smart_refctd_ptr<const COpenGLRenderpassIndependentPipeline> pipeline;
+            SGraphicsPipelineHash usedShadersHash = { 0u, 0u, 0u, 0u, 0u };
+        } graphics;
+        struct {
+            core::smart_refctd_ptr<const COpenGLComputePipeline> pipeline;
+            GLuint usedShader = 0u;
+        } compute;
+    } pipeline;
+
+    struct {
+        core::smart_refctd_ptr<const COpenGLBuffer> buffer;
+    } dispatchIndirect;
+
+    struct {
+        //in GL it is possible to set polygon mode separately for back- and front-faces, but in VK it's one setting for both
+        GLenum polygonMode = GL_FILL;
+        GLenum faceCullingEnable = 0;
+        GLenum cullFace = GL_BACK;
+        //in VK stencil params (both: stencilOp and stencilFunc) are 2 distinct for back- and front-faces, but in GL it's one for both
+        struct SStencilOp {
+            GLenum sfail = GL_KEEP;
+            GLenum dpfail = GL_KEEP;
+            GLenum dppass = GL_KEEP;
+            bool operator!=(const SStencilOp& rhs) const { return sfail!=rhs.sfail || dpfail!=rhs.dpfail || dppass!=rhs.dppass; }
+        };
+        SStencilOp stencilOp_front, stencilOp_back;
+        struct SStencilFunc {
+            GLenum func = GL_ALWAYS;
+            GLint ref = 0;
+            GLuint mask = ~static_cast<GLuint>(0u);
+            bool operator!=(const SStencilFunc& rhs) const { return func!=rhs.func || ref!=rhs.ref || mask!=rhs.mask; }
+        };
+        SStencilFunc stencilFunc_front, stencilFunc_back;
+        GLenum depthFunc = GL_LESS;
+        GLenum frontFace = GL_CCW;
+        GLboolean depthClampEnable = 0;
+        GLboolean rasterizerDiscardEnable = 0;
+        GLboolean polygonOffsetEnable = 0;
+        struct SPolyOffset {
+            GLfloat factor = 0.f;//depthBiasSlopeFactor 
+            GLfloat units = 0.f;//depthBiasConstantFactor 
+            bool operator!=(const SPolyOffset& rhs) const { return factor!=rhs.factor || units!=rhs.units; }
+        } polygonOffset;
+        GLfloat lineWidth = 1.f;
+        GLboolean sampleShadingEnable = 0;
+        GLfloat minSampleShading = 0.f;
+        GLboolean sampleMaskEnable = 0;
+        GLbitfield sampleMask[2]{~static_cast<GLbitfield>(0), ~static_cast<GLbitfield>(0)};
+        GLboolean sampleAlphaToCoverageEnable = 0;
+        GLboolean sampleAlphaToOneEnable = 0;
+        GLboolean depthTestEnable = 0;
+        GLboolean depthWriteEnable = 1;
+        //GLboolean depthBoundsTestEnable;
+        GLboolean stencilTestEnable = 0;
+        GLboolean multisampleEnable = 1;
+        GLboolean primitiveRestartEnable = 0;
+
+        GLboolean logicOpEnable = 0;
+        GLenum logicOp = GL_COPY;
+        struct SDrawbufferBlending
+        {
+            GLboolean blendEnable = 0;
+            struct SBlendFunc {
+                GLenum srcRGB = GL_ONE;
+                GLenum dstRGB = GL_ZERO;
+                GLenum srcAlpha = GL_ONE;
+                GLenum dstAlpha = GL_ZERO;
+                bool operator!=(const SBlendFunc& rhs) const { return srcRGB!=rhs.srcRGB || dstRGB!=rhs.dstRGB || srcAlpha!=rhs.srcAlpha || dstAlpha!=rhs.dstAlpha; }
+            } blendFunc;
+            struct SBlendEq {
+                GLenum modeRGB = GL_FUNC_ADD;
+                GLenum modeAlpha = GL_FUNC_ADD;
+                bool operator!=(const SBlendEq& rhs) const { return modeRGB!=rhs.modeRGB || modeAlpha!=rhs.modeAlpha; }
+            } blendEquation;
+            struct SColorWritemask {
+                GLboolean colorWritemask[4]{ 1,1,1,1 };
+                bool operator!=(const SColorWritemask& rhs) const { return memcmp(colorWritemask, rhs.colorWritemask, 4); }
+            } colorMask;
+        } drawbufferBlend[asset::SBlendParams::MAX_COLOR_ATTACHMENT_COUNT];
+    } rasterParams;
+
+    struct {
+        HashVAOPair vao;
+        struct SBnd {
+            core::smart_refctd_ptr<const COpenGLBuffer> buf;
+            GLintptr offset = 0;
+            bool operator!=(const SBnd& rhs) const { return buf!=rhs.buf || offset!=rhs.offset; }
+        } bindings[IGPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT];
+
+        core::smart_refctd_ptr<const COpenGLBuffer> indexBuf;
+
+        //putting it here because idk where else
+        core::smart_refctd_ptr<const COpenGLBuffer> indirectDrawBuf;
+        core::smart_refctd_ptr<const COpenGLBuffer> parameterBuf;//GL>=4.6
+    } vertexInputParams;
+
+    struct {
+        SDescSetBnd descSets[IGPUPipelineLayout::DESCRIPTOR_SET_COUNT];
+    } descriptorsParams[E_PIPELINE_BIND_POINT::EPBP_COUNT];
+
+    struct SPixelPackUnpack {
+        core::smart_refctd_ptr<const COpenGLBuffer> buffer;
+        GLint alignment = 4;
+        GLint rowLength = 0;
+        GLint imgHeight = 0;
+        GLint BCwidth = 0;
+        GLint BCheight = 0;
+        GLint BCdepth = 0;
+    };
+    SPixelPackUnpack pixelPack;
+    SPixelPackUnpack pixelUnpack;
+};
+
+
+class COpenGLDriver final : public CNullDriver, public COpenGLExtensionHandler
+{
     protected:
 		//! destructor
 		virtual ~COpenGLDriver();
+
+		//! inits the parts of the open gl driver used on all platforms
+		bool genericDriverInit(asset::IAssetManager* assMgr) override;
 
 	public:
         struct SAuxContext;
 
 		#ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceWin32* device);
+		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceWin32* device, const asset::IGLSLCompiler* glslcomp);
 		//! inits the windows specific parts of the open gl driver
 		bool initDriver(CIrrDeviceWin32* device);
 		bool changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceWin32* device);
 		#endif
 
 		#ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceLinux* device);
+		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceLinux* device, const asset::IGLSLCompiler* glslcomp);
 		//! inits the GLX specific parts of the open gl driver
 		bool initDriver(CIrrDeviceLinux* device, SAuxContext* auxCtxts);
 		bool changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceLinux* device);
 		#endif
 
 		#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceSDL* device);
+		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceSDL* device, const asset::IGLSLCompiler* glslcomp);
 		#endif
 
-		#ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceMacOSX *device);
-		#endif
 
-        inline virtual bool isAllowedVertexAttribFormat(asset::E_FORMAT _fmt) const override
+        inline bool isAllowedBufferViewFormat(asset::E_FORMAT _fmt) const override
         {
             using namespace asset;
             switch (_fmt)
             {
-            // signed/unsigned byte
-            case EF_R8_UNORM:
-            case EF_R8_SNORM:
-            case EF_R8_UINT:
-            case EF_R8_SINT:
-            case EF_R8G8_UNORM:
-            case EF_R8G8_SNORM:
-            case EF_R8G8_UINT:
-            case EF_R8G8_SINT:
-            case EF_R8G8B8_UNORM:
-            case EF_R8G8B8_SNORM:
-            case EF_R8G8B8_UINT:
-            case EF_R8G8B8_SINT:
-            case EF_R8G8B8A8_UNORM:
-            case EF_R8G8B8A8_SNORM:
-            case EF_R8G8B8A8_UINT:
-            case EF_R8G8B8A8_SINT:
-            case EF_R8_USCALED:
-            case EF_R8_SSCALED:
-            case EF_R8G8_USCALED:
-            case EF_R8G8_SSCALED:
-            case EF_R8G8B8_USCALED:
-            case EF_R8G8B8_SSCALED:
-            case EF_R8G8B8A8_USCALED:
-            case EF_R8G8B8A8_SSCALED:
-            // unsigned byte BGRA (normalized only)
-            case EF_B8G8R8A8_UNORM:
-            // unsigned/signed short
-            case EF_R16_UNORM:
-            case EF_R16_SNORM:
-            case EF_R16_UINT:
-            case EF_R16_SINT:
-            case EF_R16G16_UNORM:
-            case EF_R16G16_SNORM:
-            case EF_R16G16_UINT:
-            case EF_R16G16_SINT:
-            case EF_R16G16B16_UNORM:
-            case EF_R16G16B16_SNORM:
-            case EF_R16G16B16_UINT:
-            case EF_R16G16B16_SINT:
-            case EF_R16G16B16A16_UNORM:
-            case EF_R16G16B16A16_SNORM:
-            case EF_R16G16B16A16_UINT:
-            case EF_R16G16B16A16_SINT:
-            case EF_R16_USCALED:
-            case EF_R16_SSCALED:
-            case EF_R16G16_USCALED:
-            case EF_R16G16_SSCALED:
-            case EF_R16G16B16_USCALED:
-            case EF_R16G16B16_SSCALED:
-            case EF_R16G16B16A16_USCALED:
-            case EF_R16G16B16A16_SSCALED:
-            // unsigned/signed int
-            case EF_R32_UINT:
-            case EF_R32_SINT:
-            case EF_R32G32_UINT:
-            case EF_R32G32_SINT:
-            case EF_R32G32B32_UINT:
-            case EF_R32G32B32_SINT:
-            case EF_R32G32B32A32_UINT:
-            case EF_R32G32B32A32_SINT:
-            // unsigned/signed rgb10a2 BGRA (normalized only)
-            case EF_A2R10G10B10_UNORM_PACK32:
-            case EF_A2R10G10B10_SNORM_PACK32:
-            // unsigned/signed rgb10a2
-            case EF_A2B10G10R10_UNORM_PACK32:
-            case EF_A2B10G10R10_SNORM_PACK32:
-            case EF_A2B10G10R10_UINT_PACK32:
-            case EF_A2B10G10R10_SINT_PACK32:
-            case EF_A2B10G10R10_SSCALED_PACK32:
-            case EF_A2B10G10R10_USCALED_PACK32:
-            // GL_UNSIGNED_INT_10F_11F_11F_REV
-            case EF_B10G11R11_UFLOAT_PACK32:
-            // half float
-            case EF_R16_SFLOAT:
-            case EF_R16G16_SFLOAT:
-            case EF_R16G16B16_SFLOAT:
-            case EF_R16G16B16A16_SFLOAT:
-            // float
-            case EF_R32_SFLOAT:
-            case EF_R32G32_SFLOAT:
-            case EF_R32G32B32_SFLOAT:
-            case EF_R32G32B32A32_SFLOAT:
-            // double
-            case EF_R64_SFLOAT:
-            case EF_R64G64_SFLOAT:
-            case EF_R64G64B64_SFLOAT:
-            case EF_R64G64B64A64_SFLOAT:
-                return true;
-            default: return false;
+				case EF_R8_UNORM: _IRR_FALLTHROUGH;
+				case EF_R16_UNORM: _IRR_FALLTHROUGH;
+				case EF_R16_SFLOAT: _IRR_FALLTHROUGH;
+				case EF_R32_SFLOAT: _IRR_FALLTHROUGH;
+				case EF_R8_SINT: _IRR_FALLTHROUGH;
+				case EF_R16_SINT: _IRR_FALLTHROUGH;
+				case EF_R32_SINT: _IRR_FALLTHROUGH;
+				case EF_R8_UINT: _IRR_FALLTHROUGH;
+				case EF_R16_UINT: _IRR_FALLTHROUGH;
+				case EF_R32_UINT: _IRR_FALLTHROUGH;
+				case EF_R8G8_UNORM: _IRR_FALLTHROUGH;
+				case EF_R16G16_UNORM: _IRR_FALLTHROUGH;
+				case EF_R16G16_SFLOAT: _IRR_FALLTHROUGH;
+				case EF_R32G32_SFLOAT: _IRR_FALLTHROUGH;
+				case EF_R8G8_SINT: _IRR_FALLTHROUGH;
+				case EF_R16G16_SINT: _IRR_FALLTHROUGH;
+				case EF_R32G32_SINT: _IRR_FALLTHROUGH;
+				case EF_R8G8_UINT: _IRR_FALLTHROUGH;
+				case EF_R16G16_UINT: _IRR_FALLTHROUGH;
+				case EF_R32G32_UINT: _IRR_FALLTHROUGH;
+				case EF_R32G32B32_SFLOAT: _IRR_FALLTHROUGH;
+				case EF_R32G32B32_SINT: _IRR_FALLTHROUGH;
+				case EF_R32G32B32_UINT: _IRR_FALLTHROUGH;
+				case EF_R8G8B8A8_UNORM: _IRR_FALLTHROUGH;
+				case EF_R16G16B16A16_UNORM: _IRR_FALLTHROUGH;
+				case EF_R16G16B16A16_SFLOAT: _IRR_FALLTHROUGH;
+				case EF_R32G32B32A32_SFLOAT: _IRR_FALLTHROUGH;
+				case EF_R8G8B8A8_SINT: _IRR_FALLTHROUGH;
+				case EF_R16G16B16A16_SINT: _IRR_FALLTHROUGH;
+				case EF_R32G32B32A32_SINT: _IRR_FALLTHROUGH;
+				case EF_R8G8B8A8_UINT: _IRR_FALLTHROUGH;
+				case EF_R16G16B16A16_UINT: _IRR_FALLTHROUGH;
+				case EF_R32G32B32A32_UINT:
+					return true;
+					break;
+				default:
+					return false;
+					break;
             }
         }
-        inline virtual bool isColorRenderableFormat(asset::E_FORMAT _fmt) const override
+
+        inline bool isAllowedVertexAttribFormat(asset::E_FORMAT _fmt) const override
         {
             using namespace asset;
             switch (_fmt)
             {
-            case EF_A1R5G5B5_UNORM_PACK16:
-            case EF_B5G6R5_UNORM_PACK16:
-            case EF_R5G6B5_UNORM_PACK16:
-            case EF_R4G4_UNORM_PACK8:
-            case EF_R4G4B4A4_UNORM_PACK16:
-            case EF_B4G4R4A4_UNORM_PACK16:
-            case EF_R8_UNORM:
-            case EF_R8_SNORM:
-            case EF_R8_UINT:
-            case EF_R8_SINT:
-            case EF_R8G8_UNORM:
-            case EF_R8G8_SNORM:
-            case EF_R8G8_UINT:
-            case EF_R8G8_SINT:
-            case EF_R8G8B8_UNORM:
-            case EF_R8G8B8_SNORM:
-            case EF_R8G8B8_UINT:
-            case EF_R8G8B8_SINT:
-            case EF_R8G8B8_SRGB:
-            case EF_R8G8B8A8_UNORM:
-            case EF_R8G8B8A8_SNORM:
-            case EF_R8G8B8A8_UINT:
-            case EF_R8G8B8A8_SINT:
-            case EF_R8G8B8A8_SRGB:
-            case EF_A8B8G8R8_UNORM_PACK32:
-            case EF_A8B8G8R8_SNORM_PACK32:
-            case EF_A8B8G8R8_UINT_PACK32:
-            case EF_A8B8G8R8_SINT_PACK32:
-            case EF_A8B8G8R8_SRGB_PACK32:
-            case EF_A2B10G10R10_UNORM_PACK32:
-            case EF_A2B10G10R10_UINT_PACK32:
-            case EF_R16_UNORM:
-            case EF_R16_SNORM:
-            case EF_R16_UINT:
-            case EF_R16_SINT:
-            case EF_R16_SFLOAT:
-            case EF_R16G16_UNORM:
-            case EF_R16G16_SNORM:
-            case EF_R16G16_UINT:
-            case EF_R16G16_SINT:
-            case EF_R16G16_SFLOAT:
-            case EF_R16G16B16_UNORM:
-            case EF_R16G16B16_SNORM:
-            case EF_R16G16B16_UINT:
-            case EF_R16G16B16_SINT:
-            case EF_R16G16B16_SFLOAT:
-            case EF_R16G16B16A16_UNORM:
-            case EF_R16G16B16A16_SNORM:
-            case EF_R16G16B16A16_UINT:
-            case EF_R16G16B16A16_SINT:
-            case EF_R16G16B16A16_SFLOAT:
-            case EF_R32_UINT:
-            case EF_R32_SINT:
-            case EF_R32_SFLOAT:
-            case EF_R32G32_UINT:
-            case EF_R32G32_SINT:
-            case EF_R32G32_SFLOAT:
-            case EF_R32G32B32_UINT:
-            case EF_R32G32B32_SINT:
-            case EF_R32G32B32_SFLOAT:
-            case EF_R32G32B32A32_UINT:
-            case EF_R32G32B32A32_SINT:
-            case EF_R32G32B32A32_SFLOAT:
-                return true;
-            default:
-            {
-                GLint res = GL_FALSE;
-                extGlGetInternalformativ(GL_TEXTURE_2D, COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(_fmt), GL_COLOR_RENDERABLE, sizeof(res), &res);
-                return res==GL_TRUE;
-            }
+				// signed/unsigned byte
+				case EF_R8_UNORM:
+				case EF_R8_SNORM:
+				case EF_R8_UINT:
+				case EF_R8_SINT:
+				case EF_R8G8_UNORM:
+				case EF_R8G8_SNORM:
+				case EF_R8G8_UINT:
+				case EF_R8G8_SINT:
+				case EF_R8G8B8_UNORM:
+				case EF_R8G8B8_SNORM:
+				case EF_R8G8B8_UINT:
+				case EF_R8G8B8_SINT:
+				case EF_R8G8B8A8_UNORM:
+				case EF_R8G8B8A8_SNORM:
+				case EF_R8G8B8A8_UINT:
+				case EF_R8G8B8A8_SINT:
+				case EF_R8_USCALED:
+				case EF_R8_SSCALED:
+				case EF_R8G8_USCALED:
+				case EF_R8G8_SSCALED:
+				case EF_R8G8B8_USCALED:
+				case EF_R8G8B8_SSCALED:
+				case EF_R8G8B8A8_USCALED:
+				case EF_R8G8B8A8_SSCALED:
+				// unsigned byte BGRA (normalized only)
+				case EF_B8G8R8A8_UNORM:
+				// unsigned/signed short
+				case EF_R16_UNORM:
+				case EF_R16_SNORM:
+				case EF_R16_UINT:
+				case EF_R16_SINT:
+				case EF_R16G16_UNORM:
+				case EF_R16G16_SNORM:
+				case EF_R16G16_UINT:
+				case EF_R16G16_SINT:
+				case EF_R16G16B16_UNORM:
+				case EF_R16G16B16_SNORM:
+				case EF_R16G16B16_UINT:
+				case EF_R16G16B16_SINT:
+				case EF_R16G16B16A16_UNORM:
+				case EF_R16G16B16A16_SNORM:
+				case EF_R16G16B16A16_UINT:
+				case EF_R16G16B16A16_SINT:
+				case EF_R16_USCALED:
+				case EF_R16_SSCALED:
+				case EF_R16G16_USCALED:
+				case EF_R16G16_SSCALED:
+				case EF_R16G16B16_USCALED:
+				case EF_R16G16B16_SSCALED:
+				case EF_R16G16B16A16_USCALED:
+				case EF_R16G16B16A16_SSCALED:
+				// unsigned/signed int
+				case EF_R32_UINT:
+				case EF_R32_SINT:
+				case EF_R32G32_UINT:
+				case EF_R32G32_SINT:
+				case EF_R32G32B32_UINT:
+				case EF_R32G32B32_SINT:
+				case EF_R32G32B32A32_UINT:
+				case EF_R32G32B32A32_SINT:
+				// unsigned/signed rgb10a2 BGRA (normalized only)
+				case EF_A2R10G10B10_UNORM_PACK32:
+				case EF_A2R10G10B10_SNORM_PACK32:
+				// unsigned/signed rgb10a2
+				case EF_A2B10G10R10_UNORM_PACK32:
+				case EF_A2B10G10R10_SNORM_PACK32:
+				case EF_A2B10G10R10_UINT_PACK32:
+				case EF_A2B10G10R10_SINT_PACK32:
+				case EF_A2B10G10R10_SSCALED_PACK32:
+				case EF_A2B10G10R10_USCALED_PACK32:
+				// GL_UNSIGNED_INT_10F_11F_11F_REV
+				case EF_B10G11R11_UFLOAT_PACK32:
+				// half float
+				case EF_R16_SFLOAT:
+				case EF_R16G16_SFLOAT:
+				case EF_R16G16B16_SFLOAT:
+				case EF_R16G16B16A16_SFLOAT:
+				// float
+				case EF_R32_SFLOAT:
+				case EF_R32G32_SFLOAT:
+				case EF_R32G32B32_SFLOAT:
+				case EF_R32G32B32A32_SFLOAT:
+				// double
+				case EF_R64_SFLOAT:
+				case EF_R64G64_SFLOAT:
+				case EF_R64G64B64_SFLOAT:
+				case EF_R64G64B64A64_SFLOAT:
+					return true;
+				default: return false;
             }
         }
-        inline virtual bool isAllowedImageStoreFormat(asset::E_FORMAT _fmt) const override
+        inline bool isColorRenderableFormat(asset::E_FORMAT _fmt) const override
         {
             using namespace asset;
             switch (_fmt)
             {
-            case EF_R32G32B32A32_SFLOAT:
-            case EF_R16G16B16A16_SFLOAT:
-            case EF_R32G32_SFLOAT:
-            case EF_R16G16_SFLOAT:
-            case EF_B10G11R11_UFLOAT_PACK32:
-            case EF_R32_SFLOAT:
-            case EF_R16_SFLOAT:
-            case EF_R16G16B16A16_UNORM:
-            case EF_A2B10G10R10_UNORM_PACK32:
-            case EF_R8G8B8A8_UNORM:
-            case EF_R16G16_UNORM:
-            case EF_R8G8_UNORM:
-            case EF_R16_UNORM:
-            case EF_R8_UNORM:
-            case EF_R16G16B16A16_SNORM:
-            case EF_R8G8B8A8_SNORM:
-            case EF_R16G16_SNORM:
-            case EF_R8G8_SNORM:
-            case EF_R16_SNORM:
-            case EF_R32G32B32A32_UINT:
-            case EF_R16G16B16A16_UINT:
-            case EF_A2B10G10R10_UINT_PACK32:
-            case EF_R8G8B8A8_UINT:
-            case EF_R32G32_UINT:
-            case EF_R16G16_UINT:
-            case EF_R8G8_UINT:
-            case EF_R32_UINT:
-            case EF_R16_UINT:
-            case EF_R8_UINT:
-            case EF_R32G32B32A32_SINT:
-            case EF_R16G16B16A16_SINT:
-            case EF_R8G8B8A8_SINT:
-            case EF_R32G32_SINT:
-            case EF_R16G16_SINT:
-            case EF_R8G8_SINT:
-            case EF_R32_SINT:
-            case EF_R16_SINT:
-            case EF_R8_SINT:
-                return true;
-            default: return false;
+				case EF_A1R5G5B5_UNORM_PACK16:
+				case EF_B5G6R5_UNORM_PACK16:
+				case EF_R5G6B5_UNORM_PACK16:
+				case EF_R4G4_UNORM_PACK8:
+				case EF_R4G4B4A4_UNORM_PACK16:
+				case EF_B4G4R4A4_UNORM_PACK16:
+				case EF_R8_UNORM:
+				case EF_R8_SNORM:
+				case EF_R8_UINT:
+				case EF_R8_SINT:
+				case EF_R8G8_UNORM:
+				case EF_R8G8_SNORM:
+				case EF_R8G8_UINT:
+				case EF_R8G8_SINT:
+				case EF_R8G8B8_UNORM:
+				case EF_R8G8B8_SNORM:
+				case EF_R8G8B8_UINT:
+				case EF_R8G8B8_SINT:
+				case EF_R8G8B8_SRGB:
+				case EF_R8G8B8A8_UNORM:
+				case EF_R8G8B8A8_SNORM:
+				case EF_R8G8B8A8_UINT:
+				case EF_R8G8B8A8_SINT:
+				case EF_R8G8B8A8_SRGB:
+				case EF_A8B8G8R8_UNORM_PACK32:
+				case EF_A8B8G8R8_SNORM_PACK32:
+				case EF_A8B8G8R8_UINT_PACK32:
+				case EF_A8B8G8R8_SINT_PACK32:
+				case EF_A8B8G8R8_SRGB_PACK32:
+				case EF_A2B10G10R10_UNORM_PACK32:
+				case EF_A2B10G10R10_UINT_PACK32:
+				case EF_R16_UNORM:
+				case EF_R16_SNORM:
+				case EF_R16_UINT:
+				case EF_R16_SINT:
+				case EF_R16_SFLOAT:
+				case EF_R16G16_UNORM:
+				case EF_R16G16_SNORM:
+				case EF_R16G16_UINT:
+				case EF_R16G16_SINT:
+				case EF_R16G16_SFLOAT:
+				case EF_R16G16B16_UNORM:
+				case EF_R16G16B16_SNORM:
+				case EF_R16G16B16_UINT:
+				case EF_R16G16B16_SINT:
+				case EF_R16G16B16_SFLOAT:
+				case EF_R16G16B16A16_UNORM:
+				case EF_R16G16B16A16_SNORM:
+				case EF_R16G16B16A16_UINT:
+				case EF_R16G16B16A16_SINT:
+				case EF_R16G16B16A16_SFLOAT:
+				case EF_R32_UINT:
+				case EF_R32_SINT:
+				case EF_R32_SFLOAT:
+				case EF_R32G32_UINT:
+				case EF_R32G32_SINT:
+				case EF_R32G32_SFLOAT:
+				case EF_R32G32B32_UINT:
+				case EF_R32G32B32_SINT:
+				case EF_R32G32B32_SFLOAT:
+				case EF_R32G32B32A32_UINT:
+				case EF_R32G32B32A32_SINT:
+				case EF_R32G32B32A32_SFLOAT:
+					return true;
+				default:
+				{
+					GLint res = GL_FALSE;
+					extGlGetInternalformativ(GL_TEXTURE_2D, getSizedOpenGLFormatFromOurFormat(_fmt), GL_COLOR_RENDERABLE, sizeof(res), &res);
+					return res==GL_TRUE;
+				}
             }
         }
-        inline virtual bool isAllowedTextureFormat(asset::E_FORMAT _fmt) const override
+        inline bool isAllowedImageStoreFormat(asset::E_FORMAT _fmt) const override
+        {
+            using namespace asset;
+            switch (_fmt)
+            {
+				case EF_R32G32B32A32_SFLOAT:
+				case EF_R16G16B16A16_SFLOAT:
+				case EF_R32G32_SFLOAT:
+				case EF_R16G16_SFLOAT:
+				case EF_B10G11R11_UFLOAT_PACK32:
+				case EF_R32_SFLOAT:
+				case EF_R16_SFLOAT:
+				case EF_R16G16B16A16_UNORM:
+				case EF_A2B10G10R10_UNORM_PACK32:
+				case EF_R8G8B8A8_UNORM:
+				case EF_R16G16_UNORM:
+				case EF_R8G8_UNORM:
+				case EF_R16_UNORM:
+				case EF_R8_UNORM:
+				case EF_R16G16B16A16_SNORM:
+				case EF_R8G8B8A8_SNORM:
+				case EF_R16G16_SNORM:
+				case EF_R8G8_SNORM:
+				case EF_R16_SNORM:
+				case EF_R32G32B32A32_UINT:
+				case EF_R16G16B16A16_UINT:
+				case EF_A2B10G10R10_UINT_PACK32:
+				case EF_R8G8B8A8_UINT:
+				case EF_R32G32_UINT:
+				case EF_R16G16_UINT:
+				case EF_R8G8_UINT:
+				case EF_R32_UINT:
+				case EF_R16_UINT:
+				case EF_R8_UINT:
+				case EF_R32G32B32A32_SINT:
+				case EF_R16G16B16A16_SINT:
+				case EF_R8G8B8A8_SINT:
+				case EF_R32G32_SINT:
+				case EF_R16G16_SINT:
+				case EF_R8G8_SINT:
+				case EF_R32_SINT:
+				case EF_R16_SINT:
+				case EF_R8_SINT:
+					return true;
+				default: return false;
+            }
+        }
+        inline bool isAllowedTextureFormat(asset::E_FORMAT _fmt) const override
         {
             using namespace asset;
             // opengl spec section 8.5.1
             switch (_fmt)
             {
-            // formats checked as "Req. tex"
-            case EF_R8_UNORM:
-            case EF_R8_SNORM:
-            case EF_R16_UNORM:
-            case EF_R16_SNORM:
-            case EF_R8G8_UNORM:
-            case EF_R8G8_SNORM:
-            case EF_R16G16_UNORM:
-            case EF_R16G16_SNORM:
-            case EF_R8G8B8_UNORM:
-            case EF_R8G8B8_SNORM:
-            case EF_A1R5G5B5_UNORM_PACK16:
-            case EF_R8G8B8A8_SRGB:
-            case EF_A8B8G8R8_UNORM_PACK32:
-            case EF_A8B8G8R8_SNORM_PACK32:
-            case EF_A8B8G8R8_SRGB_PACK32:
-            case EF_R16_SFLOAT:
-            case EF_R16G16_SFLOAT:
-            case EF_R16G16B16_SFLOAT:
-            case EF_R16G16B16A16_SFLOAT:
-            case EF_R32_SFLOAT:
-            case EF_R32G32_SFLOAT:
-            case EF_R32G32B32_SFLOAT:
-            case EF_R32G32B32A32_SFLOAT:
-            case EF_B10G11R11_UFLOAT_PACK32:
-            case EF_E5B9G9R9_UFLOAT_PACK32:
-            case EF_A2B10G10R10_UNORM_PACK32:
-            case EF_A2B10G10R10_UINT_PACK32:
-            case EF_R16G16B16A16_UNORM:
-            case EF_R8_UINT:
-            case EF_R8_SINT:
-            case EF_R8G8_UINT:
-            case EF_R8G8_SINT:
-            case EF_R8G8B8_UINT:
-            case EF_R8G8B8_SINT:
-            case EF_R8G8B8A8_UNORM:
-            case EF_R8G8B8A8_SNORM:
-            case EF_R8G8B8A8_UINT:
-            case EF_R8G8B8A8_SINT:
-            case EF_B8G8R8A8_UINT:
-            case EF_R16_UINT:
-            case EF_R16_SINT:
-            case EF_R16G16_UINT:
-            case EF_R16G16_SINT:
-            case EF_R16G16B16_UINT:
-            case EF_R16G16B16_SINT:
-            case EF_R16G16B16A16_UINT:
-            case EF_R16G16B16A16_SINT:
-            case EF_R32_UINT:
-            case EF_R32_SINT:
-            case EF_R32G32_UINT:
-            case EF_R32G32_SINT:
-            case EF_R32G32B32_UINT:
-            case EF_R32G32B32_SINT:
-            case EF_R32G32B32A32_UINT:
-            case EF_R32G32B32A32_SINT:
+				// formats checked as "Req. tex"
+				case EF_R8_UNORM:
+				case EF_R8_SNORM:
+				case EF_R16_UNORM:
+				case EF_R16_SNORM:
+				case EF_R8G8_UNORM:
+				case EF_R8G8_SNORM:
+				case EF_R16G16_UNORM:
+				case EF_R16G16_SNORM:
+				case EF_R8G8B8_UNORM:
+				case EF_R8G8B8_SNORM:
+				case EF_A1R5G5B5_UNORM_PACK16:
+				case EF_R8G8B8A8_SRGB:
+				case EF_A8B8G8R8_UNORM_PACK32:
+				case EF_A8B8G8R8_SNORM_PACK32:
+				case EF_A8B8G8R8_SRGB_PACK32:
+				case EF_R16_SFLOAT:
+				case EF_R16G16_SFLOAT:
+				case EF_R16G16B16_SFLOAT:
+				case EF_R16G16B16A16_SFLOAT:
+				case EF_R32_SFLOAT:
+				case EF_R32G32_SFLOAT:
+				case EF_R32G32B32_SFLOAT:
+				case EF_R32G32B32A32_SFLOAT:
+				case EF_B10G11R11_UFLOAT_PACK32:
+				case EF_E5B9G9R9_UFLOAT_PACK32:
+				case EF_A2B10G10R10_UNORM_PACK32:
+				case EF_A2B10G10R10_UINT_PACK32:
+				case EF_R16G16B16A16_UNORM:
+				case EF_R8_UINT:
+				case EF_R8_SINT:
+				case EF_R8G8_UINT:
+				case EF_R8G8_SINT:
+				case EF_R8G8B8_UINT:
+				case EF_R8G8B8_SINT:
+				case EF_R8G8B8A8_UNORM:
+				case EF_R8G8B8A8_SNORM:
+				case EF_R8G8B8A8_UINT:
+				case EF_R8G8B8A8_SINT:
+				case EF_B8G8R8A8_UINT:
+				case EF_R16_UINT:
+				case EF_R16_SINT:
+				case EF_R16G16_UINT:
+				case EF_R16G16_SINT:
+				case EF_R16G16B16_UINT:
+				case EF_R16G16B16_SINT:
+				case EF_R16G16B16A16_UINT:
+				case EF_R16G16B16A16_SINT:
+				case EF_R32_UINT:
+				case EF_R32_SINT:
+				case EF_R32G32_UINT:
+				case EF_R32G32_SINT:
+				case EF_R32G32B32_UINT:
+				case EF_R32G32B32_SINT:
+				case EF_R32G32B32A32_UINT:
+				case EF_R32G32B32A32_SINT:
 
-            // depth/stencil/depth+stencil formats checked as "Req. format"
-            case EF_D16_UNORM:
-            case EF_X8_D24_UNORM_PACK32:
-            case EF_D32_SFLOAT:
-            case EF_D24_UNORM_S8_UINT:
-            case EF_S8_UINT:
+				// depth/stencil/depth+stencil formats checked as "Req. format"
+				case EF_D16_UNORM:
+				case EF_X8_D24_UNORM_PACK32:
+				case EF_D32_SFLOAT:
+				case EF_D24_UNORM_S8_UINT:
+				case EF_S8_UINT:
 
-            // specific compressed formats
-            case EF_BC6H_UFLOAT_BLOCK:
-            case EF_BC6H_SFLOAT_BLOCK:
-            case EF_BC7_UNORM_BLOCK:
-            case EF_BC7_SRGB_BLOCK:
-            case EF_ETC2_R8G8B8_UNORM_BLOCK:
-            case EF_ETC2_R8G8B8_SRGB_BLOCK:
-            case EF_ETC2_R8G8B8A1_UNORM_BLOCK:
-            case EF_ETC2_R8G8B8A1_SRGB_BLOCK:
-            case EF_ETC2_R8G8B8A8_UNORM_BLOCK:
-            case EF_ETC2_R8G8B8A8_SRGB_BLOCK:
-            case EF_EAC_R11_UNORM_BLOCK:
-            case EF_EAC_R11_SNORM_BLOCK:
-            case EF_EAC_R11G11_UNORM_BLOCK:
-            case EF_EAC_R11G11_SNORM_BLOCK:
-                return true;
+				// specific compressed formats
+				case EF_BC6H_UFLOAT_BLOCK:
+				case EF_BC6H_SFLOAT_BLOCK:
+				case EF_BC7_UNORM_BLOCK:
+				case EF_BC7_SRGB_BLOCK:
+				case EF_ETC2_R8G8B8_UNORM_BLOCK:
+				case EF_ETC2_R8G8B8_SRGB_BLOCK:
+				case EF_ETC2_R8G8B8A1_UNORM_BLOCK:
+				case EF_ETC2_R8G8B8A1_SRGB_BLOCK:
+				case EF_ETC2_R8G8B8A8_UNORM_BLOCK:
+				case EF_ETC2_R8G8B8A8_SRGB_BLOCK:
+				case EF_EAC_R11_UNORM_BLOCK:
+				case EF_EAC_R11_SNORM_BLOCK:
+				case EF_EAC_R11G11_UNORM_BLOCK:
+				case EF_EAC_R11G11_SNORM_BLOCK:
+					return true;
 
-            // astc
-            case EF_ASTC_4x4_UNORM_BLOCK:
-            case EF_ASTC_5x4_UNORM_BLOCK:
-            case EF_ASTC_5x5_UNORM_BLOCK:
-            case EF_ASTC_6x5_UNORM_BLOCK:
-            case EF_ASTC_6x6_UNORM_BLOCK:
-            case EF_ASTC_8x5_UNORM_BLOCK:
-            case EF_ASTC_8x6_UNORM_BLOCK:
-            case EF_ASTC_8x8_UNORM_BLOCK:
-            case EF_ASTC_10x5_UNORM_BLOCK:
-            case EF_ASTC_10x6_UNORM_BLOCK:
-            case EF_ASTC_10x8_UNORM_BLOCK:
-            case EF_ASTC_10x10_UNORM_BLOCK:
-            case EF_ASTC_12x10_UNORM_BLOCK:
-            case EF_ASTC_12x12_UNORM_BLOCK:
-            case EF_ASTC_4x4_SRGB_BLOCK:
-            case EF_ASTC_5x4_SRGB_BLOCK:
-            case EF_ASTC_5x5_SRGB_BLOCK:
-            case EF_ASTC_6x5_SRGB_BLOCK:
-            case EF_ASTC_6x6_SRGB_BLOCK:
-            case EF_ASTC_8x5_SRGB_BLOCK:
-            case EF_ASTC_8x6_SRGB_BLOCK:
-            case EF_ASTC_8x8_SRGB_BLOCK:
-            case EF_ASTC_10x5_SRGB_BLOCK:
-            case EF_ASTC_10x6_SRGB_BLOCK:
-            case EF_ASTC_10x8_SRGB_BLOCK:
-            case EF_ASTC_10x10_SRGB_BLOCK:
-            case EF_ASTC_12x10_SRGB_BLOCK:
-            case EF_ASTC_12x12_SRGB_BLOCK:
-                return queryOpenGLFeature(IRR_KHR_texture_compression_astc_ldr);
+				// astc
+				case EF_ASTC_4x4_UNORM_BLOCK:
+				case EF_ASTC_5x4_UNORM_BLOCK:
+				case EF_ASTC_5x5_UNORM_BLOCK:
+				case EF_ASTC_6x5_UNORM_BLOCK:
+				case EF_ASTC_6x6_UNORM_BLOCK:
+				case EF_ASTC_8x5_UNORM_BLOCK:
+				case EF_ASTC_8x6_UNORM_BLOCK:
+				case EF_ASTC_8x8_UNORM_BLOCK:
+				case EF_ASTC_10x5_UNORM_BLOCK:
+				case EF_ASTC_10x6_UNORM_BLOCK:
+				case EF_ASTC_10x8_UNORM_BLOCK:
+				case EF_ASTC_10x10_UNORM_BLOCK:
+				case EF_ASTC_12x10_UNORM_BLOCK:
+				case EF_ASTC_12x12_UNORM_BLOCK:
+				case EF_ASTC_4x4_SRGB_BLOCK:
+				case EF_ASTC_5x4_SRGB_BLOCK:
+				case EF_ASTC_5x5_SRGB_BLOCK:
+				case EF_ASTC_6x5_SRGB_BLOCK:
+				case EF_ASTC_6x6_SRGB_BLOCK:
+				case EF_ASTC_8x5_SRGB_BLOCK:
+				case EF_ASTC_8x6_SRGB_BLOCK:
+				case EF_ASTC_8x8_SRGB_BLOCK:
+				case EF_ASTC_10x5_SRGB_BLOCK:
+				case EF_ASTC_10x6_SRGB_BLOCK:
+				case EF_ASTC_10x8_SRGB_BLOCK:
+				case EF_ASTC_10x10_SRGB_BLOCK:
+				case EF_ASTC_12x10_SRGB_BLOCK:
+				case EF_ASTC_12x12_SRGB_BLOCK:
+					return queryOpenGLFeature(IRR_KHR_texture_compression_astc_ldr);
 
-            default: return false;
+				default: return false;
             }
         }
-        inline virtual bool isHardwareBlendableFormat(asset::E_FORMAT _fmt) const override
+        inline bool isHardwareBlendableFormat(asset::E_FORMAT _fmt) const override
         {
             return isColorRenderableFormat(_fmt) && (asset::isNormalizedFormat(_fmt) || asset::isFloatingPointFormat(_fmt));
         }
+
+
+        const core::smart_refctd_dynamic_array<std::string> getSupportedGLSLExtensions() const override;
+
+
+        bool bindGraphicsPipeline(const video::IGPURenderpassIndependentPipeline* _gpipeline) override;
+
+        bool bindComputePipeline(const video::IGPUComputePipeline* _cpipeline) override;
+
+        bool bindDescriptorSets(E_PIPELINE_BIND_POINT _pipelineType, const IGPUPipelineLayout* _layout,
+            uint32_t _first, uint32_t _count, const IGPUDescriptorSet* const* _descSets, core::smart_refctd_dynamic_array<uint32_t>* _dynamicOffsets) override;
+
+
+		core::smart_refctd_ptr<IGPUBuffer> createGPUBufferOnDedMem(const IDriverMemoryBacked::SDriverMemoryRequirements& initialMreqs, const bool canModifySubData = false) override;
+
+		core::smart_refctd_ptr<IGPUBufferView> createGPUBufferView(IGPUBuffer* _underlying, asset::E_FORMAT _fmt, size_t _offset, size_t _size) override;
+
+		core::smart_refctd_ptr<IGPUSampler> createGPUSampler(const IGPUSampler::SParams& _params) override;
+
+		core::smart_refctd_ptr<IGPUImage> createGPUImageOnDedMem(IGPUImage::SCreationParams&& params, const IDriverMemoryBacked::SDriverMemoryRequirements& initialMreqs) override;
+
+        core::smart_refctd_ptr<IGPUImageView> createGPUImageView(IGPUImageView::SCreationParams&& params) override;
+
+        core::smart_refctd_ptr<IGPUShader> createGPUShader(core::smart_refctd_ptr<const asset::ICPUShader>&& _cpushader) override;
+        core::smart_refctd_ptr<IGPUSpecializedShader> createGPUSpecializedShader(const IGPUShader* _unspecialized, const asset::ISpecializedShader::SInfo& _specInfo) override;
+
+        core::smart_refctd_ptr<IGPUDescriptorSetLayout> createGPUDescriptorSetLayout(const IGPUDescriptorSetLayout::SBinding* _begin, const IGPUDescriptorSetLayout::SBinding* _end) override;
+
+        core::smart_refctd_ptr<IGPUPipelineLayout> createGPUPipelineLayout(
+            const asset::SPushConstantRange* const _pcRangesBegin = nullptr, const asset::SPushConstantRange* const _pcRangesEnd = nullptr,
+            core::smart_refctd_ptr<IGPUDescriptorSetLayout>&& _layout0 = nullptr, core::smart_refctd_ptr<IGPUDescriptorSetLayout>&& _layout1 = nullptr,
+            core::smart_refctd_ptr<IGPUDescriptorSetLayout>&& _layout2 = nullptr, core::smart_refctd_ptr<IGPUDescriptorSetLayout>&& _layout3 = nullptr
+        ) override;
+
+        core::smart_refctd_ptr<IGPURenderpassIndependentPipeline> createGPURenderpassIndependentPipeline(
+			IGPUPipelineCache* _pipelineCache,
+            core::smart_refctd_ptr<IGPUPipelineLayout>&& _layout,
+            IGPUSpecializedShader** _shadersBegin, IGPUSpecializedShader** _shadersEnd,
+            const asset::SVertexInputParams& _vertexInputParams,
+            const asset::SBlendParams& _blendParams,
+            const asset::SPrimitiveAssemblyParams& _primAsmParams,
+            const asset::SRasterizationParams& _rasterParams
+        ) override;
+
+        virtual core::smart_refctd_ptr<IGPUComputePipeline> createGPUComputePipeline(
+			IGPUPipelineCache* _pipelineCache,
+            core::smart_refctd_ptr<IGPUPipelineLayout>&& _layout,
+            core::smart_refctd_ptr<IGPUSpecializedShader>&& _shader
+        ) override;
+
+		core::smart_refctd_ptr<IGPUPipelineCache> createGPUPipelineCache() override;
+
+        core::smart_refctd_ptr<IGPUDescriptorSet> createGPUDescriptorSet(core::smart_refctd_ptr<IGPUDescriptorSetLayout>&& _layout) override;
+
+		void updateDescriptorSets(uint32_t descriptorWriteCount, const IGPUDescriptorSet::SWriteDescriptorSet* pDescriptorWrites, uint32_t descriptorCopyCount, const IGPUDescriptorSet::SCopyDescriptorSet* pDescriptorCopies) override;
+
+
+		bool pushConstants(const IGPUPipelineLayout* _layout, uint32_t _stages, uint32_t _offset, uint32_t _size, const void* _values) override;
+
+		bool dispatch(uint32_t _groupCountX, uint32_t _groupCountY, uint32_t _groupCountZ) override;
+		bool dispatchIndirect(const IGPUBuffer* _indirectBuf, size_t _offset) override;
+
 
 		//! generic version which overloads the unimplemented versions
 		bool changeRenderContext(const SExposedVideoData& videoData, void* device) {return false;}
@@ -425,49 +686,52 @@ namespace video
         const SAuxContext* getThreadContext(const std::thread::id& tid=std::this_thread::get_id()) const;
         bool deinitAuxContext();
 
-	    virtual core::smart_refctd_ptr<video::IGPUMeshDataFormatDesc> createGPUMeshDataFormatDesc(core::CLeakDebugger* dbgr=nullptr) override final;
+        uint16_t retrieveDisplayRefreshRate() const override;
 
-        virtual uint16_t retrieveDisplayRefreshRate() const override final;
 
-		virtual IGPUBuffer* createGPUBufferOnDedMem(const IDriverMemoryBacked::SDriverMemoryRequirements& initialMreqs, const bool canModifySubData = false) override final;
+        void flushMappedMemoryRanges(uint32_t memoryRangeCount, const video::IDriverMemoryAllocation::MappedMemoryRange* pMemoryRanges) override;
 
-        void flushMappedMemoryRanges(uint32_t memoryRangeCount, const video::IDriverMemoryAllocation::MappedMemoryRange* pMemoryRanges) override final;
+        void invalidateMappedMemoryRanges(uint32_t memoryRangeCount, const video::IDriverMemoryAllocation::MappedMemoryRange* pMemoryRanges) override;
 
-        void invalidateMappedMemoryRanges(uint32_t memoryRangeCount, const video::IDriverMemoryAllocation::MappedMemoryRange* pMemoryRanges) override final;
+        void copyBuffer(IGPUBuffer* readBuffer, IGPUBuffer* writeBuffer, size_t readOffset, size_t writeOffset, size_t length) override;
 
-        void copyBuffer(IGPUBuffer* readBuffer, IGPUBuffer* writeBuffer, size_t readOffset, size_t writeOffset, size_t length) override final;
+		void copyImage(IGPUImage* srcImage, IGPUImage* dstImage, uint32_t regionCount, const IGPUImage::SImageCopy* pRegions) override;
+
+		void copyBufferToImage(IGPUBuffer* srcBuffer, IGPUImage* dstImage, uint32_t regionCount, const IGPUImage::SBufferCopy* pRegions) override;
+
+		void copyImageToBuffer(IGPUImage* srcImage, IGPUBuffer* dstBuffer, uint32_t regionCount, const IGPUImage::SBufferCopy* pRegions) override;
 
 		//! clears the zbuffer
-		virtual bool beginScene(bool backBuffer=true, bool zBuffer=true,
+		bool beginScene(bool backBuffer=true, bool zBuffer=true,
 				SColor color=SColor(255,0,0,0),
 				const SExposedVideoData& videoData=SExposedVideoData(),
 				core::rect<int32_t>* sourceRect=0);
 
 		//! presents the rendered scene on the screen, returns false if failed
-		virtual bool endScene();
+		bool endScene();
 
 
-		virtual void beginQuery(IQueryObject* query);
-		virtual void endQuery(IQueryObject* query);
-		virtual void beginQuery(IQueryObject* query, const size_t& index);
-		virtual void endQuery(IQueryObject* query, const size_t& index);
+		void beginQuery(IQueryObject* query);
+		void endQuery(IQueryObject* query);
 
-        virtual IQueryObject* createPrimitivesGeneratedQuery();
-        virtual IQueryObject* createXFormFeedbackPrimitiveQuery();
-        virtual IQueryObject* createElapsedTimeQuery();
-        virtual IGPUTimestampQuery* createTimestampQuery();
+        IQueryObject* createPrimitivesGeneratedQuery() override;
+        IQueryObject* createElapsedTimeQuery() override;
+        IGPUTimestampQuery* createTimestampQuery() override;
 
 
         virtual void drawMeshBuffer(const video::IGPUMeshBuffer* mb);
 
-		virtual void drawArraysIndirect(const asset::IMeshDataFormatDesc<video::IGPUBuffer>* vao,
-                                        const asset::E_PRIMITIVE_TYPE& mode,
+		virtual void drawArraysIndirect(const asset::SBufferBinding<IGPUBuffer> _vtxBindings[IGPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT],
+                                        asset::E_PRIMITIVE_TOPOLOGY mode,
                                         const IGPUBuffer* indirectDrawBuff,
-                                        const size_t& offset, const size_t& count, const size_t& stride);
-		virtual void drawIndexedIndirect(const asset::IMeshDataFormatDesc<video::IGPUBuffer>* vao,
-                                            const asset::E_PRIMITIVE_TYPE& mode,
-                                            const asset::E_INDEX_TYPE& type, const IGPUBuffer* indirectDrawBuff,
-                                            const size_t& offset, const size_t& count, const size_t& stride);
+                                        size_t offset, size_t maxCount, size_t stride,
+                                        const IGPUBuffer* countBuffer = nullptr, size_t countOffset = 0u) override;
+		virtual void drawIndexedIndirect(const asset::SBufferBinding<IGPUBuffer> _vtxBindings[IGPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT],
+                                        asset::E_PRIMITIVE_TOPOLOGY mode,
+                                        asset::E_INDEX_TYPE indexType, const IGPUBuffer* indexBuff,
+                                        const IGPUBuffer* indirectDrawBuff,
+                                        size_t offset, size_t maxCount, size_t stride,
+                                        const IGPUBuffer* countBuffer = nullptr, size_t countOffset = 0u) override;
 
 
 		//! queries the features of the driver, returns true if feature is available
@@ -475,14 +739,6 @@ namespace video
 
 		//!
 		virtual void issueGPUTextureBarrier() {COpenGLExtensionHandler::extGlTextureBarrier();}
-
-
-		virtual const video::SGPUMaterial& getCurrentMaterial() const {return Material;}
-
-		//! Sets a material. All 3d drawing functions draw geometry now
-		//! using this material.
-		//! \param material: Material to be used from now on.
-		virtual void setMaterial(const SGPUMaterial& material);
 
         //! needs to be "deleted" since its not refcounted
         virtual core::smart_refctd_ptr<IDriverFence> placeFence(const bool& implicitFlushWaitSameThread=false) override final
@@ -498,53 +754,11 @@ namespace video
 		virtual void setViewPort(const core::rect<int32_t>& area);
 
 		//! Returns type of video driver
-		virtual E_DRIVER_TYPE getDriverType() const;
+		inline E_DRIVER_TYPE getDriverType() const override { return EDT_OPENGL; }
 
 		//! get color format of the current color buffer
-		virtual asset::E_FORMAT getColorFormat() const;
+		inline asset::E_FORMAT getColorFormat() const override { return ColorFormat; }
 
-		//! Can be called by an IMaterialRenderer to make its work easier.
-		virtual void setBasicRenderStates(const SGPUMaterial& material, const SGPUMaterial& lastmaterial,
-			bool resetAllRenderstates);
-
-
-        virtual void setShaderConstant(const void* data, int32_t location, E_SHADER_CONSTANT_TYPE type, uint32_t number=1);
-
-
-        virtual int32_t addHighLevelShaderMaterial(
-            const char* vertexShaderProgram,
-            const char* controlShaderProgram,
-            const char* evaluationShaderProgram,
-            const char* geometryShaderProgram,
-            const char* pixelShaderProgram,
-            uint32_t patchVertices=3,
-            E_MATERIAL_TYPE baseMaterial=video::EMT_SOLID,
-            IShaderConstantSetCallBack* callback=0,
-            const char** xformFeedbackOutputs = NULL,
-            const uint32_t& xformFeedbackOutputCount = 0,
-            int32_t userData=0,
-            const char* vertexShaderEntryPointName="main",
-            const char* controlShaderEntryPointName="main",
-            const char* evaluationShaderEntryPointName="main",
-            const char* geometryShaderEntryPointName="main",
-            const char* pixelShaderEntryPointName="main");
-
-		//! Returns a pointer to the IVideoDriver interface. (Implementation for
-		//! IMaterialRendererServices)
-		virtual IVideoDriver* getVideoDriver();
-
-		//! Returns the maximum amount of primitives (mostly vertices) which
-		//! the device is able to render with one drawIndexedTriangleList
-		//! call.
-		virtual uint32_t getMaximalIndicesCount() const;
-
-        core::smart_refctd_ptr<ITexture> createGPUTexture(const ITexture::E_TEXTURE_TYPE& type, const uint32_t* size, uint32_t mipmapLevels, asset::E_FORMAT format = asset::EF_B8G8R8A8_UNORM) override;
-
-        //!
-        virtual IMultisampleTexture* addMultisampleTexture(const IMultisampleTexture::E_MULTISAMPLE_TEXTURE_TYPE& type, const uint32_t& samples, const uint32_t* size, asset::E_FORMAT format = asset::EF_B8G8R8A8_UNORM, const bool& fixedSampleLocations = false);
-
-		//! A.
-        virtual ITextureBufferObject* addTextureBufferObject(IGPUBuffer* buf, const ITextureBufferObject::E_TEXURE_BUFFER_OBJECT_FORMAT& format = ITextureBufferObject::ETBOF_RGBA8, const size_t& offset=0, const size_t& length=0);
 
         virtual IFrameBuffer* addFrameBuffer();
 
@@ -552,7 +766,6 @@ namespace video
         virtual void removeFrameBuffer(IFrameBuffer* framebuf);
 
         virtual void removeAllFrameBuffers();
-
 
 		virtual bool setRenderTarget(IFrameBuffer* frameBuffer, bool setNewViewport=true);
 
@@ -563,6 +776,11 @@ namespace video
 										bool bilinearFilter=false);
 
 
+    private:
+        void clearColor_gatherAndOverrideState(SAuxContext* found, uint32_t _attIx, GLboolean* _rasterDiscard, GLboolean* _colorWmask);
+        void clearColor_bringbackState(SAuxContext* found, uint32_t _attIx, GLboolean _rasterDiscard, const GLboolean* _colorWmask);
+
+    public:
 		//! Clears the ZBuffer.
 		virtual void clearZBuffer(const float &depth=0.0);
 
@@ -577,43 +795,14 @@ namespace video
 		virtual void clearScreen(const E_SCREEN_BUFFERS &buffer, const float* vals) override;
 		virtual void clearScreen(const E_SCREEN_BUFFERS &buffer, const uint32_t* vals) override;
 
-
-		virtual ITransformFeedback* createTransformFeedback();
-
-		//!
-		virtual void bindTransformFeedback(ITransformFeedback* xformFeedback);
-
-		virtual ITransformFeedback* getBoundTransformFeedback() {return getThreadContext_helper(false,std::this_thread::get_id())->CurrentXFormFeedback;}
-
-        /** Only POINTS, LINES, and TRIANGLES are allowed as capture types.. no strips or fans!
-        This issues an implicit call to bindTransformFeedback()
-        **/
-		virtual void beginTransformFeedback(ITransformFeedback* xformFeedback, const E_MATERIAL_TYPE& xformFeedbackShader, const asset::E_PRIMITIVE_TYPE& primType= asset::EPT_POINTS);
-
-		//! A redundant wrapper call to ITransformFeedback::pauseTransformFeedback(), made just for clarity
-		virtual void pauseTransformFeedback();
-
-		//! A redundant wrapper call to ITransformFeedback::pauseTransformFeedback(), made just for clarity
-		virtual void resumeTransformFeedback();
-
-		virtual void endTransformFeedback();
-
-        const CDerivativeMapCreator* getDerivativeMapCreator() const override { return DerivativeMapCreator; };
-
 		//! Enable/disable a clipping plane.
 		//! There are at least 6 clipping planes available for the user to set at will.
 		//! \param index: The plane index. Must be between 0 and MaxUserClipPlanes.
 		//! \param enable: If true, enable the clipping plane else disable it.
 		virtual void enableClipPlane(uint32_t index, bool enable);
 
-		//! Enable the 2d override material
-		virtual void enableMaterial2D(bool enable=true);
-
 		//! Returns the graphics card vendor name.
 		virtual std::string getVendorInfo() {return VendorName;}
-
-		//! sets the needed renderstates
-		void setRenderStates3DMode();
 
 		//!
 		const size_t& getMaxConcurrentShaderInvocations() const {return maxConcurrentShaderInvocations;}
@@ -635,45 +824,48 @@ namespace video
         struct SAuxContext
         {
         //public:
-            constexpr static size_t maxVAOCacheSize = 0x1u<<14; //make this cache configurable
+            struct SPipelineCacheVal
+            {
+                GLuint GLname;
+                core::smart_refctd_ptr<const COpenGLRenderpassIndependentPipeline> object;//so that it holds shaders which concerns hash
+                uint64_t lastValidated;
+            };
 
-            SAuxContext() : threadId(std::thread::id()), ctx(NULL), XFormFeedbackRunning(false), CurrentXFormFeedback(NULL),
+            _IRR_STATIC_INLINE_CONSTEXPR size_t maxVAOCacheSize = 0x1u<<10; //make this cache configurable
+            _IRR_STATIC_INLINE_CONSTEXPR size_t maxPipelineCacheSize = 0x1u<<13;//8k
+
+            SAuxContext() : threadId(std::thread::id()), ctx(NULL),
                             CurrentFBO(0), CurrentRendertargetSize(0,0)
             {
                 VAOMap.reserve(maxVAOCacheSize);
-                CurrentVAO = HashVAOPair(COpenGLVAOSpec::HashAttribs(),NULL);
-
-                for (size_t i=0; i<MATERIAL_MAX_TEXTURES; i++)
-                {
-                    CurrentSamplerHash[i] = 0xffffffffffffffffuLL;
-                }
             }
 
-            inline void setActiveSSBO(const uint32_t& first, const uint32_t& count, const COpenGLBuffer** const buffers, const ptrdiff_t* const offsets, const ptrdiff_t* const sizes)
+            template<E_PIPELINE_BIND_POINT>
+            struct pipeline_for_bindpoint;
+
+            template<E_PIPELINE_BIND_POINT PBP>
+            using pipeline_for_bindpoint_t = typename pipeline_for_bindpoint<PBP>::type;
+
+            void flushState_descriptors(E_PIPELINE_BIND_POINT _pbp, const COpenGLPipelineLayout* _currentLayout, const COpenGLPipelineLayout* _prevLayout);
+            void flushStateGraphics(uint32_t stateBits);
+            void flushStateCompute(uint32_t stateBits);
+
+            SOpenGLState currentState;
+            SOpenGLState nextState;
+            struct {
+                SOpenGLState::SDescSetBnd descSets[IGPUPipelineLayout::DESCRIPTOR_SET_COUNT];
+            } effectivelyBoundDescriptors;
+            //push constants are tracked outside of next/currentState because there can be multiple pushConstants() calls and each of them kinda depends on the pervious one (layout compatibility)
+            struct
             {
-                shaderStorageBufferObjects.set(first,count,buffers,offsets,sizes);
-            }
-
-            inline void setActiveUBO(const uint32_t& first, const uint32_t& count, const COpenGLBuffer** const buffers, const ptrdiff_t* const offsets, const ptrdiff_t* const sizes)
-            {
-                uniformBufferObjects.set(first,count,buffers,offsets,sizes);
-            }
-
-            inline void setActiveIndirectDrawBuffer(const COpenGLBuffer* const buff)
-            {
-                indirectDraw.set(buff);
-            }
-
-            bool setActiveVAO(const COpenGLVAOSpec* const spec);
-
-            //! sets the current Texture
-            //! Returns whether setting was a success or not.
-            bool setActiveTexture(uint32_t stage, core::smart_refctd_ptr<IVirtualTexture>&& texture, const video::STextureSamplingParams &sampleParams);
-
-            const GLuint& constructSamplerInCache(const uint64_t &hashVal);
+                alignas(128) uint8_t data[IGPUMeshBuffer::MAX_PUSH_CONSTANT_BYTESIZE];
+                uint32_t stagesToUpdateFlags = 0u; // need a slight redo of this
+                core::smart_refctd_ptr<const COpenGLPipelineLayout> layout;
+            } pushConstantsState[EPBP_COUNT];
 
         //private:
             std::thread::id threadId;
+            uint8_t ID; //index in array of contexts, just to be easier in use
             #ifdef _IRR_WINDOWS_API_
                 HGLRC ctx;
             #endif
@@ -685,160 +877,36 @@ namespace video
                 AppleMakesAUselessOSWhichHoldsBackTheGamingIndustryAndSabotagesOpenStandards ctx;
             #endif
 
-            bool                                         XFormFeedbackRunning; // TODO: delete
-            COpenGLTransformFeedback* CurrentXFormFeedback; //TODO: delete
-
-
             //! FBOs
             core::vector<IFrameBuffer*>  FrameBuffers;
             COpenGLFrameBuffer*         CurrentFBO;
-            core::dimension2d<uint32_t> CurrentRendertargetSize;
-
-
-            //! Buffers
-            template<GLenum BIND_POINT,size_t BIND_POINTS>
-            class BoundIndexedBuffer : public core::AllocationOverrideDefault
-            {
-                    const COpenGLBuffer* boundBuffer[BIND_POINTS];
-                    ptrdiff_t boundOffsets[BIND_POINTS];
-                    ptrdiff_t boundSizes[BIND_POINTS];
-                    uint64_t lastValidatedBuffer[BIND_POINTS];
-                public:
-                    BoundIndexedBuffer()
-                    {
-                        memset(boundBuffer,0,sizeof(boundBuffer));
-                        memset(boundOffsets,0,sizeof(boundOffsets));
-                        memset(boundSizes,0,sizeof(boundSizes));
-                        memset(lastValidatedBuffer,0,sizeof(boundBuffer));
-                    }
-
-                    ~BoundIndexedBuffer()
-                    {
-                        set(0,BIND_POINTS,nullptr,nullptr,nullptr);
-                    }
-
-                    void set(const uint32_t& first, const uint32_t& count, const COpenGLBuffer** const buffers, const ptrdiff_t* const offsets, const ptrdiff_t* const sizes);
-            };
-
-            //! SSBO
-            BoundIndexedBuffer<GL_SHADER_STORAGE_BUFFER,OGL_MAX_BUFFER_BINDINGS>    shaderStorageBufferObjects;
-            //! UBO
-            BoundIndexedBuffer<GL_UNIFORM_BUFFER,OGL_MAX_BUFFER_BINDINGS>           uniformBufferObjects;
+            core::dimension2d<uint32_t> CurrentRendertargetSize; // @Crisspl TODO: Fold this into SOpenGLState, as well as the Vulkan dynamic state (scissor rect, viewport, etc.)
 
             //!
-            template<GLenum BIND_POINT>
-            class BoundBuffer : public core::AllocationOverrideDefault
+            core::vector<SOpenGLState::HashVAOPair> VAOMap;
+            struct HashPipelinePair
             {
-                    const COpenGLBuffer* boundBuffer;
-                    uint64_t lastValidatedBuffer;
-                public:
-                    BoundBuffer() : lastValidatedBuffer(0)
-                    {
-                        boundBuffer = NULL;
-                    }
+                SOpenGLState::SGraphicsPipelineHash first;
+                SPipelineCacheVal second;
 
-                    ~BoundBuffer()
-                    {
-                        set(NULL);
-                    }
-
-                    void set(const COpenGLBuffer* buff);
+                inline bool operator<(const HashPipelinePair& rhs) const { return first < rhs.first; }
             };
+            core::vector<HashPipelinePair> GraphicsPipelineMap;
 
-            //! Indirect
-            BoundBuffer<GL_DRAW_INDIRECT_BUFFER> indirectDraw;
+            GLuint createGraphicsPipeline(const SOpenGLState::SGraphicsPipelineHash& _hash);
 
-
-            /** We will operate on some assumptions here:
-
-            1) On all GPU's known to me  GPUs MAX_VERTEX_ATTRIB_BINDINGS <= MAX_VERTEX_ATTRIBS,
-            so it makes absolutely no sense to support buffer binding mix'n'match as it wouldn't
-            get us anything (however if MVAB>MVA then we could have more inputs into a vertex shader).
-            Also the VAO Attrib Binding is a VAO state so more VAOs would have to be created in the cache.
-
-            2) Relative byte offset on VAO Attribute spec is capped to 2047 across all GPUs, which makes it
-            useful only for specifying the offset from a single interleaved buffer, since we have to specify
-            absolute (unbounded) offset and stride when binding a buffer to a VAO bind-point, it makes absolutely
-            no sense to use this feature as its redundant.
-
-            So the only things worth tracking for the VAO are:
-            1) Element Buffer Binding
-            2) Per Attribute (x16)
-                A) Enabled (1 bit)
-                B) Format (5 bits)
-                C) Component Count (3 bits)
-                D) Divisors (32bits - no limit)
-
-            Total 16*4+16+16/8+4 = 11 uint64_t
-
-            If we limit divisors artificially to 1 bit
-
-            16/8+16/8+16+4 = 3 uint64_t
-            **/
-            class COpenGLVAO : public core::AllocationOverrideDefault
-            {
-                    size_t                      attrOffset[asset::EVAI_COUNT];
-                    uint32_t                    attrStride[asset::EVAI_COUNT];
-                    //vertices
-                    const COpenGLBuffer*        mappedAttrBuf[asset::EVAI_COUNT];
-                    //indices
-                    const COpenGLBuffer*        mappedIndexBuf;
-
-                    GLuint                      vao;
-                    uint64_t                    lastValidated;
-                #ifdef _IRR_DEBUG
-                    COpenGLVAOSpec::HashAttribs debugHash;
-                #endif // _IRR_DEBUG
-                public:
-                    _IRR_NO_DEFAULT_FINAL(COpenGLVAO);
-                    _IRR_NO_COPY_FINAL(COpenGLVAO);
-
-                    COpenGLVAO(const COpenGLVAOSpec* spec);
-                    inline COpenGLVAO(COpenGLVAO&& other)
-                    {
-                        memcpy(this,&other,sizeof(COpenGLVAO));
-                        memset(other.attrOffset,0,sizeof(mappedAttrBuf));
-                        memset(other.attrStride,0,sizeof(mappedAttrBuf));
-                        memset(other.mappedAttrBuf,0,sizeof(mappedAttrBuf));
-                        other.mappedIndexBuf = NULL;
-                        other.vao = 0;
-                        other.lastValidated = 0;
-                    }
-                    ~COpenGLVAO();
-
-                    inline const GLuint& getOpenGLName() const {return vao;}
-
-
-                    inline COpenGLVAO& operator=(COpenGLVAO&& other)
-                    {
-                        this->~COpenGLVAO();
-                        memcpy(this,&other,sizeof(COpenGLVAO));
-                        memset(other.mappedAttrBuf,0,sizeof(mappedAttrBuf));
-                        memset(other.attrStride,0,sizeof(mappedAttrBuf));
-                        memset(other.mappedAttrBuf,0,sizeof(mappedAttrBuf));
-                        other.mappedIndexBuf = NULL;
-                        other.vao = 0;
-                        other.lastValidated = 0;
-                        return *this;
-                    }
-
-
-                    void bindBuffers(   const COpenGLBuffer* indexBuf,
-                                        const COpenGLBuffer* const* attribBufs,
-                                        const size_t offsets[asset::EVAI_COUNT],
-                                        const uint32_t strides[asset::EVAI_COUNT]);
-
-                    inline const uint64_t& getLastBoundStamp() const {return lastValidated;}
-
-                #ifdef _IRR_DEBUG
-                    inline const COpenGLVAOSpec::HashAttribs& getDebugHash() const {return debugHash;}
-                #endif // _IRR_DEBUG
-            };
-
-            //!
-            typedef std::pair<COpenGLVAOSpec::HashAttribs,COpenGLVAO*> HashVAOPair;
-            HashVAOPair                 CurrentVAO;
-            core::vector<HashVAOPair>    VAOMap;
+            void updateNextState_pipelineAndRaster(const IGPURenderpassIndependentPipeline* _pipeline);
+            //! Must be called AFTER updateNextState_pipelineAndRaster() if pipeline and raster params have to be modified at all in this pass
+            void updateNextState_vertexInput(
+                const asset::SBufferBinding<IGPUBuffer> _vtxBindings[IGPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT],
+                const IGPUBuffer* _indexBuffer,
+                const IGPUBuffer* _indirectDrawBuffer,
+                const IGPUBuffer* _paramBuffer
+            );
+            void pushConstants(
+                E_PIPELINE_BIND_POINT _bindPoint,
+                const COpenGLPipelineLayout* _layout, uint32_t _stages, uint32_t _offset, uint32_t _size, const void* _values
+            );
 
             inline size_t getVAOCacheSize() const
             {
@@ -849,12 +917,12 @@ namespace video
             {
                 for(auto it = VAOMap.begin(); VAOMap.size()>maxVAOCacheSize&&it!=VAOMap.end();)
                 {
-                    if (it->first==CurrentVAO.first)
+                    if (it->first==currentState.vertexInputParams.vao.first)
                         continue;
 
-                    if (CNullDriver::ReallocationCounter-it->second->getLastBoundStamp()>1000) //maybe make this configurable
+                    if (CNullDriver::ReallocationCounter-it->second.lastValidated>1000) //maybe make this configurable
                     {
-                        delete it->second;
+                        COpenGLExtensionHandler::extGlDeleteVertexArrays(1, &it->second.GLname);
                         it = VAOMap.erase(it);
                         if (exitOnFirstDelete)
                             return;
@@ -863,44 +931,25 @@ namespace video
                         it++;
                 }
             }
-
-            //! Textures and Samplers
-            class STextureStageCache : public core::AllocationOverrideDefault
+            //TODO DRY
+            inline void freeUpGraphicsPipelineCache(bool exitOnFirstDelete)
             {
-					core::smart_refctd_ptr<const IVirtualTexture> CurrentTexture[MATERIAL_MAX_TEXTURES];
-				public:
-					STextureStageCache() = default;
+                for (auto it = GraphicsPipelineMap.begin(); GraphicsPipelineMap.size() > maxPipelineCacheSize&&it != GraphicsPipelineMap.end();)
+                {
+                    if (it->first == currentState.pipeline.graphics.usedShadersHash)
+                        continue;
 
-					~STextureStageCache()
-					{
-						clear();
-					}
-
-					void set(uint32_t stage, core::smart_refctd_ptr<const IVirtualTexture>&& tex)
-					{
-						if (stage<MATERIAL_MAX_TEXTURES)
-							CurrentTexture[stage] = std::move(tex);
-					}
-
-					const IVirtualTexture* operator[](int stage) const
-					{
-						if (static_cast<uint32_t>(stage)<MATERIAL_MAX_TEXTURES)
-							return CurrentTexture[stage].get();
-						else
-							return 0;
-					}
-
-					void remove(const IVirtualTexture* tex);
-
-					void clear();
-            };
-
-            //!
-            STextureStageCache                  CurrentTexture;
-
-            //! Samplers
-            uint64_t                            CurrentSamplerHash[MATERIAL_MAX_TEXTURES];
-            core::unordered_map<uint64_t,GLuint> SamplerMap;
+                    if (CNullDriver::ReallocationCounter-it->second.lastValidated > 1000) //maybe make this configurable
+                    {
+                        COpenGLExtensionHandler::extGlDeleteProgramPipelines(1, &it->second.GLname);
+                        it = GraphicsPipelineMap.erase(it);
+                        if (exitOnFirstDelete)
+                            return;
+                    }
+                    else
+                        it++;
+                }
+            }
         };
 
 
@@ -926,10 +975,16 @@ namespace video
         virtual uint64_t getMaxSSBOSize() const override { return COpenGLExtensionHandler::maxSSBOSize; }
 
         //!
-        virtual uint64_t getMaxTBOSize() const override { return COpenGLExtensionHandler::maxTBOSize; }
+        virtual uint64_t getMaxTBOSizeInTexels() const override { return COpenGLExtensionHandler::maxTBOSizeInTexels; }
 
         //!
         virtual uint64_t getMaxBufferSize() const override { return COpenGLExtensionHandler::maxBufferSize; }
+
+        uint32_t getMaxUBOBindings() const override { return COpenGLExtensionHandler::maxUBOBindings; }
+        uint32_t getMaxSSBOBindings() const override { return COpenGLExtensionHandler::maxSSBOBindings; }
+        uint32_t getMaxTextureBindings() const override { return COpenGLExtensionHandler::maxTextureBindings; }
+        uint32_t getMaxTextureBindingsCompute() const override { return COpenGLExtensionHandler::maxTextureBindingsCompute; }
+        uint32_t getMaxImageBindings() const override { return COpenGLExtensionHandler::maxImageBindings; }
 
     private:
         SAuxContext* getThreadContext_helper(const bool& alreadyLockedMutex, const std::thread::id& tid = std::this_thread::get_id());
@@ -937,37 +992,14 @@ namespace video
         void cleanUpContextBeforeDelete();
 
 
-        void bindTransformFeedback(ITransformFeedback* xformFeedback, SAuxContext* toContext);
-
-
         //COpenGLDriver::CGPUObjectFromAssetConverter
         class CGPUObjectFromAssetConverter;
         friend class CGPUObjectFromAssetConverter;
 
+        using PipelineMapKeyT = std::pair<std::array<core::smart_refctd_ptr<IGPUSpecializedShader>, 5u>, std::thread::id>;
+        core::map<PipelineMapKeyT, GLuint> Pipelines;
 
         bool runningInRenderDoc;
-
-		//! enumeration for rendering modes such as 2d and 3d for minizing the switching of renderStates.
-		enum E_RENDER_MODE
-		{
-			ERM_NONE = 0,	// no render state has been set yet.
-			ERM_2D,		// 2d drawing rendermode
-			ERM_3D		// 3d rendering mode
-		};
-
-		E_RENDER_MODE CurrentRenderMode;
-		//! bool to make all renderstates reset if set to true.
-		bool ResetRenderStates;
-
-		SGPUMaterial Material, LastMaterial;
-
-
-
-		//! inits the parts of the open gl driver used on all platforms
-		bool genericDriverInit();
-
-		//! returns a device dependent texture from a software surface (IImage)
-		virtual core::smart_refctd_ptr<video::ITexture> createDeviceDependentTexture(const ITexture::E_TEXTURE_TYPE& type, const uint32_t* size, uint32_t mipmapLevels, const io::path& name, asset::E_FORMAT format = asset::EF_B8G8R8A8_UNORM);
 
 		// returns the current size of the screen or rendertarget
 		virtual const core::dimension2d<uint32_t>& getCurrentRenderTargetSize() const;
@@ -981,7 +1013,7 @@ namespace video
 		//! Color buffer format
 		asset::E_FORMAT ColorFormat; //FIXME
 
-		SIrrlichtCreationParameters Params;
+        mutable core::smart_refctd_dynamic_array<std::string> m_supportedGLSLExtsNames;
 
 		#ifdef _IRR_WINDOWS_API_
 			HDC HDc; // Private GDI Device Context
@@ -1013,10 +1045,14 @@ namespace video
 
         FW_Mutex* glContextMutex;
 		SAuxContext* AuxContexts;
-        CDerivativeMapCreator* DerivativeMapCreator;
+        core::smart_refctd_ptr<const asset::IGLSLCompiler> GLSLCompiler;
 
 		E_DEVICE_TYPE DeviceType;
 	};
+    
+    
+    template<> struct COpenGLDriver::SAuxContext::pipeline_for_bindpoint<EPBP_GRAPHICS> { using type = COpenGLRenderpassIndependentPipeline; };
+    template<> struct COpenGLDriver::SAuxContext::pipeline_for_bindpoint<EPBP_COMPUTE > { using type = COpenGLComputePipeline; };
 
 } // end namespace video
 } // end namespace irr

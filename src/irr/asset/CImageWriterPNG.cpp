@@ -11,7 +11,7 @@
 
 #include "IWriteFile.h"
 #include "os.h" // for logging
-#include "irr/asset/ICPUTexture.h"
+#include "irr/asset/ICPUImageView.h"
 #include "irr/asset/format/convertColor.h"
 
 #ifdef _IRR_COMPILE_WITH_LIBPNG_
@@ -61,7 +61,7 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 {
     if (!_override)
         getDefaultOverride(_override);
-#ifdef _IRR_COMPILE_WITH_LIBPNG_
+#if defined(_IRR_COMPILE_WITH_LIBPNG_) && !defined(NEW_SHADERS)
     SAssetWriteContext ctx{_params, _file};
 
     const asset::CImageData* image =
@@ -210,7 +210,7 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	return true;
 #else
 	return false;
-#endif
+#endif//defined(_IRR_COMPILE_WITH_LIBPNG_) && !defined(NEW_SHADERS)
 }
 
 } // namespace video

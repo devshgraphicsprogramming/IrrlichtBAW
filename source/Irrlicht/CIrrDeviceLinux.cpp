@@ -56,7 +56,7 @@ namespace irr
 	namespace video
 	{
 		IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
-				io::IFileSystem* io, CIrrDeviceLinux* device
+				io::IFileSystem* io, CIrrDeviceLinux* device, const asset::IGLSLCompiler* glslcomp
 #ifdef _IRR_COMPILE_WITH_OPENGL_
                 ,COpenGLDriver::SAuxContext* auxCtxts
 #endif // _IRR_COMPILE_WITH_OPENGL_
@@ -389,7 +389,6 @@ bool CIrrDeviceLinux::switchToFullscreen(bool reset)
 		return true;
 	}
 
-	getVideoModeList();
 	#if defined(_IRR_LINUX_X11_VIDMODE_) || defined(_IRR_LINUX_X11_RANDR_)
 	int32_t eventbase, errorbase;
 	int32_t bestMode = -1;
@@ -991,14 +990,14 @@ void CIrrDeviceLinux::createDriver()
 	case video::EDT_OPENGL:
 		#ifdef _IRR_COMPILE_WITH_OPENGL_
 		if (Context)
-			VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this, reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts));
+			VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this, getAssetManager()->getGLSLCompiler(), reinterpret_cast<video::COpenGLDriver::SAuxContext*>(AuxContexts));
 		#else
 		os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
 		#endif
 		break;
 
 	case video::EDT_NULL:
-		VideoDriver = video::createNullDriver(this, FileSystem, CreationParams.WindowSize);
+		VideoDriver = video::createNullDriver(this, FileSystem, CreationParams);
 		break;
 
 	default:
@@ -1006,7 +1005,7 @@ void CIrrDeviceLinux::createDriver()
 		break;
 #else
 	case video::EDT_NULL:
-		VideoDriver = video::createNullDriver(FileSystem, CreationParams.WindowSize);
+		VideoDriver = video::createNullDriver(FileSystem, CreationParams);
 		break;
 	default:
 		os::Printer::log("No X11 support compiled in. Only Null driver available.", ELL_ERROR);
@@ -1434,85 +1433,6 @@ void CIrrDeviceLinux::setResizable(bool resize)
 	XMapWindow(display, window);
 	XFlush(display);
 #endif // #ifdef _IRR_COMPILE_WITH_X11_
-}
-
-
-//! Return pointer to a list with all video modes supported by the gfx adapter.
-video::IVideoModeList* CIrrDeviceLinux::getVideoModeList()
-{
-#ifdef _IRR_COMPILE_WITH_X11_
-	if (!VideoModeList->getVideoModeCount())
-	{
-		bool temporaryDisplay = false;
-
-		if (!display)
-		{
-			display = XOpenDisplay(0);
-			temporaryDisplay=true;
-		}
-		if (display)
-		{
-			#if defined(_IRR_LINUX_X11_VIDMODE_) || defined(_IRR_LINUX_X11_RANDR_)
-			int32_t eventbase, errorbase;
-			int32_t defaultDepth=DefaultDepth(display,screennr);
-			#endif
-
-			#ifdef _IRR_LINUX_X11_VIDMODE_
-			if (XF86VidModeQueryExtension(display, &eventbase, &errorbase))
-			{
-				// enumerate video modes
-				int modeCount;
-				XF86VidModeModeInfo** modes;
-
-				XF86VidModeGetAllModeLines(display, screennr, &modeCount, &modes);
-
-				// save current video mode
-				oldVideoMode = *modes[0];
-
-				// find fitting mode
-
-				VideoModeList->setDesktop(defaultDepth, core::dimension2d<uint32_t>(
-					modes[0]->hdisplay, modes[0]->vdisplay));
-				for (int i = 0; i<modeCount; ++i)
-				{
-					VideoModeList->addMode(core::dimension2d<uint32_t>(
-						modes[i]->hdisplay, modes[i]->vdisplay), defaultDepth);
-				}
-				XFree(modes);
-			}
-			else
-			#endif
-			#ifdef _IRR_LINUX_X11_RANDR_
-			if (XRRQueryExtension(display, &eventbase, &errorbase))
-			{
-				int modeCount;
-				XRRScreenConfiguration *config=XRRGetScreenInfo(display,DefaultRootWindow(display));
-				oldRandrMode=XRRConfigCurrentConfiguration(config,&oldRandrRotation);
-				XRRScreenSize *modes=XRRConfigSizes(config,&modeCount);
-				VideoModeList->setDesktop(defaultDepth, core::dimension2d<uint32_t>(
-					modes[oldRandrMode].width, modes[oldRandrMode].height));
-				for (int i = 0; i<modeCount; ++i)
-				{
-					VideoModeList->addMode(core::dimension2d<uint32_t>(
-						modes[i].width, modes[i].height), defaultDepth);
-				}
-				XRRFreeScreenConfigInfo(config);
-			}
-			else
-			#endif
-			{
-				os::Printer::log("VidMode or RandR X11 extension requireed for VideoModeList." , ELL_WARNING);
-			}
-		}
-		if (display && temporaryDisplay)
-		{
-			XCloseDisplay(display);
-			display=0;
-		}
-	}
-#endif
-
-	return VideoModeList;
 }
 
 //! Minimize window

@@ -6,9 +6,13 @@
 #define __IRR_I_VIDEO_CAPABILITY_REPORTER_H_INCLUDED__
 
 #include <string>
-#include "ITexture.h"
+
 
 #include "IrrCompileConfig.h"
+
+#include "irr/video/IGPUImageView.h"
+#include "EDriverTypes.h"
+
 
 namespace irr
 {
@@ -67,11 +71,16 @@ namespace video
             //! Whether we can index samplers dynamically in a shader (automatically true if bindless is enabled)
             EDF_DYNAMIC_SAMPLER_INDEXING,
 
+            //! A way to pass information between fragment shader invocations covering the same pixel
+            EDF_INPUT_ATTACHMENTS,
+
             //other feature ideas are; bindless buffers, sparse texture, sparse texture 2
 
             //! Only used for counting the elements of this enum
             EDF_COUNT
         };
+
+        virtual const core::smart_refctd_dynamic_array<std::string> getSupportedGLSLExtensions() const { return nullptr; };
 
 		//! Queries the features of the driver.
 		/** Returns true if a feature is available
@@ -84,11 +93,6 @@ namespace video
 		of the Direct3D8 driver, it would return "Direct3D 8.1". */
 		virtual const wchar_t* getName() const =0;
 
-		//! Returns the maximum amount of primitives
-		/** (mostly vertices) which the device is able to render.
-		\return Maximum amount of primitives. */
-		virtual uint32_t getMaximalIndicesCount() const =0;
-
 		//! Get the current color format of the color buffer
 		/** \return Color format of the color buffer. */
 		virtual asset::E_FORMAT getColorFormat() const =0;
@@ -96,29 +100,43 @@ namespace video
 		//! Get the graphics card vendor name.
 		virtual std::string getVendorInfo() =0;
 
-        virtual uint32_t getMaxComputeWorkGroupSize(uint32_t _dimension) const = 0;
+        virtual uint32_t getMaxComputeWorkGroupSize(uint32_t _dimension) const { return 0u; }
 
 		//! Get the maximum texture size supported.
-		virtual const uint32_t* getMaxTextureSize(const ITexture::E_TEXTURE_TYPE& type) const =0;
+		virtual const uint32_t* getMaxTextureSize(IGPUImageView::E_TYPE type) const =0;
+		
+		//!
+		virtual uint32_t getRequiredUBOAlignment() const { return 0u; }
 
 		//!
-		virtual uint32_t getRequiredUBOAlignment() const = 0;
+		virtual uint32_t getRequiredSSBOAlignment() const { return 0u; }
 
 		//!
-		virtual uint32_t getRequiredSSBOAlignment() const = 0;
-
-		//!
-		virtual uint32_t getRequiredTBOAlignment() const = 0;
+		virtual uint32_t getRequiredTBOAlignment() const { return 0u; }
 
 		//!
 		virtual uint32_t getMinimumMemoryMapAlignment() const { return _IRR_MIN_MAP_BUFFER_ALIGNMENT; }
 
         virtual uint16_t retrieveDisplayRefreshRate() const { return 0u; }
 
-        virtual uint64_t getMaxUBOSize() const = 0;
-        virtual uint64_t getMaxSSBOSize() const = 0;
-        virtual uint64_t getMaxTBOSize() const = 0;
-        virtual uint64_t getMaxBufferSize() const = 0;
+
+		virtual uint64_t getMaxUBOSize() const { return 0ull; }
+		virtual uint64_t getMaxSSBOSize() const { return 0ull; }
+		virtual uint64_t getMaxTBOSizeInTexels() const { return 0ull; }
+		virtual uint64_t getMaxBufferSize() const { return 0ull; }
+
+		virtual uint32_t getMaxUBOBindings() const { return 0u; }
+		virtual uint32_t getMaxSSBOBindings() const { return 0u; }
+		virtual uint32_t getMaxTextureBindings() const { return 0u; }
+		virtual uint32_t getMaxTextureBindingsCompute() const { return 0u; }
+		virtual uint32_t getMaxImageBindings() const { return 0u; }
+
+		virtual bool isAllowedBufferViewFormat(asset::E_FORMAT _fmt) const { return false; }
+		virtual bool isAllowedVertexAttribFormat(asset::E_FORMAT _fmt) const { return false; }
+		virtual bool isColorRenderableFormat(asset::E_FORMAT _fmt) const { return false; }
+		virtual bool isAllowedImageStoreFormat(asset::E_FORMAT _fmt) const { return false; }
+		virtual bool isAllowedTextureFormat(asset::E_FORMAT _fmt) const { return false; }
+		virtual bool isHardwareBlendableFormat(asset::E_FORMAT _fmt) const { return false; }
 	};
 
 } // end namespace video

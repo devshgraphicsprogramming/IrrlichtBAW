@@ -20,19 +20,21 @@ cmake_minimum_required(VERSION 3.14)
 
 project(Irrlicht LANGUAGES CXX C)
 
+option(IRR_COMPILE_WITH_CUDA "Compile with CUDA interop?" OFF)
+
 # CUDA test
 include(CheckLanguage)
 check_language(CUDA)
-enable_language(CUDA)
-if(${CMAKE_CUDA_COMPILER_VERSION} VERSION_LESS 9.0)
-	message(STATUS "CUDA not found or version lower than 9.0 found, version 9.0+ needed for C++14 support.")
+if(CMAKE_CUDA_COMPILER OR "${CMAKE_CUDA_COMPILER_VERSION}" VERSION_LESS 9.0)
+	if (IRR_COMPILE_WITH_CUDA)
+		message(WARNING "CUDA not found or version lower than 9.0 found, version 9.0+ needed for C++14 support.")
+	endif()
 else()
-	message(STATUS "CUDA version 9.0+ found, you can enable the IRR_COMPILE_WITH_CUDA option.")
-endif()
-
-option(IRR_COMPILE_WITH_CUDA "Compile with CUDA interop?" OFF)
-if (IRR_COMPILE_WITH_CUDA)
-	enable_language(CUDA)
+	if (IRR_COMPILE_WITH_CUDA)
+		enable_language(CUDA)
+	else()
+		message(STATUS "CUDA version 9.0+ found, you can enable the IRR_COMPILE_WITH_CUDA option.")
+	endif()
 endif()
 
 #
@@ -220,6 +222,7 @@ option(IRR_BUILD_BULLET "Enable Bullet Physics building and integration?" OFF)
 option(IRR_BUILD_DOCS "Enable building documentation?" ON)
 
 set(THIRD_PARTY_SOURCE_DIR "${PROJECT_SOURCE_DIR}/3rdparty")
+set(THIRD_PARTY_BINARY_DIR "${PROJECT_BINARY_DIR}/3rdparty")
 
 execute_process(COMMAND git submodule init
 		WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
