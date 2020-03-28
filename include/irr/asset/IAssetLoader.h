@@ -101,6 +101,9 @@ public:
         const E_CACHING_FLAGS cacheFlags;
         const char* relativeDir;
         const E_LOADER_PARAMETER_FLAGS loaderFlags;				//!< Flags having an impact on extraordinary tasks during loading process
+
+		//smart ptr?
+		CQuantNormalCache& quantNormalCache = IMeshManipulator::getQuantNormalCache();
     };
 
     //! Struct for keeping the state of the current loadoperation for safe threading

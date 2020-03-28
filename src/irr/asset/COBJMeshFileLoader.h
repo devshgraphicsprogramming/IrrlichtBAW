@@ -136,8 +136,6 @@ private:
 	IAssetManager* AssetManager;
 	io::IFileSystem* FileSystem;
 
-    CQuantNormalCache quantNormalCache;
-
 	template<typename aType>
 	static inline void performActionBasedOnOrientationSystem(aType& varToHandle, void (*performOnCertainOrientation)(aType& varToHandle))
 	{

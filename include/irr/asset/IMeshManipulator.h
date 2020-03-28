@@ -21,15 +21,6 @@ namespace asset
 	class CQuantNormalCache;
 	enum class E_QUANT_NORM_CACHE_TYPE;
 
-	//I will delete it later (or move somewhere else)
-	template<typename BufferType>
-	struct SBufferRange
-	{
-		size_t offset = 0ull;
-		size_t size = 0ull;
-		core::smart_refctd_ptr<BufferType> buffer = nullptr;
-	};
-
 	//! An interface for easy manipulation of meshes.
 	/** Scale, set alpha value, flip surfaces, and so on. This exists for
 	fixing problems with wrong imported or exported meshes quickly after
@@ -375,17 +366,12 @@ namespace asset
 
 			return retval;
 		}
-		
-		//!
-		static bool loadNormalQuantCacheFromBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferRange<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
 
-		//! idk if there is need for this function ?\_(?)_/?
-		static void addCacheContentsFromBuffer(E_QUANT_NORM_CACHE_TYPE type, asset::ICPUBuffer* buffer);
-
-		//!
-		static bool saveCacheToBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferBinding<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
+		static inline CQuantNormalCache& getQuantNormalCache() { return quantNormalCache; }
+		static inline const CQuantNormalCache& getQuantNormalcache() { return quantNormalCache; }
 
     protected:
+		static CQuantNormalCache quantNormalCache;
 };
 
 } // end namespace scene

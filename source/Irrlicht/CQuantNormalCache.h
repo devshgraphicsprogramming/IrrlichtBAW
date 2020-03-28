@@ -50,8 +50,8 @@ public:
 			static constexpr size_t primeNumber1 = 18446744073709551557;
 			static constexpr size_t primeNumber2 = 4611686018427388273;
 
-			return  ((static_cast<size_t>(static_cast<double>(vec.u)* std::numeric_limits<size_t>::max())* primeNumber1) ^
-				(static_cast<size_t>(static_cast<double>(vec.v)* std::numeric_limits<size_t>::max())* primeNumber2));
+			return  ((static_cast<size_t>(static_cast<double>(vec.u)* std::numeric_limits<size_t>::max()) * primeNumber1) ^
+				(static_cast<size_t>(static_cast<double>(vec.v)* std::numeric_limits<size_t>::max()) * primeNumber2));
 		}
 	};
 
@@ -68,6 +68,11 @@ public:
 		}
 	};
 
+public:
+
+	/*template <E_QUANT_NORM_CACHE_TYPE Type, typename ReturnType>
+	ReturnType quantizeNormal(const core::vectorSIMDf& normal);*/
+
 	uint32_t quantizeNormal2_10_10_10(const core::vectorSIMDf& normal);
 	uint32_t quantizeNormal8_8_8(const core::vectorSIMDf& normal);
 	uint64_t quantizeNormal16_16_16(const core::vectorSIMDf& normal);
@@ -75,6 +80,12 @@ public:
 	void insertIntoCache2_10_10_10(const VectorUV key, const uint32_t quantizedNormal);
 	void insertIntoCache8_8_8(const VectorUV key, const Vector8u quantizedNormal);
 	void insertIntoCache16_16_16(const VectorUV key, const Vector16u quantizedNormal);
+
+	//!
+	static bool loadNormalQuantCacheFromBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferRange<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
+
+	//!
+	static bool saveCacheToBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferBinding<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
 
 	inline size_t getCacheSizeInBytes(E_QUANT_NORM_CACHE_TYPE type) const
 	{
