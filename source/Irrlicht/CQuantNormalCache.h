@@ -43,6 +43,7 @@ public:
 		uint8_t z;
 	};
 
+private:
 	struct QuantNormalHash
 	{
 		inline size_t operator()(const VectorUV& vec) const noexcept
@@ -68,11 +69,114 @@ public:
 		}
 	};
 
-public:
+	template<E_QUANT_NORM_CACHE_TYPE CacheType>
+	struct vector_for_cache;
 
-	uint32_t quantizeNormal2_10_10_10(const core::vectorSIMDf& normal);
-	uint32_t quantizeNormal8_8_8(const core::vectorSIMDf& normal);
-	uint64_t quantizeNormal16_16_16(const core::vectorSIMDf& normal);
+	template<> 
+	struct vector_for_cache<E_QUANT_NORM_CACHE_TYPE::Q_8_8_8>
+	{
+		typedef uint32_t type;
+	};
+
+	template<> 
+	struct vector_for_cache<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>
+	{
+		typedef uint32_t type;
+	};
+
+	template<> 
+	struct vector_for_cache<E_QUANT_NORM_CACHE_TYPE::Q_16_16_16>
+	{
+		typedef uint64_t type;
+	};
+
+	template<E_QUANT_NORM_CACHE_TYPE CacheType>
+	using vector_for_cache_t = typename vector_for_cache<CacheType>::type;
+
+public:
+	template<E_QUANT_NORM_CACHE_TYPE CacheType>
+	vector_for_cache_t<CacheType> quantizeNormal(const core::vectorSIMDf& normal)
+	{
+		uint32_t quantizationBits = 0;
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10)
+		{
+			quantizationBits = 10u;
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_8_8_8)
+		{
+			quantizationBits = 8u;
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_16_16_16)
+		{
+			quantizationBits = 10u; //for sure?
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+
+		const auto xorflag = core::vectorSIMDu32((0x1u << quantizationBits) - 1u);
+		const auto negativeMask = normal < core::vectorSIMDf(0.0f);
+		const VectorUV uvMappedNormal = mapToBarycentric(core::abs(normal));
+
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10)
+		{
+			auto found = normalCacheFor2_10_10_10Quant.find(uvMappedNormal);
+			if (found != normalCacheFor2_10_10_10Quant.end() && (found->first == uvMappedNormal))
+			{
+				const uint32_t absVec = found->second;
+				const auto vec = core::vectorSIMDu32(absVec, absVec >> quantizationBits, absVec >> quantizationBits * 2) & xorflag;
+
+				return restoreSign<uint32_t>(vec, xorflag, negativeMask, quantizationBits);
+			}
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_8_8_8)
+		{
+			auto found = normalCacheFor8_8_8Quant.find(uvMappedNormal);
+			if (found != normalCacheFor8_8_8Quant.end() && (found->first == uvMappedNormal))
+			{
+				const auto absVec = core::vectorSIMDu32(found->second.x, found->second.y, found->second.z);
+
+				return restoreSign<uint32_t>(absVec, xorflag, negativeMask, quantizationBits);
+			}
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_16_16_16)
+		{
+			auto found = normalCacheFor16_16_16Quant.find(uvMappedNormal);
+			if (found != normalCacheFor16_16_16Quant.end() && (found->first == uvMappedNormal))
+			{
+				const auto absVec = core::vectorSIMDu32(found->second.x, found->second.y, found->second.z);
+
+				return restoreSign<uint64_t>(absVec, xorflag, negativeMask, quantizationBits);
+			}
+		}
+
+		core::vectorSIMDf fit = findBestFit(quantizationBits, normal);
+
+		auto absIntFit = core::vectorSIMDu32(core::abs(fit)) & xorflag;
+
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10)
+		{
+			uint32_t absBestFit = absIntFit[0] | (absIntFit[1] << quantizationBits) | (absIntFit[2] << (quantizationBits * 2u));
+			normalCacheFor2_10_10_10Quant.insert(std::make_pair(uvMappedNormal, absBestFit));
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_8_8_8)
+		{
+			Vector8u bestFit = { absIntFit[0], absIntFit[1], absIntFit[2] };
+			normalCacheFor8_8_8Quant.insert(std::make_pair(uvMappedNormal, bestFit));
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_16_16_16)
+		{
+			Vector16u bestFit = { absIntFit[0], absIntFit[1], absIntFit[2] };
+			normalCacheFor16_16_16Quant.insert(std::make_pair(uvMappedNormal, bestFit));
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+
+		return restoreSign<vector_for_cache_t<CacheType>>(absIntFit, xorflag, negativeMask, quantizationBits);
+	}
 
 	void insertIntoCache2_10_10_10(const VectorUV key, const uint32_t quantizedNormal);
 	void insertIntoCache8_8_8(const VectorUV key, const Vector8u quantizedNormal);

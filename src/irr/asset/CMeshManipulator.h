@@ -121,8 +121,6 @@ class CMeshManipulator : public IMeshManipulator
 			}
 			return output;
 		}
-
-		CQuantNormalCache quantNormalCache;
 };
 
 } // end namespace scene
