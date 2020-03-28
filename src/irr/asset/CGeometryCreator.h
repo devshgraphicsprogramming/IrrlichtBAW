@@ -82,7 +82,7 @@ class CGeometryCreator : public IGeometryCreator
 
 		using SphereVertex = CylinderVertex;
 
-		mutable CQuantNormalCache quantNormalCache;
+		CQuantNormalCache& quantNormalCache = IMeshManipulator::getQuantNormalCache();
 
 	public:
 		return_type createCubeMesh(const core::vector3df& size) const override;

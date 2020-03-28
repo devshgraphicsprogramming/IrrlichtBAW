@@ -70,9 +70,6 @@ public:
 
 public:
 
-	/*template <E_QUANT_NORM_CACHE_TYPE Type, typename ReturnType>
-	ReturnType quantizeNormal(const core::vectorSIMDf& normal);*/
-
 	uint32_t quantizeNormal2_10_10_10(const core::vectorSIMDf& normal);
 	uint32_t quantizeNormal8_8_8(const core::vectorSIMDf& normal);
 	uint64_t quantizeNormal16_16_16(const core::vectorSIMDf& normal);
@@ -82,10 +79,10 @@ public:
 	void insertIntoCache16_16_16(const VectorUV key, const Vector16u quantizedNormal);
 
 	//!
-	static bool loadNormalQuantCacheFromBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferRange<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
+	bool loadNormalQuantCacheFromBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferRange<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
 
 	//!
-	static bool saveCacheToBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferBinding<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
+	bool saveCacheToBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferBinding<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
 
 	inline size_t getCacheSizeInBytes(E_QUANT_NORM_CACHE_TYPE type) const
 	{

@@ -368,7 +368,6 @@ namespace asset
 		}
 
 		static inline CQuantNormalCache& getQuantNormalCache() { return quantNormalCache; }
-		static inline const CQuantNormalCache& getQuantNormalcache() { return quantNormalCache; }
 
     protected:
 		static CQuantNormalCache quantNormalCache;
