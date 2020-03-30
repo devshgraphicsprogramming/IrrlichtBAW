@@ -155,13 +155,17 @@ int main()
     };
 
     auto frameBuffer = createDefaultFBOForScreenshoting();
-    driver->blitRenderTargets(frameBuffer, nullptr);
 
 	uint64_t lastFPSTime = 0;
-	while(device->run() && receiver.keepOpen())
-	{
-		driver->beginScene(true, true, video::SColor(255,255,255,255) );
-        driver->setRenderTarget(frameBuffer);
+    while (device->run() && receiver.keepOpen())
+    {
+        driver->setRenderTarget(frameBuffer, false);
+
+        float clearValues[] = {1, 1, 1, 1};
+        driver->clearColorBuffer(video::EFAP_COLOR_ATTACHMENT0, clearValues);
+        driver->clearZBuffer();
+
+        driver->beginScene(true, true, video::SColor(255, 255, 255, 255));
 
         //! This animates (moves) the camera and sets the transforms
 		camera->OnAnimate(std::chrono::duration_cast<std::chrono::milliseconds>(device->getTimer()->getTime()).count());
@@ -214,6 +218,9 @@ int main()
 
             driver->drawMeshBuffer(gpumb);
         }
+
+        driver->setRenderTarget(nullptr, false);
+        driver->blitRenderTargets(frameBuffer, nullptr);
 
 		driver->endScene();
 
