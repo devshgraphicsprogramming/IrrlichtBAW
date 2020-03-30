@@ -149,18 +149,19 @@ int main()
         auto gpuImageView = driver->getGPUObjectsFromAssets(&imageView.get(), &imageView.get() + 1)->front();
 
         auto frameBuffer = driver->addFrameBuffer();
-        frameBuffer->attach(video::EFAP_COLOR_ATTACHMENT0, std::move(gpuImageView), 0, 0);
+        frameBuffer->attach(video::EFAP_COLOR_ATTACHMENT0, std::move(gpuImageView));
 
         return frameBuffer;
     };
 
     auto frameBuffer = createDefaultFBOForScreenshoting();
-    driver->blitRenderTargets(nullptr, frameBuffer);
+    driver->blitRenderTargets(frameBuffer, nullptr);
 
 	uint64_t lastFPSTime = 0;
 	while(device->run() && receiver.keepOpen())
 	{
 		driver->beginScene(true, true, video::SColor(255,255,255,255) );
+        driver->setRenderTarget(frameBuffer);
 
         //! This animates (moves) the camera and sets the transforms
 		camera->OnAnimate(std::chrono::duration_cast<std::chrono::milliseconds>(device->getTimer()->getTime()).count());
