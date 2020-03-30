@@ -7,6 +7,8 @@
 
 
 using namespace irr;
+using namespace asset;
+using namespace video;
 using namespace core;
 
 
@@ -29,33 +31,33 @@ int main()
 		return 1; // could not create selected driver.
 
 
-	video::IVideoDriver* driver = device->getVideoDriver();
+	auto driver = device->getVideoDriver();
+	auto assetManager = device->getAssetManager();
+	auto sceneManager = device->getSceneManager();
+	auto geometryCreator = assetManager->getGeometryCreator();
 
-
-	scene::ISceneManager* smgr = device->getSceneManager();
-	scene::ICameraSceneNode* camera =
-		smgr->addCameraSceneNodeFPS(0,100.0f,0.01f);
+	auto camera = sceneManager->addCameraSceneNodeFPS(0,100.0f,0.01f);
 	camera->setPosition(core::vector3df(-4,0,0));
 	camera->setTarget(core::vector3df(0,0,0));
 	camera->setNearValue(0.01f);
 	camera->setFarValue(100.0f);
-    smgr->setActiveCamera(camera);
+	sceneManager->setActiveCamera(camera);
 
 	QToQuitEventReceiver receiver;
 	device->setEventReceiver(&receiver);
 
-
-    auto gCollEng = core::make_refctd_dynamic_array<core::SCollisionEngine>();
-
-	asset::IAssetManager* assetMgr = device->getAssetManager();
+    auto gCollEng = _IRR_NEW(core::SCollisionEngine);
 
     asset::IAssetLoader::SAssetLoadParams lparams;
     asset::ICPUImage* cpuimages[]{
-        static_cast<asset::ICPUImage*>(assetMgr->getAsset("../../media/irrlicht2_dn.jpg", lparams).getContents().first->get()),
-        static_cast<asset::ICPUImage*>(assetMgr->getAsset("../../media/skydome.jpg", lparams).getContents().first->get())
+        static_cast<asset::ICPUImage*>(assetManager->getAsset("../../media/irrlicht2_dn.jpg", lparams).getContents().first->get()),
+        static_cast<asset::ICPUImage*>(assetManager->getAsset("../../media/skydome.jpg", lparams).getContents().first->get())
     };
+
     auto gpuimages = driver->getGPUObjectsFromAssets(cpuimages,cpuimages+2);
 
+
+	/*
 	//!
 	auto setTextureAndDisableBackfaceCullOnAllMaterials = [](auto* mesh, core::smart_refctd_ptr<video::ITexture>&& texture)
 	{
@@ -75,27 +77,29 @@ int main()
 		}
 	};
 
-	//!
-	auto* cube = smgr->addCubeSceneNode(1.f,0,-1);
-    cube->setRotation(core::vector3df(45,20,15));
-	setTextureAndDisableBackfaceCullOnAllMaterials(cube->getMesh(), std::move(gputextures->operator[](0u)));
-	core::SCompoundCollider* compound = new core::SCompoundCollider();
-	compound->AddBox(core::SAABoxCollider(cube->getBoundingBox()));
+	*/
+	
+
+	//auto* cube = smgr->addCubeSceneNode(1.f,0,-1);
+    //cube->setRotation(core::vector3df(45,20,15));
+	//setTextureAndDisableBackfaceCullOnAllMaterials(cube->getMesh(), std::move(gputextures->operator[](0u)));
+	auto compound = core::make_smart_refctd_ptr<core::SCompoundCollider>(); 
+	//compound->AddBox(core::SAABoxCollider(cube->getBoundingBox()));
 	core::SColliderData collData;
-	collData.attachedNode = cube;
+	//collData.attachedNode = cube;
 	compound->setColliderData(collData);
-    gCollEng->addCompoundCollider(compound);
+    gCollEng->addCompoundCollider(std::move(compound));
     compound->drop();
 
-	auto* sphere = smgr->addSphereSceneNode(2,32);
-	setTextureAndDisableBackfaceCullOnAllMaterials(sphere->getMesh(), std::move(gputextures->operator[](1u)));
-    sphere->setPosition(core::vector3df(4,0,0));
-	compound = new core::SCompoundCollider();
-	compound->AddEllipsoid(core::vectorSIMDf(),core::vectorSIMDf(2.f)); //! TODO see why the collider doesn't exactly match up with the mesh
-	collData.attachedNode = sphere;
-	compound->setColliderData(collData);
-    gCollEng->addCompoundCollider(compound);
-    compound->drop();
+	//auto* sphere = smgr->addSphereSceneNode(2,32);
+	//setTextureAndDisableBackfaceCullOnAllMaterials(sphere->getMesh(), std::move(gputextures->operator[](1u)));
+    //sphere->setPosition(core::vector3df(4,0,0));
+	//compound = new core::SCompoundCollider();
+	//compound->AddEllipsoid(core::vectorSIMDf(),core::vectorSIMDf(2.f)); //! TODO see why the collider doesn't exactly match up with the mesh
+	//collData.attachedNode = sphere;
+	//compound->setColliderData(collData);
+    //gCollEng->addCompoundCollider(compound);
+    //compound->drop();
 
 	uint64_t lastFPSTime = 0;
 
@@ -106,12 +110,14 @@ int main()
 
         //! This animates (moves) the camera and sets the transforms
         //! Also draws the meshbuffer
-        smgr->drawAll();
+        sceneManager->drawAll();
+
+		/// draw everything TODO
 
 		driver->endScene();
 
-		setWireframeOnAllMaterials(cube->getMesh(),false);
-		setWireframeOnAllMaterials(sphere->getMesh(),false);
+		//setWireframeOnAllMaterials(cube->getMesh(),false);
+		//setWireframeOnAllMaterials(sphere->getMesh(),false);
 
         core::vectorSIMDf origin,dir;
         origin.set(camera->getAbsolutePosition());
@@ -121,10 +127,10 @@ int main()
         float outLen;
         if (gCollEng->FastCollide(hitPointData,outLen,origin,dir,10.f))
         {
-			if (hitPointData.attachedNode)
+			//if (hitPointData.attachedNode)
 			{
 				// I'm sure that the ISceneNode can be cast to IMeshSceneNode
-				setWireframeOnAllMaterials(static_cast<scene::IMeshSceneNode*>(hitPointData.attachedNode)->getMesh(),true);
+				//setWireframeOnAllMaterials(static_cast<scene::IMeshSceneNode*>(hitPointData.attachedNode)->getMesh(),true);
 			}
         }
 
@@ -150,7 +156,7 @@ int main()
 	//create a screenshot
 	{
 		core::rect<uint32_t> sourceRect(0, 0, params.WindowSize.Width, params.WindowSize.Height);
-		ext::ScreenShot::dirtyCPUStallingScreenshot(device, "screenshot.png", sourceRect, asset::EF_R8G8B8_SRGB);
+		//ext::ScreenShot::dirtyCPUStallingScreenshot(device, "screenshot.png", sourceRect, asset::EF_R8G8B8_SRGB);
 	}
 
 	device->drop();
