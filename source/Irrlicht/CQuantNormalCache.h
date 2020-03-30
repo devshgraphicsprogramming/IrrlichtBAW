@@ -73,25 +73,32 @@ private:
 	struct vector_for_cache;
 
 	template<> 
-	struct vector_for_cache<E_QUANT_NORM_CACHE_TYPE::Q_8_8_8>
-	{
-		typedef uint32_t type;
-	};
-
-	template<> 
 	struct vector_for_cache<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>
 	{
 		typedef uint32_t type;
+		typedef uint32_t cachedVecType;
 	};
+
+	template<> 
+	struct vector_for_cache<E_QUANT_NORM_CACHE_TYPE::Q_8_8_8>
+	{
+		typedef uint32_t type;
+		typedef Vector8u cachedVecType;
+	};
+
 
 	template<> 
 	struct vector_for_cache<E_QUANT_NORM_CACHE_TYPE::Q_16_16_16>
 	{
 		typedef uint64_t type;
+		typedef Vector16u cachedVecType;
 	};
 
 	template<E_QUANT_NORM_CACHE_TYPE CacheType>
 	using vector_for_cache_t = typename vector_for_cache<CacheType>::type;
+
+	template<E_QUANT_NORM_CACHE_TYPE CacheType>
+	using cached_vector_t = typename vector_for_cache<CacheType>::cachedVecType;
 
 public:
 	template<E_QUANT_NORM_CACHE_TYPE CacheType>
@@ -110,7 +117,7 @@ public:
 		IRR_PSEUDO_IF_CONSTEXPR_END
 		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_16_16_16)
 		{
-			quantizationBits = 10u; //for sure?
+			quantizationBits = 16u;
 		}
 		IRR_PSEUDO_IF_CONSTEXPR_END
 
@@ -124,7 +131,7 @@ public:
 			if (found != normalCacheFor2_10_10_10Quant.end() && (found->first == uvMappedNormal))
 			{
 				const uint32_t absVec = found->second;
-				const auto vec = core::vectorSIMDu32(absVec, absVec >> quantizationBits, absVec >> quantizationBits * 2) & xorflag;
+				const auto vec = core::vectorSIMDu32(absVec, absVec >> quantizationBits, absVec >> (quantizationBits * 2)) & xorflag;
 
 				return restoreSign<uint32_t>(vec, xorflag, negativeMask, quantizationBits);
 			}
@@ -178,15 +185,84 @@ public:
 		return restoreSign<vector_for_cache_t<CacheType>>(absIntFit, xorflag, negativeMask, quantizationBits);
 	}
 
-	void insertIntoCache2_10_10_10(const VectorUV key, const uint32_t quantizedNormal);
-	void insertIntoCache8_8_8(const VectorUV key, const Vector8u quantizedNormal);
-	void insertIntoCache16_16_16(const VectorUV key, const Vector16u quantizedNormal);
+	template<E_QUANT_NORM_CACHE_TYPE CacheType>
+	void insertIntoCache(const VectorUV key, cached_vector_t<CacheType> vector)
+	{
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10)
+		{
+			normalCacheFor2_10_10_10Quant.insert(std::make_pair(key, vector));
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_8_8_8)
+		{
+			normalCacheFor8_8_8Quant.insert(std::make_pair(key, vector));
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_16_16_16)
+		{
+			normalCacheFor16_16_16Quant.insert(std::make_pair(key, vector));
+		}
+		IRR_PSEUDO_IF_CONSTEXPR_END
+	}
 
 	//!
-	bool loadNormalQuantCacheFromBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferRange<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
+	template<E_QUANT_NORM_CACHE_TYPE CacheType>
+	bool loadNormalQuantCacheFromBuffer(const SBufferRange<ICPUBuffer>& buffer, bool replaceCurrentContents = false)
+	{
+		//additional validation would be nice imo..
+
+		const uint64_t bufferSize = buffer.buffer.get()->getSize();
+		const uint64_t offset = buffer.offset;
+		const size_t cacheElementSize = getCacheElementSize(CacheType);
+
+		uint8_t* buffPointer = static_cast<uint8_t*>(buffer.buffer.get()->getPointer());
+		const uint8_t* const bufferRangeEnd = buffPointer + offset + buffer.size;
+
+		if (bufferRangeEnd > buffPointer + bufferSize)
+		{
+			os::Printer::log("cannot read from this buffer - invalid range", ELL_ERROR);
+			return false;
+		}
+
+		if (replaceCurrentContents)
+		{
+			IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10)
+			{
+				normalCacheFor2_10_10_10Quant.clear();
+			}
+			IRR_PSEUDO_IF_CONSTEXPR_END
+				IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_8_8_8)
+			{
+				normalCacheFor8_8_8Quant.clear();
+			}
+			IRR_PSEUDO_IF_CONSTEXPR_END
+				IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_16_16_16)
+			{
+				normalCacheFor16_16_16Quant.clear();
+			}
+			IRR_PSEUDO_IF_CONSTEXPR_END
+		}
+
+		const size_t quantVecSize = sizeof(cached_vector_t<CacheType>);
+
+		buffPointer += offset;
+		while (buffPointer < bufferRangeEnd)
+		{
+			CQuantNormalCache::VectorUV key{ *reinterpret_cast<float*>(buffPointer),* reinterpret_cast<float*>(buffPointer + sizeof(float)) };
+			buffPointer += sizeof(CQuantNormalCache::VectorUV);
+
+			cached_vector_t<CacheType> vec;
+			memcpy(&vec, buffPointer, quantVecSize);
+			buffPointer += quantVecSize;
+
+			insertIntoCache<CacheType>(key, vec);
+		}
+
+		return true;
+	}
 
 	//!
-	bool saveCacheToBuffer(E_QUANT_NORM_CACHE_TYPE type, SBufferBinding<ICPUBuffer>& buffer, CQuantNormalCache& quantNormalCache);
+	bool saveCacheToBuffer(const E_QUANT_NORM_CACHE_TYPE type, SBufferBinding<ICPUBuffer>& buffer);
 
 	inline size_t getCacheSizeInBytes(E_QUANT_NORM_CACHE_TYPE type) const
 	{
