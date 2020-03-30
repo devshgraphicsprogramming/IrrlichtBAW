@@ -8,8 +8,6 @@ namespace asset
 core::vectorSIMDf CQuantNormalCache::findBestFit(const uint32_t& bits, const core::vectorSIMDf& normal) const
 {
 	core::vectorSIMDf fittingVector = normal;
-	fittingVector.makeSafe3D();
-	fittingVector = abs(fittingVector);
 
 	// precise normalize
 	auto vectorForDots = fittingVector.preciseDivision(length(fittingVector));

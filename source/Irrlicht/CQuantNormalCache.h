@@ -123,7 +123,12 @@ public:
 
 		const auto xorflag = core::vectorSIMDu32((0x1u << quantizationBits) - 1u);
 		const auto negativeMask = normal < core::vectorSIMDf(0.0f);
-		const VectorUV uvMappedNormal = mapToBarycentric(core::abs(normal));
+
+		core::vectorSIMDf absNormal = normal;
+		absNormal.makeSafe3D();
+		absNormal = abs(absNormal);
+
+		const VectorUV uvMappedNormal = mapToBarycentric(absNormal);
 
 		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(CacheType == E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10)
 		{
@@ -159,7 +164,8 @@ public:
 			}
 		}
 
-		core::vectorSIMDf fit = findBestFit(quantizationBits, normal);
+		
+		core::vectorSIMDf fit = findBestFit(quantizationBits, absNormal);
 
 		auto absIntFit = core::vectorSIMDu32(core::abs(fit)) & xorflag;
 

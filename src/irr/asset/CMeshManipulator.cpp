@@ -1315,11 +1315,7 @@ core::vector<CMeshManipulator::SAttribTypeChoice> CMeshManipulator::findTypesOfP
         EF_R16G16B16_SNORM,
         EF_R16G16B16A16_SNORM,
         EF_A2B10G10R10_SNORM_PACK32,
-        EF_A2R10G10B10_SNORM_PACK32, //bgra
-        EF_R16_SFLOAT,
-        EF_R16G16_SFLOAT,
-        EF_R16G16B16_SFLOAT,
-        EF_R16G16B16A16_SFLOAT
+        EF_A2R10G10B10_SNORM_PACK32  //bgra
     };
 
     auto minValueOfTypeFP = [](E_FORMAT _fmt, uint32_t _cmpntNum) -> float {
@@ -1470,15 +1466,6 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
 				retval.w = 1.f;
 				return retval;
 			};
-			break;
-        case EF_R16_SFLOAT:
-        case EF_R16G16_SFLOAT:
-        case EF_R16G16B16_SFLOAT:
-        case EF_R16G16B16A16_SFLOAT:
-            //no implementation
-            _IRR_DEBUG_BREAK_IF(true);
-            assert(false);
-
 			break;
         default: 
             quantFunc = nullptr;
