@@ -101,9 +101,7 @@ public:
         const E_CACHING_FLAGS cacheFlags;
         const char* relativeDir;
         const E_LOADER_PARAMETER_FLAGS loaderFlags;				//!< Flags having an impact on extraordinary tasks during loading process
-
-		//smart ptr?
-		CQuantNormalCache* const quantNormalCache = nullptr;
+		CQuantNormalCache* quantNormalCache = nullptr;          //!< pointer used for specifying custom cache for quantizied normals, if nullptr - default cache will be used
     };
 
     //! Struct for keeping the state of the current loadoperation for safe threading
@@ -250,16 +248,6 @@ protected:
 	SAssetBundle interm_getAssetInHierarchy(IAssetManager* _mgr, io::IReadFile* _file, const std::string& _supposedFilename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel);
 	SAssetBundle interm_getAssetInHierarchy(IAssetManager* _mgr, const std::string& _filename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel);
     void interm_setAssetMutable(const IAssetManager* _mgr, IAsset* _asset, bool _val);
-};
-
-//since not every loader make use of quant normal cache
-class IAssetLoaderQuant : public IAssetLoader
-{
-public:
-	IAssetLoaderQuant(CQuantNormalCache* const defaultCache) : m_defaultCache(defaultCache) {};
-
-protected:
-	CQuantNormalCache* const m_defaultCache;
 };
 
 }

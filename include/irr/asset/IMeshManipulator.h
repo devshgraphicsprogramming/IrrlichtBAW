@@ -368,10 +368,10 @@ namespace asset
 		}
 
 		static CQuantNormalCache& getQuantNormalCache() { return quantNormalCache; }
-		virtual CQuantNormalCache* _getQuantNormalCache() = 0;
+		virtual CQuantNormalCache* const _getQuantNormalCache() = 0;
 
     protected:
-		//I'm keeping it so until I replace it everywhere
+		//I'm keeping it until I replace it everywhere (geometry creator still uses it)
 		static CQuantNormalCache quantNormalCache;	
 };
 

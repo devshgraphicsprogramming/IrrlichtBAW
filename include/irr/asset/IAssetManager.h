@@ -259,6 +259,12 @@ class IAssetManager : public core::IReferenceCounted
         {
             IAssetLoader::SAssetLoadContext ctx(_params, nullptr);
 
+            if (_params.quantNormalCache == nullptr)
+            {
+                //meh
+                const_cast<IAssetLoader::SAssetLoadParams&>(_params).quantNormalCache = m_meshManipulator->_getQuantNormalCache();
+            }
+
             std::string filePath = _filePath;
             _override->getLoadFilename(filePath, ctx, _hierarchyLevel);
             io::IReadFile* file = m_fileSystem->createAndOpenFile(filePath.c_str());
