@@ -367,10 +367,12 @@ namespace asset
 			return retval;
 		}
 
-		static inline CQuantNormalCache& getQuantNormalCache() { return quantNormalCache; }
+		static CQuantNormalCache& getQuantNormalCache() { return quantNormalCache; }
+		virtual CQuantNormalCache* _getQuantNormalCache() = 0;
 
     protected:
-		static CQuantNormalCache quantNormalCache;
+		//I'm keeping it so until I replace it everywhere
+		static CQuantNormalCache quantNormalCache;	
 };
 
 } // end namespace scene

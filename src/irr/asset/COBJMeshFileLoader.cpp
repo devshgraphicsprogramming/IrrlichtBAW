@@ -59,7 +59,8 @@ static const uint32_t WORD_BUFFER_LENGTH = 512;
 
 
 //! Constructor
-COBJMeshFileLoader::COBJMeshFileLoader(IAssetManager* _manager) : AssetManager(_manager), FileSystem(_manager->getFileSystem())
+COBJMeshFileLoader::COBJMeshFileLoader(IAssetManager* _manager, CQuantNormalCache* const _defaultCache) 
+	: AssetManager(_manager), FileSystem(_manager->getFileSystem()), IAssetLoaderQuant(_defaultCache)
 {
 }
 
@@ -79,6 +80,14 @@ asset::SAssetBundle COBJMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 		_hierarchyLevel,
         _override
     );
+
+	CQuantNormalCache* quantNormalCacheToUse = nullptr;
+
+	if (_params.quantNormalCache == nullptr)
+		quantNormalCacheToUse = m_defaultCache;
+	else
+		quantNormalCacheToUse = _params.quantNormalCache;
+
 
 	const long filesize = _file->getSize();
 	if (!filesize)
@@ -285,7 +294,7 @@ asset::SAssetBundle COBJMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 					core::vectorSIMDf simdNormal;
 					simdNormal.set(normalsBuffer[Idx[2]].data);
                     simdNormal.makeSafe3D();
-					v.normal32bit = _params.quantNormalCache.quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(simdNormal);
+					v.normal32bit = quantNormalCacheToUse->quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(simdNormal);
                 }
 				else
 				{

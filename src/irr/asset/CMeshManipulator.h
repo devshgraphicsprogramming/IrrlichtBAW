@@ -41,6 +41,8 @@ class CMeshManipulator : public IMeshManipulator
 	public:
 		static core::smart_refctd_ptr<ICPUMeshBuffer> createMeshBufferFetchOptimized(const ICPUMeshBuffer* _inbuffer);
 
+		CQuantNormalCache* _getQuantNormalCache() override { return &_quantNormalCache; }
+
 	private:
 		friend class IMeshManipulator;
 		//! Copies only member variables not being pointers to another dynamically allocated irr::IReferenceCounted derivatives.
@@ -121,6 +123,8 @@ class CMeshManipulator : public IMeshManipulator
 			}
 			return output;
 		}
+
+		CQuantNormalCache _quantNormalCache;
 };
 
 } // end namespace scene

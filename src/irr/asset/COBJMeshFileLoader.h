@@ -60,7 +60,7 @@ public:
 #include "irr/irrunpack.h"
 
 //! Meshloader capable of loading obj meshes.
-class COBJMeshFileLoader : public asset::IAssetLoader
+class COBJMeshFileLoader : public asset::IAssetLoaderQuant
 {
     struct SContext
     {
@@ -81,7 +81,7 @@ protected:
 
 public:
 	//! Constructor
-	COBJMeshFileLoader(IAssetManager* _manager);
+	COBJMeshFileLoader(IAssetManager* _manager, CQuantNormalCache* const _defaultCache);
 
     virtual bool isALoadableFileFormat(io::IReadFile* _file) const override
     {
