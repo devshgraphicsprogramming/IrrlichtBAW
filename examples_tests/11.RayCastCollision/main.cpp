@@ -127,7 +127,6 @@ int main()
 		*(gpuImageViews->begin() + i) = driver->getGPUObjectsFromAssets(&imageView.get(), &imageView.get() + 1u)->front();
 	}
 
-
 	/*
 		Specifying cache key to default exsisting cached asset bundle
 		and specifying it's size where end is determined by
@@ -341,6 +340,10 @@ int main()
 	auto gpuMeshesWireFrame = { createAndGetUsefullData(cubeGeometry, cubeTexture, true), createAndGetUsefullData(sphereGeometry, sphereTexture, true) };
 	auto gpuMeshesNoWireFrame = { createAndGetUsefullData(cubeGeometry, cubeTexture, false), createAndGetUsefullData(sphereGeometry, sphereTexture, false) };
 
+	auto gCollEng = _IRR_NEW(core::SCollisionEngine);
+	auto compound = core::make_smart_refctd_ptr<core::SCompoundCollider>();
+	core::SColliderData hitPointData;
+
 	/*
 		Hot loop for rendering a scene.
 	*/
@@ -357,15 +360,51 @@ int main()
 		// there will be switching between wireframing and no wireframing
 		for (auto i = 0; i < EAM_COUNT; ++i)
 		{
-			auto meshData = *(gpuMeshesNoWireFrame.begin() + i);
+			/*
+				Specific mesh gpu data
+			*/
 
-			auto gpuMeshBuffer = std::get<0>(meshData);
-			auto gpuPipeline = std::get<1>(meshData);
-			auto gpuubo = std::get<2>(meshData);
-			auto gpuDescriptorSet0 = std::get<3>(meshData);
-			auto gpuDescriptorSet1 = std::get<4>(meshData);
+			auto meshDataNoWireFraming = *(gpuMeshesNoWireFrame.begin() + i);
+			auto meshDataWireFraming = *(gpuMeshesWireFrame.begin() + i);
+
+			auto gpuMeshBuffer = std::get<0>(meshDataNoWireFraming);
+			auto gpuPipeline = std::get<1>(meshDataNoWireFraming);
+			auto gpuPipelineForWireFraming = std::get<1>(meshDataWireFraming);
+			auto gpuubo = std::get<2>(meshDataNoWireFraming);
+			auto gpuDescriptorSet0 = std::get<3>(meshDataNoWireFraming);
+			auto gpuDescriptorSet1 = std::get<4>(meshDataNoWireFraming);
 
 			IGPUDescriptorSet* gpuDescriptorSets[] = { gpuDescriptorSet0.get(), gpuDescriptorSet1.get() };
+
+			/*
+				Handling colider to specify which mode should be turned on
+			*/
+
+			compound = core::make_smart_refctd_ptr<core::SCompoundCollider>();
+			core::SColliderData collData;
+			collData.attachedNode = gpuMeshBuffer.get(); // how to transform GPU buffer pointer to ISceneNode pointer?
+			compound->setColliderData(collData);
+			gCollEng->addCompoundCollider(std::move(compound));
+			
+
+			switch (i)
+			{
+				case EAM_CUBE:
+				{
+					compound->AddBox(core::SAABoxCollider(gpuMeshBuffer->getBoundingBox()));
+				} break;
+
+				case EAM_SPHERE:
+				{
+					compound->AddEllipsoid(core::vectorSIMDf(), core::vectorSIMDf(3.f)); //! TODO see why the collider doesn't exactly match up with the mesh
+				} break;
+			}
+
+			compound->drop();
+
+			/*
+				Updating matricies for correct space orientation
+			*/
 
 			core::matrix3x4SIMD modelMatrix;
 			modelMatrix.setTranslation(vectorSIMDf(i * 5, 0, 0, 0));
@@ -393,9 +432,25 @@ int main()
 
 				- gpu pipeline
 				- gpu descriptor sets
+
+				Take a look that in the example bellow we are first
+				binding pipeline for a certain mesh with no wireframing,
+				but if a collision is detected - a pipeline with
+				wireframing mode is attached.
 			*/
 
 			driver->bindGraphicsPipeline(gpuPipeline.get());
+
+			core::vectorSIMDf origin, dir;
+			origin.set(camera->getAbsolutePosition());
+			dir.set(camera->getTarget());
+			dir -= origin;
+			dir = core::normalize(dir);
+			float outLen;
+			if (gCollEng->FastCollide(hitPointData, outLen, origin, dir, 10.f))
+				if (hitPointData.attachedNode)
+					driver->bindGraphicsPipeline(gpuPipelineForWireFraming.get());
+
 			driver->bindDescriptorSets(video::EPBP_GRAPHICS, gpuPipeline->getLayout(), 0u, 2u, gpuDescriptorSets, nullptr);
 
 			/*
