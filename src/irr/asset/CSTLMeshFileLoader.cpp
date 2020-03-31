@@ -9,9 +9,6 @@
 #include "irr/asset/asset.h"
 #include "CSTLMeshFileLoader.h"
 
-//#include "irr/asset/CCPUMesh.h"
-//#include "irr/asset/format/convertColor.h"
-
 #include "IReadFile.h"
 #include "os.h"
 
