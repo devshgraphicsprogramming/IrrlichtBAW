@@ -80,12 +80,14 @@ asset::SAssetBundle COBJMeshFileLoader::loadAsset(io::IReadFile* _file, const as
         _override
     );
 
-	if (_params.quantNormalCache == nullptr)
+	if (_params.meshManipulatorToUse == nullptr)
 	{
-		os::Printer::log("quantNormalCache is nullptr", ELL_ERROR);
+		os::Printer::log("meshManipulatorToUse is nullptr", ELL_ERROR);
 		_IRR_DEBUG_BREAK_IF(true);
 		abort();
 	}
+
+	CQuantNormalCache* const quantNormalCache = _params.meshManipulatorToUse->getQuantNormalCache();
 
 	const long filesize = _file->getSize();
 	if (!filesize)
@@ -292,7 +294,7 @@ asset::SAssetBundle COBJMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 					core::vectorSIMDf simdNormal;
 					simdNormal.set(normalsBuffer[Idx[2]].data);
                     simdNormal.makeSafe3D();
-					v.normal32bit = _params.quantNormalCache->quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(simdNormal);
+					v.normal32bit = quantNormalCache->quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(simdNormal);
                 }
 				else
 				{

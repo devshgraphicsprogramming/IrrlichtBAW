@@ -257,13 +257,13 @@ class IAssetManager : public core::IReferenceCounted
         //TODO change name
         SAssetBundle getAssetInHierarchy(const std::string& _filePath, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel, IAssetLoader::IAssetLoaderOverride* _override)
         {
-            IAssetLoader::SAssetLoadContext ctx(_params, nullptr);
-
-            if (_params.quantNormalCache == nullptr)
+            if (_params.meshManipulatorToUse == nullptr)
             {
                 //meh
-                const_cast<IAssetLoader::SAssetLoadParams&>(_params).quantNormalCache = m_meshManipulator->_getQuantNormalCache();
+                const_cast<IAssetLoader::SAssetLoadParams&>(_params).meshManipulatorToUse = m_meshManipulator.get();
             }
+
+            IAssetLoader::SAssetLoadContext ctx(_params, nullptr);
 
             std::string filePath = _filePath;
             _override->getLoadFilename(filePath, ctx, _hierarchyLevel);

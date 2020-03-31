@@ -7,6 +7,7 @@
 
 #include "irr/core/core.h"
 #include "irr/asset/ICPUMesh.h"
+#include "irr/asset/IMeshManipulator.h"
 #include "SColor.h"
 
 namespace irr
@@ -53,7 +54,8 @@ class IGeometryCreator : public core::IReferenceCounted
 		\param colorCone color of the cone
 		\return Generated mesh.
 		*/
-		virtual return_type createArrowMesh(const uint32_t tesselationCylinder = 4,
+		virtual return_type createArrowMesh(IMeshManipulator* const meshManipulatorToUse,
+				const uint32_t tesselationCylinder = 4,
 				const uint32_t tesselationCone = 8, const float height = 1.f,
 				const float cylinderHeight = 0.6f, const float widthCylinder = 0.05f,
 				const float widthCone = 0.3f, const video::SColor colorCylinder = 0xFFFFFFFF,
@@ -67,7 +69,8 @@ class IGeometryCreator : public core::IReferenceCounted
 		\param polyCountY Number of quads used for the vertical tiling
 		\return Generated mesh.
 		*/
-		virtual return_type createSphereMesh(float radius = 5.f,
+		virtual return_type createSphereMesh(IMeshManipulator* const meshManipulatorToUse,
+				float radius = 5.f,
 				uint32_t polyCountX = 16, uint32_t polyCountY = 16) const =0;
 
 		//! Create a cylinder mesh.
@@ -80,7 +83,8 @@ class IGeometryCreator : public core::IReferenceCounted
 		\param oblique (to be documented)
 		\return Generated mesh.
 		*/
-		virtual return_type createCylinderMesh(float radius, float length,
+		virtual return_type createCylinderMesh(IMeshManipulator* const meshManipulatorToUse,
+				float radius, float length,
 				uint32_t tesselation,
 				const video::SColor& color=video::SColor(0xffffffff)) const =0;
 
@@ -94,7 +98,8 @@ class IGeometryCreator : public core::IReferenceCounted
 		\param oblique (to be documented)
 		\return Generated mesh.
 		*/
-		virtual return_type createConeMesh(float radius, float length, uint32_t tesselation,
+		virtual return_type createConeMesh(IMeshManipulator* const meshManipulatorToUse,
+				float radius, float length, uint32_t tesselation,
 				const video::SColor& colorTop=video::SColor(0xffffffff),
 				const video::SColor& colorBottom=video::SColor(0xffffffff),
 				float oblique=0.f) const =0;

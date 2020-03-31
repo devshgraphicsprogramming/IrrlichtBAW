@@ -82,23 +82,24 @@ class CGeometryCreator : public IGeometryCreator
 
 		using SphereVertex = CylinderVertex;
 
-		CQuantNormalCache& quantNormalCache = IMeshManipulator::getQuantNormalCache();
-
 	public:
 		return_type createCubeMesh(const core::vector3df& size) const override;
 
-		return_type createArrowMesh(const uint32_t tesselationCylinder,
+		return_type createArrowMesh(IMeshManipulator* const meshManipulatorToUse,
+									const uint32_t tesselationCylinder,
 									const uint32_t tesselationCone, const float height,
 									const float cylinderHeight, const float width0,
 									const float width1, const video::SColor vtxColor0,
 									const video::SColor vtxColor1) const override;
 
-		return_type createSphereMesh(float radius, uint32_t polyCountX, uint32_t polyCountY) const override;
+		return_type createSphereMesh(IMeshManipulator* const meshManipulatorToUse, float radius, uint32_t polyCountX, uint32_t polyCountY) const override;
 
-		return_type createCylinderMesh(	float radius, float length, uint32_t tesselation,
+		return_type createCylinderMesh(IMeshManipulator* const meshManipulatorToUse,
+										float radius, float length, uint32_t tesselation,
 										const video::SColor& color=0xffffffff) const override;
 
-		return_type createConeMesh(	float radius, float length, uint32_t tesselation,
+		return_type createConeMesh( IMeshManipulator* const meshManipulatorToUse,
+									float radius, float length, uint32_t tesselation,
 									const video::SColor& colorTop=0xffffffff,
 									const video::SColor& colorBottom=0xffffffff,
 									float oblique=0.f) const override;

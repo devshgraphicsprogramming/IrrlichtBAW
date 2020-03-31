@@ -367,12 +367,9 @@ namespace asset
 			return retval;
 		}
 
-		static CQuantNormalCache& getQuantNormalCache() { return quantNormalCache; }
-		virtual CQuantNormalCache* const _getQuantNormalCache() = 0;
+		virtual CQuantNormalCache* const getQuantNormalCache() = 0;
 
     protected:
-		//I'm keeping it until I replace it everywhere (geometry creator still uses it)
-		static CQuantNormalCache quantNormalCache;	
 };
 
 } // end namespace scene

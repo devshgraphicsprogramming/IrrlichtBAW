@@ -1517,8 +1517,6 @@ core::smart_refctd_ptr<ICPUBuffer> IMeshManipulator::idxBufferFromTrianglesFanTo
 	return nullptr;
 }
 
-CQuantNormalCache IMeshManipulator::quantNormalCache;
-
 } // end namespace scene
 } // end namespace irr
 

@@ -140,7 +140,8 @@ CGeometryCreator::return_type CGeometryCreator::createCubeMesh(const core::vecto
 	a cylinder, a cone and a cross
 	point up on (0,1.f, 0.f )
 */
-CGeometryCreator::return_type CGeometryCreator::createArrowMesh(const uint32_t tesselationCylinder,
+CGeometryCreator::return_type CGeometryCreator::createArrowMesh(IMeshManipulator* const meshManipulatorToUse,
+																const uint32_t tesselationCylinder,
 																const uint32_t tesselationCone,
 																const float height,
 																const float cylinderHeight,
@@ -178,11 +179,12 @@ CGeometryCreator::return_type CGeometryCreator::createArrowMesh(const uint32_t t
 
 
 /* A sphere with proper normals and texture coords */
-CGeometryCreator::return_type CGeometryCreator::createSphereMesh(float radius, uint32_t polyCountX, uint32_t polyCountY) const
+CGeometryCreator::return_type CGeometryCreator::createSphereMesh(IMeshManipulator* const meshManipulatorToUse, float radius, uint32_t polyCountX, uint32_t polyCountY) const
 {
 	// we are creating the sphere mesh here.
 	return_type retval;
 	constexpr size_t vertexSize = sizeof(CGeometryCreator::SphereVertex);
+	CQuantNormalCache* const quantNormalCache = meshManipulatorToUse->getQuantNormalCache();
 	retval.inputParams = { 0b1111u,0b1u,{
 											{0u,EF_R32G32B32_SFLOAT,offsetof(SphereVertex,pos)},
 											{0u,EF_R8G8B8A8_UNORM,offsetof(SphereVertex,color)},
@@ -306,7 +308,7 @@ CGeometryCreator::return_type CGeometryCreator::createSphereMesh(float radius, u
 				// for spheres the normal is the position
 				core::vectorSIMDf normal(&pos.X);
 				normal.makeSafe3D();
-				uint32_t quantizedNormal = quantNormalCache.quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(normal);
+				uint32_t quantizedNormal = quantNormalCache->quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(normal);
 				pos *= radius;
 
 				// calculate texture coordinates via sphere mapping
@@ -349,7 +351,7 @@ CGeometryCreator::return_type CGeometryCreator::createSphereMesh(float radius, u
 		((float*)tmpMemPtr)[2] = 0.f;
 		((float*)tmpMemPtr)[4] = 0.5f;
 		((float*)tmpMemPtr)[5] = 0.f;
-		((uint32_t*)tmpMemPtr)[6] = quantNormalCache.quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(core::vectorSIMDf(0.f, 1.f, 0.f));
+		((uint32_t*)tmpMemPtr)[6] = quantNormalCache->quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(core::vectorSIMDf(0.f, 1.f, 0.f));
 
 		// the vertex at the bottom of the sphere
 		tmpMemPtr += vertexSize;
@@ -358,7 +360,7 @@ CGeometryCreator::return_type CGeometryCreator::createSphereMesh(float radius, u
 		((float*)tmpMemPtr)[2] = 0.f;
 		((float*)tmpMemPtr)[4] = 0.5f;
 		((float*)tmpMemPtr)[5] = 1.f;
-		((uint32_t*)tmpMemPtr)[6] = quantNormalCache.quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(core::vectorSIMDf(0.f, -1.f, 0.f));
+		((uint32_t*)tmpMemPtr)[6] = quantNormalCache->quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(core::vectorSIMDf(0.f, -1.f, 0.f));
 
 		// recalculate bounding box
 		core::aabbox3df BoundingBox;
@@ -375,10 +377,12 @@ CGeometryCreator::return_type CGeometryCreator::createSphereMesh(float radius, u
 }
 
 /* A cylinder with proper normals and texture coords */
-CGeometryCreator::return_type CGeometryCreator::createCylinderMesh(float radius, float length,
+CGeometryCreator::return_type CGeometryCreator::createCylinderMesh(IMeshManipulator* const meshManipulatorToUse,
+			float radius, float length,
 			uint32_t tesselation, const video::SColor& color) const
 {
 	return_type retval;
+	CQuantNormalCache* const quantNormalCache = meshManipulatorToUse->getQuantNormalCache();
 	constexpr size_t vertexSize = sizeof(CGeometryCreator::CylinderVertex);
 	retval.inputParams = { 0b1111u,0b1u,{
 											{0u,EF_R32G32B32_SFLOAT,offsetof(CylinderVertex,pos)},
@@ -404,7 +408,7 @@ CGeometryCreator::return_type CGeometryCreator::createCylinderMesh(float radius,
     {
         core::vectorSIMDf p(std::cos(i*step), std::sin(i*step), 0.f);
         p *= radius;
-        const uint32_t n = quantNormalCache.quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(core::normalize(p));
+        const uint32_t n = quantNormalCache->quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(core::normalize(p));
 
         memcpy(vertices[i].pos, p.pointer, 12u);
         vertices[i].normal = n;
@@ -441,7 +445,8 @@ CGeometryCreator::return_type CGeometryCreator::createCylinderMesh(float radius,
 }
 
 /* A cone with proper normals and texture coords */
-CGeometryCreator::return_type CGeometryCreator::createConeMesh(	float radius, float length, uint32_t tesselation,
+CGeometryCreator::return_type CGeometryCreator::createConeMesh( IMeshManipulator* const meshManipulatorToUse,
+																float radius, float length, uint32_t tesselation,
 																const video::SColor& colorTop,
 																const video::SColor& colorBottom,
 																float oblique) const
