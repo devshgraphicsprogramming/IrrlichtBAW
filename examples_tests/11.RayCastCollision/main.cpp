@@ -22,26 +22,12 @@ enum E_AVAILABLE_MESHES
 	EAM_COUNT
 };
 
-/*
-	That's what's going on every loader side.
-	You could update your data without passing data to metadata,
-	but for tutorial purposes I wanted to force using the following.
-*/
-
-class ExampleMetadataPipeline final : public IPipelineMetadata
+enum E_DESCRIPTOR_SET_1_UBO
 {
-public:
-
-	ExampleMetadataPipeline(core::smart_refctd_dynamic_array<ShaderInputSemantic>&& _inputs)
-		: m_shaderInputs(std::move(_inputs)) {}
-
-	core::SRange<const ShaderInputSemantic> getCommonRequiredInputs() const override { return { m_shaderInputs->begin(), m_shaderInputs->end() }; }
-
-	_IRR_STATIC_INLINE_CONSTEXPR const char* fakeLoaderName = "EXAMPLE";
-	const char* getLoaderName() const override { return fakeLoaderName; }
-
-private:
-	core::smart_refctd_dynamic_array<ShaderInputSemantic> m_shaderInputs;
+	EDS1U_MVP,
+	EDS1U_MV,
+	EDS1U_NORMAL_MAT,
+	EDS1U_COUNT
 };
 
 int main()
@@ -175,7 +161,12 @@ int main()
 		Each uses 0 as index of binding.
 	*/
 
-	size_t ds0SamplerBinding = 0, ds1UboBinding = 0, neededDS1UBOsz = 0;
+
+	size_t ds0SamplerBinding = 0, ds1UboBinding = 0;
+	constexpr auto DS1_UBO_CNT = 3ull;
+	constexpr size_t ds1UboSizes[DS1_UBO_CNT] { sizeof(SBasicViewParameters::MVP), sizeof(SBasicViewParameters::MV), sizeof(SBasicViewParameters::NormalMat) };
+	constexpr size_t ds1UboRelOffsets[DS1_UBO_CNT] { offsetof(SBasicViewParameters,MVP), offsetof(SBasicViewParameters,MV), offsetof(SBasicViewParameters,NormalMat) };
+
 	auto createAndGetUsefullData = [&](asset::IGeometryCreator::return_type& geometryObject, auto& gpuImageViewTexture, bool wireFrameMode)
 	{
 		/*
@@ -213,36 +204,12 @@ int main()
 		auto rawds1 = pipelineLayout->getDescriptorSetLayout(1u);
 
 		/*
-			Filling basic view parameters proporties for UBO
-			and determining UBO size.
-		*/
-
-		constexpr size_t DS1_METADATA_ENTRY_CNT = 3ull;
-		core::smart_refctd_dynamic_array<IPipelineMetadata::ShaderInputSemantic> shaderInputsMetadata = core::make_refctd_dynamic_array<decltype(shaderInputsMetadata)>(DS1_METADATA_ENTRY_CNT);
-		{
-			ICPUDescriptorSetLayout* ds1layout = pipelineLayout->getDescriptorSetLayout(1u);
-
-			constexpr IPipelineMetadata::E_COMMON_SHADER_INPUT types[DS1_METADATA_ENTRY_CNT]{ IPipelineMetadata::ECSI_WORLD_VIEW_PROJ, IPipelineMetadata::ECSI_WORLD_VIEW, IPipelineMetadata::ECSI_WORLD_VIEW_INVERSE_TRANSPOSE };
-			constexpr uint32_t sizes[DS1_METADATA_ENTRY_CNT]{ sizeof(SBasicViewParameters::MVP), sizeof(SBasicViewParameters::MV), sizeof(SBasicViewParameters::NormalMat) };
-			constexpr uint32_t relOffsets[DS1_METADATA_ENTRY_CNT]{ offsetof(SBasicViewParameters,MVP), offsetof(SBasicViewParameters,MV), offsetof(SBasicViewParameters,NormalMat) };
-			for (uint32_t i = 0u; i < DS1_METADATA_ENTRY_CNT; ++i)
-			{
-				auto& semantic = (shaderInputsMetadata->end() - i - 1u)[0];
-				semantic.type = types[i];
-				semantic.descriptorSection.type = IPipelineMetadata::ShaderInput::ET_UNIFORM_BUFFER;
-				semantic.descriptorSection.uniformBufferObject.binding = ds1layout->getBindings().begin()[0].binding;
-				semantic.descriptorSection.uniformBufferObject.set = 1u;
-				semantic.descriptorSection.uniformBufferObject.relByteoffset = relOffsets[i];
-				semantic.descriptorSection.uniformBufferObject.bytesize = sizes[i];
-				semantic.descriptorSection.shaderAccessFlags = ICPUSpecializedShader::ESS_VERTEX;
-
-				neededDS1UBOsz += sizes[i];
-			}
-		}
-
-		/*
 			Creating gpu UBO with appropiate size.
 		*/
+
+		uint32_t neededDS1UBOsz = 0;
+		for(auto i = 0; i < DS1_UBO_CNT; ++i)
+			neededDS1UBOsz += ds1UboSizes[i];
 
 		auto gpuubo = driver->createDeviceLocalGPUBufferOnDedMem(neededDS1UBOsz);
 
@@ -276,14 +243,6 @@ int main()
 		pipeline->setShaderAtIndex(ICPURenderpassIndependentPipeline::ESSI_FRAGMENT_SHADER_IX, fragmentShader.get());
 
 		/*
-			Using fake ExampleMetadataPipeline to attach basic view parameters
-			input proporites (shaderInputsMetadata) to metadata.
-		*/
-
-		assetManager->setAssetMetadata(pipeline.get(), core::make_smart_refctd_ptr<ExampleMetadataPipeline>(std::move(shaderInputsMetadata)));
-		auto metadata = pipeline->getMetadata();
-
-		/*
 			Creating descriptor sets - texture (sampler) and basic view parameters (UBO).
 			Specifying info and write parameters for updating certain descriptor set to the driver.
 		*/
@@ -298,7 +257,7 @@ int main()
 			write.descriptorType = asset::EDT_COMBINED_IMAGE_SAMPLER;
 			IGPUDescriptorSet::SDescriptorInfo info;
 			{
-				info.desc = std::move(gpuImageViewTexture);
+				info.desc = gpuImageViewTexture;
 				ISampler::SParams samplerParams = { ISampler::ETC_CLAMP_TO_EDGE,ISampler::ETC_CLAMP_TO_EDGE,ISampler::ETC_CLAMP_TO_EDGE,ISampler::ETBC_FLOAT_OPAQUE_BLACK,ISampler::ETF_LINEAR,ISampler::ETF_LINEAR,ISampler::ESMM_LINEAR,0u,false,ECO_ALWAYS };
 				info.image = { driver->createGPUSampler(samplerParams),EIL_SHADER_READ_ONLY_OPTIMAL };
 			}
@@ -373,7 +332,7 @@ int main()
 			mb->setBoundingBox(geometryObject.bbox);
 		}
 
-		return std::make_tuple(mb, gpuPipeline, gpuubo, metadata, gpuDescriptorSet0, gpuDescriptorSet1);
+		return std::make_tuple(mb, gpuPipeline, gpuubo, gpuDescriptorSet0, gpuDescriptorSet1);
 	};
 
 	auto cubeTexture = *(gpuImageViews->begin() + EAM_CUBE);
@@ -403,19 +362,16 @@ int main()
 			auto gpuMeshBuffer = std::get<0>(meshData);
 			auto gpuPipeline = std::get<1>(meshData);
 			auto gpuubo = std::get<2>(meshData);
-			auto metadata = std::get<3>(meshData);
-			auto gpuDescriptorSet0 = std::get<4>(meshData);
-			auto gpuDescriptorSet1 = std::get<5>(meshData);
+			auto gpuDescriptorSet0 = std::get<3>(meshData);
+			auto gpuDescriptorSet1 = std::get<4>(meshData);
 
 			IGPUDescriptorSet* gpuDescriptorSets[] = { gpuDescriptorSet0.get(), gpuDescriptorSet1.get() };
 
 			core::matrix3x4SIMD modelMatrix;
 			modelMatrix.setTranslation(vectorSIMDf(i * 5, 0, 0, 0));
 
-			core::matrix4SIMD mvp = core::concatenateBFollowedByA(viewProjection, modelMatrix);
-
-			core::vector<uint8_t> uboData(gpuubo->getSize());
-			auto pipelineMetadata = static_cast<const asset::IPipelineMetadata*>(metadata);
+			auto mvp = core::concatenateBFollowedByA(viewProjection, modelMatrix);
+			auto mv = camera->getViewMatrix();
 
 			/*
 				Updating UBO for basic view parameters and sending
@@ -423,32 +379,11 @@ int main()
 				the data to graphics card - to vertex shader.
 			*/
 
-			for (const auto& shdrIn : pipelineMetadata->getCommonRequiredInputs())
-			{
-				if (shdrIn.descriptorSection.type == asset::IPipelineMetadata::ShaderInput::ET_UNIFORM_BUFFER && shdrIn.descriptorSection.uniformBufferObject.set == 1u && shdrIn.descriptorSection.uniformBufferObject.binding == ds1UboBinding)
-				{
-					switch (shdrIn.type)
-					{
-					case asset::IPipelineMetadata::ECSI_WORLD_VIEW_PROJ:
-					{
-						memcpy(uboData.data() + shdrIn.descriptorSection.uniformBufferObject.relByteoffset, mvp.pointer(), shdrIn.descriptorSection.uniformBufferObject.bytesize);
-					}
-					break;
-					case asset::IPipelineMetadata::ECSI_WORLD_VIEW:
-					{
-						core::matrix3x4SIMD MV = camera->getViewMatrix();
-						memcpy(uboData.data() + shdrIn.descriptorSection.uniformBufferObject.relByteoffset, MV.pointer(), shdrIn.descriptorSection.uniformBufferObject.bytesize);
-					}
-					break;
-					case asset::IPipelineMetadata::ECSI_WORLD_VIEW_INVERSE_TRANSPOSE:
-					{
-						core::matrix3x4SIMD MV = camera->getViewMatrix();
-						memcpy(uboData.data() + shdrIn.descriptorSection.uniformBufferObject.relByteoffset, MV.pointer(), shdrIn.descriptorSection.uniformBufferObject.bytesize);
-					}
-					break;
-					}
-				}
-			}
+			core::vector<uint8_t> uboData(gpuubo->getSize());
+
+			memcpy(uboData.data() + ds1UboRelOffsets[EDS1U_MVP], mvp.pointer(), ds1UboSizes[EDS1U_MVP]);
+			memcpy(uboData.data() + ds1UboRelOffsets[EDS1U_MV], mv.pointer(), ds1UboSizes[EDS1U_MV]);
+			memcpy(uboData.data() + ds1UboRelOffsets[EDS1U_NORMAL_MAT], mv.pointer(), ds1UboSizes[EDS1U_NORMAL_MAT]);
 
 			driver->updateBufferRangeViaStagingBuffer(gpuubo.get(), 0ull, gpuubo->getSize(), uboData.data());
 
