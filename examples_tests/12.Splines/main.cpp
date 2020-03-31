@@ -229,12 +229,22 @@ int main()
 
 	constexpr uint32_t PER_MATERIAL_DESC_SET = 2u; //don't touch this, will go into scene namespace
 
-	auto layout = assMgr->findGPUObject("irr/builtin/materials/lambertian/singletexture/pipelinelayout",IAsset::ET_PIPELINE_LAYOUT);
-	auto shaders = assMgr->findGPUObject("irr/builtin/materials/lambertian/singletexture/specializedshader",IAsset::ET_SPECIALIZED_SHADER);
-	if (!layout->size() || !shaders->size())
+	constexpr IAsset::E_TYPE layoutTypes[]{ IAsset::E_TYPE::ET_PIPELINE_LAYOUT, static_cast<IAsset::E_TYPE>(0u) };
+	auto cpuLayout = core::smart_refctd_ptr_static_cast<ICPUPipelineLayout>(assMgr->findAssets("irr/builtin/materials/lambertian/singletexture/pipelinelayout", layoutTypes)->begin()->getContents().first[0]);
+
+	constexpr IAsset::E_TYPE shaderTypes[]{ IAsset::E_TYPE::ET_SPECIALIZED_SHADER, IAsset::E_TYPE::ET_SPECIALIZED_SHADER, static_cast<IAsset::E_TYPE>(0u) };
+	auto cpuShaders = assMgr->findAssets("irr/builtin/materials/lambertian/singletexture/specializedshader", shaderTypes);
+	auto refCountedShaders =
+	{
+		static_cast<ICPUSpecializedShader*>(cpuShaders->begin()->getContents().first[0].get()),
+		static_cast<ICPUSpecializedShader*>((cpuShaders->begin() + 1)->getContents().first[0].get())
+	};
+	if (!cpuLayout.get() || !cpuShaders->size())
 		return 2;
 
-	auto pLayout = core::smart_refctd_ptr_static_cast<IGPUPipelineLayout>(layout->front());
+	auto pLayout = driver->getGPUObjectsFromAssets(&cpuLayout.get(), &cpuLayout.get() + 1)->front();
+	auto shaders = driver->getGPUObjectsFromAssets(refCountedShaders.begin(), refCountedShaders.begin() + refCountedShaders.size());
+
 	//! Test Creation Of Builtin
 	auto cubeParams = assMgr->getGeometryCreator()->createCubeMesh(core::vector3df(1.f));
 
@@ -246,7 +256,12 @@ int main()
 	auto pipeline = driver->createGPURenderpassIndependentPipeline(	nullptr,core::smart_refctd_ptr(pLayout),pShaders,pShaders+shaders->size(),
 																	cubeParams.inputParams,blendParams,cubeParams.assemblyParams,rasterParams);
 
-	auto sampler = assMgr->findGPUObject("irr/builtin/samplers/default",IAsset::ET_SAMPLER);
+	constexpr IAsset::E_TYPE samplerTypes[]{ IAsset::ET_SAMPLER, static_cast<IAsset::E_TYPE>(0u) };
+	auto cpuSampler = core::smart_refctd_ptr_static_cast<ICPUSampler>(assMgr->findAssets("irr/builtin/samplers/default", samplerTypes)->begin()->getContents().first[0]);
+	auto sampler = driver->getGPUObjectsFromAssets(&cpuSampler.get(), &cpuSampler.get() + 1)->front();
+
+	// I have to sleep, but bellow are logic errors as well
+	// to fix tomorrow
 
 	struct alignas(64) CustomObject
 	{
@@ -284,7 +299,7 @@ int main()
 		IGPUDescriptorSet::SDescriptorInfo pInfo[1];
 		pInfo[0].desc = std::move(imgView);
 		pInfo[0].image.imageLayout = EIL_SHADER_READ_ONLY_OPTIMAL;
-		pInfo[0].image.sampler = core::smart_refctd_ptr_dynamic_cast<IGPUSampler>(sampler->front());
+		pInfo[0].image.sampler = sampler;
 		IGPUDescriptorSet::SWriteDescriptorSet pWrites[1] = {{ds.get(),0u,0u,1u,EDT_COMBINED_IMAGE_SAMPLER,pInfo}};
 		driver->updateDescriptorSets(1u,pWrites,0u,nullptr);
 
