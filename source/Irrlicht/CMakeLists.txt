@@ -71,6 +71,13 @@ if (IRR_COMPILE_WITH_OPENCL)
 		message(STATUS "OpenCL not found")
 	endif()
 endif()
+if (IRR_COMPILE_WITH_CUDA)
+	message(STATUS "Building with CUDA interop")
+	set(_IRR_COMPILE_WITH_CUDA_ ${IRR_COMPILE_WITH_CUDA})
+	if (IRR_BUILD_OPTIX)
+		set(_IRR_BUILD_OPTIX_ ${IRR_BUILD_OPTIX})
+	endif()
+endif()
 #set(_IRR_TARGET_ARCH_ARM_ ${IRR_TARGET_ARCH_ARM}) #uncomment in the future
 set(__IRR_FAST_MATH ${IRR_FAST_MATH})
 set(_IRR_DEBUG 0)
@@ -126,6 +133,7 @@ set(IRRLICHT_SRCS_COMMON
 # Other mesh-related stuff
 	${IRR_ROOT_PATH}/src/irr/asset/bawformat/CBAWFile.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/bawformat/legacy/CBAWLegacy.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/bawformat/legacy/CBAWVersionUpFunctions.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/bawformat/CBlobsLoadingManager.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/CForsythVertexCacheOptimizer.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/CSmoothNormalGenerator.cpp
@@ -207,7 +215,7 @@ if (MSVC)
 endif()
 
 set(IRRLICHT_SRCS_NORMAL
-	#vulkan
+	# Vulkan
 
 	#opengl
 	COpenCLHandler.cpp
@@ -216,6 +224,12 @@ set(IRRLICHT_SRCS_NORMAL
 	COpenGLFrameBuffer.cpp
 	COpenGLQuery.cpp
 	${IRR_ROOT_PATH}/src/irr/video/COpenGLPipelineCache.cpp
+	
+	# CUDA
+	${IRR_ROOT_PATH}/src/irr/video/CCUDAHandler.cpp
+
+	# OpenCL
+	COpenCLHandler.cpp
 
 	# abstract (move this out eventually)
 	${IRR_ROOT_PATH}/src/irr/video/CDerivativeMapCreator.cpp
@@ -241,12 +255,13 @@ irr_adjust_definitions() # macro defined in root CMakeLists
 macro(irr_target_link_zlib _trgt)
 	add_dependencies(${_trgt} zlibstatic)
 	target_link_libraries(${_trgt} INTERFACE
-		zlibstatic
+		"$<$<CONFIG:DEBUG>:${ZLIB_LIBRARY_DEBUG}>"
+		"$<$<CONFIG:RELEASE>:${ZLIB_LIBRARY_RELEASE}>"
 	)
 	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/zlib)
 endmacro()
 
-#Paraller hashmap
+#Parallel hashmap
 macro(irr_target_include_parallel_hashmap _trgt)
 	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/parallel-hashmap/parallel_hashmap)
 endmacro()
@@ -364,22 +379,23 @@ if (UNIX)
 endif()
 
 
+if (IRR_COMPILE_WITH_CUDA)
+	target_include_directories(Irrlicht PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
+endif()
+
 if (IRR_COMPILE_WITH_OPENCL AND OpenCL_FOUND)
 	target_link_libraries(Irrlicht PUBLIC OpenCL::OpenCL)
 endif()
 
-# TODO: REDO
 find_package(Vulkan)
 if (Vulkan_FOUND)
 	message(STATUS "Building with Vulkan driver")
-	#target_link_libraries(Irrlicht INTERFACE Vulkan::Vulkan) # this should work, but it doesn't
-	#target_link_libraries(Irrlicht INTERFACE ${Vulkan_LIBRARY})
 else()
 	message(STATUS "Vulkan driver is not enabled")
 endif()
 
 target_compile_definitions(Irrlicht 
-	PRIVATE	_IRR_STATIC_LIB_
+	PRIVATE	_IRR_STATIC_LIB_ SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS
 	PUBLIC	UNW_LOCAL_ONLY
 )
 
@@ -387,7 +403,7 @@ if(IRR_PCH)
     if (UNIX)
         if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
             ADD_PRECOMPILED_HEADER(Irrlicht pch.h "${IRRLICHT_CONF_DIR_RELEASE}" FORCEINCLUDE)
-	elseif (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+		elseif (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
             ADD_PRECOMPILED_HEADER(Irrlicht pch.h "${IRRLICHT_CONF_DIR_DEBUG}" FORCEINCLUDE)
         endif()
     else()
@@ -431,6 +447,7 @@ target_include_directories(IrrlichtServer PRIVATE ${IRR_ROOT_PATH}/src ${IRR_ROO
 target_compile_definitions(IrrlichtServer PRIVATE
 	_IRR_STATIC_LIB_
 	_IRR_SERVER_
+	SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS
 )
 
 
