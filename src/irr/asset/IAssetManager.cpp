@@ -1,8 +1,5 @@
 #include "irr/asset/asset.h"
 
-#include "irr/asset/CGeometryCreator.h"
-#include "irr/asset/CMeshManipulator.h"
-
 #ifdef _IRR_COMPILE_WITH_MTL_LOADER_
 #include "irr/asset/CGraphicsPipelineLoaderMTL.h"
 #endif
@@ -123,7 +120,7 @@ const IMeshManipulator* IAssetManager::getMeshManipulator() const
 void IAssetManager::addLoadersAndWriters()
 {
 #ifdef _IRR_COMPILE_WITH_STL_LOADER_
-	addAssetLoader(core::make_smart_refctd_ptr<asset::CSTLMeshFileLoader>(this));
+	addAssetLoader(core::make_smart_refctd_ptr<asset::CSTLMeshFileLoader>());
 #endif
 #ifdef _IRR_COMPILE_WITH_PLY_LOADER_
 	addAssetLoader(core::make_smart_refctd_ptr<asset::CPLYMeshFileLoader>(this));
@@ -144,7 +141,7 @@ void IAssetManager::addLoadersAndWriters()
 	addAssetLoader(core::make_smart_refctd_ptr<asset::CImageLoaderPng>());
 #endif
 #ifdef _IRR_COMPILE_WITH_OPENEXR_LOADER_
-	addAssetLoader(core::make_smart_refctd_ptr<asset::CImageLoaderOpenEXR>(this));
+	addAssetLoader(core::make_smart_refctd_ptr<asset::CImageLoaderOpenEXR>());
 #endif
 #ifdef  _IRR_COMPILE_WITH_GLI_LOADER_
 	addAssetLoader(core::make_smart_refctd_ptr<asset::CGLILoader>());

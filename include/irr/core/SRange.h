@@ -20,14 +20,14 @@ namespace core
 	template<typename T>
 	struct SRange
 	{
-			inline SRange(T* _beg, T* _end) : m_begin(_beg), m_end(_end) {}
+			SRange(T* _beg, T* _end) : m_begin(_beg), m_end(_end) {}
 
-			inline T* begin() { return m_begin; }
-            inline T* begin() const { return m_begin; }
-			inline T* end() { return m_end; }
-            inline T* end() const { return m_end; }
+			T* begin() { return m_begin; }
+            T* begin() const { return m_begin; }
+			T* end() { return m_end; }
+            T* end() const { return m_end; }
 
-			inline size_t size() const {return m_end-m_begin;}
+            size_t length() const { return m_end-m_begin; }
 
 		private:
 			T* m_begin, * m_end;

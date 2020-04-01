@@ -5,8 +5,6 @@
 #ifndef __IRR_XXHASH256_H_INCLUDED__
 #define __IRR_XXHASH256_H_INCLUDED__
 
-#include <cstring>
-
 namespace irr
 {
 namespace core

@@ -15,9 +15,7 @@ namespace irr
                 : m_hash(_hash), m_shaderInputs(std::move(_inputs)) {}
 
             core::SRange<const ShaderInputSemantic> getCommonRequiredInputs() const override { return { m_shaderInputs->begin(), m_shaderInputs->end() }; }
-
-            _IRR_STATIC_INLINE_CONSTEXPR const char* LoaderName = "CPLYMeshFileLoader";
-            const char* getLoaderName() const override { return LoaderName; }
+            const char* getLoaderName() const override { return "CPLYMeshFileLoader"; }
 
             uint32_t getHashVal() const { return m_hash; }
 

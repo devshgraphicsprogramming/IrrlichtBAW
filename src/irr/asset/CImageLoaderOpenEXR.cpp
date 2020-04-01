@@ -17,21 +17,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#include <algorithm>
-#include <iostream>
-#include <string>
-#include <unordered_map>
-
-#include "irr/asset/IAssetManager.h"
-
-
-#ifdef _IRR_COMPILE_WITH_OPENEXR_LOADER_
-
-#include "irr/asset/COpenEXRImageMetadata.h"
 
 #include "CImageLoaderOpenEXR.h"
 
-#include "os.h"
+#ifdef _IRR_COMPILE_WITH_OPENEXR_LOADER_
 
 #include "openexr/IlmBase/Imath/ImathBox.h"
 #include "openexr/OpenEXR/IlmImf/ImfRgbaFile.h"
@@ -41,10 +30,14 @@ SOFTWARE.
 #include "openexr/OpenEXR/IlmImf/ImfStringAttribute.h"
 #include "openexr/OpenEXR/IlmImf/ImfMatrixAttribute.h"
 #include "openexr/OpenEXR/IlmImf/ImfArray.h"
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <unordered_map>
 
 #include "openexr/OpenEXR/IlmImf/ImfNamespace.h"
-namespace IMF = Imf;
-namespace IMATH = Imath;
+namespace IMF = OPENEXR_IMF_NAMESPACE;
+namespace IMATH = IMATH_NAMESPACE;
 
 namespace irr
 {
@@ -53,16 +46,12 @@ namespace irr
 		using namespace IMF;
 		using namespace IMATH;
 
-		using suffixOfChannelBundle = std::string;
-		using channelName = std::string;	     									// sytnax if as follows
-		using mapOfChannels = std::unordered_map<channelName, Channel>;				// suffix.channel, where channel are "R", "G", "B", "A"
-
 		class SContext;
 		bool readVersionField(io::IReadFile* _file, SContext& ctx);
 		bool readHeader(const char fileName[], SContext& ctx);
 		template<typename rgbaFormat>
-		void readRgba(InputFile& file, std::array<Array2D<rgbaFormat>, 4>& pixelRgbaMapArray, int& width, int& height, E_FORMAT& format, const suffixOfChannelBundle suffixOfChannels);
-		E_FORMAT specifyIrrlichtEndFormat(const mapOfChannels& mapOfChannels, const suffixOfChannelBundle suffixName, const std::string fileName);
+		void readRgba(InputFile& file, std::array<Array2D<rgbaFormat>, 4>& pixelRgbaMapArray, int& width, int& height, E_FORMAT& format, const uint8_t& availableChannels);
+		bool specifyIrrlichtEndFormat(E_FORMAT& format, const InputFile& file, bool& doesItSupportAlphaChannel);
 
 		//! A helpful struct for handling OpenEXR layout
 		/*
@@ -111,13 +100,13 @@ namespace irr
 			{
 				// The header of every OpenEXR file must contain at least the following attributes
 				//according to https://www.openexr.com/documentation/openexrfilelayout.pdf (page 8)
-				const Channel* channels = nullptr;
-				const Compression* compression = nullptr;
-				const Box2i* dataWindow = nullptr;
-				const Box2i* displayWindow = nullptr;
-				const LineOrder* lineOrder = nullptr;
+				const IMF::Channel* channels = nullptr;
+				const IMF::Compression* compression = nullptr;
+				const IMATH::Box2i* dataWindow = nullptr;
+				const IMATH::Box2i* displayWindow = nullptr;
+				const IMF::LineOrder* lineOrder = nullptr;
 				const float* pixelAspectRatio = nullptr;
-				const V2f* screenWindowCenter = nullptr;
+				const IMATH::V2f* screenWindowCenter = nullptr;
 				const float* screenWindowWidth = nullptr;
 
 				// These attributes are required in the header for all multi - part and /or deep data OpenEXR files
@@ -130,7 +119,7 @@ namespace irr
 				const int* maxSamplesPerPixel = nullptr;
 
 				// This attribute is required in the header for all files which contain one or more tiles
-				const TileDescription* tiles = nullptr;
+				const IMF::TileDescription* tiles = nullptr;
 
 				// This attribute can be used in the header for multi-part files
 				const std::string* view = nullptr;
@@ -144,50 +133,6 @@ namespace irr
 
 			// scan line blocks
 		};
-
-		constexpr uint8_t availableChannels = 4;
-		struct PerImageData
-		{
-			ICPUImage::SCreationParams params;
-			std::array<Array2D<half>, availableChannels> halfPixelMapArray;
-			std::array<Array2D<float>, availableChannels> fullFloatPixelMapArray;
-			std::array<Array2D<uint32_t>, availableChannels> uint32_tPixelMapArray;
-		};
-
-		auto getChannels(const InputFile& file)
-		{
-			std::unordered_map<suffixOfChannelBundle, mapOfChannels> irrChannels;		    // example: G, albedo.R, color.space.B
-			{
-				auto channels = file.header().channels();
-				for (auto mapItr = channels.begin(); mapItr != channels.end(); ++mapItr)
-				{
-					std::string fetchedChannelName = mapItr.name();
-					const bool isThereAnySuffix = fetchedChannelName.size() > 1;
-
-					if (isThereAnySuffix)
-					{
-						const auto endPositionOfChannelName = fetchedChannelName.find_last_of(".");
-						auto suffix = fetchedChannelName.substr(0, endPositionOfChannelName);
-						auto channel = fetchedChannelName.substr(endPositionOfChannelName + 1);
-						if (channel == "R" || channel == "G" || channel == "B" || channel == "A")
-							(irrChannels[suffix])[channel] = mapItr.channel();
-					}
-					else
-						(irrChannels[""])[fetchedChannelName] = mapItr.channel();
-				}
-			}
-
-			return irrChannels;
-		}
-
-		auto doesTheChannelExist(const std::string channelName, const mapOfChannels& mapOfChannels)
-		{
-			auto foundPosition = mapOfChannels.find(channelName);
-			if (foundPosition != mapOfChannels.end())
-				return true;
-			else
-				return false;
-		}
 
 		template<typename IlmF>
 		void trackIrrFormatAndPerformDataAssignment(void* begginingOfImageDataBuffer, const uint64_t& endShiftToSpecifyADataPos, const IlmF& ilmPixelValueToAssignTo)
@@ -211,92 +156,78 @@ namespace irr
 			if (!readHeader(fileName, ctx))
 				return {};
 
-			core::vector<core::smart_refctd_ptr<ICPUImage>> images;
-			const auto channelsData = getChannels(file);
-			{
-				for (const auto& data : channelsData)
+			constexpr uint8_t availableChannels = 4;
+			std::array<Array2D<half>, availableChannels> halfPixelMapArray;
+			std::array<Array2D<float>, availableChannels> fullFloatPixelMapArray;
+			std::array<Array2D<uint32_t>, availableChannels> uint32_tPixelMapArray;
+
+			int width;
+			int height;
+			bool doesItSupportAlphaChannel;
+
+			ICPUImage::SCreationParams params;
+			params.type = ICPUImage::ET_2D;;
+			params.flags = static_cast<ICPUImage::E_CREATE_FLAGS>(0u);
+			params.samples = ICPUImage::ESCF_1_BIT;
+			params.extent.depth = 1u;
+			params.mipLevels = 1u;
+			params.arrayLayers = 1u;
+
+			if (!specifyIrrlichtEndFormat(params.format, file, doesItSupportAlphaChannel))
+				return {};
+
+			if (params.format == EF_R16G16B16A16_SFLOAT)
+				readRgba(file, halfPixelMapArray, width, height, params.format, availableChannels);
+			else if(params.format == EF_R32G32B32A32_SFLOAT)
+				readRgba(file, fullFloatPixelMapArray, width, height, params.format, availableChannels);
+			else if (params.format == EF_R32G32B32A32_UINT)
+				readRgba(file, uint32_tPixelMapArray, width, height, params.format, availableChannels);
+
+			params.extent.width = width;
+			params.extent.height = height;
+
+			auto image = ICPUImage::create(std::move(params));
+
+			const uint32_t texelFormatByteSize = getTexelOrBlockBytesize(image->getCreationParameters().format);
+			auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(image->getImageDataSizeInBytes());
+			auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+			ICPUImage::SBufferCopy& region = regions->front();
+			//region.imageSubresource.aspectMask = ...; // waits for Vulkan
+			region.imageSubresource.mipLevel = 0u;
+			region.imageSubresource.baseArrayLayer = 0u;
+			region.imageSubresource.layerCount = 1u;
+			region.bufferOffset = 0u;
+			region.bufferRowLength = calcPitchInBlocks(width, texelFormatByteSize);
+			region.bufferImageHeight = 0u;
+			region.imageOffset = { 0u, 0u, 0u };
+			region.imageExtent = image->getCreationParameters().extent;
+		
+			void* fetchedData = texelBuffer->getPointer();
+			const auto pitch = region.bufferRowLength;
+
+			for (uint64_t yPos = 0; yPos < height; ++yPos)
+				for (uint64_t xPos = 0; xPos < width; ++xPos)
 				{
-					const auto suffixOfChannels = data.first;
-					const auto mapOfChannels = data.second;
-					PerImageData perImageData;
+					const uint64_t ptrStyleEndShiftToImageDataPixel = (yPos * pitch * availableChannels) + (xPos * availableChannels);
 
-					auto openEXRMetadata = core::make_smart_refctd_ptr<COpenEXRImageMetadata>(suffixOfChannels, IImageMetadata::ColorSemantic{ECS_SRGB,EOTF_IDENTITY});
-
-					int width;
-					int height;
-
-					auto params = perImageData.params;
-					params.format = specifyIrrlichtEndFormat(mapOfChannels, suffixOfChannels, file.fileName());
-					params.type = ICPUImage::ET_2D;;
-					params.flags = static_cast<ICPUImage::E_CREATE_FLAGS>(0u);
-					params.samples = ICPUImage::ESCF_1_BIT;
-					params.extent.depth = 1u;
-					params.mipLevels = 1u;
-					params.arrayLayers = 1u;
-
-					if (params.format == EF_UNKNOWN)
+					for (uint8_t channelIndex = 0; channelIndex < availableChannels; ++channelIndex)
 					{
-						os::Printer::log("LOAD EXR: incorrect format specified for " + suffixOfChannels + " channels - skipping the file", file.fileName(), ELL_INFORMATION);
-						continue;
+						const auto& halfChannelElement =      (halfPixelMapArray[channelIndex])[yPos][xPos];
+						const auto& fullFloatChannelElement = (fullFloatPixelMapArray[channelIndex])[yPos][xPos];
+						const auto& uint32_tChannelElement =  (uint32_tPixelMapArray[channelIndex])[yPos][xPos];
+
+						if (params.format == EF_R16G16B16A16_SFLOAT)
+							trackIrrFormatAndPerformDataAssignment<half>(fetchedData, ptrStyleEndShiftToImageDataPixel + channelIndex, halfChannelElement);
+						else if (params.format == EF_R32G32B32A32_SFLOAT)
+							trackIrrFormatAndPerformDataAssignment<float>(fetchedData, ptrStyleEndShiftToImageDataPixel + channelIndex, fullFloatChannelElement);
+						else if (params.format == EF_R32G32B32A32_UINT)
+							trackIrrFormatAndPerformDataAssignment<uint32_t>(fetchedData, ptrStyleEndShiftToImageDataPixel + channelIndex, uint32_tChannelElement);
 					}
-
-					if (params.format == EF_R16G16B16A16_SFLOAT)
-						readRgba(file, perImageData.halfPixelMapArray, width, height, params.format, suffixOfChannels);
-					else if (params.format == EF_R32G32B32A32_SFLOAT)
-						readRgba(file, perImageData.fullFloatPixelMapArray, width, height, params.format, suffixOfChannels);
-					else if (params.format == EF_R32G32B32A32_UINT)
-						readRgba(file, perImageData.uint32_tPixelMapArray, width, height, params.format, suffixOfChannels);
-
-					params.extent.width = width;
-					params.extent.height = height;
-
-					auto image = ICPUImage::create(std::move(params));
-
-					const uint32_t texelFormatByteSize = getTexelOrBlockBytesize(image->getCreationParameters().format);
-					auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(image->getImageDataSizeInBytes());
-					auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
-					ICPUImage::SBufferCopy& region = regions->front();
-					//region.imageSubresource.aspectMask = ...; // waits for Vulkan
-					region.imageSubresource.mipLevel = 0u;
-					region.imageSubresource.baseArrayLayer = 0u;
-					region.imageSubresource.layerCount = 1u;
-					region.bufferOffset = 0u;
-					region.bufferRowLength = calcPitchInBlocks(width, texelFormatByteSize);
-					region.bufferImageHeight = 0u;
-					region.imageOffset = { 0u, 0u, 0u };
-					region.imageExtent = image->getCreationParameters().extent;
-
-					void* fetchedData = texelBuffer->getPointer();
-					const auto pitch = region.bufferRowLength;
-
-					for (uint64_t yPos = 0; yPos < height; ++yPos)
-						for (uint64_t xPos = 0; xPos < width; ++xPos)
-						{
-							const uint64_t ptrStyleEndShiftToImageDataPixel = (yPos * pitch * availableChannels) + (xPos * availableChannels);
-
-							for (uint8_t channelIndex = 0; channelIndex < availableChannels; ++channelIndex)
-							{
-								const auto& halfChannelElement = (perImageData.halfPixelMapArray[channelIndex])[yPos][xPos];
-								const auto& fullFloatChannelElement = (perImageData.fullFloatPixelMapArray[channelIndex])[yPos][xPos];
-								const auto& uint32_tChannelElement = (perImageData.uint32_tPixelMapArray[channelIndex])[yPos][xPos];
-
-								if (params.format == EF_R16G16B16A16_SFLOAT)
-									trackIrrFormatAndPerformDataAssignment<half>(fetchedData, ptrStyleEndShiftToImageDataPixel + channelIndex, halfChannelElement);
-								else if (params.format == EF_R32G32B32A32_SFLOAT)
-									trackIrrFormatAndPerformDataAssignment<float>(fetchedData, ptrStyleEndShiftToImageDataPixel + channelIndex, fullFloatChannelElement);
-								else if (params.format == EF_R32G32B32A32_UINT)
-									trackIrrFormatAndPerformDataAssignment<uint32_t>(fetchedData, ptrStyleEndShiftToImageDataPixel + channelIndex, uint32_tChannelElement);
-							}
-						}
-
-					image->setBufferAndRegions(std::move(texelBuffer), regions);
-					m_manager->setAssetMetadata(image.get(), std::move(openEXRMetadata));
-
-					images.push_back(std::move(image));
 				}
-			}	
 
-			return images;
+			image->setBufferAndRegions(std::move(texelBuffer), regions);
+
+			return SAssetBundle({image});
 		}
 
 		bool CImageLoaderOpenEXR::isALoadableFileFormat(io::IReadFile* _file) const
@@ -312,7 +243,7 @@ namespace irr
 		}
 
 		template<typename rgbaFormat>
-		void readRgba(InputFile& file, std::array<Array2D<rgbaFormat>, 4>& pixelRgbaMapArray, int& width, int& height, E_FORMAT& format, const suffixOfChannelBundle suffixOfChannels)
+		void readRgba(InputFile& file, std::array<Array2D<rgbaFormat>, 4>& pixelRgbaMapArray, int& width, int& height, E_FORMAT& format, const uint8_t& availableChannels)
 		{
 			Box2i dw = file.header().dataWindow();
 			width = dw.max.x - dw.min.x + 1;
@@ -333,62 +264,98 @@ namespace irr
 				pixelType = PixelType::UINT;
 
 			for (uint8_t rgbaChannelIndex = 0; rgbaChannelIndex < availableChannels; ++rgbaChannelIndex)
-			{
-				std::string name = suffixOfChannels + "." + rgbaSignatureAsText[rgbaChannelIndex];
 				frameBuffer.insert
 				(
-					name.c_str(),																					// name
-					Slice(pixelType,																				// type
-					(char*)(&(pixelRgbaMapArray[rgbaChannelIndex])[0][0] - dw.min.x - dw.min.y * width),			// base
-						sizeof((pixelRgbaMapArray[rgbaChannelIndex])[0][0]) * 1,                                    // xStride
-						sizeof((pixelRgbaMapArray[rgbaChannelIndex])[0][0]) * width,                                // yStride
-						1, 1,                                                                                       // x/y sampling
-						rgbaChannelIndex == 3 ? 1 : 0                                                               // default fillValue for channels that aren't present in file - 1 for alpha, otherwise 0
-					));
-			}
+					rgbaSignatureAsText[rgbaChannelIndex],                                                      // name
+					Slice(pixelType,                                                                            // type
+					(char*)(&(pixelRgbaMapArray[rgbaChannelIndex])[0][0] - dw.min.x - dw.min.y * width),        // base
+					sizeof((pixelRgbaMapArray[rgbaChannelIndex])[0][0]) * 1,                                    // xStride
+					sizeof((pixelRgbaMapArray[rgbaChannelIndex])[0][0]) * width,                                // yStride
+					1, 1,                                                                                       // x/y sampling
+					rgbaChannelIndex == 3 ? 1 : 0                                                               // default fillValue for channels that aren't present in file - 1 for alpha, otherwise 0
+				));	
 
 			file.setFrameBuffer(frameBuffer);
 			file.readPixels(dw.min.y, dw.max.y);
 		}
 
-		E_FORMAT specifyIrrlichtEndFormat(const mapOfChannels& mapOfChannels, const suffixOfChannelBundle suffixName, const std::string fileName)
+		bool specifyIrrlichtEndFormat(E_FORMAT& format, const InputFile& file, bool& doesItSupportAlphaChannel)
 		{
-			E_FORMAT retVal;
+			const IMF::Channel* RChannel = file.header().channels().findChannel("R");
+			const IMF::Channel* GChannel = file.header().channels().findChannel("G");
+			const IMF::Channel* BChannel = file.header().channels().findChannel("B");
+			const IMF::Channel* AChannel = file.header().channels().findChannel("A");
 
-			const auto rChannel = doesTheChannelExist("R", mapOfChannels);
-			const auto gChannel = doesTheChannelExist("G", mapOfChannels);
-			const auto bChannel = doesTheChannelExist("B", mapOfChannels);
-			const auto aChannel = doesTheChannelExist("A", mapOfChannels);
+			const IMF::Channel* XChannel = file.header().channels().findChannel("X");
+			const IMF::Channel* YChannel = file.header().channels().findChannel("Y");
+			const IMF::Channel* ZChannel = file.header().channels().findChannel("Z");
 
-			if (rChannel && gChannel && bChannel && aChannel)
-				os::Printer::log("LOAD EXR: loading " + suffixName + " RGBA file", fileName, ELL_INFORMATION);
-			else if (rChannel && gChannel && bChannel)
-				os::Printer::log("LOAD EXR: loading " + suffixName + " RGB file", fileName, ELL_INFORMATION);
-			else if(rChannel && gChannel)
-				os::Printer::log("LOAD EXR: loading " + suffixName + " RG file", fileName, ELL_INFORMATION);
-			else if(rChannel)
-				os::Printer::log("LOAD EXR: loading " + suffixName + " R file", fileName, ELL_INFORMATION);
-			else 
-				os::Printer::log("LOAD EXR: the file's channels are invalid to load", fileName, ELL_ERROR);
-
-			auto doesMapOfChannelsFormatHaveTheSameFormatLikePassedToIt = [&](const PixelType ImfTypeToCompare)
+			if (XChannel && YChannel && ZChannel)
 			{
-				for (auto& channel : mapOfChannels)
-					if (channel.second.type != ImfTypeToCompare)
-						return false;
-				return true;
+				os::Printer::log("LOAD EXR: the file consist of not supported CIE XYZ channels", file.fileName(), ELL_ERROR);
+				return false;
+			}
+
+			if (RChannel && GChannel && BChannel)
+				os::Printer::log("LOAD EXR: loading RGB file", file.fileName(), ELL_INFORMATION);
+			else if(RChannel && GChannel)
+				os::Printer::log("LOAD EXR: loading RG file", file.fileName(), ELL_INFORMATION);
+			else if(RChannel)
+				os::Printer::log("LOAD EXR: loading R file", file.fileName(), ELL_INFORMATION);
+			else 
+				os::Printer::log("LOAD EXR: the file's channels are invalid to load", file.fileName(), ELL_ERROR);
+
+			if (AChannel)
+				doesItSupportAlphaChannel = true;
+			else
+				doesItSupportAlphaChannel = false;
+
+			auto doesRGBFormatHaveTheSameFormatLikePassedToIt = [&](const PixelType ImfTypeToCompare)
+			{
+				return (RChannel->type == ImfTypeToCompare && GChannel->type == ImfTypeToCompare && BChannel->type == ImfTypeToCompare);
 			};
 
-			if (doesMapOfChannelsFormatHaveTheSameFormatLikePassedToIt(PixelType::HALF))
-				retVal = EF_R16G16B16A16_SFLOAT;
-			else if (doesMapOfChannelsFormatHaveTheSameFormatLikePassedToIt(PixelType::FLOAT))
-				retVal = EF_R32G32B32A32_SFLOAT;
-			else if (doesMapOfChannelsFormatHaveTheSameFormatLikePassedToIt(PixelType::UINT))
-				retVal = EF_R32G32B32A32_UINT;
-			else
-				return EF_UNKNOWN;
+			auto isAlphaChannelTheSameFormatLikePassedToItIfExsists = [&](const PixelType ImfTypeToCompare)
+			{
+				if (doesItSupportAlphaChannel)
+				{
+					if (AChannel->type == ImfTypeToCompare)
+						return true;
+					else
+					{
+						os::Printer::log("LOAD EXR: the file doesn't have the same alpha channel type in comparison of RGB channels", file.fileName(), ELL_ERROR);
+						return false;
+					}
+				}
+				else
+					return true;
+			};
 
-			return retVal;
+			if (doesRGBFormatHaveTheSameFormatLikePassedToIt(PixelType::HALF))
+			{
+				format = EF_R16G16B16A16_SFLOAT;
+
+				if (!isAlphaChannelTheSameFormatLikePassedToItIfExsists(PixelType::HALF))
+					return false;
+			}
+			else if (doesRGBFormatHaveTheSameFormatLikePassedToIt(PixelType::FLOAT))
+			{
+				format = EF_R32G32B32A32_SFLOAT;
+
+				if (!isAlphaChannelTheSameFormatLikePassedToItIfExsists(PixelType::FLOAT))
+					return false;
+			}
+			else if (doesRGBFormatHaveTheSameFormatLikePassedToIt(PixelType::UINT))
+			{
+				format = EF_R32G32B32A32_UINT;
+
+				if (!isAlphaChannelTheSameFormatLikePassedToItIfExsists(PixelType::UINT))
+					return false;
+			}
+			else
+				return false;
+
+			return true;
 		}
 
 		bool readVersionField(io::IReadFile* _file, SContext& ctx)
@@ -449,10 +416,10 @@ namespace irr
 			auto& attribs = ctx.attributes;
 			auto& versionField = ctx.versionField;
 
-			/*
-
-			// There is an OpenEXR library implementation error associated with dynamic_cast<> probably
+			// There is an OpenEXR library implementation error associated with dynamic_cast<>
 			// Since OpenEXR loader only cares about RGB and RGBA, there is no need for bellow at the moment
+
+			/*
 
 			attribs.channels = file.header().findTypedAttribute<Channel>("channels");
 			attribs.compression = file.header().findTypedAttribute<Compression>("compression");

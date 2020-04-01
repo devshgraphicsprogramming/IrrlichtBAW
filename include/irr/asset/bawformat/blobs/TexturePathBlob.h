@@ -26,10 +26,9 @@ struct IRR_FORCE_EBO TexturePathBlobV0 : TypedBlob<TexturePathBlobV0, ICPUTextur
 
 using TexturePathBlobV1 = TexturePathBlobV0;
 using TexturePathBlobV2 = TexturePathBlobV1;
-using TexturePathBlobV3 = TexturePathBlobV2;
 
 template<>
-struct CorrespondingBlobTypeFor<video::IVirtualTexture> { typedef TexturePathBlobV3 type; };
+struct CorrespondingBlobTypeFor<video::IRenderableVirtualTexture> { typedef TexturePathBlobV2 type; };
 
 }
 } // irr::asset

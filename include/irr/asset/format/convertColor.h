@@ -14,9 +14,7 @@
     #pragma GCC diagnostic ignored "-Wuninitialized"
 #endif
 
-namespace irr
-{
-namespace video
+namespace irr { namespace video
 {
     namespace impl
     {
@@ -46,17 +44,13 @@ namespace video
         {
             inline void operator()(const void* _pix[4], T* _output, uint32_t _blockX, uint32_t _blockY)
             {
-                constexpr bool valid =  (std::is_floating_point<T>::value&&fmt_class==ET_F64)||
-                                        (std::is_signed<T>::value&&fmt_class==ET_I64)||
-                                        (std::is_unsigned<T>::value&&fmt_class==ET_U64);
+                constexpr bool valid =  (std::is_floating_point_v<T>&&fmt_class==ET_F64)||
+                                        (std::is_signed_v<T>&&fmt_class==ET_I64)||
+                                        (std::is_unsigned_v<T>&&fmt_class==ET_U64);
                 IRR_PSEUDO_IF_CONSTEXPR_BEGIN(valid)
-		{
                     decodePixels<cf, T>(_pix, _output, _blockX, _blockY);
-		}
-                IRR_PSEUDO_ELSE_CONSTEXPR
-		{
+                IRR_PSEUDO_ELSE_CONSTEXPR 
                     assert(0);
-		}
                 IRR_PSEUDO_IF_CONSTEXPR_END
             }
         };
@@ -68,17 +62,13 @@ namespace video
         {
             inline void operator()(void* _pix, const T* _input)
             {
-                constexpr bool valid =  (std::is_floating_point<T>::value&&fmt_class==ET_F64)||
-                                        (std::is_signed<T>::value&&fmt_class==ET_I64)||
-                                        (std::is_unsigned<T>::value&&fmt_class==ET_U64);
+                constexpr bool valid =  (std::is_floating_point_v<T>&&fmt_class==ET_F64)||
+                                        (std::is_signed_v<T>&&fmt_class==ET_I64)||
+                                        (std::is_unsigned_v<T>&&fmt_class==ET_U64);
                 IRR_PSEUDO_IF_CONSTEXPR_BEGIN(valid)
-		{
                     encodePixels<cf, T>(_pix, _input);
-		}
                 IRR_PSEUDO_ELSE_CONSTEXPR 
-		{
                     assert(0);
-		}
                 IRR_PSEUDO_IF_CONSTEXPR_END
             }
         };

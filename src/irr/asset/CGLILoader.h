@@ -9,58 +9,57 @@
 
 #ifdef _IRR_COMPILE_WITH_GLI_LOADER_
 
-#include "irr/asset/ICPUImageView.h"
 #include "irr/asset/IAssetLoader.h"
 
 namespace irr
 {
-namespace asset
-{
-	//! Texture loader capable of loading in .ktx, .dds and .kmg file extensions
-	class CGLILoader final : public asset::IAssetLoader
+	namespace asset
 	{
-	protected:
-		virtual ~CGLILoader() {}
-
-	public:
-		CGLILoader() {}
-
-		bool isALoadableFileFormat(io::IReadFile* _file) const override;
-
-		const char** getAssociatedFileExtensions() const override
+		//! Texture loader capable of loading in .ktx, .dds and .kmg file extensions
+		class CGLILoader final : public asset::IAssetLoader
 		{
-			static const char* extensions[]{ "ktx", "dds", "kmg", nullptr };
-			return extensions;
-		}
+		protected:
+			virtual ~CGLILoader() {}
 
-		uint64_t getSupportedAssetTypesBitfield() const override { return asset::IAsset::ET_IMAGE_VIEW; }
+		public:
+			CGLILoader() {}
 
-		asset::SAssetBundle loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) override;
+			bool isALoadableFileFormat(io::IReadFile* _file) const override;
 
-	private:
-
-		static inline bool doesItHaveFaces(const IImageView<ICPUImage>::E_TYPE& type)
-		{
-			switch (type)
+			const char** getAssociatedFileExtensions() const override
 			{
-				case ICPUImageView::ET_CUBE_MAP: return true;
-				case ICPUImageView::ET_CUBE_MAP_ARRAY: return true;
-				default: return false;
+				static const char* extensions[]{ "ktx", "dds", "kmg", nullptr };
+				return extensions;
 			}
-		}
-		static inline bool doesItHaveLayers(const IImageView<ICPUImage>::E_TYPE& type)
-		{
-			switch (type)
+
+			uint64_t getSupportedAssetTypesBitfield() const override { return asset::IAsset::ET_IMAGE_VIEW; }
+
+			asset::SAssetBundle loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) override;
+
+		private:
+
+			static inline bool doesItHaveFaces(const IImageView<ICPUImage>::E_TYPE& type)
 			{
-				case ICPUImageView::ET_1D_ARRAY: return true;
-				case ICPUImageView::ET_2D_ARRAY: return true;
-				case ICPUImageView::ET_CUBE_MAP_ARRAY: return true;
-				default: return false;
+				switch (type)
+				{
+					case ICPUImageView::ET_CUBE_MAP: return true;
+					case ICPUImageView::ET_CUBE_MAP_ARRAY: return true;
+					default: return false;
+				}
 			}
-		}
-		
-	};
-}
+			static inline bool doesItHaveLayers(const IImageView<ICPUImage>::E_TYPE& type)
+			{
+				switch (type)
+				{
+					case ICPUImageView::ET_1D_ARRAY: return true;
+					case ICPUImageView::ET_2D_ARRAY: return true;
+					case ICPUImageView::ET_CUBE_MAP_ARRAY: return true;
+					default: return false;
+				}
+			}
+			
+		};
+	}
 }
 
 #endif // _IRR_COMPILE_WITH_GLI_LOADER_

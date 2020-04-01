@@ -22,10 +22,9 @@ struct IRR_FORCE_EBO RawBufferBlobV0 : TypedBlob<RawBufferBlobV0, ICPUBuffer>, V
 
 using RawBufferBlobV1 = RawBufferBlobV0;
 using RawBufferBlobV2 = RawBufferBlobV1;
-using RawBufferBlobV3 = RawBufferBlobV2;
 
 template<>
-struct CorrespondingBlobTypeFor<ICPUBuffer> { typedef RawBufferBlobV3 type; };
+struct CorrespondingBlobTypeFor<ICPUBuffer> { typedef RawBufferBlobV2 type; };
 
 }
 } // irr::asset

@@ -3,7 +3,6 @@
 
 #include "irr/core/core.h"
 #include "irr/core/SRange.h"
-#include "irr/asset/ISpecializedShader.h"
 
 namespace irr
 {
@@ -153,10 +152,10 @@ class IDescriptorSetLayout : public virtual core::IReferenceCounted
 	public:
 		bool isIdenticallyDefined(const IDescriptorSetLayout<sampler_type>* _other) const
 		{
-			if (!_other || getBindings().size()!=_other->getBindings().size())
+			if (!_other || getBindings().length()!=_other->getBindings().length())
 				return false;
 
-			const size_t cnt = getBindings().size();
+			const size_t cnt = getBindings().length();
 			const SBinding* lhs = getBindings().begin();
 			const SBinding* rhs = _other->getBindings().begin();
 			for (size_t i = 0ull; i < cnt; ++i)

@@ -114,7 +114,7 @@ namespace impl
         //! Otherwise (T is not pointer type) ImmutableValueType_impl is `const T`.
         using ImmutableValueType_impl = 
         std::conditional_t<
-            std::is_pointer<ValueType_impl>::value,
+            std::is_pointer_v<ValueType_impl>,
             const NoPtrValueType_impl*,
             const ValueType_impl
         >;
@@ -286,13 +286,9 @@ namespace impl
         if (verif)\
         {\
         IRR_PSEUDO_IF_CONSTEXPR_BEGIN(IsMultiCache)\
-	{\
             this->greet(res->second);\
-    	}\
         IRR_PSEUDO_ELSE_CONSTEXPR\
-	{\
             this->greet(res.first->second);\
-    	}\
         IRR_PSEUDO_IF_CONSTEXPR_END\
         }\
 	} \

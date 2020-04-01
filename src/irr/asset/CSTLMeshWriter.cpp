@@ -18,11 +18,6 @@ namespace irr
 namespace asset
 {
 
-constexpr auto POSITION_ATTRIBUTE = 0;
-constexpr auto COLOR_ATTRIBUTE = 1;
-constexpr auto UV_ATTRIBUTE = 2;
-constexpr auto NORMAL_ATTRIBUTE = 3;
-
 CSTLMeshWriter::CSTLMeshWriter()
 {
 	#ifdef _IRR_DEBUG
@@ -68,11 +63,11 @@ bool CSTLMeshWriter::writeAsset(io::IWriteFile* _file, const SAssetWriteParams& 
 namespace
 {
 template <class I>
-inline void writeFacesBinary(asset::ICPUMeshBuffer* buffer, const bool& noIndices, io::IWriteFile* file, uint32_t _colorVaid, asset::IAssetWriter::SAssetWriteParams _params)
+inline void writeFacesBinary(asset::ICPUMeshBuffer* buffer, const bool& noIndices, io::IWriteFile* file, uint32_t _colorVaid)
 {
-	auto& inputParams = buffer->getPipeline()->getVertexInputParams();
-	bool hasColor = inputParams.enabledAttribFlags & core::createBitmask({ COLOR_ATTRIBUTE });
-    const asset::E_FORMAT colorType = static_cast<asset::E_FORMAT>(hasColor ? inputParams.attributes[COLOR_ATTRIBUTE].format : asset::EF_UNKNOWN);
+#ifndef NEW_SHADERS
+    bool hasColor = buffer->getMeshDataAndFormat()->getMappedBuffer(_colorVaid);
+    const asset::E_FORMAT colorType = buffer->getMeshDataAndFormat()->getAttribFormat(_colorVaid);
 
     const uint32_t indexCount = buffer->getIndexCount();
     for (uint32_t j = 0u; j < indexCount; j += 3u)
@@ -131,7 +126,7 @@ inline void writeFacesBinary(asset::ICPUMeshBuffer* buffer, const bool& noIndice
 			normal = core::plane3dSIMDf(vertex1, vertex2, vertex3).getNormal();
 		};
 
-		if (!(_params.flags & E_WRITER_FLAGS::EWF_MESH_IS_RIGHT_HANDED))
+		if (!(_params.writerFlags & IAssetWriter::EWPF_MESH_IS_RIGHT_HANDED))
 			flipVectors();
 
         file->write(&normal, 12);
@@ -140,11 +135,13 @@ inline void writeFacesBinary(asset::ICPUMeshBuffer* buffer, const bool& noIndice
         file->write(&vertex3, 12);
         file->write(&color, 2); // saving color using non-standard VisCAM/SolidView trick
     }
+#endif
 }
 }
 
 bool CSTLMeshWriter::writeMeshBinary(io::IWriteFile* file, const asset::ICPUMesh* mesh, const SAssetWriteParams& _params)
 {
+#ifndef NEW_SHADERS
 	// write STL MESH header
     const char headerTxt[] = "Irrlicht-baw Engine";
     constexpr size_t HEADER_SIZE = 80u;
@@ -170,31 +167,35 @@ bool CSTLMeshWriter::writeMeshBinary(io::IWriteFile* file, const asset::ICPUMesh
 	for (uint32_t i=0; i<mesh->getMeshBufferCount(); ++i)
 	{
 		asset::ICPUMeshBuffer* buffer = mesh->getMeshBuffer(i);
-		if (buffer)
+		if (buffer&&buffer->getMeshDataAndFormat())
 		{
             asset::E_INDEX_TYPE type = buffer->getIndexType();
-			if (!buffer->getIndexBufferBinding()->buffer)
+			if (!buffer->getMeshDataAndFormat()->getIndexBuffer())
                 type = asset::EIT_UNKNOWN;
 			if (type== asset::EIT_16BIT)
             {
-                writeFacesBinary<uint16_t>(buffer, false, file, COLOR_ATTRIBUTE, _params);
+                writeFacesBinary<uint16_t>(buffer, false, file, asset::EVAI_ATTR1, _params);
             }
 			else if (type== asset::EIT_32BIT)
             {
-                writeFacesBinary<uint32_t>(buffer, false, file, COLOR_ATTRIBUTE, _params);
+                writeFacesBinary<uint32_t>(buffer, false, file, asset::EVAI_ATTR1, _params);
             }
 			else
             {
-                writeFacesBinary<uint16_t>(buffer, true, file, COLOR_ATTRIBUTE, _params); //template param doesn't matter if there's no indices
+                writeFacesBinary<uint16_t>(buffer, true, file, asset::EVAI_ATTR1, _params); //template param doesn't matter if there's no indices
             }
 		}
 	}
 	return true;
+#else
+    return false;
+#endif
 }
 
 
 bool CSTLMeshWriter::writeMeshASCII(io::IWriteFile* file, const asset::ICPUMesh* mesh, const SAssetWriteParams& _params)
 {
+#ifndef NEW_SHADERS
 	// write STL MESH header
     const char headerTxt[] = "Irrlicht-baw Engine ";
 
@@ -209,10 +210,10 @@ bool CSTLMeshWriter::writeMeshASCII(io::IWriteFile* file, const asset::ICPUMesh*
 	for (uint32_t i=0; i<mesh->getMeshBufferCount(); ++i)
 	{
 		asset::ICPUMeshBuffer* buffer = mesh->getMeshBuffer(i);
-		if (buffer)
+		if (buffer&&buffer->getMeshDataAndFormat())
 		{
             asset::E_INDEX_TYPE type = buffer->getIndexType();
-			if (!buffer->getIndexBufferBinding()->buffer)
+			if (!buffer->getMeshDataAndFormat()->getIndexBuffer())
                 type = asset::EIT_UNKNOWN;
 			const uint32_t indexCount = buffer->getIndexCount();
 			if (type==asset::EIT_16BIT)
@@ -263,6 +264,9 @@ bool CSTLMeshWriter::writeMeshASCII(io::IWriteFile* file, const asset::ICPUMesh*
 	file->write(name.c_str(),name.size());
 
 	return true;
+#else
+    return false;
+#endif
 }
 
 
@@ -294,7 +298,7 @@ void CSTLMeshWriter::writeFaceText(io::IWriteFile* file,
 		normal = core::plane3dSIMDf(vertex1, vertex2, vertex3).getNormal();
 	};
 
-	if (!(_params.flags & E_WRITER_FLAGS::EWF_MESH_IS_RIGHT_HANDED))
+	if (!(_params.writerFlags & IAssetWriter::EWPF_MESH_IS_RIGHT_HANDED))
 		flipVectors();
 
 	file->write("facet normal ",13);

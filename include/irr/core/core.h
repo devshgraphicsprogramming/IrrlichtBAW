@@ -49,7 +49,6 @@
 #include "irr/core/parallel/unlock_guard.h"
 // string
 #include "irr/core/string/stringutil.h"
-#include "irr/core/string/UniqueStringLiteralType.h"
 // other useful things
 #include "irr/core/BaseClasses.h"
 #include "irr/core/EventDeferredHandler.h"

@@ -15,7 +15,7 @@ struct GPUObject
 {
 	core::smart_refctd_ptr<video::IGPUMeshBuffer> meshbuffer;
 	core::smart_refctd_ptr<video::IGPURenderpassIndependentPipeline> pipeline;
-} PACK_STRUCT;
+}; PACK_STRUCT;
 
 struct Objects
 {
@@ -23,16 +23,13 @@ struct Objects
 	{
 		E_CUBE,
 		E_SPHERE,
-		E_CYLINDER,
-		E_RECTANGLE,
-		E_DISK,
 		E_COUNT
 	};
 
 	Objects(std::initializer_list<std::pair<asset::IGeometryCreator::return_type, GPUObject>> _objects) : objects(_objects) {}
 
 	const std::vector<std::pair<asset::IGeometryCreator::return_type, GPUObject>> objects;
-} PACK_STRUCT;
+};
 #include "irr/irrunpack.h"
 
 const char* vertexSource = R"===(
@@ -40,7 +37,7 @@ const char* vertexSource = R"===(
 layout(location = 0) in vec4 vPos; //only a 3d position is passed from irrlicht, but last (the W) coordinate gets filled with default 1.0
 layout(location = 3) in vec3 vNormal;
 
-#include <irr/builtin/glsl/broken_driver_workarounds/amd.glsl>
+//#include <irr/builtin/glsl/broken_driver_workarounds/amd.glsl>
 
 layout( push_constant, row_major ) uniform Block {
 	mat4 modelViewProj;
@@ -50,7 +47,8 @@ layout(location = 0) out vec3 Color; //per vertex output color, will be interpol
 
 void main()
 {
-    gl_Position = irr_builtin_glsl_workaround_AMD_broken_row_major_qualifier_mat4x4(PushConstants.modelViewProj)*vPos; //only thing preventing the shader from being core-compliant
+    //gl_Position = irr_builtin_glsl_workaround_AMD_broken_row_major_qualifier_mat4(PushConstants.modelViewProj)*vPos; //only thing preventing the shader from being core-compliant
+    gl_Position = PushConstants.modelViewProj*vPos; //only thing preventing the shader from being core-compliant
     Color = vNormal*0.5+vec3(0.5);
 }
 )===";
@@ -101,7 +99,7 @@ int main()
 	//! we want to move around the scene and view it from different angles
 	scene::ICameraSceneNode* camera = smgr->addCameraSceneNodeFPS(0,100.0f,0.001f);
 
-	camera->setPosition(core::vector3df(-5, 0, 0));
+	camera->setPosition(core::vector3df(0,-5,0));
 	camera->setTarget(core::vector3df(0,0,0));
 	camera->setNearValue(0.01f);
 	camera->setFarValue(100.0f);
@@ -115,13 +113,11 @@ int main()
 	auto rectangleGeometry = geometryCreator->createRectangleMesh(irr::core::vector2df_SIMD(1.5, 3));
 	auto diskGeometry = geometryCreator->createDiskMesh(2, 30);
 
-	auto createGPUSpecializedShaderFromSource = [=](const char* source, asset::ISpecializedShader::E_SHADER_STAGE stage) -> core::smart_refctd_ptr<video::IGPUSpecializedShader>
+	auto createGPUSpecializedShaderFromSource = [=](const char* source, asset::ISpecializedShader::E_SHADER_STAGE stage)
 	{
 		auto spirv = device->getAssetManager()->getGLSLCompiler()->createSPIRVFromGLSL(source, stage, "main", "runtimeID");
-		if (!spirv)
-			return nullptr;
 		auto unspec = driver->createGPUShader(std::move(spirv));
-		return driver->createGPUSpecializedShader(unspec.get(), { nullptr,nullptr,"main",stage });
+		return driver->createGPUSpecializedShader(unspec.get(), { core::vector<asset::ISpecializedShader::SInfo::SMapEntry>(),nullptr,"main",stage });
 	};
 
 	auto createGPUSpecializedShaderFromSourceWithIncludes = [&](const char* source, asset::ISpecializedShader::E_SHADER_STAGE stage, const char* origFilepath)
@@ -135,10 +131,11 @@ int main()
 		createGPUSpecializedShaderFromSourceWithIncludes(vertexSource,asset::ISpecializedShader::ESS_VERTEX, "shader.vert"),
 		createGPUSpecializedShaderFromSource(fragmentSource,asset::ISpecializedShader::ESS_FRAGMENT)
 	};
-	auto shadersPtr = reinterpret_cast<video::IGPUSpecializedShader**>(shaders);
+	auto shadersPtr = reinterpret_cast<video::IGPUSpecializedShader * *>(shaders);
 
 	auto createGPUMeshBufferAndItsPipeline = [&](asset::IGeometryCreator::return_type& geometryObject) -> GPUObject
 	{
+
 		asset::SBlendParams blendParams; 
 		asset::SRasterizationParams rasterParams;
 		rasterParams.faceCullingMode = asset::EFCM_NONE;
@@ -217,6 +214,7 @@ int main()
 		// draw available objects placed in the vector
 		const auto viewProjection = camera->getConcatenatedMatrix();
 		for (auto index = 0u; index < cpuGpuObjects.objects.size(); ++index)
+		//auto index = 2;
 		{
 			const auto iterator = cpuGpuObjects.objects[index];
 			auto geometryObject = iterator.first;

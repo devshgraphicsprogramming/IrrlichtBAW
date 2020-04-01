@@ -41,28 +41,14 @@ namespace
     };
 }
 
-namespace irr 
-{ 
-	namespace asset		
-	{ 
-		namespace legacyv0
-		{
-			asset::E_FORMAT mapECT_plus_ECPA_onto_E_FORMAT(E_COMPONENT_TYPE _ct, E_COMPONENTS_PER_ATTRIBUTE _cpa)
-			{
-				if (_ct >= ECT_COUNT || _cpa >= ECPA_COUNT)
-					return EF_UNKNOWN;
-				return CTplusCPAtoEF[_ct][_cpa];
-			}
-		}
+namespace irr { namespace asset { namespace legacyv0
+{
 
-		namespace legacyv1
-		{
-
-		}
-
-		namespace legacyv2
-		{
-
-		}
-	}
+asset::E_FORMAT mapECT_plus_ECPA_onto_E_FORMAT(E_COMPONENT_TYPE _ct, E_COMPONENTS_PER_ATTRIBUTE _cpa)
+{
+    if (_ct >= ECT_COUNT || _cpa >= ECPA_COUNT)
+        return EF_UNKNOWN;
+    return CTplusCPAtoEF[_ct][_cpa];
 }
+
+}}}

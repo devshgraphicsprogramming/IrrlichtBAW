@@ -22,7 +22,7 @@ namespace irr
 			~CImageLoaderOpenEXR(){}
 
 		public:
-			CImageLoaderOpenEXR(IAssetManager* _manager) : m_manager(_manager) {}
+			CImageLoaderOpenEXR(){}
 
 			bool isALoadableFileFormat(io::IReadFile* _file) const override;
 
@@ -38,7 +38,6 @@ namespace irr
 
 		private:
 
-			IAssetManager* m_manager;
 		};
 	}
 }

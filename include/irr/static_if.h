@@ -15,8 +15,6 @@
 
 #else
 
-#include <utility>
-
 #define IRR_PSEUDO_IF_CONSTEXPR_BEGIN(...) irr::static_if<__VA_ARGS__>([&](auto f)
 #define IRR_PSEUDO_ELSE_CONSTEXPR			).else_([&](auto f)
 #define IRR_PSEUDO_IF_CONSTEXPR_END			);

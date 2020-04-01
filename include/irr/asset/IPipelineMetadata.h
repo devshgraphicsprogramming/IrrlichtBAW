@@ -1,13 +1,8 @@
 #ifndef __IRR_I_PIPELINE_METADATA_H_INCLUDED__
 #define __IRR_I_PIPELINE_METADATA_H_INCLUDED__
 
-#include "irr/asset/IBuiltinIncludeLoader.h"
-#include "irr/asset/ICPUDescriptorSetLayout.h"
-#include "irr/asset/ICPUSpecializedShader.h"
-#include "irr/asset/ICPUImageView.h"
-#include "irr/asset/ICPURenderpassIndependentPipeline.h"
-
-#include "irr/asset/asset_utils.h"
+#include "irr/asset/IDescriptorSetLayout.h"
+#include "irr/asset/ISpecializedShader.h"
 
 namespace irr
 {

@@ -6,52 +6,52 @@
 #define __C_STL_MESH_FILE_LOADER_H_INCLUDED__
 
 #include "irr/asset/IAssetLoader.h"
-#include "irr/asset/CSTLPipelineMetadata.h"
 
 namespace irr
 {
-	namespace asset
-	{
-		//! Meshloader capable of loading STL meshes.
-		class CSTLMeshFileLoader final : public IAssetLoader
+namespace asset
+{
+//! Meshloader capable of loading STL meshes.
+class CSTLMeshFileLoader final : public IAssetLoader
+{
+	public:
+		asset::SAssetBundle loadAsset(io::IReadFile* _file, const IAssetLoader::SAssetLoadParams& _params, IAssetLoader::IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) override;
+
+#ifdef NEW_SHADERS
+		bool isALoadableFileFormat(io::IReadFile* _file) const override { return false; }
+#else
+		bool isALoadableFileFormat(io::IReadFile* _file) const override;
+#endif
+
+		const char** getAssociatedFileExtensions() const override
 		{
-			public:
+			static const char* ext[]{ "stl", nullptr };
+			return ext;
+		}
 
-				CSTLMeshFileLoader(asset::IAssetManager* _m_assetMgr) : m_assetMgr(_m_assetMgr) {}
+		uint64_t getSupportedAssetTypesBitfield() const override { return IAsset::ET_MESH; }
 
-				asset::SAssetBundle loadAsset(io::IReadFile* _file, const IAssetLoader::SAssetLoadParams& _params, IAssetLoader::IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) override;
+	private:
 
-				bool isALoadableFileFormat(io::IReadFile* _file) const override;
+		// skips to the first non-space character available
+		void goNextWord(io::IReadFile* file) const;
+		// returns the next word
+		const core::stringc& getNextToken(io::IReadFile* file, core::stringc& token) const;
+		// skip to next printable character after the first line break
+		void goNextLine(io::IReadFile* file) const;
 
-				const char** getAssociatedFileExtensions() const override
-				{
-					static const char* ext[]{ "stl", nullptr };
-					return ext;
-				}
+		//! Read 3d vector of floats
+		void getNextVector(io::IReadFile* file, core::vectorSIMDf& vec, bool binary) const;
 
-				uint64_t getSupportedAssetTypesBitfield() const override { return IAsset::ET_MESH; }
+		template<typename aType>
+		static inline void performActionBasedOnOrientationSystem(aType& varToHandle, void (*performOnCertainOrientation)(aType& varToHandle))
+		{
+			performOnCertainOrientation(varToHandle);
+		}
+};
 
-			private:
-
-				// skips to the first non-space character available
-				void goNextWord(io::IReadFile* file) const;
-				// returns the next word
-				const core::stringc& getNextToken(io::IReadFile* file, core::stringc& token) const;
-				// skip to next printable character after the first line break
-				void goNextLine(io::IReadFile* file) const;
-				//! Read 3d vector of floats
-				void getNextVector(io::IReadFile* file, core::vectorSIMDf& vec, bool binary) const;
-
-				template<typename aType>
-				static inline void performActionBasedOnOrientationSystem(aType& varToHandle, void (*performOnCertainOrientation)(aType& varToHandle))
-				{
-					performOnCertainOrientation(varToHandle);
-				}
-
-				asset::IAssetManager* m_assetMgr;
-		};
-	}	// end namespace scene
-}	// end namespace irr
+} // end namespace scene
+} // end namespace irr
 
 #endif
 

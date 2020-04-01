@@ -26,7 +26,7 @@ int main()
 	params.Vsync = false;
 	params.Doublebuffer = true;
 	params.Stencilbuffer = false; //! This will not even be a choice soon
-	params.WindowSize = dimension2d<uint32_t>(1920, 1080);
+	params.WindowSize = dimension2d<uint32_t>(1600, 900);
 	IrrlichtDevice* device = createDeviceEx(params);
 	if (device == 0)
 		return 1; // could not create selected driver.
@@ -269,7 +269,7 @@ int main()
 	auto extent = renderer->getSceneBound().getExtent();
 
 	// want dynamic camera or not?
-	if (true)
+	if (false)
 	{
 		core::vector3df_SIMD ptu[] = {core::vectorSIMDf().set(camera->getPosition()),camera->getTarget(),camera->getUpVector()};
 		auto proj = camera->getProjectionMatrix();

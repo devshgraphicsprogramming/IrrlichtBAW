@@ -19,25 +19,19 @@ namespace irr
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 
-#include "IDriverMemoryAllocation.h"
+#include "CNullDriver.h"
+// also includes the OpenGL stuff
+#include "COpenGLFrameBuffer.h"
+#include "COpenGLDriverFence.h"
+#include "COpenCLHandler.h"
 #include "irr/video/COpenGLSpecializedShader.h"
 #include "irr/video/COpenGLRenderpassIndependentPipeline.h"
 #include "irr/video/COpenGLDescriptorSet.h"
 #include "irr/video/COpenGLPipelineLayout.h"
 #include "irr/video/COpenGLComputePipeline.h"
 
-#include "CNullDriver.h"
-// also includes the OpenGL stuff
-#include "COpenGLFrameBuffer.h"
-#include "COpenGLDriverFence.h"
-#include "irr/video/CCUDAHandler.h"
-#include "COpenCLHandler.h"
-
 #include <map>
-//#include <atomic>
-//#include <thread>
-#include <mutex>
-//#include <condition_variable>
+#include "FW_Mutex.h"
 
 namespace irr
 {
@@ -689,7 +683,7 @@ class COpenGLDriver final : public CNullDriver, public COpenGLExtensionHandler
 		bool changeRenderContext(const SExposedVideoData& videoData, void* device) {return false;}
 
         bool initAuxContext();
-        const SAuxContext* getThreadContext(const std::thread::id& tid=std::this_thread::get_id());
+        const SAuxContext* getThreadContext(const std::thread::id& tid=std::this_thread::get_id()) const;
         bool deinitAuxContext();
 
         uint16_t retrieveDisplayRefreshRate() const override;
@@ -848,8 +842,6 @@ class COpenGLDriver final : public CNullDriver, public COpenGLExtensionHandler
 
             template<E_PIPELINE_BIND_POINT>
             struct pipeline_for_bindpoint;
-			template<> struct pipeline_for_bindpoint<EPBP_COMPUTE > { using type = COpenGLComputePipeline; };
-			template<> struct pipeline_for_bindpoint<EPBP_GRAPHICS> { using type = COpenGLRenderpassIndependentPipeline; };
 
             template<E_PIPELINE_BIND_POINT PBP>
             using pipeline_for_bindpoint_t = typename pipeline_for_bindpoint<PBP>::type;
@@ -863,20 +855,13 @@ class COpenGLDriver final : public CNullDriver, public COpenGLExtensionHandler
             struct {
                 SOpenGLState::SDescSetBnd descSets[IGPUPipelineLayout::DESCRIPTOR_SET_COUNT];
             } effectivelyBoundDescriptors;
-
             //push constants are tracked outside of next/currentState because there can be multiple pushConstants() calls and each of them kinda depends on the pervious one (layout compatibility)
-			pipeline_for_bindpoint_t<EPBP_COMPUTE>::PushConstantsState pushConstantsStateCompute;
-			pipeline_for_bindpoint_t<EPBP_GRAPHICS>::PushConstantsState pushConstantsStateGraphics;
-			template<E_PIPELINE_BIND_POINT PBP>
-			typename pipeline_for_bindpoint_t<PBP>::PushConstantsState* pushConstantsState()
-			{
-				if constexpr(PBP==EPBP_COMPUTE)
-					return &pushConstantsStateCompute;
-				else if (PBP== EPBP_GRAPHICS)
-					return &pushConstantsStateGraphics;
-				else
-					return nullptr;
-			}
+            struct
+            {
+                alignas(128) uint8_t data[IGPUMeshBuffer::MAX_PUSH_CONSTANT_BYTESIZE];
+                uint32_t stagesToUpdateFlags = 0u; // need a slight redo of this
+                core::smart_refctd_ptr<const COpenGLPipelineLayout> layout;
+            } pushConstantsState[EPBP_COUNT];
 
         //private:
             std::thread::id threadId;
@@ -918,31 +903,10 @@ class COpenGLDriver final : public CNullDriver, public COpenGLExtensionHandler
                 const IGPUBuffer* _indirectDrawBuffer,
                 const IGPUBuffer* _paramBuffer
             );
-			template<E_PIPELINE_BIND_POINT PBP>
-            inline void pushConstants(const COpenGLPipelineLayout* _layout, uint32_t _stages, uint32_t _offset, uint32_t _size, const void* _values)
-			{
-				//validation is done in CNullDriver::pushConstants()
-				//if arguments were invalid (dont comply Valid Usage section of vkCmdPushConstants docs), execution should not even get to this point
-
-				if (pushConstantsState<PBP>()->layout && !pushConstantsState<PBP>()->layout->isCompatibleForPushConstants(_layout))
-				{
-				//#ifdef _IRR_DEBUG
-					constexpr size_t toFill = IGPUMeshBuffer::MAX_PUSH_CONSTANT_BYTESIZE / sizeof(uint64_t);
-					constexpr size_t bytesLeft = IGPUMeshBuffer::MAX_PUSH_CONSTANT_BYTESIZE - (toFill * sizeof(uint64_t));
-					constexpr uint64_t pattern = 0xdeadbeefDEADBEEFull;
-					std::fill(reinterpret_cast<uint64_t*>(pushConstantsState<PBP>()->data), reinterpret_cast<uint64_t*>(pushConstantsState<PBP>()->data)+toFill, pattern);
-					IRR_PSEUDO_IF_CONSTEXPR_BEGIN(bytesLeft > 0ull) {
-						memcpy(reinterpret_cast<uint64_t*>(pushConstantsState<PBP>()->data) + toFill, &pattern, bytesLeft);
-					} IRR_PSEUDO_IF_CONSTEXPR_END
-				//#endif
-
-					_stages |= IGPUSpecializedShader::ESS_ALL;
-				}
-				pushConstantsState<PBP>()->incrementStamps(_stages);
-
-				pushConstantsState<PBP>()->layout = core::smart_refctd_ptr<const COpenGLPipelineLayout>(_layout);
-				memcpy(pushConstantsState<PBP>()->data+_offset, _values, _size);
-			}
+            void pushConstants(
+                E_PIPELINE_BIND_POINT _bindPoint,
+                const COpenGLPipelineLayout* _layout, uint32_t _stages, uint32_t _offset, uint32_t _size, const void* _values
+            );
 
             inline size_t getVAOCacheSize() const
             {
@@ -1038,7 +1002,7 @@ class COpenGLDriver final : public CNullDriver, public COpenGLExtensionHandler
         bool runningInRenderDoc;
 
 		// returns the current size of the screen or rendertarget
-		virtual const core::dimension2d<uint32_t>& getCurrentRenderTargetSize();
+		virtual const core::dimension2d<uint32_t>& getCurrentRenderTargetSize() const;
 
 		void createMaterialRenderers();
 
@@ -1079,12 +1043,16 @@ class COpenGLDriver final : public CNullDriver, public COpenGLExtensionHandler
         size_t clPlatformIx, clDeviceIx;
 #endif // _IRR_COMPILE_WITH_OPENCL_
 
-        std::mutex glContextMutex;
+        FW_Mutex* glContextMutex;
 		SAuxContext* AuxContexts;
         core::smart_refctd_ptr<const asset::IGLSLCompiler> GLSLCompiler;
 
 		E_DEVICE_TYPE DeviceType;
 	};
+    
+    
+    template<> struct COpenGLDriver::SAuxContext::pipeline_for_bindpoint<EPBP_GRAPHICS> { using type = COpenGLRenderpassIndependentPipeline; };
+    template<> struct COpenGLDriver::SAuxContext::pipeline_for_bindpoint<EPBP_COMPUTE > { using type = COpenGLComputePipeline; };
 
 } // end namespace video
 } // end namespace irr

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include "irr/macros.h"
-#include "irr/asset/ICPUImageView.h"
+#include "irr/asset/format/EFormat.h"
 
 namespace irr
 {

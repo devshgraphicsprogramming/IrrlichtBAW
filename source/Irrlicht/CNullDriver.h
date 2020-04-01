@@ -5,8 +5,6 @@
 #ifndef __C_VIDEO_NULL_H_INCLUDED__
 #define __C_VIDEO_NULL_H_INCLUDED__
 
-#include "irrlicht.h"
-
 #include "IVideoDriver.h"
 #include "IFileSystem.h"
 #include "irr/asset/IMesh.h"
