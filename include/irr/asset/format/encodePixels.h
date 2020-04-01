@@ -7,7 +7,9 @@
 #include "irr/core/core.h"
 #include "irr/asset/format/EFormat.h"
 
-namespace irr { namespace video
+namespace irr
+{
+namespace asset
 {	
 
 	template<typename T>
@@ -2241,8 +2243,7 @@ namespace irr { namespace video
     {
     inline double lin2srgb(double _lin)
     {
-        if (_lin <= 0.0031308) return _lin * 12.92;
-        return 1.055 * pow(_lin, 1./2.4) - 0.055;
+        return core::srgb2lin(_lin);
     }
     }
 

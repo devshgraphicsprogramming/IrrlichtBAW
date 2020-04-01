@@ -6,8 +6,11 @@
 
 #include "irr/core/core.h"
 #include "irr/asset/format/EFormat.h"
+#include "irr/core/math/colorutil.h"
 
-namespace irr { namespace video // why is this in the video namespace!?
+namespace irr
+{
+namespace asset
 {
 	template<asset::E_FORMAT fmt, typename T>
     inline typename
@@ -943,8 +946,7 @@ namespace irr { namespace video // why is this in the video namespace!?
     {
         inline double srgb2lin(double _s)
         {
-            if (_s <= 0.04045) return _s / 12.92;
-            return pow((_s + 0.055) / 1.055, 2.4);
+            return core::srgb2lin(_s);
         }
     }
 

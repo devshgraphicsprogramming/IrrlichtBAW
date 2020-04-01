@@ -31,6 +31,7 @@
 // math
 #include "irr/core/math/intutil.h"
 #include "irr/core/math/floatutil.tcc"
+#include "irr/core/math/colorutil.h"
 #include "irr/core/math/glslFunctions.tcc"
 #include "irr/core/math/rational.h"
 #include "irr/core/math/plane3dSIMD.h"
@@ -49,6 +50,7 @@
 #include "irr/core/parallel/unlock_guard.h"
 // string
 #include "irr/core/string/stringutil.h"
+#include "irr/core/string/UniqueStringLiteralType.h"
 // other useful things
 #include "irr/core/BaseClasses.h"
 #include "irr/core/EventDeferredHandler.h"

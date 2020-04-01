@@ -74,6 +74,41 @@ class ICPUImage final : public IImage, public IAsset
 			return {nullptr,nullptr};
 		}
 
+		inline core::SRange<const IImage::SBufferCopy> getRegions(uint32_t mipLevel) const
+		{
+			const IImage::SBufferCopy dummy = { 0ull,0u,0u,{static_cast<E_ASPECT_FLAGS>(0u),mipLevel,0u,0u},{},{} };
+			auto begin = std::lower_bound(regions->begin(),regions->end(),dummy,mip_order_t());
+			auto end = std::upper_bound(regions->begin(),regions->end(),dummy,mip_order_t());
+			return {begin,end};
+		}
+
+		// `texelCoord=(xTexelPos,yTexelPos,zTexelPos,imageLayer)`
+		inline const IImage::SBufferCopy* getRegion(uint32_t mipLevel, const core::vectorSIMDu32& texelCoord) const
+		{
+			auto mip = getRegions(mipLevel);
+			auto found = std::find_if(std::reverse_iterator(mip.end()),std::reverse_iterator(mip.begin()),
+				[&texelCoord](const IImage::SBufferCopy& region)
+				{ // we can simdify this in the future
+					if (region.imageSubresource.baseArrayLayer>texelCoord.w)
+						return false;
+					if (texelCoord.w>=region.imageSubresource.baseArrayLayer+region.imageSubresource.layerCount)
+						return false;
+
+					bool retval = true;
+					for (auto i=0; i<3; i++)
+					{
+						const auto _min = (&region.imageOffset.x)[i];
+						const auto _max = _min+(&region.imageExtent.width)[i];
+						retval = retval && texelCoord[i]>=_min && texelCoord[i]<_max;
+					}
+					return retval;
+				}
+			);
+			if (found!=std::reverse_iterator(mip.begin()))
+				return &(*found);
+			return nullptr;
+		}
+
 		//! regions will be copied and sorted
 		inline bool setBufferAndRegions(core::smart_refctd_ptr<ICPUBuffer>&& _buffer, const core::smart_refctd_dynamic_array<IImage::SBufferCopy>& _regions)
 		{
@@ -82,43 +117,9 @@ class ICPUImage final : public IImage, public IAsset
 		
 			buffer = std::move(_buffer);
 			regions = _regions;
-			sortRegionsByMipMapLevel();
+			std::sort(regions->begin(),regions->end(),mip_order_t());
 			return true;
 		}
-
-		/*
-        inline void* getRowPointer(const SBufferCopy& region, uint32_t relMip, uint32_t relZ, uint32_t relY)
-		{
-            return const_cast<void*>(getRowPointer(region,relMip,relZ,relY));
-		}
-        inline const void* getRowPointer(const SBufferCopy& region, uint32_t relMip, uint32_t relZ, uint32_t relY) const
-        {
-            if (asset::isBlockCompressionFormat(getColorFormat()))
-                return nullptr;
-
-            if (row<minCoord[0]||row>=maxCoord[0])
-                return nullptr;
-            if (slice<minCoord[1]||slice>=maxCoord[1])
-                return nullptr;
-
-            size_t size[3] = {maxCoord[0]-minCoord[0],maxCoord[1]-minCoord[1],maxCoord[2]-minCoord[2]};
-            row     -= minCoord[0];
-            slice   -= minCoord[1];
-            return reinterpret_cast<uint8_t*>(data)+(slice*size[1]+row)*getPitchIncludingAlignment();
-        }
-		
-
-        //!
-        inline uint32_t getPitchIncludingAlignment() const
-        {
-            if (isBlockCompressionFormat(getColorFormat()))
-                return 0; //special error val
-
-			auto lineBytes = getBytesPerPixel() * (maxCoord[0]-minCoord[0]);
-			assert(lineBytes.getNumerator()%lineBytes.getDenominator() == 0u);
-            return (lineBytes.getNumerator()/lineBytes.getDenominator()+unpackAlignment-1)&(~(unpackAlignment-1u));
-        }
-*/
 
     protected:
 		ICPUImage(SCreationParams&& _params) : IImage(std::move(_params))
@@ -132,32 +133,13 @@ class ICPUImage final : public IImage, public IAsset
 		core::smart_refctd_dynamic_array<IImage::SBufferCopy>	regions;
 
 	private:
-		inline void sortRegionsByMipMapLevel()
+		struct mip_order_t
 		{
-			std::sort(regions->begin(), regions->end(), [](const IImage::SBufferCopy& _a, const IImage::SBufferCopy& _b)
-				{
-					if (_a.imageSubresource.mipLevel==_b.imageSubresource.mipLevel)
-					{
-						if (_a.imageSubresource.baseArrayLayer==_b.imageSubresource.baseArrayLayer)
-						{
-							if (_a.imageOffset.z==_b.imageOffset.z)
-							{
-								if (_a.imageOffset.y==_b.imageOffset.y)
-									return _a.imageOffset.x<_b.imageOffset.x;
-								else
-									return _a.imageOffset.y<_b.imageOffset.y;
-							}
-							else
-								return _a.imageOffset.z<_b.imageOffset.z;
-						}
-						else
-							return _a.imageSubresource.baseArrayLayer<_b.imageSubresource.baseArrayLayer;
-					}
-					else
-						return _a.imageSubresource.mipLevel<_b.imageSubresource.mipLevel;
-				}
-			);
-		}
+			inline bool operator()(const IImage::SBufferCopy& _a, const IImage::SBufferCopy& _b)
+			{
+				return _a.imageSubresource.mipLevel < _b.imageSubresource.mipLevel;
+			}
+		};
 };
 
 } // end namespace video

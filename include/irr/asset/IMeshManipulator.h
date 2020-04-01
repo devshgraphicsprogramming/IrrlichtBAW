@@ -13,6 +13,7 @@
 #include "aabbox3d.h"
 #include "irr/asset/ICPUMeshBuffer.h"
 #include "irr/asset/CCPUMesh.h"
+#include "irr/asset/CCPUSkinnedMesh.h"
 
 namespace irr
 {
@@ -148,7 +149,7 @@ namespace asset
 		/** \param mesh Input mesh
 		\return Mesh consisting only of unique faces. All vertices
 		which were previously shared are now duplicated. */
-		static core::smart_refctd_ptr<ICPUMeshBuffer> createMeshBufferUniquePrimitives(ICPUMeshBuffer* inbuffer);
+		static core::smart_refctd_ptr<ICPUMeshBuffer> createMeshBufferUniquePrimitives(ICPUMeshBuffer* inbuffer, bool _makeIndexBuf = false);
 
 		//
 		static core::smart_refctd_ptr<ICPUMeshBuffer> calculateSmoothNormals(ICPUMeshBuffer* inbuffer, bool makeNewMesh = false, float epsilon = 1.525e-5f,
@@ -255,6 +256,8 @@ namespace asset
 			case EEM_ANGLES:
 				errorFunc = [](core::vectorSIMDf _d1, core::vectorSIMDf _d2)->core::vectorSIMDf {
 					_d1.w = _d2.w = 0.f;
+					if ((_d1==core::vectorSIMDf(0.f)).all() || (_d2==core::vectorSIMDf(0.f)).all())
+						return core::vectorSIMDf(-INFINITY);
 					return core::dot(_d1, _d2) / (core::length(_d1) * core::length(_d2));
 				};
 				break;

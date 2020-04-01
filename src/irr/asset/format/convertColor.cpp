@@ -1,8 +1,10 @@
+#include <utility>
 #include "irr/asset/format/convertColor.h"
 
-namespace irr { namespace video
+namespace irr
 {
-    using namespace asset;//for E_FORMAT
+namespace asset
+{
 namespace impl
 {
     template<E_FORMAT sF>
