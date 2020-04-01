@@ -257,19 +257,19 @@ class IAssetManager : public core::IReferenceCounted
         //TODO change name
         SAssetBundle getAssetInHierarchy(const std::string& _filePath, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel, IAssetLoader::IAssetLoaderOverride* _override)
         {
-            if (_params.meshManipulatorToUse == nullptr)
+            IAssetLoader::SAssetLoadParams params(_params);
+            if (params.meshManipulatorOverride == nullptr)
             {
-                //meh
-                const_cast<IAssetLoader::SAssetLoadParams&>(_params).meshManipulatorToUse = m_meshManipulator.get();
+                params.meshManipulatorOverride = m_meshManipulator.get();
             }
 
-            IAssetLoader::SAssetLoadContext ctx(_params, nullptr);
+            IAssetLoader::SAssetLoadContext ctx(params, nullptr);
 
             std::string filePath = _filePath;
             _override->getLoadFilename(filePath, ctx, _hierarchyLevel);
             io::IReadFile* file = m_fileSystem->createAndOpenFile(filePath.c_str());
 
-            SAssetBundle asset = getAssetInHierarchy(file, _filePath, _params, _hierarchyLevel, _override);
+            SAssetBundle asset = getAssetInHierarchy(file, _filePath, params, _hierarchyLevel, _override);
 
             if (file)
                 file->drop();

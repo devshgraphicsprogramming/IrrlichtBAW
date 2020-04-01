@@ -80,14 +80,13 @@ asset::SAssetBundle COBJMeshFileLoader::loadAsset(io::IReadFile* _file, const as
         _override
     );
 
-	if (_params.meshManipulatorToUse == nullptr)
+	if (_params.meshManipulatorOverride == nullptr)
 	{
-		os::Printer::log("meshManipulatorToUse is nullptr", ELL_ERROR);
 		_IRR_DEBUG_BREAK_IF(true);
-		abort();
+		assert(false);
 	}
 
-	CQuantNormalCache* const quantNormalCache = _params.meshManipulatorToUse->getQuantNormalCache();
+	CQuantNormalCache* const quantNormalCache = _params.meshManipulatorOverride->getQuantNormalCache();
 
 	const long filesize = _file->getSize();
 	if (!filesize)

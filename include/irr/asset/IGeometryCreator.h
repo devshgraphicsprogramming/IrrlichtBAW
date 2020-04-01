@@ -37,7 +37,7 @@ class IGeometryCreator : public core::IReferenceCounted
 		\param size Dimensions of the cube.
 		\return Generated mesh.
 		*/
-		virtual return_type createCubeMesh(const core::vector3df& size=core::vector3df(5.f,5.f,5.f)) const =0;
+		virtual return_type createCubeMesh(const core::vector3df& size=core::vector3df(5.f,5.f,5.f)) const = 0;
 
 
 		//! Create an arrow mesh, composed of a cylinder and a cone.
@@ -54,12 +54,13 @@ class IGeometryCreator : public core::IReferenceCounted
 		\param colorCone color of the cone
 		\return Generated mesh.
 		*/
-		virtual return_type createArrowMesh(IMeshManipulator* const meshManipulatorToUse,
+		virtual return_type createArrowMesh(
 				const uint32_t tesselationCylinder = 4,
 				const uint32_t tesselationCone = 8, const float height = 1.f,
 				const float cylinderHeight = 0.6f, const float widthCylinder = 0.05f,
 				const float widthCone = 0.3f, const video::SColor colorCylinder = 0xFFFFFFFF,
-				const video::SColor colorCone = 0xFFFFFFFF) const =0;
+				const video::SColor colorCone = 0xFFFFFFFF,
+				IMeshManipulator* const meshManipulatorOverride = nullptr) const = 0;
 
 
 		//! Create a sphere mesh.
@@ -69,9 +70,10 @@ class IGeometryCreator : public core::IReferenceCounted
 		\param polyCountY Number of quads used for the vertical tiling
 		\return Generated mesh.
 		*/
-		virtual return_type createSphereMesh(IMeshManipulator* const meshManipulatorToUse,
+		virtual return_type createSphereMesh(
 				float radius = 5.f,
-				uint32_t polyCountX = 16, uint32_t polyCountY = 16) const =0;
+				uint32_t polyCountX = 16, uint32_t polyCountY = 16,
+				IMeshManipulator* const meshManipulatorOverride = nullptr) const = 0;
 
 		//! Create a cylinder mesh.
 		/**
@@ -83,10 +85,11 @@ class IGeometryCreator : public core::IReferenceCounted
 		\param oblique (to be documented)
 		\return Generated mesh.
 		*/
-		virtual return_type createCylinderMesh(IMeshManipulator* const meshManipulatorToUse,
+		virtual return_type createCylinderMesh(
 				float radius, float length,
 				uint32_t tesselation,
-				const video::SColor& color=video::SColor(0xffffffff)) const =0;
+				const video::SColor& color=video::SColor(0xffffffff),
+				IMeshManipulator* const meshManipulatorOverride = nullptr) const = 0;
 
 		//! Create a cone mesh.
 		/**
@@ -98,11 +101,12 @@ class IGeometryCreator : public core::IReferenceCounted
 		\param oblique (to be documented)
 		\return Generated mesh.
 		*/
-		virtual return_type createConeMesh(IMeshManipulator* const meshManipulatorToUse,
+		virtual return_type createConeMesh(
 				float radius, float length, uint32_t tesselation,
 				const video::SColor& colorTop=video::SColor(0xffffffff),
 				const video::SColor& colorBottom=video::SColor(0xffffffff),
-				float oblique=0.f) const =0;
+				float oblique=0.f,
+				IMeshManipulator* const meshManipulatorOverride = nullptr) const = 0;
 
 		virtual return_type createRectangleMesh(const core::vector2df_SIMD& size = core::vector2df_SIMD(0.5f, 0.5f)) const = 0;
 

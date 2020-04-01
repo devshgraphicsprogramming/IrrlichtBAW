@@ -12,6 +12,15 @@ namespace irr
 namespace asset
 {
 
+CGeometryCreator::CGeometryCreator(IMeshManipulator* const _defaultMeshManipulator) : defaultMeshManipulator(_defaultMeshManipulator)
+{
+	if (defaultMeshManipulator == nullptr)
+	{
+		_IRR_DEBUG_BREAK_IF(true);
+		assert(false);
+	}
+}
+
 CGeometryCreator::return_type CGeometryCreator::createCubeMesh(const core::vector3df& size) const
 {
 	return_type retval;
@@ -140,15 +149,15 @@ CGeometryCreator::return_type CGeometryCreator::createCubeMesh(const core::vecto
 	a cylinder, a cone and a cross
 	point up on (0,1.f, 0.f )
 */
-CGeometryCreator::return_type CGeometryCreator::createArrowMesh(IMeshManipulator* const meshManipulatorToUse,
-																const uint32_t tesselationCylinder,
+CGeometryCreator::return_type CGeometryCreator::createArrowMesh(const uint32_t tesselationCylinder,
 																const uint32_t tesselationCone,
 																const float height,
 																const float cylinderHeight,
 																const float width0,
 																const float width1,
 																const video::SColor vtxColor0,
-																const video::SColor vtxColor1) const
+																const video::SColor vtxColor1,
+																IMeshManipulator* const meshManipulatorOverride) const
 {
 #ifndef NEW_SHADERS
     assert(height > cylinderHeight);
@@ -179,12 +188,12 @@ CGeometryCreator::return_type CGeometryCreator::createArrowMesh(IMeshManipulator
 
 
 /* A sphere with proper normals and texture coords */
-CGeometryCreator::return_type CGeometryCreator::createSphereMesh(IMeshManipulator* const meshManipulatorToUse, float radius, uint32_t polyCountX, uint32_t polyCountY) const
+CGeometryCreator::return_type CGeometryCreator::createSphereMesh(float radius, uint32_t polyCountX, uint32_t polyCountY, IMeshManipulator* const meshManipulatorOverride) const
 {
 	// we are creating the sphere mesh here.
 	return_type retval;
 	constexpr size_t vertexSize = sizeof(CGeometryCreator::SphereVertex);
-	CQuantNormalCache* const quantNormalCache = meshManipulatorToUse->getQuantNormalCache();
+	CQuantNormalCache* const quantNormalCache = (meshManipulatorOverride == nullptr) ? defaultMeshManipulator->getQuantNormalCache() : meshManipulatorOverride->getQuantNormalCache();
 	retval.inputParams = { 0b1111u,0b1u,{
 											{0u,EF_R32G32B32_SFLOAT,offsetof(SphereVertex,pos)},
 											{0u,EF_R8G8B8A8_UNORM,offsetof(SphereVertex,color)},
@@ -377,12 +386,13 @@ CGeometryCreator::return_type CGeometryCreator::createSphereMesh(IMeshManipulato
 }
 
 /* A cylinder with proper normals and texture coords */
-CGeometryCreator::return_type CGeometryCreator::createCylinderMesh(IMeshManipulator* const meshManipulatorToUse,
+CGeometryCreator::return_type CGeometryCreator::createCylinderMesh(
 			float radius, float length,
-			uint32_t tesselation, const video::SColor& color) const
+			uint32_t tesselation, const video::SColor& color,
+			IMeshManipulator* const meshManipulatorOverride) const
 {
 	return_type retval;
-	CQuantNormalCache* const quantNormalCache = meshManipulatorToUse->getQuantNormalCache();
+	CQuantNormalCache* const quantNormalCache = (meshManipulatorOverride == nullptr) ? defaultMeshManipulator->getQuantNormalCache() : meshManipulatorOverride->getQuantNormalCache();
 	constexpr size_t vertexSize = sizeof(CGeometryCreator::CylinderVertex);
 	retval.inputParams = { 0b1111u,0b1u,{
 											{0u,EF_R32G32B32_SFLOAT,offsetof(CylinderVertex,pos)},
@@ -445,11 +455,11 @@ CGeometryCreator::return_type CGeometryCreator::createCylinderMesh(IMeshManipula
 }
 
 /* A cone with proper normals and texture coords */
-CGeometryCreator::return_type CGeometryCreator::createConeMesh( IMeshManipulator* const meshManipulatorToUse,
-																float radius, float length, uint32_t tesselation,
+CGeometryCreator::return_type CGeometryCreator::createConeMesh( float radius, float length, uint32_t tesselation,
 																const video::SColor& colorTop,
 																const video::SColor& colorBottom,
-																float oblique) const
+																float oblique,
+																IMeshManipulator* const meshManipulatorOverride) const
 {
 #ifndef NEW_SHADERS
     const size_t vtxCnt = tesselation+2u;
