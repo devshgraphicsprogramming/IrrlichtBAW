@@ -2,19 +2,41 @@
 #include <irrlicht.h>
 
 #include "../../ext/DebugDraw/CDraw3DLine.h"
-
 #include "../common/QToQuitEventReceiver.h"
-
 
 using namespace irr;
 using namespace core;
 using namespace asset;
 using namespace video;
 
+enum E_AVAILABLE_DESCRIPTORS
+{
+	EAD_DS1_UBO,
+	EAD_DS3_SAMPLER,
+	EAD_COUNT
+};
+
+enum E_DESCRIPTOR_SET_1_UBO
+{
+	EDS1U_MVP,
+	EDS1U_MV,
+	EDS1U_NORMAL_MAT,
+	EDS1U_COUNT
+};
+
+#include "irr/irrpack.h"
+//! Designed for use with interface blocks declared with `layout (row_major, std140)`
+struct DS1_UBO
+{
+	core::matrix4SIMD mvp;
+	core::matrix3x4SIMD mv;
+	core::matrix3x4SIMD normalMatrix;
+} PACK_STRUCT;
+#include "irr/irrunpack.h"
+
 vector3df camPos;
 vector<vectorSIMDf> controlPts;
 ISpline* spline = NULL;
-
 
 template<typename IteratorType>
 vector<vectorSIMDf> preprocessBSplineControlPoints(const IteratorType& _begin, const IteratorType& _end, bool loop=false, float relativeLen=0.25f)
@@ -187,8 +209,6 @@ private:
     bool wasLeftPressedBefore;
 };
 
-
-
 int main()
 {
 	// create device with full flexibility over creation parameters
@@ -207,7 +227,6 @@ int main()
 	if (!device)
 		return 1; // could not create selected driver.
 
-
 	device->getCursorControl()->setVisible(false);
 
 	MyEventReceiver receiver;
@@ -217,7 +236,6 @@ int main()
 	auto driver = device->getVideoDriver();
 
 	auto draw3DLine = ext::DebugDraw::CDraw3DLine::create(driver);
-
 
 	auto smgr = device->getSceneManager();
 	scene::ICameraSceneNode* camera = smgr->addCameraSceneNodeFPS(0,100.0f,0.01f);
@@ -268,9 +286,11 @@ int main()
 		core::smart_refctd_ptr<IGPUMeshBuffer> mb = nullptr;
 		core::matrix3x4SIMD transform = core::matrix3x4SIMD();
 	};
+
+	auto gpuubo = driver->createDeviceLocalGPUBufferOnDedMem(sizeof(DS1_UBO));
 	
-	auto createCube = [=](	const char* jpegPath, const core::quaternion& rotation,
-							const core::vector3df_SIMD& scale=core::vector3df_SIMD(1.f,1.f,1.f)) -> CustomObject
+	auto createCubeAndUsefulData = [&](	const char* jpegPath, const core::quaternion& rotation,
+							const core::vector3df_SIMD& scale=core::vector3df_SIMD(1.f,1.f,1.f)) -> std::tuple<CustomObject, core::smart_refctd_ptr<IGPUDescriptorSet>>
 	{
 		asset::IAssetLoader::SAssetLoadParams lparams;
 		auto contents = assMgr->getAsset(jpegPath, lparams).getContents();
@@ -286,39 +306,85 @@ int main()
 		const auto& imgCreationParams = gpuImage->getCreationParameters();
 		auto imgView = driver->createGPUImageView({{},std::move(gpuImage),IGPUImageView::ET_2D,imgCreationParams.format,{},{{},0u,imgCreationParams.mipLevels,0u,1u}});
 
-		core::smart_refctd_ptr<IGPUDescriptorSetLayout> dsLayout;
+		constexpr IAsset::E_TYPE dslayoutTypes[]{ IAsset::E_TYPE::ET_DESCRIPTOR_SET_LAYOUT, static_cast<IAsset::E_TYPE>(0u) };
+		auto cpuDs1Layout = core::smart_refctd_ptr_static_cast<ICPUDescriptorSetLayout>(assMgr->findAssets("irr/builtin/materials/lambertian/singletexture/descriptorsetlayout/1", dslayoutTypes)->begin()->getContents().first[0]);
+		auto cpuDs3Layout = core::smart_refctd_ptr_static_cast<ICPUDescriptorSetLayout>(assMgr->findAssets("irr/builtin/materials/lambertian/singletexture/descriptorsetlayout/3", dslayoutTypes)->begin()->getContents().first[0]);
+
+		auto gpuDs1Layout = driver->getGPUObjectsFromAssets(&cpuDs1Layout.get(), &cpuDs1Layout.get() + 1)->front();
+		auto gpuDs3Layout = driver->getGPUObjectsFromAssets(&cpuDs3Layout.get(), &cpuDs3Layout.get() + 1)->front();
+
+		auto ds1 = std::move(driver->createGPUDescriptorSet(std::move(gpuDs1Layout)));
+		auto ds3 = driver->createGPUDescriptorSet(std::move(gpuDs3Layout));
+
+		IGPUDescriptorSet::SDescriptorInfo ds1Info;
+		IGPUDescriptorSet::SDescriptorInfo ds3Info;
 		{
-			std::string path("irr/builtin/materials/lambertian/singletexture/descriptorsetlayout/");
-			path += std::to_string(PER_MATERIAL_DESC_SET);
-			auto layout = assMgr->findGPUObject(path.c_str(),IAsset::ET_PIPELINE_LAYOUT);
-			assert(layout->front().get()==pLayout->getDescriptorSetLayout(PER_MATERIAL_DESC_SET));
-			dsLayout = core::smart_refctd_ptr_dynamic_cast<IGPUDescriptorSetLayout>(layout->front());
+			ds1Info.desc = gpuubo;
+			ds1Info.buffer.offset = 0ull;
+			ds1Info.buffer.size = gpuubo->getSize();
+
+			ds3Info.desc = std::move(imgView);
+			ds3Info.image.imageLayout = EIL_SHADER_READ_ONLY_OPTIMAL;
+			ds3Info.image.sampler = sampler;
+
+			IGPUDescriptorSet::SWriteDescriptorSet pWrites[EAD_COUNT] = 
+			{ 
+				{ds1.get(), 0u, 0u, 1u, EDT_UNIFORM_BUFFER, &ds1Info},
+				{ds3.get(), 0u, 0u, 1u, EDT_COMBINED_IMAGE_SAMPLER, &ds3Info}
+			};
+
+			driver->updateDescriptorSets(EAD_COUNT, pWrites, 0u, nullptr); // something is wrong here
 		}
-		auto ds = driver->createGPUDescriptorSet(std::move(dsLayout));
 
-		IGPUDescriptorSet::SDescriptorInfo pInfo[1];
-		pInfo[0].desc = std::move(imgView);
-		pInfo[0].image.imageLayout = EIL_SHADER_READ_ONLY_OPTIMAL;
-		pInfo[0].image.sampler = sampler;
-		IGPUDescriptorSet::SWriteDescriptorSet pWrites[1] = {{ds.get(),0u,0u,1u,EDT_COMBINED_IMAGE_SAMPLER,pInfo}};
-		driver->updateDescriptorSets(1u,pWrites,0u,nullptr);
-
-		auto getGPUBufferBinding = [&](const SBufferBinding<ICPUBuffer>& other)
+		constexpr auto MAX_ATTR_BUF_BINDING_COUNT = video::IGPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT;
+		constexpr auto MAX_DATA_BUFFERS = MAX_ATTR_BUF_BINDING_COUNT + 1;
+		core::vector<asset::ICPUBuffer*> cpubuffers;
+		cpubuffers.reserve(MAX_DATA_BUFFERS);
+		for (auto i = 0; i < MAX_ATTR_BUF_BINDING_COUNT; i++)
 		{
-			return SBufferBinding<IGPUBuffer>{other.offset,core::smart_refctd_ptr_dynamic_cast<IGPUBuffer>(assMgr->findGPUObject(other.buffer.get()))};
-		};
-		SBufferBinding<IGPUBuffer> bindings[IGPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT];
-		for (size_t i=0ull; i<IGPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT; i++)
-			bindings[i] = getGPUBufferBinding(cubeParams.bindings[i]);
+			auto buf = cubeParams.bindings[i].buffer.get();
+			if (buf)
+				cpubuffers.push_back(buf);
+		}
+		auto cpuindexbuffer = cubeParams.indexBuffer.buffer.get();
+		if (cpuindexbuffer)
+			cpubuffers.push_back(cpuindexbuffer);
+
+		auto gpubuffers = driver->getGPUObjectsFromAssets(cpubuffers.data(), cpubuffers.data() + cpubuffers.size());
+
+		asset::SBufferBinding<video::IGPUBuffer> bindings[MAX_DATA_BUFFERS];
+		for (auto i = 0, j = 0; i < MAX_ATTR_BUF_BINDING_COUNT; i++)
+		{
+			if (!cubeParams.bindings[i].buffer)
+				continue;
+			auto buffPair = gpubuffers->operator[](j++);
+			bindings[i].offset = buffPair->getOffset();
+			bindings[i].buffer = core::smart_refctd_ptr<video::IGPUBuffer>(buffPair->getBuffer());
+		}
+		if (cpuindexbuffer)
+		{
+			auto buffPair = gpubuffers->back();
+			bindings[MAX_ATTR_BUF_BINDING_COUNT].offset = buffPair->getOffset();
+			bindings[MAX_ATTR_BUF_BINDING_COUNT].buffer = core::smart_refctd_ptr<video::IGPUBuffer>(buffPair->getBuffer());
+		}
+
+		auto mb = core::make_smart_refctd_ptr<video::IGPUMeshBuffer>(core::smart_refctd_ptr(pipeline), std::move(ds3), bindings, std::move(bindings[MAX_ATTR_BUF_BINDING_COUNT]));
+		{
+			mb->setIndexType(cubeParams.indexType);
+			mb->setIndexCount(cubeParams.indexCount);
+			mb->setBoundingBox(cubeParams.bbox);
+		}
+
 		CustomObject retval;
-		retval.mb = core::make_smart_refctd_ptr<IGPUMeshBuffer>(core::smart_refctd_ptr(pipeline),std::move(ds),bindings,getGPUBufferBinding(cubeParams.indexBuffer));
+		retval.mb = std::move(mb);
 		retval.transform.setRotation(rotation);
 		retval.transform.concatenateAfter(core::matrix3x4SIMD().setScale(scale));
-		return retval;
+
+		return std::make_tuple(retval, ds1);
 	};
 
-	auto animatedCube = createCube("../../media/bumpmap.jpg",core::quaternion::fromEuler(core::radians(core::vector3df_SIMD(45.f,20.f,15.f))));
-	auto centerCube = createCube("../../media/wall.jpg",core::quaternion(),core::vector3df_SIMD(2.f));
+	auto animatedCube = createCubeAndUsefulData("../../media/bumpmap.jpg",core::quaternion::fromEuler(core::radians(core::vector3df_SIMD(45.f,20.f,15.f))));
+	auto centerCube = createCubeAndUsefulData("../../media/wall.jpg",core::quaternion(),core::vector3df_SIMD(2.f));
 
     float cubeDistance = 0.f;
     float cubeParameterHint = 0.f;
@@ -348,15 +414,27 @@ int main()
 		camPos = camera->getAbsolutePosition();
 
 		camera->render();
-		core::matrix4SIMD vp = camera->getConcatenatedMatrix();
+
+		DS1_UBO ubodata;
+		ubodata.mv = camera->getViewMatrix();
+		ubodata.normalMatrix = ubodata.mv;
+		
+		ubodata.mvp = camera->getConcatenatedMatrix();
 
 		driver->bindGraphicsPipeline(pipeline.get());
-		auto drawCube = [&](const CustomObject& cube) -> void
+		auto drawCube = [&](const decltype(animatedCube)& cubeData) -> void
 		{
-			auto ds = cube.mb->getAttachedDescriptorSet();
-			driver->bindDescriptorSets(EPBP_GRAPHICS,pLayout.get(),PER_MATERIAL_DESC_SET,1u,&ds,nullptr);
-			core::matrix4SIMD mvp = core::concatenateBFollowedByA(vp, cube.transform);
-			driver->pushConstants(pipeline->getLayout(), ISpecializedShader::ESS_VERTEX, 0u, sizeof(core::matrix4SIMD), mvp.pointer());
+			auto& cube = std::get<0>(cubeData);
+			auto& ds1 = std::get<1>(cubeData);
+
+			auto ds3 = cube.mb->getAttachedDescriptorSet();
+			const IGPUDescriptorSet* gpuDescriptorSets[] = { ds1.get(), ds3 };
+
+			ubodata.mvp = core::concatenateBFollowedByA(ubodata.mvp, cube.transform);
+
+			driver->updateBufferRangeViaStagingBuffer(gpuubo.get(), 0ull, gpuubo->getSize(), &ubodata);
+
+			driver->bindDescriptorSets(video::EPBP_GRAPHICS, pLayout.get(), 0u, 2u, gpuDescriptorSets, nullptr);
 			driver->drawMeshBuffer(cube.mb.get());
 		};
 		drawCube(centerCube);
@@ -388,11 +466,11 @@ int main()
             mat.getColumn(1) = reinterpret_cast<vector3df&>(pseudoUp);
             mat.getColumn(2) = reinterpret_cast<vector3df&>(sideDir);
             mat.setTranslation(reinterpret_cast<const vector3df&>(newPos));
-			animatedCube.transform.set(mat);
+			std::get<0>(animatedCube).transform.set(mat);
         }
 		drawCube(animatedCube);
 
-		draw3DLine->draw(vp,lines);
+		draw3DLine->draw(camera->getConcatenatedMatrix(), lines);
 
 		driver->endScene();
 
@@ -406,7 +484,7 @@ int main()
 
 			device->setWindowCaption(str.str());
 			lastFPSTime = time;
-		}
+		}	
 	}
 
     if (spline)
