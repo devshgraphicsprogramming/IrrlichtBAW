@@ -1001,7 +1001,7 @@ void CMeshManipulator::_filterInvalidTriangles(ICPUMeshBuffer* _input)
 template void CMeshManipulator::_filterInvalidTriangles<uint16_t>(ICPUMeshBuffer* _input);
 template void CMeshManipulator::_filterInvalidTriangles<uint32_t>(ICPUMeshBuffer* _input);
 
-core::vector<core::vectorSIMDf> CMeshManipulator::findBetterFormatF(E_FORMAT* _outType, size_t* _outSize, E_FORMAT* _outPrevType, const ICPUMeshBuffer* _meshbuffer, uint32_t _attrId, const SErrorMetric& _errMetric)
+core::vector<core::vectorSIMDf> CMeshManipulator::findBetterFormatF(E_FORMAT* _outType, size_t* _outSize, E_FORMAT* _outPrevType, const ICPUMeshBuffer* _meshbuffer, uint32_t _attrId, const SErrorMetric& _errMetric, CQuantNormalCache& _cache)
 {
 	if (!_meshbuffer->getPipeline())
         return {};
@@ -1043,7 +1043,7 @@ core::vector<core::vectorSIMDf> CMeshManipulator::findBetterFormatF(E_FORMAT* _o
 
 	for (const SAttribTypeChoice& t : possibleTypes)
 	{
-		if (calcMaxQuantizationError({ thisType }, t, attribs, _errMetric))
+		if (calcMaxQuantizationError({ thisType }, t, attribs, _errMetric, _cache))
 		{
             if (getTexelOrBlockBytesize(t.type) < getTexelOrBlockBytesize(thisType))
             {
@@ -1449,7 +1449,7 @@ core::vector<CMeshManipulator::SAttribTypeChoice> CMeshManipulator::findTypesOfP
 	return possibleTypes;
 }
 
-bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcType, const SAttribTypeChoice& _dstType, const core::vector<core::vectorSIMDf>& _srcData, const SErrorMetric& _errMetric)
+bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcType, const SAttribTypeChoice& _dstType, const core::vector<core::vectorSIMDf>& _srcData, const SErrorMetric& _errMetric, CQuantNormalCache& _cache)
 {
     using namespace video;
 
@@ -1523,14 +1523,8 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
 
 	for (const core::vectorSIMDf& d : _srcData)
 	{
-        //TODO
-		/*const core::vectorSIMDf quantized = quantFunc(d, _srcType.type, _dstType.type);
-
-        if (!compareFloatingPointAttribute(d, quantized, getFormatChannelCount(_srcType.type), _errMetric))*/
-
-        //from image_manipulator branch
-		/*const core::vectorSIMDf quantized = quantFunc(d, _srcType.type, _dstType.type);
-        if (!compareFloatingPointAttribute(d, quantized, getFormatChannelCount(_srcType.type), _errMetric))*/
+		const core::vectorSIMDf quantized = quantFunc(d, _srcType.type, _dstType.type, _cache);
+        if (!compareFloatingPointAttribute(d, quantized, getFormatChannelCount(_srcType.type), _errMetric))
             return false;
 	}
 
