@@ -245,8 +245,6 @@ int main()
 	camera->setFarValue(100.0f);
     smgr->setActiveCamera(camera);
 
-	constexpr uint32_t PER_MATERIAL_DESC_SET = 2u; //don't touch this, will go into scene namespace
-
 	constexpr IAsset::E_TYPE layoutTypes[]{ IAsset::E_TYPE::ET_PIPELINE_LAYOUT, static_cast<IAsset::E_TYPE>(0u) };
 	auto cpuLayout = core::smart_refctd_ptr_static_cast<ICPUPipelineLayout>(assMgr->findAssets("irr/builtin/materials/lambertian/singletexture/pipelinelayout", layoutTypes)->begin()->getContents().first[0]);
 
@@ -269,17 +267,15 @@ int main()
 	IGPUSpecializedShader** pShaders = reinterpret_cast<IGPUSpecializedShader**>(shaders->data()); // hack but works, shorter code
 
 	SBlendParams blendParams; // gets sane defaults
-
 	SRasterizationParams rasterParams; // default is depth testing
+	rasterParams.faceCullingMode = asset::EFCM_NONE;
+
 	auto pipeline = driver->createGPURenderpassIndependentPipeline(	nullptr,core::smart_refctd_ptr(pLayout),pShaders,pShaders+shaders->size(),
 																	cubeParams.inputParams,blendParams,cubeParams.assemblyParams,rasterParams);
 
 	constexpr IAsset::E_TYPE samplerTypes[]{ IAsset::ET_SAMPLER, static_cast<IAsset::E_TYPE>(0u) };
 	auto cpuSampler = core::smart_refctd_ptr_static_cast<ICPUSampler>(assMgr->findAssets("irr/builtin/samplers/default", samplerTypes)->begin()->getContents().first[0]);
 	auto sampler = driver->getGPUObjectsFromAssets(&cpuSampler.get(), &cpuSampler.get() + 1)->front();
-
-	// I have to sleep, but bellow are logic errors as well
-	// to fix tomorrow
 
 	struct alignas(64) CustomObject
 	{
@@ -333,7 +329,7 @@ int main()
 				{ds3.get(), 0u, 0u, 1u, EDT_COMBINED_IMAGE_SAMPLER, &ds3Info}
 			};
 
-			driver->updateDescriptorSets(EAD_COUNT, pWrites, 0u, nullptr); // something is wrong here
+			driver->updateDescriptorSets(EAD_COUNT, pWrites, 0u, nullptr);
 		}
 
 		constexpr auto MAX_ATTR_BUF_BINDING_COUNT = video::IGPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT;
@@ -383,8 +379,8 @@ int main()
 		return std::make_tuple(retval, ds1);
 	};
 
-	auto animatedCube = createCubeAndUsefulData("../../media/bumpmap.jpg",core::quaternion::fromEuler(core::radians(core::vector3df_SIMD(45.f,20.f,15.f))));
-	auto centerCube = createCubeAndUsefulData("../../media/wall.jpg",core::quaternion(),core::vector3df_SIMD(2.f));
+	auto animatedCube = createCubeAndUsefulData("../../media/color_space_test/R8G8B8_1.png",core::quaternion::fromEuler(core::radians(core::vector3df_SIMD(45.f,20.f,15.f))));
+	auto centerCube = createCubeAndUsefulData("../../media/color_space_test/R8G8B8A8_1.png",core::quaternion(),core::vector3df_SIMD(2.f));
 
     float cubeDistance = 0.f;
     float cubeParameterHint = 0.f;
@@ -418,23 +414,22 @@ int main()
 		DS1_UBO ubodata;
 		ubodata.mv = camera->getViewMatrix();
 		ubodata.normalMatrix = ubodata.mv;
-		
 		ubodata.mvp = camera->getConcatenatedMatrix();
 
 		driver->bindGraphicsPipeline(pipeline.get());
 		auto drawCube = [&](const decltype(animatedCube)& cubeData) -> void
 		{
 			auto& cube = std::get<0>(cubeData);
-			auto& ds1 = std::get<1>(cubeData);
 
+			auto ds1 = std::get<1>(cubeData).get();
 			auto ds3 = cube.mb->getAttachedDescriptorSet();
-			const IGPUDescriptorSet* gpuDescriptorSets[] = { ds1.get(), ds3 };
 
 			ubodata.mvp = core::concatenateBFollowedByA(ubodata.mvp, cube.transform);
 
 			driver->updateBufferRangeViaStagingBuffer(gpuubo.get(), 0ull, gpuubo->getSize(), &ubodata);
 
-			driver->bindDescriptorSets(video::EPBP_GRAPHICS, pLayout.get(), 0u, 2u, gpuDescriptorSets, nullptr);
+			driver->bindDescriptorSets(video::EPBP_GRAPHICS, pLayout.get(), 1u, 1u, &ds1, nullptr);
+			driver->bindDescriptorSets(video::EPBP_GRAPHICS, pLayout.get(), 3u, 1u, &ds3, nullptr);
 			driver->drawMeshBuffer(cube.mb.get());
 		};
 		drawCube(centerCube);
@@ -458,8 +453,6 @@ int main()
             forwardDir = normalize(forwardDir); //must normalize after
             vectorSIMDf sideDir = normalize(cross(forwardDir,vectorSIMDf(0,1,0))); // predefined up vector
             vectorSIMDf pseudoUp = cross(sideDir,forwardDir);
-
-
 
             matrix4x3 mat;
             mat.getColumn(0) = reinterpret_cast<vector3df&>(forwardDir);
