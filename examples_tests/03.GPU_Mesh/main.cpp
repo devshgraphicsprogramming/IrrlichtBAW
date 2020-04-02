@@ -5,13 +5,10 @@
 
 //! I advise to check out this file, its a basic input handler
 #include "../common/QToQuitEventReceiver.h"
-
-//#include "../../ext/ScreenShot/ScreenShot.h"
-
+#include "../../ext/ScreenShot/ScreenShot.h"
 
 using namespace irr;
 using namespace core;
-
 
 #include "irr/irrpack.h"
 struct VertexStruct
@@ -38,7 +35,7 @@ layout(location = 0) out vec4 Color; //per vertex output color, will be interpol
 
 void main()
 {
-    gl_Position = irr_builtin_glsl_workaround_AMD_broken_row_major_qualifier_mat4(PushConstants.modelViewProj)*vPos; //only thing preventing the shader from being core-compliant
+    gl_Position = irr_builtin_glsl_workaround_AMD_broken_row_major_qualifier_mat4x4(PushConstants.modelViewProj)*vPos; //only thing preventing the shader from being core-compliant
     Color = vCol;
 }
 )===";
@@ -74,7 +71,6 @@ int main()
 	if (!device)
 		return 1; // could not create selected driver.
 
-
 	//! disable mouse cursor, since camera will force it to the middle
 	//! and we don't want a jittery cursor in the middle distracting us
 	device->getCursorControl()->setVisible(false);
@@ -84,10 +80,9 @@ int main()
 	QToQuitEventReceiver receiver;
 	device->setEventReceiver(&receiver);
 
-
-	auto* driver = device->getVideoDriver();
-	auto* smgr = device->getSceneManager();
-
+	auto driver = device->getVideoDriver();
+	auto assetManager = device->getAssetManager();
+	auto smgr = device->getSceneManager();
 
 	//! we want to move around the scene and view it from different angles
 	scene::ICameraSceneNode* camera = smgr->addCameraSceneNodeFPS(0,100.0f,0.001f);
@@ -151,7 +146,7 @@ int main()
 			{
 				auto spirv = device->getAssetManager()->getGLSLCompiler()->createSPIRVFromGLSL(source, stage, "main", "runtimeID");
 				auto unspec = driver->createGPUShader(std::move(spirv));
-				return driver->createGPUSpecializedShader(unspec.get(), { core::vector<asset::ISpecializedShader::SInfo::SMapEntry>(),nullptr,"main",stage });
+				return driver->createGPUSpecializedShader(unspec.get(), { nullptr ,nullptr,"main",stage });
 			};
 			// origFilepath is only relevant when you have filesystem #includes in your shader
 			auto createGPUSpecializedShaderFromSourceWithIncludes = [&](const char* source, asset::ISpecializedShader::E_SHADER_STAGE stage, const char* origFilepath)
