@@ -104,76 +104,11 @@ int main()
 
     smgr->setActiveCamera(camera);
 
-    auto createDefaultFBOForScreenshoting = [&]()
-    {
-        auto createAttachement = [&](bool colorBuffer)
-        {
-            asset::ICPUImage::SCreationParams imgInfo;
-            imgInfo.format = colorBuffer ? asset::EF_R8G8B8A8_UNORM : asset::EF_D16_UNORM;
-            imgInfo.type = asset::ICPUImage::ET_2D;
-            imgInfo.extent.width = driver->getCurrentRenderTargetSize().Width;
-            imgInfo.extent.height = driver->getCurrentRenderTargetSize().Height;
-            imgInfo.extent.depth = 1u;
-            imgInfo.mipLevels = 1u;
-            imgInfo.arrayLayers = 1u;
-            imgInfo.samples = asset::ICPUImage::ESCF_1_BIT;
-            imgInfo.flags = static_cast<asset::IImage::E_CREATE_FLAGS>(0u);
-
-            auto image = asset::ICPUImage::create(std::move(imgInfo));
-            const auto texelFormatBytesize = getTexelOrBlockBytesize(image->getCreationParameters().format);
-
-            auto texelBuffer = core::make_smart_refctd_ptr<asset::ICPUBuffer>(image->getImageDataSizeInBytes());
-            auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<asset::ICPUImage::SBufferCopy>>(1u);
-            asset::ICPUImage::SBufferCopy& region = regions->front();
-
-            region.imageSubresource.mipLevel = 0u;
-            region.imageSubresource.baseArrayLayer = 0u;
-            region.imageSubresource.layerCount = 1u;
-            region.bufferOffset = 0u;
-            region.bufferRowLength = image->getCreationParameters().extent.width;
-            region.bufferImageHeight = 0u;
-            region.imageOffset = { 0u, 0u, 0u };
-            region.imageExtent = image->getCreationParameters().extent;
-
-            image->setBufferAndRegions(std::move(texelBuffer), regions);
-
-            asset::ICPUImageView::SCreationParams imgViewInfo;
-            imgViewInfo.image = std::move(image);
-            imgViewInfo.format = colorBuffer ? asset::EF_R8G8B8A8_UNORM : asset::EF_D16_UNORM;
-            imgViewInfo.viewType = asset::IImageView<asset::ICPUImage>::ET_2D;
-            imgViewInfo.flags = static_cast<asset::ICPUImageView::E_CREATE_FLAGS>(0u);
-            imgViewInfo.subresourceRange.baseArrayLayer = 0u;
-            imgViewInfo.subresourceRange.baseMipLevel = 0u;
-            imgViewInfo.subresourceRange.layerCount = imgInfo.arrayLayers;
-            imgViewInfo.subresourceRange.levelCount = imgInfo.mipLevels;
-
-            auto imageView = asset::ICPUImageView::create(std::move(imgViewInfo));
-            auto gpuImageView = driver->getGPUObjectsFromAssets(&imageView.get(), &imageView.get() + 1)->front();
-            
-            return std::move(gpuImageView);
-        };
-
-        auto gpuImageViewDepthBuffer = createAttachement(false);
-        auto gpuImageViewColorBuffer = createAttachement(true);
-
-        auto frameBuffer = driver->addFrameBuffer();
-        frameBuffer->attach(video::EFAP_DEPTH_ATTACHMENT, std::move(gpuImageViewDepthBuffer));
-        frameBuffer->attach(video::EFAP_COLOR_ATTACHMENT0, std::move(gpuImageViewColorBuffer));
-
-        return frameBuffer;
-    };
-
-    auto frameBuffer = createDefaultFBOForScreenshoting();
-
 	uint64_t lastFPSTime = 0;
     while (device->run() && receiver.keepOpen())
     {
-        driver->setRenderTarget(frameBuffer, false);
-
-        float clearValues[] = { 1, 1, 1, 1 };
-        driver->clearColorBuffer(video::EFAP_COLOR_ATTACHMENT0, clearValues);
-        driver->clearZBuffer();
-
+        driver->beginScene(true, true, video::SColor(255,255,255,255) );
+		
         //! This animates (moves) the camera and sets the transforms
 		camera->OnAnimate(std::chrono::duration_cast<std::chrono::milliseconds>(device->getTimer()->getTime()).count());
 		camera->render();
@@ -226,9 +161,6 @@ int main()
             driver->drawMeshBuffer(gpumb);
         }
 
-        driver->blitRenderTargets(frameBuffer, nullptr);
-        driver->setRenderTarget(nullptr, false);
-
 		driver->endScene();
 
 		// display frames per second in window title
@@ -241,51 +173,6 @@ int main()
 			device->setWindowCaption(str.str().c_str());
 			lastFPSTime = time;
 		}
-	}
-
-	//create a screenshot
-	{
-        asset::ICPUImage::SCreationParams imgInfo;
-        imgInfo.format = asset::EF_R8G8B8A8_UNORM;
-        imgInfo.type = asset::ICPUImage::ET_2D;
-        imgInfo.extent.width = driver->getCurrentRenderTargetSize().Width;
-        imgInfo.extent.height = driver->getCurrentRenderTargetSize().Height;
-        imgInfo.extent.depth = 1u;
-        imgInfo.mipLevels = 1u;
-        imgInfo.arrayLayers = 1u;
-        imgInfo.samples = asset::ICPUImage::ESCF_1_BIT;
-        imgInfo.flags = static_cast<asset::IImage::E_CREATE_FLAGS>(0u);
-
-        auto image = asset::ICPUImage::create(std::move(imgInfo));
-
-        auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<asset::ICPUImage::SBufferCopy>>(1u);
-        asset::ICPUImage::SBufferCopy& region = regions->front();
-
-        region.imageSubresource.mipLevel = 0u;
-        region.imageSubresource.baseArrayLayer = 0u;
-        region.imageSubresource.layerCount = 1u;
-        region.bufferOffset = 0u;
-        region.bufferRowLength = image->getCreationParameters().extent.width;
-        region.bufferImageHeight = 0u;
-        region.imageOffset = { 0u, 0u, 0u };
-        region.imageExtent = image->getCreationParameters().extent;
-
-        auto destinationBuffer = core::smart_refctd_ptr<video::IGPUBuffer>(driver->createDownStreamingGPUBufferOnDedMem(image->getImageDataSizeInBytes())); 
-        destinationBuffer->getBoundMemory()->mapMemoryRange(video::IDriverMemoryAllocation::EMCAF_READ, { 0u, destinationBuffer->getSize() });
-
-        driver->copyImageToBuffer(frameBuffer->getAttachment(video::EFAP_COLOR_ATTACHMENT0)->getCreationParameters().image.get(), destinationBuffer.get(), 1, regions->begin());
-
-        auto texelBuffer = core::make_smart_refctd_ptr<asset::ICPUBuffer>(image->getImageDataSizeInBytes());
-        auto rawData = reinterpret_cast<uint8_t*>(destinationBuffer->getBoundMemory()->getMappedPointer());
-
-        memcpy(texelBuffer->getPointer(), rawData, image->getImageDataSizeInBytes());
-
-        image->setBufferAndRegions(std::move(texelBuffer), regions);
-
-        asset::IAssetWriter::SAssetWriteParams wparams(image.get());
-        am->writeAsset("screenshot.png", wparams);
-        
-		//ext::ScreenShot::dirtyCPUStallingScreenshot(device.get(), "screenshot.png", const_cast<video::IGPUImage*>(gpuScreenshot.get()), asset::EF_R8G8B8A8_UNORM);
 	}
 
 	return 0;
