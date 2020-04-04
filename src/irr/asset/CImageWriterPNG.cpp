@@ -61,16 +61,12 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 {
     if (!_override)
         getDefaultOverride(_override);
-#if defined(_IRR_COMPILE_WITH_LIBPNG_) && !defined(NEW_SHADERS)
-    SAssetWriteContext ctx{_params, _file};
 
-    const asset::CImageData* image =
-#   ifndef _IRR_DEBUG
-        static_cast<const asset::CImageData*>(_params.rootAsset);
-#   else
-        dynamic_cast<const asset::CImageData*>(_params.rootAsset);
-#   endif
-    assert(image);
+#if defined(_IRR_COMPILE_WITH_LIBPNG_)
+
+	SAssetWriteContext ctx{ _params, _file };
+
+	const asset::ICPUImage* image = IAsset::castDown<ICPUImage>(_params.rootAsset);
 
     io::IWriteFile* file = _override->getOutputFile(_file, ctx, {image, 0u});
 
@@ -102,7 +98,12 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 		return false;
 	}
 	
-	auto format = image->getColorFormat();
+	const auto& imageParams = image->getCreationParameters();
+	const auto& region = image->getRegions().begin();
+	auto format = imageParams.format;
+
+	IImage::SBufferCopy::TexelBlockInfo blockInfo(format);
+	core::vector3du32_SIMD trueExtent = IImage::SBufferCopy::TexelsToBlocks(region->getTexelStrides(), blockInfo);
 	
 	png_set_write_fn(png_ptr, file, user_write_data_fcn, nullptr);
 	
@@ -111,20 +112,20 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	{
 		case asset::EF_R8G8B8_SRGB:
 			png_set_IHDR(png_ptr, info_ptr,
-				image->getSize().X, image->getSize().Y,
+				trueExtent.X, trueExtent.Y,
 				8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
 				PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 			break;
 		case asset::EF_R8G8B8A8_SRGB:
 			png_set_IHDR(png_ptr, info_ptr,
-				image->getSize().X, image->getSize().Y,
+				trueExtent.X, trueExtent.Y,
 				8, PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,
 				PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 		break;
 		case asset::EF_R8_SRGB:
 		case asset::EF_R8_UNORM:
 			png_set_IHDR(png_ptr, info_ptr,
-				image->getSize().X, image->getSize().Y,
+				trueExtent.X, trueExtent.Y,
 				8, PNG_COLOR_TYPE_GRAY, PNG_INTERLACE_NONE,
 				PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 		break;
@@ -135,7 +136,7 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 			}
 	}
 
-	int32_t lineWidth = image->getSize().X;
+	int32_t lineWidth = trueExtent.X;
 	switch (format)
 	{
 		case asset::EF_R8_SRGB:
@@ -155,11 +156,10 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 			}
 	}
 	
-	uint8_t* data = (uint8_t*)image->getData();
-	core::vector3d<uint32_t> dim = image->getSize();
+	uint8_t* data = (uint8_t*)image->getBuffer()->getPointer();
 
 	constexpr uint32_t maxPNGFileHeight = 16u * 1024u; // arbitrary limit
-	if (dim.Y>maxPNGFileHeight)
+	if (trueExtent.Y>maxPNGFileHeight)
 	{
 		os::Printer::log("PNGWriter: Image dimensions too big!\n", file->getFileName().c_str(), ELL_ERROR);
 		png_destroy_write_struct(&png_ptr, &info_ptr);
@@ -168,15 +168,19 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	
 	// Create array of pointers to rows in image data
 	png_bytep RowPointers[maxPNGFileHeight];
+	irr::core::vector3d<uint32_t> imgSize;
+	imgSize.X = trueExtent.X;
+	imgSize.Y = trueExtent.Y;
+	imgSize.Z = trueExtent.Z;
 
 	// Fill array of pointers to rows in image data
-	for (uint32_t i = 0; i < dim.Y; ++i)
+	for (uint32_t i = 0; i < trueExtent.Y; ++i)
 	{
 		switch (format) {
 			case asset::EF_R8_UNORM:
 				{
 					const void *src_container[4] = {data, nullptr, nullptr, nullptr};
-					video::convertColor<EF_R8_UNORM, EF_R8_SRGB>(src_container, data, dim.X, dim);
+					convertColor<EF_R8_UNORM, EF_R8_SRGB>(src_container, data, trueExtent.X, imgSize);
 				}
 				break;
 			case asset::EF_R8_SRGB:
@@ -210,7 +214,7 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	return true;
 #else
 	return false;
-#endif//defined(_IRR_COMPILE_WITH_LIBPNG_) && !defined(NEW_SHADERS)
+#endif//defined(_IRR_COMPILE_WITH_LIBPNG_)
 }
 
 } // namespace video

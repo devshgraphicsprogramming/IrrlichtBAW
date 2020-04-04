@@ -9,7 +9,7 @@
 #include "IReadFile.h"
 #include "os.h"
 #include "irr/asset/format/convertColor.h"
-#include "irr/asset/ICPUImageView.h"
+#include "irr/asset/ICPUImage.h"
 
 namespace irr
 {
@@ -137,7 +137,7 @@ static void convertColorFlip(uint32_t regionBufferRowLenght, VkExtent3D imageExt
 			out -= stride;
 		
 		const void *src_container[4] = {in, nullptr, nullptr, nullptr};
-		convertColor<srcFormat, destFormat>(src_container, out, stride, size);
+		convertColor<srcFormat, destFormat>(src_container, out, regionBufferRowLenght, size);
 		in += stride;
 		
 		if (!flip)
@@ -196,11 +196,6 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 	imgInfo.samples = ICPUImage::ESCF_1_BIT;
 	imgInfo.flags = static_cast<IImage::E_CREATE_FLAGS>(0u);
 
-	core::smart_refctd_ptr<ICPUImage> image = ICPUImage::create(std::move(imgInfo));
-
-	if (!image)
-		return {};
-
 	auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
 	core::smart_refctd_ptr<ICPUBuffer> texelBuffer = nullptr;
 
@@ -212,7 +207,7 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 	region.bufferOffset = 0u;
 	region.bufferImageHeight = 0u;
 	region.imageOffset = { 0u, 0u, 0u };
-	region.imageExtent = image->getCreationParameters().extent;
+	region.imageExtent = imgInfo.extent;
 
 	// read image
 	size_t endBufferSize = {};
@@ -324,6 +319,11 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 			break;
 	}
 
+	core::smart_refctd_ptr<ICPUImage> image = ICPUImage::create(std::move(imgInfo));
+
+	if (!image)
+		return {};
+
 	image->setBufferAndRegions(std::move(texelBuffer), regions);
 
     return SAssetBundle({std::move(image)});
@@ -333,4 +333,3 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 } // end namespace irr
 
 #endif
-

@@ -3,6 +3,7 @@
 
 #include "../../ext/DebugDraw/CDraw3DLine.h"
 #include "../common/QToQuitEventReceiver.h"
+#include "../../ext/ScreenShot/ScreenShot.h"
 
 using namespace irr;
 using namespace core;
@@ -244,6 +245,8 @@ int main()
 	camera->setNearValue(0.01f);
 	camera->setFarValue(100.0f);
     smgr->setActiveCamera(camera);
+	
+	auto frameBuffer = ext::ScreenShot::createDefaultFBOForScreenshoting(device);
 
 	constexpr IAsset::E_TYPE layoutTypes[]{ IAsset::E_TYPE::ET_PIPELINE_LAYOUT, static_cast<IAsset::E_TYPE>(0u) };
 	auto cpuLayout = core::smart_refctd_ptr_static_cast<ICPUPipelineLayout>(assMgr->findAssets("irr/builtin/materials/lambertian/singletexture/pipelinelayout", layoutTypes)->begin()->getContents().first[0]);
@@ -465,6 +468,7 @@ int main()
 
 		draw3DLine->draw(camera->getConcatenatedMatrix(), lines);
 
+		driver->blitRenderTargets(nullptr, frameBuffer, false, false);
 		driver->endScene();
 
 		// display frames per second in window title
@@ -479,6 +483,8 @@ int main()
 			lastFPSTime = time;
 		}	
 	}
+	
+	ext::ScreenShot::createScreenShoot(device, frameBuffer->getAttachment(video::EFAP_COLOR_ATTACHMENT0)->getCreationParameters().image, "screenshot.png");
 
     if (spline)
         delete spline;

@@ -84,7 +84,6 @@ int main()
     sphere->getMesh()->getMeshBuffer(0)->getMaterial().MaterialType = material.MaterialType;
 	sphere->setPosition(core::vector3df(4, 0, 0));
 
-
 	auto assetMgr = device->getAssetManager();
 	//! load textures and set them
 	{
@@ -99,6 +98,7 @@ int main()
  		sphere->getMesh()->getMeshBuffer(0)->getMaterial().setTexture(0, std::move(gputextures->operator[](1u)));
 	}
 
+	auto frameBuffer = ext::ScreenShot::createDefaultFBOForScreenshoting(device);
 	uint64_t lastFPSTime = 0;
 
 	while(device->run() && receiver.keepOpen())
@@ -110,6 +110,7 @@ int main()
         //! Also draws the meshbuffer
         smgr->drawAll();
 
+		driver->blitRenderTargets(nullptr, frameBuffer, false, false);
 		driver->endScene();
 
 		// display frames per second in window title
@@ -124,11 +125,7 @@ int main()
 		}
 	}
 
-    //create a screenshot
-	{
-		core::rect<uint32_t> sourceRect(0, 0, params.WindowSize.Width, params.WindowSize.Height);
-		ext::ScreenShot::dirtyCPUStallingScreenshot(device,"screenshot.png",sourceRect,asset::EF_R8G8B8_SRGB);
-	}
+    ext::ScreenShot::createScreenShoot(device, frameBuffer->getAttachment(video::EFAP_COLOR_ATTACHMENT0)->getCreationParameters().image, "screenshot.png");
 
 	device->drop();
 

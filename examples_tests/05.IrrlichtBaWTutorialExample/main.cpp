@@ -5,6 +5,7 @@
 
 #include "../common/QToQuitEventReceiver.h"
 #include "irr/asset/CGeometryCreator.h"
+#include "../../ext/ScreenShot/ScreenShot.h"
 
 /*
 	General namespaces. Entire engine consists of those bellow.
@@ -360,6 +361,7 @@ int main()
 	auto gpuDescriptorSet1 = std::get<5>(gpuRectangle);
 
 	IGPUDescriptorSet* gpuDescriptorSets[] = { gpuDescriptorSet0.get(), gpuDescriptorSet1.get() };
+	auto frameBuffer = ext::ScreenShot::createDefaultFBOForScreenshoting(device);
 
 	/*
 		Hot loop for rendering a scene.
@@ -433,6 +435,9 @@ int main()
 
 		driver->drawMeshBuffer(gpuMeshBuffer.get());
 		
+		driver->blitRenderTargets(nullptr, frameBuffer, false, false);
 		driver->endScene();
 	}
+	
+	ext::ScreenShot::createScreenShoot(device, frameBuffer->getAttachment(video::EFAP_COLOR_ATTACHMENT0)->getCreationParameters().image, "screenshot.png");
 }

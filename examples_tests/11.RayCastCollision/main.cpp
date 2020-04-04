@@ -5,6 +5,7 @@
 
 #include "../common/QToQuitEventReceiver.h"
 #include "irr/asset/CGeometryCreator.h"
+#include "../../ext/ScreenShot/ScreenShot.h"
 
 /*
 	General namespaces. Entire engine consists of those bellow.
@@ -343,6 +344,8 @@ int main()
 	auto gCollEng = _IRR_NEW(core::SCollisionEngine);
 	auto compound = core::make_smart_refctd_ptr<core::SCompoundCollider>();
 	core::SColliderData hitPointData;
+	
+	auto frameBuffer = ext::ScreenShot::createDefaultFBOForScreenshoting(device);
 
 	/*
 		Hot loop for rendering a scene.
@@ -460,8 +463,11 @@ int main()
 			driver->drawMeshBuffer(gpuMeshBuffer.get());
 		}
 
+		driver->blitRenderTargets(nullptr, frameBuffer, false, false);
 		driver->endScene();
 	}
+	
+	ext::ScreenShot::createScreenShoot(device, frameBuffer->getAttachment(video::EFAP_COLOR_ATTACHMENT0)->getCreationParameters().image, "screenshot.png");
 }
 
 

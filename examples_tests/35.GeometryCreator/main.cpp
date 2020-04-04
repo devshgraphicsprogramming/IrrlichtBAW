@@ -6,8 +6,10 @@
 //! I advise to check out this file, its a basic input handler
 #include "../common/QToQuitEventReceiver.h"
 #include "irr/asset/CGeometryCreator.h"
+#include "../../ext/ScreenShot/ScreenShot.h"
 
 using namespace irr;
+using namespace asset;
 using namespace core;
 
 #include "irr/irrpack.h"
@@ -107,6 +109,8 @@ int main()
 	camera->setFarValue(100.0f);
 
     smgr->setActiveCamera(camera);
+	
+	auto frameBuffer = ext::ScreenShot::createDefaultFBOForScreenshoting(device);
 
 	auto geometryCreator = device->getAssetManager()->getGeometryCreator();
 	auto cubeGeometry = geometryCreator->createCubeMesh(vector3df(2,2,2));
@@ -231,6 +235,7 @@ int main()
 			driver->drawMeshBuffer(gpuObject.meshbuffer.get());
 		}
 
+		driver->blitRenderTargets(nullptr, frameBuffer, false, false);
 		driver->endScene();
 
 		// display frames per second in window title
@@ -244,6 +249,8 @@ int main()
 			lastFPSTime = time;
 		}
 	}
+	
+	ext::ScreenShot::createScreenShoot(device, frameBuffer->getAttachment(video::EFAP_COLOR_ATTACHMENT0)->getCreationParameters().image, "screenshot.png");
 
 	return 0;
 }

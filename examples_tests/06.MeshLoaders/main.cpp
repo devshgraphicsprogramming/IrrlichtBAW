@@ -6,11 +6,11 @@
 //! I advise to check out this file, its a basic input handler
 #include "../common/QToQuitEventReceiver.h"
 #include "../../ext/FullScreenTriangle/FullScreenTriangle.h"
-
 #include "../../ext/ScreenShot/ScreenShot.h"
 
 
 using namespace irr;
+using namespace asset;
 using namespace core;
 
 int main()
@@ -103,6 +103,7 @@ int main()
 	camera->setFarValue(1000.0f);
 
     smgr->setActiveCamera(camera);
+	auto frameBuffer = ext::ScreenShot::createDefaultFBOForScreenshoting(device);
 
 	uint64_t lastFPSTime = 0;
     while (device->run() && receiver.keepOpen())
@@ -161,6 +162,7 @@ int main()
             driver->drawMeshBuffer(gpumb);
         }
 
+		driver->blitRenderTargets(nullptr, frameBuffer, false, false);
 		driver->endScene();
 
 		// display frames per second in window title
@@ -175,5 +177,5 @@ int main()
 		}
 	}
 
-	return 0;
+	ext::ScreenShot::createScreenShoot(device, frameBuffer->getAttachment(video::EFAP_COLOR_ATTACHMENT0)->getCreationParameters().image, "screenshot.png");
 }
