@@ -135,20 +135,21 @@ namespace irr
 				return assetManager->writeAsset(outFileName, wparams);
 			}
 
+			//! TODO: HANDLE UNPACK ALIGNMENT
+			core::smart_refctd_ptr<video::IDriverFence> createScreenShot(video::IDriver* driver, video::IGPUImage* source, video::IGPUBuffer* destination, uint32_t sourceMipLevel = 0u, size_t destOffset = 0ull, bool implicitflush = true)
+			{
+				// will change this, https://github.com/buildaworldnet/IrrlichtBAW/issues/148
+				if (isBlockCompressionFormat(source->getCreationParameters().format))
+					return nullptr;
+
+				auto extent = source->getMipSize(sourceMipLevel);
+				video::IGPUImage::SBufferCopy pRegions[1u] = { {destOffset,extent.x,extent.y,{static_cast<asset::IImage::E_ASPECT_FLAGS>(0u),sourceMipLevel,0u,1u},{0u,0u,0u},{extent.x,extent.y,extent.z}} };
+				driver->copyImageToBuffer(source, destination, 1u, pRegions);
+
+				return driver->placeFence(implicitflush);
+			}
+
 /*
-//! TODO: HANDLE UNPACK ALIGNMENT
-core::smart_refctd_ptr<video::IDriverFence> createScreenShot(video::IDriver* driver, video::IGPUImage* source, video::IGPUBuffer* destination, uint32_t sourceMipLevel=0u, size_t destOffset=0ull, bool implicitflush=true)
-{
-	// will change this, https://github.com/buildaworldnet/IrrlichtBAW/issues/148
-	if (isBlockCompressionFormat(source->getCreationParameters().format))
-		return nullptr;
-
-	auto extent = source->getMipSize(sourceMipLevel);
-	video::IGPUImage::SBufferCopy pRegions[1u] = { {destOffset,extent.x,extent.y,{static_cast<asset::IImage::E_ASPECT_FLAGS>(0u),sourceMipLevel,0u,1u},{0u,0u,0u},{extent.x,extent.y,extent.z}} };
-	driver->copyImageToBuffer(source,destination,1u,pRegions);
-
-	return driver->placeFence(implicitflush);
-}
 
 template<typename PathOrFile>
 void writeBufferAsImageToFile(asset::IAssetManager* mgr, const PathOrFile& _outFile, core::vector2d<uint32_t> _size, asset::E_FORMAT _format, video::IGPUBuffer* buff, size_t offset=0ull, bool flipY=true)

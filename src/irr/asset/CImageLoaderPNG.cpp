@@ -233,8 +233,6 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
                 return {};
 			}
 	}
-	
-    image = ICPUImage::create(std::move(imgInfo));
 
 	if (!image)
 	{
@@ -252,22 +250,6 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
         return {};
 	}
 
-	// OpenGL cannot transfer rows with arbitrary padding
-    static const uint32_t MAX_PITCH_ALIGNMENT = 8u;
-    // try with largest alignment first
-    auto calcPitchInBlocks = [](uint32_t width, uint32_t blockByteSize) -> uint32_t
-    {
-		auto rowByteSize = width*blockByteSize;
-		for (uint32_t _alignment=MAX_PITCH_ALIGNMENT; _alignment>1u; _alignment>>=1u)
-		{
-			auto paddedSize = core::alignUp(rowByteSize, _alignment);
-			if (paddedSize % blockByteSize)
-				continue;
-			return paddedSize/blockByteSize;
-		}
-        return width;
-    };
-
     const uint32_t texelFormatBytesize = getTexelOrBlockBytesize(image->getCreationParameters().format);
 
     auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(image->getImageDataSizeInBytes());
@@ -278,7 +260,7 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
     region.imageSubresource.baseArrayLayer = 0u;
     region.imageSubresource.layerCount = 1u;
     region.bufferOffset = 0u;
-    region.bufferRowLength = calcPitchInBlocks(Width, texelFormatBytesize);
+    region.bufferRowLength = asset::IImageAssetHandlerBase::calcPitchInBlocks(Width, texelFormatBytesize);
     region.bufferImageHeight = 0u; //tightly packed
     region.imageOffset = { 0u, 0u, 0u };
     region.imageExtent = image->getCreationParameters().extent;
@@ -291,8 +273,6 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 		RowPointers[i] = (png_bytep)data;
 		data += pitch;
 	}
-
-    image->setBufferAndRegions(std::move(texelBuffer), regions);
 
 	// for proper error handling
 	if (setjmp(png_jmpbuf(png_ptr)))
@@ -326,6 +306,30 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 #else
     return {};
 #endif // _IRR_COMPILE_WITH_LIBPNG_
+
+	// Patch for not supported by OpenGL R8_SRGB formats
+	if (imgInfo.format == asset::EF_R8_SRGB)
+	{
+		IImage::SBufferCopy::TexelBlockInfo blockInfo(imgInfo.format = asset::EF_R8G8B8_SRGB);
+		auto texelOrBlockByteSize = getTexelOrBlockBytesize(imgInfo.format);
+		region.bufferRowLength = asset::IImageAssetHandlerBase::calcPitchInBlocks(imgInfo.extent.width, texelOrBlockByteSize);
+		core::vector3du32_SIMD trueExtent = IImage::SBufferCopy::TexelsToBlocks(region.getTexelStrides(), blockInfo);
+
+		auto newPaddedBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(texelBuffer->getSize() * texelOrBlockByteSize);
+
+		core::vector3d<uint32_t> dim;
+		dim.X = trueExtent.X;
+		dim.Y = trueExtent.Y;
+		dim.Z = trueExtent.Z;
+
+		const size_t wholeTexelSize = region.imageExtent.height * region.bufferRowLength;
+		const void* sourcePixels[] = { texelBuffer->getPointer(), nullptr, nullptr, nullptr };
+		convertColor<asset::EF_R8_SRGB, asset::EF_R8G8B8_SRGB>(sourcePixels, newPaddedBuffer->getPointer(), wholeTexelSize, dim);
+		texelBuffer = std::move(newPaddedBuffer);
+	}
+
+	image = ICPUImage::create(std::move(imgInfo));
+	image->setBufferAndRegions(std::move(texelBuffer), regions);
 
     return SAssetBundle({image});
 }
