@@ -234,13 +234,6 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 			}
 	}
 
-	if (!image)
-	{
-		os::Printer::log("LOAD PNG: Internal PNG create image struct failure\n", _file->getFileName().c_str(), ELL_ERROR);
-		png_destroy_read_struct(&png_ptr, nullptr, nullptr);
-        return {};
-	}
-
 	// Create array of pointers to rows in image data
     RowPointers = _IRR_NEW_ARRAY(png_bytep, Height);
 	if (!RowPointers)
@@ -250,9 +243,8 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
         return {};
 	}
 
-    const uint32_t texelFormatBytesize = getTexelOrBlockBytesize(image->getCreationParameters().format);
+    const uint32_t texelFormatBytesize = getTexelOrBlockBytesize(imgInfo.format);
 
-    auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(image->getImageDataSizeInBytes());
     auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
     ICPUImage::SBufferCopy& region = regions->front();
     //region.imageSubresource.aspectMask = ...; //waits for Vulkan
@@ -263,7 +255,9 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
     region.bufferRowLength = asset::IImageAssetHandlerBase::calcPitchInBlocks(Width, texelFormatBytesize);
     region.bufferImageHeight = 0u; //tightly packed
     region.imageOffset = { 0u, 0u, 0u };
-    region.imageExtent = image->getCreationParameters().extent;
+    region.imageExtent = imgInfo.extent;
+
+	auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(region.bufferRowLength * region.imageExtent.height * texelFormatBytesize);
 
 	// Fill array of pointers to rows in image data
 	const uint32_t pitch = region.bufferRowLength*texelFormatBytesize;
@@ -329,6 +323,14 @@ asset::SAssetBundle CImageLoaderPng::loadAsset(io::IReadFile* _file, const asset
 	}
 
 	image = ICPUImage::create(std::move(imgInfo));
+
+	if (!image)
+	{
+		os::Printer::log("LOAD PNG: Internal PNG create image struct failure\n", _file->getFileName().c_str(), ELL_ERROR);
+		png_destroy_read_struct(&png_ptr, nullptr, nullptr);
+		return {};
+	}
+
 	image->setBufferAndRegions(std::move(texelBuffer), regions);
 
     return SAssetBundle({image});
