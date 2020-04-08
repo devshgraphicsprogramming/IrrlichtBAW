@@ -212,6 +212,8 @@ namespace irr
 
 			auto imageView = ICPUImageView::create(std::move(imageViewInfo));
 
+			auto dataToMemory = (uint8_t*)imageView->getCreationParameters().image->getBuffer()->getPointer();
+
 			return SAssetBundle({std::move(imageView)});
 		}
 
