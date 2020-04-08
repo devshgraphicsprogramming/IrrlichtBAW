@@ -144,8 +144,6 @@ void ApplicationHandler::performImageTest(std::string path)
 
 	if (gpuImageView)
 	{
-		auto test = (uint8_t*)gpuImageView->getCreationParameters().image->getBoundMemory()->getMappedPointer(); // it's nullptr, curious
-
 		auto gpuViewParams = gpuImageView->getCreationParameters();
 		gpuViewParams.image = driver->createDeviceLocalGPUImageOnDedMem(video::IGPUImage::SCreationParams(gpuViewParams.image->getCreationParameters()));
 		gpuViewParams.viewType = IGPUImageView::ET_2D;
