@@ -48,6 +48,84 @@ class IGPUObjectFromAssetConverter
 			static inline AssetType* value(AssetType*const* it) { return *it; }
 		};
 
+        template<typename AssetType>
+        struct Hash
+        {
+            inline std::size_t operator()(AssetType* asset) const
+            {
+                return std::hash<AssetType*>{}(asset);
+            }
+        };
+        template<>
+        struct Hash<asset::ICPURenderpassIndependentPipeline>
+        {
+            inline std::size_t operator()(asset::ICPURenderpassIndependentPipeline* _ppln) const
+            {
+                constexpr size_t bytesToHash = 
+                    sizeof(asset::SVertexInputParams)+
+                    sizeof(asset::SBlendParams)+
+                    sizeof(asset::SRasterizationParams)+
+                    sizeof(asset::SPrimitiveAssemblyParams)+
+                    sizeof(void*)*asset::ICPURenderpassIndependentPipeline::SHADER_STAGE_COUNT+//shaders
+                    sizeof(void*);//layout
+                uint8_t mem[bytesToHash]{};
+                uint32_t offset = 0u;
+                memcpy(mem+offset,&_ppln->getVertexInputParams(),sizeof(asset::SVertexInputParams));
+                offset += sizeof(asset::SVertexInputParams);
+                memcpy(mem+offset,&_ppln->getBlendParams(),sizeof(asset::SBlendParams));
+                offset += sizeof(asset::SBlendParams);
+                memcpy(mem+offset,&_ppln->getRasterizationParams(),sizeof(asset::SRasterizationParams));
+                offset += sizeof(asset::SRasterizationParams);
+                memcpy(mem+offset,&_ppln->getPrimitiveAssemblyParams(),sizeof(asset::SPrimitiveAssemblyParams));
+                offset += sizeof(asset::SPrimitiveAssemblyParams);
+                const asset::ICPUSpecializedShader** shaders = reinterpret_cast<const asset::ICPUSpecializedShader**>(mem+offset);
+                for (uint32_t i = 0u; i < asset::ICPURenderpassIndependentPipeline::SHADER_STAGE_COUNT; ++i)
+                    shaders[i] = _ppln->getShaderAtIndex(i);
+                offset += asset::ICPURenderpassIndependentPipeline::SHADER_STAGE_COUNT*sizeof(void*);
+                reinterpret_cast<const asset::ICPUPipelineLayout**>(mem+offset)[0] = _ppln->getLayout();
+
+                const std::size_t hs = std::hash<std::string_view>{}(std::string_view(reinterpret_cast<const char*>(mem), bytesToHash));
+
+                return hs;
+            }
+        };
+        template<>
+        struct Hash<asset::ICPUComputePipeline>
+        {
+            inline std::size_t operator()(asset::ICPUComputePipeline* _ppln) const
+            {
+                constexpr size_t bytesToHash = 
+                    sizeof(void*)+//shader
+                    sizeof(void*);//layout
+                uint8_t mem[bytesToHash]{};
+
+                reinterpret_cast<const asset::ICPUSpecializedShader**>(mem)[0] = _ppln->getShader();
+                reinterpret_cast<const asset::ICPUPipelineLayout**>(mem+sizeof(void*))[0] = _ppln->getLayout();
+
+                const std::size_t hs = std::hash<std::string_view>{}(std::string_view(reinterpret_cast<const char*>(mem), bytesToHash));
+
+                return hs;
+            }
+        };
+
+        template<typename AssetType>
+        struct KeyEqual
+        {
+            bool operator()(AssetType* lhs, AssetType* rhs) const { return lhs==rhs; }
+        };
+        template<>
+        struct KeyEqual<asset::ICPURenderpassIndependentPipeline>
+        {
+            //equality depends on hash only
+            bool operator()(asset::ICPURenderpassIndependentPipeline* lhs, asset::ICPURenderpassIndependentPipeline* rhs) const { return true; }
+        };
+        template<>
+        struct KeyEqual<asset::ICPUComputePipeline>
+        {
+            //equality depends on hash only
+            bool operator()(asset::ICPUComputePipeline* lhs, asset::ICPUComputePipeline* rhs) const { return true; }
+        };
+
 	public:
 		IGPUObjectFromAssetConverter(asset::IAssetManager* _assetMgr, video::IDriver* _drv) : m_assetManager{_assetMgr}, m_driver{_drv} {}
 
@@ -120,7 +198,7 @@ class IGPUObjectFromAssetConverter
 		{
 			core::vector<size_t> redirs;
 
-			core::unordered_map<T*, size_t> firstOccur;
+			core::unordered_map<T*, size_t, Hash<T>, KeyEqual<T>> firstOccur;
 			size_t i = 0u;
 			for (T* el : _input)
 			{
@@ -341,7 +419,9 @@ auto IGPUObjectFromAssetConverter::create(asset::ICPUImage** const _begin, asset
     {
         const asset::ICPUImage* cpuimg = _begin[i];
         asset::IImage::SCreationParams params = cpuimg->getCreationParameters();
-        params.mipLevels = 1u + static_cast<uint32_t>(std::log2(static_cast<float>(core::max(core::max(params.extent.width, params.extent.height), params.extent.depth))));
+        const bool integerFmt = asset::isIntegerFormat(params.format);
+        if (!integerFmt)
+            params.mipLevels = 1u + static_cast<uint32_t>(std::log2(static_cast<float>(core::max(core::max(params.extent.width, params.extent.height), params.extent.depth))));
         auto gpuimg = m_driver->createDeviceLocalGPUImageOnDedMem(std::move(params));
 
 		auto regions = cpuimg->getRegions();
@@ -349,8 +429,46 @@ auto IGPUObjectFromAssetConverter::create(asset::ICPUImage** const _begin, asset
 		if (count)
 		{
 			auto tmpBuff = m_driver->createFilledDeviceLocalGPUBufferOnDedMem(cpuimg->getBuffer()->getSize(),cpuimg->getBuffer()->getPointer());
-			m_driver->copyBufferToImage(tmpBuff.get(),gpuimg.get(),count,cpuimg->getRegions().begin());
-            gpuimg->generateMipmaps();
+			m_driver->copyBufferToImage(tmpBuff.get(),gpuimg.get(),count,regions.begin());
+            if (!integerFmt)
+            {
+                uint32_t lowestPresentMip = 1u;
+                while (cpuimg->getRegions(lowestPresentMip).size())
+                    lowestPresentMip++;
+                // generate temporary image view to make sure we don't screw up any explicit mip levels
+                IGPUImageView::SCreationParams tmpViewParams;
+                tmpViewParams.subresourceRange.levelCount = params.mipLevels+1u-lowestPresentMip;
+                // if not all mip levels have been manually specified
+                if (tmpViewParams.subresourceRange.levelCount>1u)
+                {
+                    tmpViewParams.flags = static_cast<IGPUImageView::E_CREATE_FLAGS>(0u);
+                    switch (params.type)
+                    {
+                        case asset::IImage::ET_1D:
+                            tmpViewParams.viewType = IGPUImageView::ET_1D_ARRAY;
+                            break;
+                        case asset::IImage::ET_2D:
+                            if (params.flags & asset::IImage::ECF_CUBE_COMPATIBLE_BIT)
+                              tmpViewParams.viewType = IGPUImageView::ET_CUBE_MAP_ARRAY;
+                            else
+                              tmpViewParams.viewType = IGPUImageView::ET_2D_ARRAY;
+                            break;
+                        case asset::IImage::ET_3D:
+                            tmpViewParams.viewType = IGPUImageView::ET_3D;
+                            break;
+                        default:
+                            assert(false);
+                            break;
+                    }
+                    tmpViewParams.format = params.format;
+                    //tmpViewParams.subresourceRange.aspectMask
+                    tmpViewParams.subresourceRange.baseMipLevel = lowestPresentMip-1u;
+                    tmpViewParams.subresourceRange.layerCount = params.arrayLayers;
+                    auto tmpView = m_driver->createGPUImageView(std::move(tmpViewParams));
+                    // deprecated OpenGL path (do with compute shader in the future)
+                    tmpView->regenerateMipMapLevels();
+                }
+            }
 		}
 
 		res->operator[](i) = std::move(gpuimg);

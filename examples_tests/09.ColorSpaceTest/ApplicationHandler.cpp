@@ -177,7 +177,7 @@ bool ApplicationHandler::initializeApplication()
 
 	driver = device->getVideoDriver();
 	screenShotFrameBuffer = ext::ScreenShot::createDefaultFBOForScreenshoting(device);
-	auto fullScreenTriangle = ext::FullScreenTriangle::createFullScreenTriangle(driver);
+	auto fullScreenTriangle = ext::FullScreenTriangle::createFullScreenTriangle(device->getAssetManager(), device->getVideoDriver());
 
 	IGPUDescriptorSetLayout::SBinding binding{ 0u, EDT_COMBINED_IMAGE_SAMPLER, 1u, IGPUSpecializedShader::ESS_FRAGMENT, nullptr };
 	gpuDescriptorSetLayout3 = driver->createGPUDescriptorSetLayout(&binding, &binding + 1u);

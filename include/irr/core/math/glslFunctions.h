@@ -239,6 +239,16 @@ IRR_FORCE_INLINE T min(const T& a, const U& b, const U& c)
 	return core::min<T,T>(core::min<T,T>(a,vb), min<T,U>(vb,c));
 }
 
+template<typename... Args>
+struct min_t
+{
+	inline auto operator()(Args&&... args)
+	{
+		return core::min<Args...>(std::forward<Args>(args)...)
+	}
+};
+
+
 template<class T>
 IRR_FORCE_INLINE T max(const T& a, const T& b);
 template<>
@@ -255,6 +265,15 @@ IRR_FORCE_INLINE T max(const T& a, const U& b, const U& c)
 	T vb = T(b);
 	return core::max<T,T>(core::max<T,T>(a,vb),max<T,U>(vb,c));
 }
+
+template<typename... Args>
+struct max_t
+{
+	inline auto operator()(Args&&... args)
+	{
+		return core::max<Args...>(std::forward<Args>(args)...)
+	}
+};
 
 
 //! clamps a value between low and high
@@ -388,6 +407,11 @@ IRR_FORCE_INLINE auto iszero(const T& a, const U& tolerance = ROUNDING_ERROR<U>(
 	return core::iszero(a,T(tolerance));
 }
 
+
+template<typename T>
+IRR_FORCE_INLINE T sin(const T& a);
+
+
 IRR_FORCE_INLINE float& intBitsToFloat(int32_t& _i) { return reinterpret_cast<float&>(_i); }
 IRR_FORCE_INLINE float& uintBitsToFloat(uint32_t& _u) { return reinterpret_cast<float&>(_u); }
 IRR_FORCE_INLINE int32_t& floatBitsToInt(float& _f) { return reinterpret_cast<int32_t&>(_f); }
@@ -397,6 +421,32 @@ IRR_FORCE_INLINE float intBitsToFloat(int32_t&& _i) { return reinterpret_cast<fl
 IRR_FORCE_INLINE float uintBitsToFloat(uint32_t&& _u) { return reinterpret_cast<float&>(_u); }
 IRR_FORCE_INLINE int32_t floatBitsToInt(float&& _f) { return reinterpret_cast<int32_t&>(_f); }
 IRR_FORCE_INLINE uint32_t floatBitsToUint(float&& _f) { return reinterpret_cast<uint32_t&>(_f); }
+
+
+
+// extras
+
+
+template<typename T>
+IRR_FORCE_INLINE T gcd(const T& a, const T& b);
+
+template<typename T>
+IRR_FORCE_INLINE T sinc(const T& x)
+{
+	// TODO: do a direct series/computation in the future
+	return mix<T>(sin<T>(x)/x,T(1.0)+x*x*(x*x*T(1.0/120.0)-T(1.0/6.0)),abs<T>(x)<T(0.0001));
+}
+
+template<typename T>
+IRR_FORCE_INLINE T cyl_bessel_i(const T& v, const T& x);
+
+template<typename T>
+IRR_FORCE_INLINE T KaiserWindow(const T& x, const T& alpha, const T& width)
+{
+	auto p = x/width;
+	return cyl_bessel_i<T>(T(0.0),sqrt<T>(T(1.0)-p*p))/cyl_bessel_i<T>(T(0.0),alpha);
+}
+
 
 } // end namespace core
 } // end namespace irr

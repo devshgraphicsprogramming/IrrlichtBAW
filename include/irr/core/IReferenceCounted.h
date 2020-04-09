@@ -198,7 +198,7 @@ namespace core
             template<class U>
             void copy(const smart_refctd_ptr<U>& other) noexcept
             {
-                if (other.ptr)
+                if (other.ptr) 
                     other.ptr->grab();
                 ptr = other.ptr;
             }

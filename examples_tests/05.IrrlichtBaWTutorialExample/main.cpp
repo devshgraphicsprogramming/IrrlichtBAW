@@ -178,7 +178,9 @@ int main()
 
 		/*
 			Creating gpu UBO with appropiate size.
-			We know ahead of time that `SBasicViewParameters` struct is the expected structure of the only UBO block in the descriptor set nr. 1 of the shader.
+			We know ahead of time that `SBasicViewParameters` 
+			struct is the expected structure of the only UBO 
+			block in the descriptor set nr. 1 of the shader.
 		*/
 
 		auto gpuubo = driver->createDeviceLocalGPUBufferOnDedMem(sizeof(SBasicViewParameters));
@@ -202,11 +204,11 @@ int main()
 		pipeline->setShaderAtIndex(ICPURenderpassIndependentPipeline::ESSI_VERTEX_SHADER_IX, vertexShader.get());
 		pipeline->setShaderAtIndex(ICPURenderpassIndependentPipeline::ESSI_FRAGMENT_SHADER_IX, fragmentShader.get());
 
-
 		/*
 			Creating descriptor sets - texture (sampler) and basic view parameters (UBO).
 			Specifying info and write parameters for updating certain descriptor set to the driver.
-			We know ahead of time that `SBasicViewParameters` struct is the expected structure of the only UBO block in the descriptor set nr. 1 of the shader.
+			We know ahead of time that `SBasicViewParameters` struct is the expected structure of 
+			the only UBO block in the descriptor set nr. 1 of the shader.
 		*/
 
 		auto gpuDescriptorSet3 = driver->createGPUDescriptorSet(std::move(driver->getGPUObjectsFromAssets(&rawds3, &rawds3 + 1)->front()));
@@ -329,10 +331,13 @@ int main()
 			updated data to staging buffer that will redirect
 			the data to graphics card - to vertex shader.
 		*/
+		
 		SBasicViewParameters uboData;
+
 		memcpy(uboData.MV, mv.pointer(), sizeof(mv));
 		memcpy(uboData.MVP, mvp.pointer(), sizeof(mvp));
 		memcpy(uboData.NormalMat, normalMat.pointer(), sizeof(normalMat));
+
 		driver->updateBufferRangeViaStagingBuffer(gpuubo.get(), 0ull, sizeof(uboData), &uboData);
 
 		/*

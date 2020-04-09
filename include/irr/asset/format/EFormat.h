@@ -908,6 +908,9 @@ namespace asset
         }
     }
 
+
+    static inline constexpr uint32_t MaxTexelBlockDimensions[] = { 12u, 12u, 1u, 1u };
+
     inline core::vector3du32_SIMD getBlockDimensions(asset::E_FORMAT _fmt)
     {
         switch (_fmt)
@@ -1546,53 +1549,52 @@ namespace asset
     {
         switch (_fmt)
         {
-        case EF_R8_SINT:
-        case EF_R8_SRGB:
-        case EF_R8G8_SINT:
-        case EF_R8G8_SRGB:
-        case EF_R8G8B8_SINT:
-        case EF_R8G8B8_SRGB:
-        case EF_B8G8R8_UINT:
-        case EF_B8G8R8_SINT:
-        case EF_B8G8R8_SRGB:
-        case EF_R8G8B8A8_SINT:
-        case EF_R8G8B8A8_SRGB:
-        case EF_B8G8R8A8_UINT:
-        case EF_B8G8R8A8_SINT:
-        case EF_B8G8R8A8_SRGB:
-        case EF_A8B8G8R8_UINT_PACK32:
-        case EF_A8B8G8R8_SINT_PACK32:
-        case EF_A8B8G8R8_SRGB_PACK32:
-        case EF_A2R10G10B10_UINT_PACK32:
-        case EF_A2R10G10B10_SINT_PACK32:
-        case EF_A2B10G10R10_UINT_PACK32:
-        case EF_A2B10G10R10_SINT_PACK32:
-        case EF_R16_UINT:
-        case EF_R16_SINT:
-        case EF_R16G16_UINT:
-        case EF_R16G16_SINT:
-        case EF_R16G16B16_UINT:
-        case EF_R16G16B16_SINT:
-        case EF_R16G16B16A16_UINT:
-        case EF_R16G16B16A16_SINT:
-        case EF_R32_UINT:
-        case EF_R32_SINT:
-        case EF_R32G32_UINT:
-        case EF_R32G32_SINT:
-        case EF_R32G32B32_UINT:
-        case EF_R32G32B32_SINT:
-        case EF_R32G32B32A32_UINT:
-        case EF_R32G32B32A32_SINT:
-        case EF_R64_UINT:
-        case EF_R64_SINT:
-        case EF_R64G64_UINT:
-        case EF_R64G64_SINT:
-        case EF_R64G64B64_UINT:
-        case EF_R64G64B64_SINT:
-        case EF_R64G64B64A64_UINT:
-        case EF_R64G64B64A64_SINT:
-            return true;
-        default: return false;
+            case EF_R8_SINT:
+            case EF_R8_UINT:
+            case EF_R8G8_SINT:
+            case EF_R8G8_UINT:
+            case EF_R8G8B8_SINT:
+            case EF_R8G8B8_UINT:
+            case EF_B8G8R8_SINT:
+            case EF_B8G8R8_UINT:
+            case EF_R8G8B8A8_SINT:
+            case EF_R8G8B8A8_UINT:
+            case EF_B8G8R8A8_SINT:
+            case EF_B8G8R8A8_UINT:
+            case EF_A8B8G8R8_UINT_PACK32:
+            case EF_A8B8G8R8_SINT_PACK32:
+            case EF_A8B8G8R8_SRGB_PACK32:
+            case EF_A2R10G10B10_UINT_PACK32:
+            case EF_A2R10G10B10_SINT_PACK32:
+            case EF_A2B10G10R10_UINT_PACK32:
+            case EF_A2B10G10R10_SINT_PACK32:
+            case EF_R16_UINT:
+            case EF_R16_SINT:
+            case EF_R16G16_UINT:
+            case EF_R16G16_SINT:
+            case EF_R16G16B16_UINT:
+            case EF_R16G16B16_SINT:
+            case EF_R16G16B16A16_UINT:
+            case EF_R16G16B16A16_SINT:
+            case EF_R32_UINT:
+            case EF_R32_SINT:
+            case EF_R32G32_UINT:
+            case EF_R32G32_SINT:
+            case EF_R32G32B32_UINT:
+            case EF_R32G32B32_SINT:
+            case EF_R32G32B32A32_UINT:
+            case EF_R32G32B32A32_SINT:
+            case EF_R64_UINT:
+            case EF_R64_SINT:
+            case EF_R64G64_UINT:
+            case EF_R64G64_SINT:
+            case EF_R64G64B64_UINT:
+            case EF_R64G64B64_SINT:
+            case EF_R64G64B64A64_UINT:
+            case EF_R64G64B64A64_SINT:
+                return true;
+            default:
+                return false;
         }
     }
     inline bool isFloatingPointFormat(asset::E_FORMAT _fmt)
@@ -1888,8 +1890,14 @@ namespace asset
         default: return false;
         }
     }
-	
-}} //irr::video
+
+    template<E_FORMAT format>
+    struct format_interm_storage_type
+    {
+        using type = typename std::conditional<isIntegerFormat<format>(),typename std::conditional<isSignedFormat<format>(),int64_t,uint64_t>::type,double>::type;
+    };
+}
+}
 
 namespace std
 {

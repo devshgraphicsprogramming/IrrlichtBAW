@@ -323,29 +323,11 @@ asset::SAssetBundle CImageLoaderJPG::loadAsset(io::IReadFile* _file, const asset
 	region.imageOffset = { 0u, 0u, 0u };
 	region.imageExtent = imgInfo.extent;
 
-	// Patch for not supported by OpenGL R8_SRGB formats
-	if (imgInfo.format == asset::EF_R8_SRGB)
-	{
-		IImage::SBufferCopy::TexelBlockInfo blockInfo(imgInfo.format = asset::EF_R8G8B8_SRGB);
-		auto texelOrBlockByteSize = getTexelOrBlockBytesize(imgInfo.format);
-		region.bufferRowLength = asset::IImageAssetHandlerBase::calcPitchInBlocks(width, texelOrBlockByteSize);
-		core::vector3du32_SIMD trueExtent = IImage::SBufferCopy::TexelsToBlocks(region.getTexelStrides(), blockInfo);
-
-		auto newPaddedBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(buffer->getSize() * texelOrBlockByteSize);
-
-		core::vector3d<uint32_t> dim;
-		dim.X = trueExtent.X;
-		dim.Y = trueExtent.Y;
-		dim.Z = trueExtent.Z;
-
-		const size_t wholeTexelSize = region.imageExtent.height * region.bufferRowLength;
-		const void* sourcePixels[] = { buffer->getPointer(), nullptr, nullptr, nullptr };
-		convertColor<asset::EF_R8_SRGB, asset::EF_R8G8B8_SRGB>(sourcePixels, newPaddedBuffer->getPointer(), wholeTexelSize, dim);
-		buffer = std::move(newPaddedBuffer);
-	}
-
 	core::smart_refctd_ptr<ICPUImage> image = ICPUImage::create(std::move(imgInfo));
 	image->setBufferAndRegions(std::move(buffer), regions);
+
+	if (image->getCreationParameters().format == asset::EF_R8_SRGB)
+		image = asset::IImageAssetHandlerBase::convertR8ToR8G8B8Image(image);
 	
     return SAssetBundle({image});
 

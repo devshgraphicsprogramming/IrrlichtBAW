@@ -114,6 +114,8 @@ static bool writeJPEGFile(io::IWriteFile* file, const const asset::ICPUImage* im
 	dim.Y = trueExtent.Y;
 	dim.Z = trueExtent.Z;
 
+	const auto texelOrBlockByteSize = asset::getTexelOrBlockBytesize(format) * trueExtent.X;
+
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
 	cinfo.err = jpeg_std_error(&jerr);
@@ -133,39 +135,108 @@ static bool writeJPEGFile(io::IWriteFile* file, const const asset::ICPUImage* im
 	jpeg_set_quality(&cinfo, quality, TRUE);
 	jpeg_start_compress(&cinfo, TRUE);
 
-	const auto JPG_PITCH = dim.X * 3;
-	uint8_t * dest = new uint8_t[JPG_PITCH];
+	core::smart_refctd_ptr<ICPUImage> newConvertedImage;
+	{
+		auto copyImageForConverting = core::smart_refctd_ptr_static_cast<ICPUImage>(image->clone());
+		auto copyImageParams = copyImageForConverting->getCreationParameters();
+		auto copyBuffer = copyImageForConverting->getBuffer();
+		auto copyRegion = copyImageForConverting->getRegions().begin();
+
+		auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(copyBuffer->getSize());
+		memcpy(newCpuBuffer->getPointer(), copyBuffer->getPointer(), newCpuBuffer->getSize());
+
+		auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+		ICPUImage::SBufferCopy& region = newRegions->front();
+		region.imageSubresource.mipLevel = copyRegion->imageSubresource.mipLevel;
+		region.imageSubresource.baseArrayLayer = copyRegion->imageSubresource.baseArrayLayer;
+		region.imageSubresource.layerCount = copyRegion->imageSubresource.layerCount;
+		region.bufferOffset = copyRegion->bufferOffset;
+		region.bufferRowLength = copyRegion->bufferRowLength;
+		region.bufferImageHeight = copyRegion->bufferImageHeight;
+		region.imageOffset = copyRegion->imageOffset;
+		region.imageExtent = copyRegion->imageExtent;
+
+		CMatchedSizeInOutImageFilterCommon::state_type state;
+		state.extent = imageParams.extent;
+
+		switch (imageParams.format)
+		{
+			case asset::EF_R8G8B8_UNORM:
+			{
+				copyImageParams.format = EF_R8G8B8_SRGB;
+				newConvertedImage = ICPUImage::create(std::move(copyImageParams));
+				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+				state.inImage = newConvertedImage.get();
+
+				CConvertFormatImageFilter<EF_R8G8B8_UNORM, EF_R8G8B8_SRGB> convertFiler;
+				convertFiler.execute(&state);
+			}
+			break;
+
+			case asset::EF_B5G6R5_UNORM_PACK16:
+			{
+				copyImageParams.format = EF_R8G8B8_SRGB;
+				newConvertedImage = ICPUImage::create(std::move(copyImageParams));
+				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+				state.inImage = newConvertedImage.get();
+
+				CConvertFormatImageFilter<EF_B5G6R5_UNORM_PACK16, EF_R8G8B8_SRGB> convertFiler;
+				convertFiler.execute(&state);
+			}
+			break;
+
+			case asset::EF_A1R5G5B5_UNORM_PACK16:
+			{
+				copyImageParams.format = EF_R8G8B8_SRGB;
+				newConvertedImage = ICPUImage::create(std::move(copyImageParams));
+				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+				state.inImage = newConvertedImage.get();
+
+				CConvertFormatImageFilter<EF_A1R5G5B5_UNORM_PACK16, EF_R8G8B8_SRGB> convertFiler;
+				convertFiler.execute(&state);
+			}
+			break;
+
+			case asset::EF_R8_UNORM:
+			{
+				copyImageParams.format = EF_R8_SRGB;
+				newConvertedImage = ICPUImage::create(std::move(copyImageParams));
+				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+				state.inImage = newConvertedImage.get();
+
+				CConvertFormatImageFilter<EF_R8_UNORM, EF_R8_SRGB> convertFiler;
+				convertFiler.execute(&state);
+			}
+			break;
+
+			default:
+			{
+				newConvertedImage = std::move(copyImageForConverting);
+			}
+			break;
+		}
+	}
+
+	auto convertedImageParams = newConvertedImage->getCreationParameters();
+
+	const auto JPG_BYTE_PITCH = texelOrBlockByteSize;
+	uint8_t * dest = new uint8_t[JPG_BYTE_PITCH];
 
 	if (dest)
 	{
-		const uint32_t pitch = JPG_PITCH;
+		const uint32_t pitch = JPG_BYTE_PITCH;
 		JSAMPROW row_pointer[1];      /* pointer to JSAMPLE row[s] */
 		row_pointer[0] = dest;
 		
-		uint8_t* src = (uint8_t*)image->getBuffer()->getPointer();
+		uint8_t* src = (uint8_t*)newConvertedImage->getBuffer()->getPointer();
 		
 		/* Switch up, write from bottom -> top because the texture is flipped from OpenGL side */
 		uint32_t eof = cinfo.image_height * cinfo.image_width * cinfo.input_components;
 		
 		while (cinfo.next_scanline < cinfo.image_height)
 		{
-			/* Since the first argument to convertColor() requires a const void *[4], wrap our buffer pointer (src) and pass that to convertColor(). */
-			const void *src_container[4] = {src, nullptr, nullptr, nullptr};
-			
-			/* Pass-through the pixels for EF_R8_SRGB/EF_R8G8B8_SRGB, and perform color conversion for the rest.*/
-			switch (format) {
-				case asset::EF_R8G8B8_UNORM:
-					convertColor<EF_R8G8B8_UNORM, EF_R8G8B8_SRGB>(src_container, dest, dim.X, dim);
-					break;
-				case asset::EF_B5G6R5_UNORM_PACK16:
-					convertColor<EF_B5G6R5_UNORM_PACK16, EF_R8G8B8_SRGB>(src_container, dest, dim.X, dim);
-					break;
-				case asset::EF_A1R5G5B5_UNORM_PACK16:
-					convertColor<EF_A1R5G5B5_UNORM_PACK16, EF_R8G8B8_SRGB>(src_container, dest, dim.X, dim);
-					break;
-				case asset::EF_R8_UNORM:
-					convertColor<EF_R8_UNORM, EF_R8_SRGB>(src_container, dest, dim.X, dim);
-					break;
+			switch (convertedImageParams.format) 
+			{
 				case asset::EF_R8_SRGB:
 					_IRR_FALLTHROUGH;
 				case asset::EF_R8G8B8_SRGB:

@@ -155,8 +155,54 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 				return false;
 			}
 	}
+
+	core::smart_refctd_ptr<ICPUImage> newConvertedImage;
+	{
+		auto copyImageForConverting = core::smart_refctd_ptr_static_cast<ICPUImage>(image->clone());
+		auto copyImageParams = copyImageForConverting->getCreationParameters();
+		auto copyBuffer = copyImageForConverting->getBuffer();
+		auto copyRegion = copyImageForConverting->getRegions().begin();
+
+		auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(copyBuffer->getSize());
+		memcpy(newCpuBuffer->getPointer(), copyBuffer->getPointer(), newCpuBuffer->getSize());
+
+		auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+		ICPUImage::SBufferCopy& region = newRegions->front();
+		region.imageSubresource.mipLevel = copyRegion->imageSubresource.mipLevel;
+		region.imageSubresource.baseArrayLayer = copyRegion->imageSubresource.baseArrayLayer;
+		region.imageSubresource.layerCount = copyRegion->imageSubresource.layerCount;
+		region.bufferOffset = copyRegion->bufferOffset;
+		region.bufferRowLength = copyRegion->bufferRowLength;
+		region.bufferImageHeight = copyRegion->bufferImageHeight;
+		region.imageOffset = copyRegion->imageOffset;
+		region.imageExtent = copyRegion->imageExtent;
+
+		CMatchedSizeInOutImageFilterCommon::state_type state;
+		state.extent = imageParams.extent;
+
+		switch (imageParams.format)
+		{
+			case asset::EF_R8_UNORM:
+			{
+				copyImageParams.format = EF_R8_SRGB;
+				newConvertedImage = ICPUImage::create(std::move(copyImageParams));
+				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+				state.inImage = newConvertedImage.get();
+
+				CConvertFormatImageFilter<EF_R8_UNORM, EF_R8_SRGB> convertFiler;
+				convertFiler.execute(&state);
+			}
+			break;
+
+			default:
+			{
+				newConvertedImage = std::move(copyImageForConverting);
+			}
+			break;
+		}
+	}
 	
-	uint8_t* data = (uint8_t*)image->getBuffer()->getPointer();
+	uint8_t* data = (uint8_t*)newConvertedImage->getBuffer()->getPointer();
 
 	constexpr uint32_t maxPNGFileHeight = 16u * 1024u; // arbitrary limit
 	if (trueExtent.Y>maxPNGFileHeight)
@@ -177,12 +223,6 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	for (uint32_t i = 0; i < trueExtent.Y; ++i)
 	{
 		switch (format) {
-			case asset::EF_R8_UNORM:
-				{
-					const void *src_container[4] = {data, nullptr, nullptr, nullptr};
-					convertColor<EF_R8_UNORM, EF_R8_SRGB>(src_container, data, trueExtent.X, imgSize);
-				}
-				break;
 			case asset::EF_R8_SRGB:
 				_IRR_FALLTHROUGH;
 			case asset::EF_R8G8B8_SRGB:
@@ -213,6 +253,7 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	png_destroy_write_struct(&png_ptr, &info_ptr);
 	return true;
 #else
+	_IRR_DEBUG_BREAK_IF(true);
 	return false;
 #endif//defined(_IRR_COMPILE_WITH_LIBPNG_)
 }

@@ -105,12 +105,85 @@ bool CImageWriterTGA::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	if (file->write(&imageHeader, sizeof(imageHeader)) != sizeof(imageHeader))
 		return false;
 
-	uint8_t* scan_lines = (uint8_t*)image->getBuffer()->getPointer();
+	core::smart_refctd_ptr<ICPUImage> newConvertedImage;
+	{
+		auto copyImageForConverting = core::smart_refctd_ptr_static_cast<ICPUImage>(image->clone());
+		auto copyImageParams = copyImageForConverting->getCreationParameters();
+		auto copyBuffer = copyImageForConverting->getBuffer();
+		auto copyRegion = copyImageForConverting->getRegions().begin();
+
+		auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(copyBuffer->getSize());
+		memcpy(newCpuBuffer->getPointer(), copyBuffer->getPointer(), newCpuBuffer->getSize());
+
+		auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+		ICPUImage::SBufferCopy& region = newRegions->front();
+		region.imageSubresource.mipLevel = copyRegion->imageSubresource.mipLevel;
+		region.imageSubresource.baseArrayLayer = copyRegion->imageSubresource.baseArrayLayer;
+		region.imageSubresource.layerCount = copyRegion->imageSubresource.layerCount;
+		region.bufferOffset = copyRegion->bufferOffset;
+		region.bufferRowLength = copyRegion->bufferRowLength;
+		region.bufferImageHeight = copyRegion->bufferImageHeight;
+		region.imageOffset = copyRegion->imageOffset;
+		region.imageExtent = copyRegion->imageExtent;
+
+		CMatchedSizeInOutImageFilterCommon::state_type state;
+		state.extent = imageParams.extent;
+
+		switch (imageParams.format)
+		{
+			case asset::EF_R8_UNORM:
+			{
+				copyImageParams.format = EF_R8_SRGB;
+				newConvertedImage = ICPUImage::create(std::move(copyImageParams));
+				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+				state.inImage = newConvertedImage.get();
+
+				CConvertFormatImageFilter<EF_R8_UNORM, EF_R8_SRGB> convertFiler;
+				convertFiler.execute(&state);
+			}
+			break;
+
+			// EF_R8G8B8(A8)_SRGB would need swizzling to EF_B8G8R8(A8)_SRGB.
+			case asset::EF_R8G8B8_SRGB:
+			{
+				copyImageParams.format = EF_B8G8R8_SRGB;
+				newConvertedImage = ICPUImage::create(std::move(copyImageParams));
+				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+				state.inImage = newConvertedImage.get();
+
+				CConvertFormatImageFilter<EF_R8G8B8_SRGB, EF_B8G8R8_SRGB> convertFiler;
+				convertFiler.execute(&state);
+			}
+			break;
+
+			case asset::EF_R8G8B8A8_SRGB:
+			{
+				copyImageParams.format = EF_B8G8R8A8_SRGB;
+				newConvertedImage = ICPUImage::create(std::move(copyImageParams));
+				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+				state.inImage = newConvertedImage.get();
+
+				CConvertFormatImageFilter<EF_R8G8B8A8_SRGB, EF_B8G8R8A8_SRGB> convertFiler;
+				convertFiler.execute(&state);
+			}
+			break;
+
+			default:
+			{
+				newConvertedImage = std::move(copyImageForConverting);
+			}
+			break;
+		}
+	}
+
+	//// TODO AFTER converting image
+
+	uint8_t* scan_lines = (uint8_t*)newConvertedImage->getBuffer()->getPointer();
 	if (!scan_lines)
 		return false;
 
 	// size of one pixel in bits
-	uint32_t pixel_size_bits = image->getBytesPerPixel().getIntegerApprox();
+	uint32_t pixel_size_bits = newConvertedImage->getBytesPerPixel().getIntegerApprox();
 
 	// length of one row of the source image in bytes
 	uint32_t row_stride = (pixel_size_bits * imageHeader.ImageWidth);
@@ -124,34 +197,14 @@ bool CImageWriterTGA::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	uint32_t y;
 	for (y = 0; y < imageHeader.ImageHeight; ++y)
 	{
-		switch (format) {
+		switch (newConvertedImage->getCreationParameters().format) {
 			case asset::EF_R8_SRGB:
+			case asset::EF_B8G8R8_SRGB:
+			case asset::EF_B8G8R8A8_SRGB:
 			case asset::EF_A1R5G5B5_UNORM_PACK16:
-				{
-					memcpy(row_pointer, &scan_lines[y * row_stride], imageHeader.ImageWidth * (imageHeader.PixelDepth / 8));
-				}
-			break;
-			
-			case asset::EF_R8_UNORM:
-				{
-					const void *src_container[4] = {&scan_lines[y * row_stride], nullptr, nullptr, nullptr};
-					convertColor<EF_R8_UNORM, EF_R8_SRGB>(src_container, row_pointer, imageHeader.ImageWidth, dim);
-				}
-			break;
-			
-			// EF_R8G8B8(A8)_SRGB would need swizzling to EF_B8G8R8(A8)_SRGB.
-			case asset::EF_R8G8B8_SRGB:
-				{
-					const void *src_container[4] = {&scan_lines[y * row_stride], nullptr, nullptr, nullptr};
-					convertColor<EF_R8G8B8_SRGB, EF_B8G8R8_SRGB>(src_container, row_pointer, imageHeader.ImageWidth, dim);
-				}
-			break;
-			
-			case asset::EF_R8G8B8A8_SRGB:
-				{
-					const void *src_container[4] = {&scan_lines[y * row_stride], nullptr, nullptr, nullptr};
-					convertColor<EF_R8G8B8A8_SRGB, EF_B8G8R8A8_SRGB>(src_container, row_pointer, imageHeader.ImageWidth, dim);
-				}
+			{
+				memcpy(row_pointer, &scan_lines[y * row_stride], row_size);
+			}
 			break;
 			
 			default:

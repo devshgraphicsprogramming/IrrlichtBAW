@@ -21,7 +21,6 @@ class CBasicImageFilterCommon
 		static inline void executePerBlock(const ICPUImage* image, const IImage::SBufferCopy& region, F& f)
 		{
 			const auto& subresource = region.imageSubresource;
-			const uint32_t layerLimit = subresource.baseArrayLayer+subresource.layerCount;
 
 			const auto& params = image->getCreationParameters();
 			IImage::SBufferCopy::TexelBlockInfo blockInfo(params.format);
@@ -31,36 +30,44 @@ class CBasicImageFilterCommon
 			trueOffset.y = region.imageOffset.y;
 			trueOffset.z = region.imageOffset.z;
 			trueOffset = IImage::SBufferCopy::TexelsToBlocks(trueOffset,blockInfo);
+			trueOffset.w = subresource.baseArrayLayer;
 			
-			core::vector3du32_SIMD trueExtent = IImage::SBufferCopy::TexelsToBlocks(region.getTexelStrides(),blockInfo);
+			core::vector3du32_SIMD trueExtent;
+			trueExtent.x = region.imageExtent.width;
+			trueExtent.y = region.imageExtent.height;
+			trueExtent.z = region.imageExtent.depth;
+			trueExtent  = IImage::SBufferCopy::TexelsToBlocks(trueExtent,blockInfo);
+			trueExtent.w = subresource.layerCount;
 
 			const auto strides = region.getByteStrides(blockInfo,asset::getTexelOrBlockBytesize(params.format));
 
-			core::vector3du32_SIMD blockCoord;
-			for (auto& layer =(blockCoord[3]=subresource.baseArrayLayer); layer<layerLimit; layer++)
-			for (auto& zBlock=(blockCoord[2]=trueOffset.z); zBlock<trueExtent.z; ++zBlock)
-			for (auto& yBlock=(blockCoord[1]=trueOffset.y); yBlock<trueExtent.y; ++yBlock)
-			for (auto& xBlock=(blockCoord[0]=trueOffset.x); xBlock<trueExtent.x; ++xBlock)
-				f(region.getByteOffset(blockCoord,strides),blockCoord);
+			core::vector3du32_SIMD localCoord;
+			for (auto& layer =localCoord[3]=0u; layer<trueExtent.w; ++layer)
+			for (auto& zBlock=localCoord[2]=0u; zBlock<trueExtent.z; ++zBlock)
+			for (auto& yBlock=localCoord[1]=0u; yBlock<trueExtent.y; ++yBlock)
+			for (auto& xBlock=localCoord[0]=0u; xBlock<trueExtent.x; ++xBlock)
+				f(region.getByteOffset(localCoord,strides),localCoord+trueOffset);
 		}
 
 		struct default_region_functor_t
 		{
-			inline bool operator()(IImage::SBufferCopy& newRegion, const IImage::SBufferCopy* referenceRegion) { return true; }
+			constexpr default_region_functor_t() = default;
+			inline constexpr bool operator()(IImage::SBufferCopy& newRegion, const IImage::SBufferCopy* referenceRegion) const { return true; }
 		};
-		static default_region_functor_t default_region_functor;
 		
 		struct clip_region_functor_t
 		{
 			clip_region_functor_t(const ICPUImage::SSubresourceLayers& _subresrouce, const IImageFilter::IState::TexelRange& _range, E_FORMAT format) : 
 				subresource(_subresrouce), range(_range), blockInfo(format), blockByteSize(getTexelOrBlockBytesize(format)) {}
+			clip_region_functor_t(const ICPUImage::SSubresourceLayers& _subresrouce, const IImageFilter::IState::TexelRange& _range, const IImage::SBufferCopy::TexelBlockInfo& _blockInfo, uint32_t _blockByteSize) :
+				subresource(_subresrouce), range(_range), blockInfo(_blockInfo), blockByteSize(_blockByteSize) {}
 
 			const ICPUImage::SSubresourceLayers&		subresource;
 			const IImageFilter::IState::TexelRange&		range;
 			const IImage::SBufferCopy::TexelBlockInfo	blockInfo;
 			const uint32_t								blockByteSize;
 
-			inline bool operator()(IImage::SBufferCopy& newRegion, const IImage::SBufferCopy* referenceRegion)
+			inline bool operator()(IImage::SBufferCopy& newRegion, const IImage::SBufferCopy* referenceRegion) const
 			{
 				if (subresource.mipLevel!=referenceRegion->imageSubresource.mipLevel)
 					return false;
@@ -85,6 +92,11 @@ class CBasicImageFilterCommon
 					newRegion.bufferOffset += referenceRegion->getLocalOffset(offsetInOffset,strides);
 				}
 
+				if (!referenceRegion->bufferRowLength)
+					newRegion.bufferRowLength = referenceRegion->imageExtent.width;
+				if (!referenceRegion->bufferImageHeight)
+					newRegion.bufferImageHeight = referenceRegion->imageExtent.height;
+
 				newRegion.imageOffset.x = offset.x;
 				newRegion.imageOffset.y = offset.y;
 				newRegion.imageOffset.z = offset.z;
@@ -97,12 +109,12 @@ class CBasicImageFilterCommon
 				return true;
 			}
 		};
-
-		template<typename F, typename G=default_region_functor_t>
+		
+		template<typename F, typename G>
 		static inline void executePerRegion(const ICPUImage* image, F& f,
-											const IImage::SBufferCopy* _begin=image->getRegions().begin(),
-											const IImage::SBufferCopy* _end=image->getRegions().end(),
-											G& g=default_region_functor)
+											const IImage::SBufferCopy* _begin,
+											const IImage::SBufferCopy* _end,
+											G& g)
 		{
 			for (auto it=_begin; it!=_end; it++)
 			{
@@ -110,6 +122,14 @@ class CBasicImageFilterCommon
 				if (g(region,it))
 					executePerBlock<F>(image, region, f);
 			}
+		}
+		template<typename F>
+		static inline void executePerRegion(const ICPUImage* image, F& f,
+											const IImage::SBufferCopy* _begin=image->getRegions().begin(),
+											const IImage::SBufferCopy* _end=image->getRegions().end())
+		{
+			default_region_functor_t voidFunctor;
+			return executePerRegion<F,default_region_functor_t>(image,f,_begin,_end,voidFunctor);
 		}
 
 	protected:
@@ -142,6 +162,7 @@ class CBasicImageFilterCommon
 		}
 };
 
+
 class CBasicInImageFilterCommon : public CBasicImageFilterCommon
 {
 	public:
@@ -170,6 +191,7 @@ class CBasicInImageFilterCommon : public CBasicImageFilterCommon
 	protected:
 		virtual ~CBasicInImageFilterCommon() = 0;
 };
+
 class CBasicOutImageFilterCommon : public CBasicImageFilterCommon
 {
 	public:
@@ -198,6 +220,7 @@ class CBasicOutImageFilterCommon : public CBasicImageFilterCommon
 	protected:
 		virtual ~CBasicOutImageFilterCommon() = 0;
 };
+
 class CBasicInOutImageFilterCommon : public CBasicImageFilterCommon
 {
 	public:
@@ -231,7 +254,6 @@ class CBasicInOutImageFilterCommon : public CBasicImageFilterCommon
 	protected:
 		virtual ~CBasicInOutImageFilterCommon() = 0;
 };
-// will probably need some per-pixel helper class/functions (that can run a templated functor per-pixel to reduce code clutter)
 
 } // end namespace asset
 } // end namespace irr
