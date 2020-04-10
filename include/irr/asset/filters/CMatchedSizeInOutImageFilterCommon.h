@@ -14,9 +14,27 @@ namespace irr
 namespace asset
 {
 
+/*
+	Common filter for images where input and desired output
+	image data is known. The filter can execute various
+	converting actions on input image to get an output
+	image that will be a converted and ready to use one.
+*/
+
 class CMatchedSizeInOutImageFilterCommon : public CBasicImageFilterCommon
 {
 	public:
+
+		/*
+			To make use of the filter, it's \bstate\b must be provided.
+			State contains information about input image and an image
+			that will be converted as an output, but it's reference
+			is a single choosen region data. In that case you are
+			able to convert image with various layers and faces, but
+			keep in mind that for certain mipmaps you will have to change 
+			appropriate state fields to make it work.
+		*/
+
 		class CState : public IImageFilter::IState
 		{
 			public:
@@ -28,6 +46,19 @@ class CMatchedSizeInOutImageFilterCommon : public CBasicImageFilterCommon
 				}
 				virtual ~CState() {}
 
+				/*
+					Wrapped extent and layer count to an union.
+					You can fill image extent and layer count
+					separately or fill it at once by \bextentLayerCount\b,
+					where in it \bx, y, z\b is treated as extent, and a \bw\b 
+					is treated as layerCount. You can use it interchangeably.
+
+					Pay attention output image must be prepared to conversion
+					process. It means it's a user resposibility to take care
+					of attached regions and texel buffer with new adjusted size
+					for executing the process for output image.
+				*/
+	
 				union
 				{
 					core::vectorSIMDu32 extentLayerCount;
@@ -37,6 +68,15 @@ class CMatchedSizeInOutImageFilterCommon : public CBasicImageFilterCommon
 						uint32_t		layerCount;
 					};
 				};
+
+				/*
+					Wrapped inOffset and inBaseLayer to an union.
+					You can fill in offset and in base layer
+					separately or fill it at once by \binOffsetBaseLayer\b,
+					where in it \bx, y, z\b is treated as inOffset, and a \bw\b
+					is treated as inBaseLayer. You can use it interchangeably.
+				*/
+
 				union
 				{
 					core::vectorSIMDu32 inOffsetBaseLayer;
@@ -46,6 +86,15 @@ class CMatchedSizeInOutImageFilterCommon : public CBasicImageFilterCommon
 						uint32_t		inBaseLayer;
 					};
 				};
+
+				/*
+					Wrapped outOffset and outBaseLayer to an union.
+					You can fill out offset and out base layer
+					separately or fill it at once by \boutOffsetBaseLayer\b,
+					where in it \bx, y, z\b is treated as outOffset, and a \bw\b
+					is treated as outBaseLayer. You can use it interchangeably.
+				*/
+
 				union
 				{
 					core::vectorSIMDu32 outOffsetBaseLayer;
@@ -55,10 +104,11 @@ class CMatchedSizeInOutImageFilterCommon : public CBasicImageFilterCommon
 						uint32_t		outBaseLayer;
 					};
 				};
-				uint32_t				inMipLevel = 0u;
-				uint32_t				outMipLevel = 0u;
-				const ICPUImage*		inImage = nullptr;
-				ICPUImage*				outImage = nullptr;
+
+				uint32_t				inMipLevel = 0u;		//!<< Current handled mipmap level in reference to \binput\b image
+				uint32_t				outMipLevel = 0u;		//!<< Current handled mipmap level in reference to \boutput\b image
+				const ICPUImage*		inImage = nullptr;		//!<< \bInput\b image being a reference for state management
+				ICPUImage*				outImage = nullptr;		//!<< \bOutput\b converted image which memory will be converted according to state data after execute call
 		};
 		using state_type = CState;
 		
