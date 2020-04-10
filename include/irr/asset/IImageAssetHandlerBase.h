@@ -50,65 +50,93 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 		/*
 			Patch for not supported by OpenGL R8_SRGB formats.
 			Returns converted image. Input image needs to have
-			all the regions filled and texel buffer as well.
-
-			@devshgraphicsprogramming it should support layers and mipmaps
-			as well for GLI, do we have a filter that can handle it?
+			all the regions filled and texel buffer attached as well.
+			Beware it doesn't validate input image, you have to
+			make sure it's R8 format
 		*/
 
+		template<E_FORMAT inputR8Format = EF_R8_SRGB>
 		static inline core::smart_refctd_ptr<ICPUImage> convertR8ToR8G8B8Image(core::smart_refctd_ptr<ICPUImage> image)
 		{
+			constexpr auto formatPair = matchAndReturnPairFormat<inputR8Format>();
+			constexpr auto inputFormat = formatPair.first;
+			constexpr auto outputFormat = formatPair.second;
+			using CONVERSION_FILTER = CConvertFormatImageFilter<inputFormat, outputFormat>;
+
 			core::smart_refctd_ptr<ICPUImage> newConvertedImage;
 			{
-				auto copyImageForConverting = core::smart_refctd_ptr_static_cast<ICPUImage>(image->clone());
-				auto copyImageParams = copyImageForConverting->getCreationParameters();
-				auto copyBuffer = copyImageForConverting->getBuffer();
-				auto copyRegion = copyImageForConverting->getRegions().begin();
+				auto referenceImageParams = image->getCreationParameters();
+				auto referenceBuffer = image->getBuffer();
+				auto referenceRegions = image->getRegions();
 
-				auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(copyBuffer->getSize());
-				memcpy(newCpuBuffer->getPointer(), copyBuffer->getPointer(), newCpuBuffer->getSize());
+				const auto newTexelOrBlockByteSize = asset::getTexelOrBlockBytesize(outputFormat);
+				auto newImageParams = referenceImageParams;
+				auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(referenceBuffer->getSize() * newTexelOrBlockByteSize);
+				auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(referenceRegions.size());
 
-				auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
-				ICPUImage::SBufferCopy& region = newRegions->front();
-				region.imageSubresource.mipLevel = copyRegion->imageSubresource.mipLevel;
-				region.imageSubresource.baseArrayLayer = copyRegion->imageSubresource.baseArrayLayer;
-				region.imageSubresource.layerCount = copyRegion->imageSubresource.layerCount;
-				region.bufferOffset = copyRegion->bufferOffset;
-				region.bufferRowLength = copyRegion->bufferRowLength * asset::getTexelOrBlockBytesize(EF_R8G8B8_SRGB);
-				region.bufferImageHeight = copyRegion->bufferImageHeight;
-				region.imageOffset = copyRegion->imageOffset;
-				region.imageExtent = copyRegion->imageExtent;
+				newImageParams.format = outputFormat;
 
-				CMatchedSizeInOutImageFilterCommon::state_type state;
-				state.extent = copyImageParams.extent;
-
-				switch (copyImageParams.format)
+				uint64_t regionItr = {};
+				for (auto newRegion = newRegions->begin(); newRegion != newRegions->end(); ++newRegion)
 				{
-				case asset::EF_R8_SRGB:
-				{
-					copyImageParams.format = EF_R8G8B8_SRGB;
-					newConvertedImage = ICPUImage::create(std::move(copyImageParams));
-					newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
-					state.inImage = newConvertedImage.get();
+					auto referenceRegion = referenceRegions.begin() + regionItr++;
 
-					CConvertFormatImageFilter<EF_R8_SRGB, EF_R8G8B8_SRGB> convertFiler;
-					if (!convertFiler.execute(&state))
-						os::Printer::log("LOAD PNG: something went wrong while converting from R8 to R8G8B8 format!", ELL_WARNING);
+					*newRegion = *referenceRegion;
+					newRegion->bufferOffset = referenceRegion->bufferOffset * newTexelOrBlockByteSize;
 				}
-				break;
+			
+				CONVERSION_FILTER::state_type state;
+				state.extent = newImageParams.extent;
+				state.extentLayerCount = ? ; // why it's vector?
+				state.inBaseLayer = 0;
+				state.inImage = image.get();
+				state.inMipLevel = ? ; // it's for per mip map, so region?
+				state.inOffset = ? ; //old region->bufferOffset ?
+				state.inOffsetBaseLayer = ? ; // probably old single layer byte size
+				state.layerCount = newImageParams.arrayLayers;
+				state.outBaseLayer = 0; // ?
+				state.outMipLevel = ? ; // seems that it's per region
+				state.outOffset = ? ; // new region->bufferOffset * R8G8B8 byte size ?
+				state.outOffsetBaseLayer = ? ; // new offset in bytes to layer ? old layer byte size * R8G8B8 byte size
 
-				default:
-				{
-					newConvertedImage = std::move(copyImageForConverting);
-				}
-				break;
-				}
+				newConvertedImage = ICPUImage::create(std::move(newImageParams));
+				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+				state.outImage = newConvertedImage.get();
+
+				CONVERSION_FILTER convertFiler; // in that I think I can't execute it with single call
+				if (!convertFiler.execute(&state))
+					os::Printer::log("LOAD PNG: something went wrong while converting from R8 to R8G8B8 format!", ELL_WARNING);
 			}
 
 			return newConvertedImage;
 		};
 
 	private:
+
+		template<E_FORMAT inputR8Format>
+		static inline constexpr std::pair<E_FORMAT, E_FORMAT> matchAndReturnPairFormat()
+		{
+			bool status = true;
+			if constexpr (inputR8Format == EF_R8_SINT)
+				return std::make_pair(EF_R8_SINT, EF_R8G8B8_SINT);
+			else if constexpr(inputR8Format == EF_R8_SNORM)
+				return std::make_pair(EF_R8_SNORM, EF_R8G8B8_SNORM);
+			else if constexpr(inputR8Format == EF_R8_SRGB)
+				return std::make_pair(EF_R8_SRGB, EF_R8G8B8_SRGB);
+			else if constexpr(inputR8Format == EF_R8_SSCALED)
+				return std::make_pair(EF_R8_SSCALED, EF_R8G8B8_SSCALED);
+			else if constexpr(inputR8Format == EF_R8_UINT)
+				return std::make_pair(EF_R8_UINT, EF_R8G8B8_UINT);
+			else if constexpr(inputR8Format == EF_R8_UNORM)
+				return std::make_pair(EF_R8_UNORM, EF_R8G8B8_UNORM);
+			else if constexpr(inputR8Format == EF_R8_USCALED)
+				return std::make_pair(EF_R8_USCALED, EF_R8G8B8_USCALED);
+			else
+			{
+				status = false;
+				static_assert(status, "Invalid input R8 format type!");
+			}
+		}
 };
 
 }
