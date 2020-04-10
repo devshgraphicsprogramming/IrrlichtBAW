@@ -94,7 +94,7 @@ namespace irr
 			};
 
 			/*
-				Create a ScreenShot with gpu image usage.
+				Create a ScreenShot with gpu image usage and save it to a file.
 			*/
 
 			bool createScreenShoot(core::smart_refctd_ptr<IrrlichtDevice> device, core::smart_refctd_ptr<video::IGPUImage> gpuImage, const std::string& outFileName)
@@ -119,15 +119,21 @@ namespace irr
 				region.imageOffset = { 0u, 0u, 0u };
 				region.imageExtent = image->getCreationParameters().extent;
 
-				auto destinationBuffer = core::smart_refctd_ptr<video::IGPUBuffer>(driver->createDownStreamingGPUBufferOnDedMem(image->getImageDataSizeInBytes()));
-				destinationBuffer->getBoundMemory()->mapMemoryRange(video::IDriverMemoryAllocation::EMCAF_READ, { 0u, destinationBuffer->getSize() });
+				video::IDriverMemoryBacked::SDriverMemoryRequirements memoryRequirements;
+				memoryRequirements.vulkanReqs.alignment = 64u;
+				memoryRequirements.vulkanReqs.memoryTypeBits = 0xffffffffu;
+				memoryRequirements.memoryHeapLocation = video::IDriverMemoryAllocation::ESMT_NOT_DEVICE_LOCAL;
+				memoryRequirements.mappingCapability = video::IDriverMemoryAllocation::EMCF_CAN_MAP_FOR_READ | video::IDriverMemoryAllocation::EMCF_COHERENT | video::IDriverMemoryAllocation::EMCF_CACHED;
+				memoryRequirements.vulkanReqs.size = image->getImageDataSizeInBytes();
+				auto destinationBuffer = driver->createGPUBufferOnDedMem(memoryRequirements);
 
-				driver->copyImageToBuffer(gpuImage.get(), destinationBuffer.get(), 1, regions->begin());
+				auto fence = downloadImageMipLevel(driver, gpuImage.get(), destinationBuffer.get());
+				while (fence->waitCPU(1000ull, fence->canDeferredFlush()) == video::EDFR_TIMEOUT_EXPIRED) {}
 
-				auto texelBuffer = core::make_smart_refctd_ptr<asset::ICPUBuffer>(image->getImageDataSizeInBytes());
-				auto rawData = reinterpret_cast<uint8_t*>(destinationBuffer->getBoundMemory()->getMappedPointer());
-
-				memcpy(texelBuffer->getPointer(), rawData, image->getImageDataSizeInBytes());
+				auto destinationBoundMemory = destinationBuffer->getBoundMemory();
+				destinationBoundMemory->mapMemoryRange(video::IDriverMemoryAllocation::EMCAF_READ, { 0u, memoryRequirements.vulkanReqs.size });
+				auto texelBuffer = core::make_smart_refctd_ptr<asset::CCustomAllocatorCPUBuffer<core::null_allocator<uint8_t>>>(memoryRequirements.vulkanReqs.size, destinationBoundMemory->getMappedPointer(), core::adopt_memory);
+				destinationBoundMemory->unmapMemory();
 
 				image->setBufferAndRegions(std::move(texelBuffer), regions);
 
@@ -135,8 +141,16 @@ namespace irr
 				return assetManager->writeAsset(outFileName, wparams);
 			}
 
+			/*
+				Download mip level image with gpu image usage and save it to IGPUBuffer.
+				Because of the fence placed by driver the function stalls the CPU 
+				to wait on the GPU to finish, beware of that.
+
+				@see video::IDriverFence
+			*/
+
 			//! TODO: HANDLE UNPACK ALIGNMENT
-			core::smart_refctd_ptr<video::IDriverFence> createScreenShot(video::IDriver* driver, video::IGPUImage* source, video::IGPUBuffer* destination, uint32_t sourceMipLevel = 0u, size_t destOffset = 0ull, bool implicitflush = true)
+			core::smart_refctd_ptr<video::IDriverFence> downloadImageMipLevel(video::IDriver* driver, video::IGPUImage* source, video::IGPUBuffer* destination, uint32_t sourceMipLevel = 0u, size_t destOffset = 0ull, bool implicitflush = true)
 			{
 				// will change this, https://github.com/buildaworldnet/IrrlichtBAW/issues/148
 				if (isBlockCompressionFormat(source->getCreationParameters().format))
