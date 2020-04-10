@@ -16,18 +16,64 @@ namespace irr
 namespace asset
 {
 
-// runtime polymorphic
+//! Base class for general filters with runtime polymorphic.
+/*
+	Filters can execute various actions basing on input image
+	to get an output image.
+
+	Available filters are as following:
+
+	- Fill Filter
+	- Copy Filter
+	- Flatten Filter 
+	- Convert Filter 
+	- Swizzle && Convert Filter
+	- Utility Filter
+	- Blit Filter	
+	- Generate Mip Maps Filter
+
+	Each of those performs certain specified by a filter actions
+	on an image's output attached texel buffer, where input image
+	is a reference for a valid process executation.
+*/
+
 class IImageFilter
 {
 	public:
+
+		//! Base class for filter's \bstate\b.
+		/*
+			To make use of the filter, it's \bstate\b must be provided.
+			State contains information about input image and an image
+			that will be spread out as an output, but it's reference
+			is a single choosen region data. In that case you are
+			able to perform various image converting processes with 
+			different layers and faces, but keep in mind that for 
+			certain mipmaps you will have to change appropriate 
+			state fields to make it work.
+		*/
+
 		class IState
 		{
 			public:
+
+				/*
+					Class for holding information about current
+					handled texel range in texel buffer attached
+					to an image.
+				*/
+
 				struct TexelRange
 				{
 					VkOffset3D	offset = { 0u,0u,0u };
 					VkExtent3D	extent = { 0u,0u,0u };
 				};
+
+				/*
+					Class for reinterpreting a single color value,
+					it may be a texel or single compressed block.
+				*/
+
 				struct ColorValue
 				{
 					ColorValue() {}
@@ -96,8 +142,10 @@ class IImageFilter
 		virtual bool pExecute(IState* state) const = 0;
 };
 
+/*
+	Filter class for static polymorphic
+*/
 
-// static polymorphic
 template<typename CRTP>
 class CImageFilter : public IImageFilter
 {

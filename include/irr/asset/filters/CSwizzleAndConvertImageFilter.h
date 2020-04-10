@@ -131,20 +131,20 @@ class CSwizzleAndConvertImageFilter : public CImageFilter<CSwizzleAndConvertImag
 				assert(blockDims.z==1u);
 				assert(blockDims.w==1u);
 			#endif
-			auto perOutputRegion = [&blockDims](const CommonExecuteData& commonExecuteData, CBasicImageFilterCommon::clip_region_functor_t& clip) -> bool
+			auto perOutputRegion = [&blockDims, &state](const CommonExecuteData& commonExecuteData, CBasicImageFilterCommon::clip_region_functor_t& clip) -> bool
 			{
-				auto swizzle = [&commonExecuteData,&blockDims](uint32_t readBlockArrayOffset, core::vectorSIMDu32 readBlockPos)
+				auto swizzle = [&commonExecuteData,&blockDims, &state](uint32_t readBlockArrayOffset, core::vectorSIMDu32 readBlockPos)
 				{
 					constexpr auto MaxPlanes = 4;
 					const void* srcPix[MaxPlanes] = { commonExecuteData.inData+readBlockArrayOffset,nullptr,nullptr,nullptr };
 
-					for (auto blockY=0u; blockY<blockDims; blockY++)
-					for (auto blockX=0u; blockX<blockDims; blockX++)
+					for (auto blockY=0u; blockY<blockDims.Y; blockY++)
+					for (auto blockX=0u; blockX<blockDims.X; blockX++)
 					{
 						auto localOutPos = readBlockPos*blockDims+commonExecuteData.offsetDifference;
 						uint8_t* dstPix = commonExecuteData.outData+commonExecuteData.oit->getByteOffset(localOutPos,commonExecuteData.outByteStrides); // TODO!
 						if constexpr(!std::is_void<Swizzle>::value)
-							convertColor<inFormat,outFormat,Swizzle>(srcPix,dstPix,blockX,blockY,state);
+							convertColor<inFormat,outFormat,Swizzle>(srcPix,dstPix,blockX,blockY,state); // it's wrong for sure, but don't know what to do with that
 						else
 							convertColor<inFormat,outFormat,Swizzle>(srcPix,dstPix,blockX,blockY,state->swizzle);
 					}

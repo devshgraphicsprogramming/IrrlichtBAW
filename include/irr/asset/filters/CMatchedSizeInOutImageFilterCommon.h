@@ -14,25 +14,23 @@ namespace irr
 namespace asset
 {
 
+//! Base class for common matched size in-out images
 /*
-	Common filter for images where input and desired output
-	image data is known. The filter can execute various
-	converting actions on input image to get an output
-	image that will be a converted and ready to use one.
+	Common base class for filters for images where input 
+	and desired output image data is known. The filter 
+	can execute various converting actions on input image 
+	to get an output image that will be a converted and ready to use one.
+
+	@see IImageFilter
 */
 
 class CMatchedSizeInOutImageFilterCommon : public CBasicImageFilterCommon
 {
 	public:
 
+		//! Derived state of CMatchedSizeInOutImageFilterCommon
 		/*
-			To make use of the filter, it's \bstate\b must be provided.
-			State contains information about input image and an image
-			that will be converted as an output, but it's reference
-			is a single choosen region data. In that case you are
-			able to convert image with various layers and faces, but
-			keep in mind that for certain mipmaps you will have to change 
-			appropriate state fields to make it work.
+			@see IImageFilter::IState
 		*/
 
 		class CState : public IImageFilter::IState
@@ -105,10 +103,10 @@ class CMatchedSizeInOutImageFilterCommon : public CBasicImageFilterCommon
 					};
 				};
 
-				uint32_t				inMipLevel = 0u;		//!<< Current handled mipmap level in reference to \binput\b image
-				uint32_t				outMipLevel = 0u;		//!<< Current handled mipmap level in reference to \boutput\b image
-				const ICPUImage*		inImage = nullptr;		//!<< \bInput\b image being a reference for state management
-				ICPUImage*				outImage = nullptr;		//!<< \bOutput\b converted image which memory will be converted according to state data after execute call
+				uint32_t				inMipLevel = 0u;		//!< Current handled mipmap level in reference to \binput\b image
+				uint32_t				outMipLevel = 0u;		//!< Current handled mipmap level in reference to \boutput\b image
+				const ICPUImage*		inImage = nullptr;		//!< \bInput\b image being a reference for state management, needed to operate on output image's texel buffer
+				ICPUImage*				outImage = nullptr;		//!< \bOutput\b image, it's attached texel buffer will be converted according to state data after execute call
 		};
 		using state_type = CState;
 		
