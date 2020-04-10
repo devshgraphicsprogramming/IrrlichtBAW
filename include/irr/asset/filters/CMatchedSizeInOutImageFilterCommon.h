@@ -17,9 +17,10 @@ namespace asset
 //! Base class for common matched size in-out images
 /*
 	Common base class for filters for images where input 
-	and desired output image data is known. The filter 
-	can execute various converting actions on input image 
-	to get an output image that will be a converted and ready to use one.
+	and desired output image data is known - the input range is 
+	the same size as output. The filters derived from it can execute 
+	various converting actions on input image  to get an output image 
+	that will be a converted and ready to use one.
 
 	@see IImageFilter
 */
@@ -54,7 +55,11 @@ class CMatchedSizeInOutImageFilterCommon : public CBasicImageFilterCommon
 					Pay attention output image must be prepared to conversion
 					process. It means it's a user resposibility to take care
 					of attached regions and texel buffer with new adjusted size
-					for executing the process for output image.
+					for executing the process for output image. So you will
+					have to deliver adjusted new buffer and fill regions manually, 
+					unless \bclip_region_functor_t\b is delivered which takes care
+					of the extents and offsets to fit individually each new
+					region by taking a reference region.
 				*/
 	
 				union

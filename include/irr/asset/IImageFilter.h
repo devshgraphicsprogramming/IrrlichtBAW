@@ -16,7 +16,7 @@ namespace irr
 namespace asset
 {
 
-//! Base class for general filters with runtime polymorphic.
+//! Base class for general filters with runtime polymorphism.
 /*
 	Filters can execute various actions basing on input image
 	to get an output image.
@@ -44,13 +44,25 @@ class IImageFilter
 		//! Base class for filter's \bstate\b.
 		/*
 			To make use of the filter, it's \bstate\b must be provided.
-			State contains information about input image and an image
-			that will be spread out as an output, but it's reference
-			is a single choosen region data. In that case you are
-			able to perform various image converting processes with 
-			different layers and faces, but keep in mind that for 
-			certain mipmaps you will have to change appropriate 
-			state fields to make it work.
+			State contains information about data needed to execute 
+			some processes needed to get final output image or it's bundle.
+			Sometimes filter may require you to specify input image as 
+			a reference for final output image, but there are also such
+			filters which only take output image. Multiple-input and 
+			multiple-output filters will be provided soon as well.
+
+			Generally you are able to perform various image converting
+			processes with  different layers and faces, but keep in mind 
+			that usually for certain mipmaps you will have to change appropriate 
+			state fields to make it work, because filters work for 
+			one mip-map level at a time. There is an exception when
+			filters work with many mip maps at a time - when using
+			\bGenerateMipMaps\b filter.
+
+			Because of various inputs, outputs or even lack of one of those,
+			it's doesn't declare any members, just type definitions as an interface.
+			A particular filter delcares it's own \bstate_type\b typedef or alias and 
+			different filters require different states.
 		*/
 
 		class IState
