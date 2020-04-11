@@ -33,7 +33,9 @@ bool CImageWriterTGA::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 
 	SAssetWriteContext ctx{ _params, _file };
 
-	const asset::ICPUImage* image = IAsset::castDown<ICPUImage>(_params.rootAsset);
+	const asset::ICPUImageView* imageView = IAsset::castDown<ICPUImageView>(_params.rootAsset);
+	const auto smartImage = IImageAssetHandlerBase::getTopImageDataForCommonWriting(imageView);
+	const auto image = smartImage.get();
 
 	io::IWriteFile* file = _override->getOutputFile(_file, ctx, { image, 0u });
 	

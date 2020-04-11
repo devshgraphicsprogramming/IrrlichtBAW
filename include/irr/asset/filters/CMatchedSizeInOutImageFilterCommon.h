@@ -59,7 +59,9 @@ class CMatchedSizeInOutImageFilterCommon : public CBasicImageFilterCommon
 					have to deliver adjusted new buffer and fill regions manually, 
 					unless \bclip_region_functor_t\b is delivered which takes care
 					of the extents and offsets to fit individually each new
-					region by taking a reference region.
+					region by taking a reference region. The only restriction 
+					is that the offsets and extents cannot specify an area outside 
+					of the whole image itself.
 				*/
 	
 				union

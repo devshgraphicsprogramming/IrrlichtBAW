@@ -48,6 +48,64 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 		}
 
 		/*
+			Create a new image with only one top level region, one layer and one mip-map level.
+
+			Handling ordinary images in asset writing process is a mess since multi-regions
+			are valid. To avoid ambitious, the function will handle top level data from
+			image view to save only stuff a user has choosen.
+		*/
+
+		static inline core::smart_refctd_ptr<ICPUImage> getTopImageDataForCommonWriting(const ICPUImageView* imageView)
+		{
+			auto referenceImage = imageView->getCreationParameters().image;
+			auto referenceImageParams = referenceImage->getCreationParameters();
+			auto referenceRegions = referenceImage->getRegions();
+			auto referenceTopRegion = referenceRegions.begin();
+
+			core::smart_refctd_ptr<ICPUImage> newImage;
+			{
+				auto newImageParams = referenceImageParams;
+				newImageParams.arrayLayers = 1;
+				newImageParams.mipLevels = 1;
+				newImageParams.type = IImage::ET_2D;
+
+				auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1);
+				auto newTopRegion = newRegions->front();
+				newTopRegion = *referenceTopRegion;
+			
+				const auto texelOrBlockByteSize = asset::getTexelOrBlockBytesize(referenceImageParams.format);
+				const IImage::SBufferCopy::TexelBlockInfo info(referenceImageParams.format);
+				auto byteStrides = newTopRegion.getByteStrides(info, texelOrBlockByteSize);
+				auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(byteStrides.X * byteStrides.Y * byteStrides.Z);
+
+				newImage = ICPUImage::create(std::move(newImageParams));
+				newImage->setBufferAndRegions(std::move(texelBuffer), newRegions);
+			}
+
+			using COPY_FILTER = CCopyImageFilter;
+			COPY_FILTER copyFilter;
+			COPY_FILTER::state_type state;
+
+			auto newTopRegion = newImage->getRegions().begin();
+
+			state.inImage = referenceImage.get();
+			state.outImage = newImage.get();
+			state.inOffset = { 0, 0, 0 };
+			state.outOffset = { 0, 0, 0 };
+			state.inBaseLayer = 0;
+			state.outBaseLayer = 0;
+			state.extent = newTopRegion->getExtent();
+			state.layerCount = newTopRegion->imageSubresource.layerCount; // @devsh I wonder if it shouldn't be like *in layers* and *out layers* to let user choose how many layers have to be "touched", cause it seems to me it deals with all layers. And if it's possible with that member however, it has to be documented, unless *inBaseLayer* deals with it what means user has to launch execute per each layer as well as he does for mipmaps
+			state.inMipLevel = newTopRegion->imageSubresource.mipLevel;
+			state.outMipLevel = 0;
+
+			if(!copyFilter.execute(&state))
+				os::Printer::log("Something went wrong while copying top level region texel's data to the image!", ELL_WARNING);
+
+			return newImage;
+		}
+
+		/*
 			Patch for not supported by OpenGL R8_SRGB formats.
 			Input image needs to have all the regions filled 
 			and texel buffer attached as well.
@@ -100,7 +158,7 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 					state.outMipLevel = newAttachedRegion->imageSubresource.mipLevel;
 				
 					if (!convertFiler.execute(&state))
-						os::Printer::log("LOAD PNG: something went wrong while converting from R8 to R8G8B8 format!", ELL_WARNING);
+						os::Printer::log("Something went wrong while converting from R8 to R8G8B8 format!", ELL_WARNING);
 				}
 			}
 			return newConvertedImage;
