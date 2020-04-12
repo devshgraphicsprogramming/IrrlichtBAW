@@ -95,7 +95,7 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 			state.inBaseLayer = 0;
 			state.outBaseLayer = 0;
 			state.extent = newTopRegion->getExtent();
-			state.layerCount = newTopRegion->imageSubresource.layerCount; // @devsh I wonder if it shouldn't be like *in layers* and *out layers* to let user choose how many layers have to be "touched", cause it seems to me it deals with all layers. And if it's possible with that member however, it has to be documented, unless *inBaseLayer* deals with it what means user has to launch execute per each layer as well as he does for mipmaps
+			state.layerCount = 1;
 			state.inMipLevel = newTopRegion->imageSubresource.mipLevel;
 			state.outMipLevel = 0;
 

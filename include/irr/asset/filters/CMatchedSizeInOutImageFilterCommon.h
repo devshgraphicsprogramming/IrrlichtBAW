@@ -62,6 +62,17 @@ class CMatchedSizeInOutImageFilterCommon : public CBasicImageFilterCommon
 					region by taking a reference region. The only restriction 
 					is that the offsets and extents cannot specify an area outside 
 					of the whole image itself.
+
+					Also note that layers are processed by filters with following range:
+
+					[inBaseLayer, inBaseLayer + layerCount)
+					[outBaseLayer, outBaseLayer + layerCount)
+
+					So remember that layerCount field is shared by \bin/out\b and
+					extent is shared as well. It's because to provide capabilty
+					of "moving" a region/layer, so you are able to put the same
+					\bW x H x D x L\b window to another bottom-left-down-layer corner
+					for instance.
 				*/
 	
 				union
