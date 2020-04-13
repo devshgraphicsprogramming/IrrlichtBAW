@@ -106,6 +106,80 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 		}
 
 		/*
+			Create an image containing a single row from taking a raw data 
+			to a single row and convert it to any format. Since it's
+			data may not only limit to stuff being displayed on a screen,
+			there is an optiomal parameter for bufferRowLength pitch that
+			is helpful while dealing with specific data which needs it.
+		*/
+
+		template<E_FORMAT inputFormat, E_FORMAT outputFormat>
+		static inline core::smart_refctd_ptr<ICPUImage> createSingleRowImageFromRawData(void* rowData, uint32_t texelOrBlockLength, bool createWithBufferRowLengthPitch = false)
+		{
+			const auto texelOrBlockByteSize = asset::getTexelOrBlockBytesize(format);
+			const decltype(texelOrBlockLength) pitchTexelOrBlockLength = createWithBufferRowLengthPitch ? calcPitchInBlocks(texelOrBlockLength, texelOrBlockByteSize) : texelOrBlockLength;
+
+			using CONVERSION_FILTER = CConvertFormatImageFilter<inputFormat, outputFormat>;
+			CONVERSION_FILTER convertFilter;
+			CONVERSION_FILTER::state_type state;
+
+			auto createImage = [&](E_FORMAT format, bool copyInputMemory = true)
+			{
+				ICPUImage::SCreationParams imgInfo;
+				imgInfo.format = format;
+				imgInfo.type = ICPUImage::ET_1D;
+				imgInfo.extent = { texelOrBlockLength * asset::getBlockDimensions(format).X, 1, 1 };
+				imgInfo.mipLevels = 1u;
+				imgInfo.arrayLayers = 1u;
+				imgInfo.samples = ICPUImage::ESCF_1_BIT;
+				imgInfo.flags = static_cast<IImage::E_CREATE_FLAGS>(0u);
+
+				auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+				auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(texelOrBlockByteSize * pitchTexelOrBlockLength);
+
+				if (copyInputMemory)
+					memcpy(texelBuffer->getPointer(), rowData, texelOrBlockByteSize * texelOrBlockLength);
+
+				ICPUImage::SBufferCopy& region = regions->front();
+
+				region.imageSubresource.mipLevel = 0u;
+				region.imageSubresource.baseArrayLayer = 0u;
+				region.imageSubresource.layerCount = 1u;
+				region.bufferOffset = 0u;
+				region.bufferRowLength = pitchTexelOrBlockLength;
+				region.bufferImageHeight = 0u;
+				region.imageOffset = { 0u, 0u, 0u };
+				region.imageExtent = imgInfo.extent;
+
+				auto singleRowImage = ICPUImage::create(std::move(imgInfo));
+				singleRowImage->setBufferAndRegions(std::move(texelBuffer), regions);
+
+				return singleRowImage;
+			};
+
+			core::smart_refctd_ptr<ICPUImage> inputSingleRowImage = createImage(inputFormat);
+			core::smart_refctd_ptr<ICPUImage> outputSingleRowImage = createImage(outputFormat, false);
+
+			auto attachedRegion = outputSingleRowImage->getRegions().begin();
+
+			state.inImage = inputSingleRowImage.get();
+			state.outImage = outputSingleRowImage.get();
+			state.inOffset = { 0, 0, 0 };
+			state.inBaseLayer = 0;
+			state.outOffset = { 0, 0, 0 };
+			state.outBaseLayer = 0;
+			state.extent = attachedRegion->getExtent();
+			state.layerCount = attachedRegion->imageSubresource.layerCount;
+			state.inMipLevel = attachedRegion->imageSubresource.mipLevel;
+			state.outMipLevel = attachedRegion->imageSubresource.mipLevel;
+
+			if (!convertFilter.execute(&state))
+				os::Printer::log("Something went wrong while converting the row!", ELL_WARNING);
+
+			return outputSingleRowImage;
+		}
+
+		/*
 			Patch for not supported by OpenGL R8_SRGB formats.
 			Input image needs to have all the regions filled 
 			and texel buffer attached as well.
@@ -140,7 +214,7 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 				newConvertedImage = ICPUImage::create(std::move(newImageParams));
 				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
 
-				CONVERSION_FILTER convertFiler;
+				CONVERSION_FILTER convertFilter;
 				CONVERSION_FILTER::state_type state;
 
 				state.inImage = image.get();
@@ -157,7 +231,7 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 					state.inMipLevel = newAttachedRegion->imageSubresource.mipLevel;
 					state.outMipLevel = newAttachedRegion->imageSubresource.mipLevel;
 				
-					if (!convertFiler.execute(&state))
+					if (!convertFilter.execute(&state))
 						os::Printer::log("Something went wrong while converting from R8 to R8G8B8 format!", ELL_WARNING);
 				}
 			}

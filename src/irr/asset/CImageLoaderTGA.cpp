@@ -154,41 +154,37 @@ void convertImageData(ICPUImage::SCreationParams& imgInfo, core::smart_refctd_pt
 asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override, uint32_t _hierarchyLevel)
 {
 	STGAHeader header;
-
-	core::smart_refctd_ptr<ICPUBuffer> palette = nullptr;
-
 	_file->read(&header, sizeof(STGAHeader));
 
+	core::smart_refctd_ptr<ICPUImage> colorMap; // not used, but it's texel buffer may be useful in future
 	const auto bytesPerTexel = header.PixelDepth / 8;
 
-	// skip image identification field
-	if (header.IdLength)
+	if (header.IdLength) // skip image identification field
 		_file->seek(header.IdLength, true);
 
 	if (header.ColorMapType)
 	{
-		// create 32 bit palette
-		palette = core::make_smart_refctd_ptr<ICPUBuffer>(header.ColorMapLength * sizeof(uint32_t));
-
-		// read color map
-		uint8_t* colorMap = _IRR_NEW_ARRAY(uint8_t, header.ColorMapEntrySize / 8 * header.ColorMapLength);
-		_file->read(colorMap,header.ColorMapEntrySize/8 * header.ColorMapLength);
+		auto colorMapEntryByteSize = header.ColorMapEntrySize / 8 * header.ColorMapLength;
+		uint8_t* colorMapEntry = _IRR_NEW_ARRAY(uint8_t, colorMapEntryByteSize);
+		_file->read(colorMapEntry, header.ColorMapEntrySize / 8 * header.ColorMapLength);
 		
-		// convert to 32-bit palette
-		const void *src_container[4] = {colorMap, nullptr, nullptr, nullptr};
-		switch ( header.ColorMapEntrySize )
+		switch ( header.ColorMapEntrySize ) // convert to 32-bit color map since input is dependend to header.ColorMapEntrySize, so it may be 8, 16, 24 or 32 bits per entity
 		{
-			case 16:
-				convertColor<EF_A1R5G5B5_UNORM_PACK16, EF_R8G8B8A8_SRGB>(src_container, palette->getPointer(), header.ColorMapLength, 0u);   /// ITS WRONG AS WELL, GOTTA FIX IT TOMORROW
+			case STB_8_BITS:
+				colorMap = asset::IImageAssetHandlerBase::createSingleRowImageFromRawData<EF_R8_SRGB, EF_R8G8B8A8_SRGB>(colorMapEntry, header.ColorMapLength);
 				break;
-			case 24:
-				convertColor<EF_B8G8R8_SRGB, EF_R8G8B8A8_SRGB>(src_container, palette->getPointer(), header.ColorMapLength, 0u);			 /// ITS WRONG AS WELL, GOTTA FIX IT TOMORROW
+			case STB_16_BITS:
+				colorMap = asset::IImageAssetHandlerBase::createSingleRowImageFromRawData<EF_A1R5G5B5_UNORM_PACK16, EF_R8G8B8A8_SRGB>(colorMapEntry, header.ColorMapLength);
 				break;
-			case 32:
-				convertColor<EF_B8G8R8A8_SRGB, EF_R8G8B8A8_SRGB>(src_container, palette->getPointer(), header.ColorMapLength, 0u);			 /// ITS WRONG AS WELL, GOTTA FIX IT TOMORROW
+			case STB_24_BITS:
+				colorMap = asset::IImageAssetHandlerBase::createSingleRowImageFromRawData<EF_B8G8R8_SRGB, EF_R8G8B8A8_SRGB>(colorMapEntry, header.ColorMapLength);		
+				break;
+			case STB_32_BITS:
+				colorMap = asset::IImageAssetHandlerBase::createSingleRowImageFromRawData<EF_B8G8R8A8_SRGB, EF_R8G8B8A8_SRGB>(colorMapEntry, header.ColorMapLength);
 				break;
 		}
-		delete [] colorMap;
+
+		_IRR_DELETE_ARRAY(colorMapEntry, colorMapEntryByteSize);
 	}
 
 	ICPUImage::SCreationParams imgInfo;
@@ -219,36 +215,33 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
 	
 	switch (header.ImageType)
 	{
-		case 1: // Uncompressed color-mapped image
-		case 2: // Uncompressed RGB image
-		case 3: // Uncompressed grayscale image
-			{
-				region.bufferRowLength = calcPitchInBlocks(region.imageExtent.width, getTexelOrBlockBytesize(EF_R8G8B8_SRGB));
-				const int32_t imageSize = endBufferSize = region.imageExtent.height * region.bufferRowLength * bytesPerTexel;
-				texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(imageSize);
-				_file->read(texelBuffer->getPointer(), imageSize);
-			}
-			break;
-		
-		case 10: // Run-length encoded (RLE) true color image
+		case STIT_NONE:
+		{
+			os::Printer::log("The given TGA doesn't have image data", _file->getFileName().c_str(), ELL_ERROR);
+			return {};
+		}
+		case STIT_UNCOMPRESSED_COLOR_MAPPED_IMAGE: _IRR_FALLTHROUGH;
+		case STIT_UNCOMPRESSED_RGB_IMAGE: _IRR_FALLTHROUGH;
+		case STIT_UNCOMPRESSED_GRAYSCALE_IMAGE: _IRR_FALLTHROUGH;
+		{
+			region.bufferRowLength = calcPitchInBlocks(region.imageExtent.width, getTexelOrBlockBytesize(EF_R8G8B8_SRGB));
+			const int32_t imageSize = endBufferSize = region.imageExtent.height * region.bufferRowLength * bytesPerTexel;
+			texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(imageSize);
+			_file->read(texelBuffer->getPointer(), imageSize);
+		}
+		break;
+		case STIT_RLE_TRUE_COLOR_IMAGE: 
 		{
 			region.bufferRowLength = calcPitchInBlocks(region.imageExtent.width, getTexelOrBlockBytesize(EF_A1R5G5B5_UNORM_PACK16));
 			const auto bufferSize = endBufferSize = region.imageExtent.height * region.bufferRowLength * bytesPerTexel;
 			loadCompressedImage(_file, header, bufferSize, texelBuffer);
 			break;
 		}
-		
-		case 0:
-			{
-				os::Printer::log("The given TGA doesn't have image data", _file->getFileName().c_str(), ELL_ERROR);
-                return {};
-			}
-		
 		default:
-			{
-				os::Printer::log("Unsupported TGA file type", _file->getFileName().c_str(), ELL_ERROR);
-                return {};
-			}
+		{
+			os::Printer::log("Unsupported TGA file type", _file->getFileName().c_str(), ELL_ERROR);
+            return {};
+		}
 	}
 
 	bool flip = (header.ImageDescriptor & 0x20) == 0;
