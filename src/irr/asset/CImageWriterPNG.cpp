@@ -57,6 +57,61 @@ CImageWriterPNG::CImageWriterPNG()
 #endif
 }
 
+template<asset::E_FORMAT outFormat>
+core::smart_refctd_ptr<asset::ICPUImage> getPNGConvertedOutput(const asset::ICPUImage* image, uint32_t referenceChannelCount)
+{
+	using CONVERSION_FILTER = asset::CConvertFormatImageFilter<asset::EF_UNKNOWN, outFormat>;
+
+	core::smart_refctd_ptr<asset::ICPUImage> newConvertedImage;
+	{
+		auto referenceImageParams = image->getCreationParameters();
+		auto referenceBuffer = image->getBuffer();
+		auto referenceRegions = image->getRegions();
+		auto referenceRegion = referenceRegions.begin();
+		const auto newTexelOrBlockByteSize = asset::getTexelOrBlockBytesize(outFormat);
+
+		IImage::SBufferCopy::TexelBlockInfo referenceBlockInfo(format);
+		core::vector3du32_SIMD referenceTrueExtent = IImage::SBufferCopy::TexelsToBlocks(referenceRegion->getTexelStrides(), referenceBlockInfo);
+
+		auto newImageParams = referenceImageParams;
+		auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(referenceTrueExtent.X * referenceTrueExtent.Y * referenceTrueExtent.Z * newTexelOrBlockByteSize);
+		auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1);
+		auto newRegion = newRegions->front();
+		newRegion = *referenceRegion;
+
+		if (referenceChannelCount == 1)
+			newImageParams.format = asset::EF_R8_SRGB;
+		else if (referenceChannelCount == 2 || referenceChannelCount == 3)
+			newImageParams.format = asset::EF_R8G8B8_SRGB;
+		else
+			newImageParams.format = asset::EF_R8G8B8A8_SRGB;
+
+		newConvertedImage = ICPUImage::create(std::move(newImageParams));
+		newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+
+		CONVERSION_FILTER convertFilter;
+		CONVERSION_FILTER::state_type state;
+
+		auto attachedRegion = newConvertedImage->getRegions().begin();
+
+		state.inImage = image;
+		state.outImage = newConvertedImage.get();
+		state.inOffset = { 0, 0, 0 };
+		state.inBaseLayer = 0;
+		state.outOffset = { 0, 0, 0 };
+		state.outBaseLayer = 0;
+		state.extent = attachedRegion->getExtent();
+		state.layerCount = attachedRegion->imageSubresource.layerCount;
+		state.inMipLevel = attachedRegion->imageSubresource.mipLevel;
+		state.outMipLevel = attachedRegion->imageSubresource.mipLevel;
+
+		if (!convertFilter.execute(&state))
+			os::Printer::log("Something went wrong while converting!", ELL_WARNING);
+
+		return newConvertedImage;
+	}
+}
+
 bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams& _params, IAssetWriterOverride* _override)
 {
     if (!_override)
@@ -99,18 +154,29 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 		png_destroy_write_struct(&png_ptr, &info_ptr);
 		return false;
 	}
-	
-	const auto& imageParams = image->getCreationParameters();
-	const auto& region = image->getRegions().begin();
-	auto format = imageParams.format;
 
-	IImage::SBufferCopy::TexelBlockInfo blockInfo(format);
-	core::vector3du32_SIMD trueExtent = IImage::SBufferCopy::TexelsToBlocks(region->getTexelStrides(), blockInfo);
+	core::smart_refctd_ptr<ICPUImage> convertedImage;
+	{
+		const auto channelCount = asset::getFormatChannelCount(image->getCreationParameters().format);
+		if (channelCount == 1)
+			convertedImage = getPNGConvertedOutput<asset::EF_R8_SRGB>(image, channelCount);
+		else if(channelCount == 2 || channelCount == 3)
+			convertedImage = getPNGConvertedOutput<asset::EF_R8G8B8_SRGB>(image, channelCount);
+		else
+			convertedImage = getPNGConvertedOutput<asset::EF_R8G8B8A8_SRGB>(image, channelCount);
+	}
+	
+	const auto& convertedImageParams = convertedImage->getCreationParameters();
+	const auto& convertedRegion = convertedImage->getRegions().begin();
+	auto convertedFormat = convertedImageParams.format;
+
+	IImage::SBufferCopy::TexelBlockInfo blockInfo(convertedFormat);
+	core::vector3du32_SIMD trueExtent = IImage::SBufferCopy::TexelsToBlocks(convertedRegion->getTexelStrides(), blockInfo);
 	
 	png_set_write_fn(png_ptr, file, user_write_data_fcn, nullptr);
 	
 	// Set info
-	switch (format)
+	switch (convertedFormat)
 	{
 		case asset::EF_R8G8B8_SRGB:
 			png_set_IHDR(png_ptr, info_ptr,
@@ -125,7 +191,6 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 				PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 		break;
 		case asset::EF_R8_SRGB:
-		case asset::EF_R8_UNORM:
 			png_set_IHDR(png_ptr, info_ptr,
 				trueExtent.X, trueExtent.Y,
 				8, PNG_COLOR_TYPE_GRAY, PNG_INTERLACE_NONE,
@@ -139,10 +204,9 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	}
 
 	int32_t lineWidth = trueExtent.X;
-	switch (format)
+	switch (convertedFormat)
 	{
 		case asset::EF_R8_SRGB:
-		case asset::EF_R8_UNORM:
 			lineWidth *= 1;
 			break;
 		case asset::EF_R8G8B8_SRGB:
@@ -157,54 +221,8 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 				return false;
 			}
 	}
-
-	core::smart_refctd_ptr<ICPUImage> newConvertedImage;
-	{
-		auto copyImageForConverting = core::smart_refctd_ptr_static_cast<ICPUImage>(image->clone());
-		auto copyImageParams = copyImageForConverting->getCreationParameters();
-		auto copyBuffer = copyImageForConverting->getBuffer();
-		auto copyRegion = copyImageForConverting->getRegions().begin();
-
-		auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(copyBuffer->getSize());
-		memcpy(newCpuBuffer->getPointer(), copyBuffer->getPointer(), newCpuBuffer->getSize());
-
-		auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
-		ICPUImage::SBufferCopy& region = newRegions->front();
-		region.imageSubresource.mipLevel = copyRegion->imageSubresource.mipLevel;
-		region.imageSubresource.baseArrayLayer = copyRegion->imageSubresource.baseArrayLayer;
-		region.imageSubresource.layerCount = copyRegion->imageSubresource.layerCount;
-		region.bufferOffset = copyRegion->bufferOffset;
-		region.bufferRowLength = copyRegion->bufferRowLength;
-		region.bufferImageHeight = copyRegion->bufferImageHeight;
-		region.imageOffset = copyRegion->imageOffset;
-		region.imageExtent = copyRegion->imageExtent;
-
-		CMatchedSizeInOutImageFilterCommon::state_type state;
-		state.extent = imageParams.extent;
-
-		switch (imageParams.format)
-		{
-			case asset::EF_R8_UNORM:
-			{
-				copyImageParams.format = EF_R8_SRGB;
-				newConvertedImage = ICPUImage::create(std::move(copyImageParams));
-				newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
-				state.inImage = newConvertedImage.get();
-
-				CConvertFormatImageFilter<EF_R8_UNORM, EF_R8_SRGB> convertFiler;
-				convertFiler.execute(&state);
-			}
-			break;
-
-			default:
-			{
-				newConvertedImage = std::move(copyImageForConverting);
-			}
-			break;
-		}
-	}
 	
-	uint8_t* data = (uint8_t*)newConvertedImage->getBuffer()->getPointer();
+	uint8_t* data = (uint8_t*)convertedImage->getBuffer()->getPointer();
 
 	constexpr uint32_t maxPNGFileHeight = 16u * 1024u; // arbitrary limit
 	if (trueExtent.Y>maxPNGFileHeight)
@@ -224,11 +242,9 @@ bool CImageWriterPNG::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	// Fill array of pointers to rows in image data
 	for (uint32_t i = 0; i < trueExtent.Y; ++i)
 	{
-		switch (format) {
-			case asset::EF_R8_SRGB:
-				_IRR_FALLTHROUGH;
-			case asset::EF_R8G8B8_SRGB:
-				_IRR_FALLTHROUGH;
+		switch (convertedFormat) {
+			case asset::EF_R8_SRGB: _IRR_FALLTHROUGH;
+			case asset::EF_R8G8B8_SRGB: _IRR_FALLTHROUGH;
 			case asset::EF_R8G8B8A8_SRGB:
 				RowPointers[i] = reinterpret_cast<png_bytep>(data);
 				break;

@@ -34,7 +34,10 @@ class CSwizzleAndConvertImageFilterBase : public CMatchedSizeInOutImageFilterCom
 	public:
 		virtual ~CSwizzleAndConvertImageFilterBase() {}
 
-		using state_type = CMatchedSizeInOutImageFilterCommon::state_type;
+		class CState : public CMatchedSizeInOutImageFilterCommon::state_type, public Swizzle
+		{
+		};
+		using state_type = CState;
 
 		static inline bool validate(state_type* state)
 		{
@@ -50,7 +53,7 @@ class CSwizzleAndConvertImageFilterBase : public CMatchedSizeInOutImageFilterCom
 };
 
 template<>
-class CSwizzleAndConvertImageFilterBase<void> : public CMatchedSizeInOutImageFilterCommon
+class CSwizzleAndConvertImageFilterBase<PolymorphicSwizzle> : public CMatchedSizeInOutImageFilterCommon
 {
 	public:
 		virtual ~CSwizzleAndConvertImageFilterBase() {}
@@ -64,7 +67,7 @@ class CSwizzleAndConvertImageFilterBase<void> : public CMatchedSizeInOutImageFil
 
 		static inline bool validate(state_type* state)
 		{
-			if (!CSwizzleAndConvertImageFilterBase<VoidSwizzle>::validate(state))
+			if (!CSwizzleAndConvertImageFilterBase<PolymorphicSwizzle>::validate(state))
 				return false;
 
 			if (!state->swizzle)
@@ -133,20 +136,20 @@ class CSwizzleAndConvertImageFilter : public CImageFilter<CSwizzleAndConvertImag
 			#endif
 			auto perOutputRegion = [&blockDims, &state](const CommonExecuteData& commonExecuteData, CBasicImageFilterCommon::clip_region_functor_t& clip) -> bool
 			{
-				auto swizzle = [&commonExecuteData,&blockDims, &state](uint32_t readBlockArrayOffset, core::vectorSIMDu32 readBlockPos)
+				auto swizzle = [&commonExecuteData,&blockDims,&state](uint32_t readBlockArrayOffset, core::vectorSIMDu32 readBlockPos)
 				{
 					constexpr auto MaxPlanes = 4;
 					const void* srcPix[MaxPlanes] = { commonExecuteData.inData+readBlockArrayOffset,nullptr,nullptr,nullptr };
 
-					for (auto blockY=0u; blockY<blockDims.Y; blockY++)
-					for (auto blockX=0u; blockX<blockDims.X; blockX++)
+					for (auto blockY=0u; blockY<blockDims.y; blockY++)
+					for (auto blockX=0u; blockX<blockDims.x; blockX++)
 					{
 						auto localOutPos = readBlockPos*blockDims+commonExecuteData.offsetDifference;
-						uint8_t* dstPix = commonExecuteData.outData+commonExecuteData.oit->getByteOffset(localOutPos,commonExecuteData.outByteStrides); // TODO!
-						if constexpr(!std::is_void<Swizzle>::value)
-							convertColor<inFormat,outFormat,Swizzle>(srcPix,dstPix,blockX,blockY,state); // it's wrong for sure, but don't know what to do with that
-						else
+						uint8_t* dstPix = commonExecuteData.outData+commonExecuteData.oit->getByteOffset(localOutPos,commonExecuteData.outByteStrides);
+						if constexpr(std::is_base_of<PolymorphicSwizzle,Swizzle>::value)
 							convertColor<inFormat,outFormat,Swizzle>(srcPix,dstPix,blockX,blockY,state->swizzle);
+						else
+							convertColor<inFormat,outFormat,Swizzle>(srcPix,dstPix,blockX,blockY,state);
 					}
 				};
 				CBasicImageFilterCommon::executePerRegion(commonExecuteData.inImg, swizzle, commonExecuteData.inRegions.begin(), commonExecuteData.inRegions.end(), clip);
@@ -186,11 +189,11 @@ class CSwizzleAndConvertImageFilter<EF_UNKNOWN,EF_UNKNOWN,Swizzle> : public CIma
 					for (auto blockX=0u; blockX<blockDims; blockX++)
 					{
 						auto localOutPos = readBlockPos*blockDims+commonExecuteData.offsetDifference;
-						uint8_t* dstPix = commonExecuteData.outData+commonExecuteData.oit->getByteOffset(localOutPos,commonExecuteData.outByteStrides); // TODO!
-						if constexpr(!std::is_void<Swizzle>::value)
-							convertColor<Swizzle>(inFormat,outFormat,srcPix,dstPix,blockX,blockY,state);
+						uint8_t* dstPix = commonExecuteData.outData+commonExecuteData.oit->getByteOffset(localOutPos,commonExecuteData.outByteStrides);
+						if constexpr(std::is_base_of<PolymorphicSwizzle,Swizzle>::value)
+							convertColor<inFormat,outFormat,Swizzle>(srcPix,dstPix,blockX,blockY,state->swizzle);
 						else
-							convertColor<Swizzle>(inFormat,outFormat,srcPix,dstPix,blockX,blockY,state->swizzle);
+							convertColor<inFormat,outFormat,Swizzle>(srcPix,dstPix,blockX,blockY,state);
 					}
 				};
 				CBasicImageFilterCommon::executePerRegion(commonExecuteData.inImg, swizzle, commonExecuteData.inRegions.begin(), commonExecuteData.inRegions.end(), clip);

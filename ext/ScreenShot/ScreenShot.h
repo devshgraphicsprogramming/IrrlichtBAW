@@ -94,6 +94,28 @@ namespace irr
 			};
 
 			/*
+				Download mip level image with gpu image usage and save it to IGPUBuffer.
+				Because of the fence placed by driver the function stalls the CPU 
+				to wait on the GPU to finish, beware of that.
+
+				@see video::IDriverFence
+			*/
+
+			//! TODO: HANDLE UNPACK ALIGNMENT
+			core::smart_refctd_ptr<video::IDriverFence> downloadImageMipLevel(video::IDriver* driver, video::IGPUImage* source, video::IGPUBuffer* destination, uint32_t sourceMipLevel = 0u, size_t destOffset = 0ull, bool implicitflush = true)
+			{
+				// will change this, https://github.com/buildaworldnet/IrrlichtBAW/issues/148
+				if (isBlockCompressionFormat(source->getCreationParameters().format))
+					return nullptr;
+
+				auto extent = source->getMipSize(sourceMipLevel);
+				video::IGPUImage::SBufferCopy pRegions[1u] = { {destOffset,extent.x,extent.y,{static_cast<asset::IImage::E_ASPECT_FLAGS>(0u),sourceMipLevel,0u,1u},{0u,0u,0u},{extent.x,extent.y,extent.z}} };
+				driver->copyImageToBuffer(source, destination, 1u, pRegions);
+
+				return driver->placeFence(implicitflush);
+			}
+
+			/*
 				Create a ScreenShot with gpu image usage and save it to a file.
 			*/
 
@@ -139,28 +161,6 @@ namespace irr
 
 				asset::IAssetWriter::SAssetWriteParams wparams(image.get());
 				return assetManager->writeAsset(outFileName, wparams);
-			}
-
-			/*
-				Download mip level image with gpu image usage and save it to IGPUBuffer.
-				Because of the fence placed by driver the function stalls the CPU 
-				to wait on the GPU to finish, beware of that.
-
-				@see video::IDriverFence
-			*/
-
-			//! TODO: HANDLE UNPACK ALIGNMENT
-			core::smart_refctd_ptr<video::IDriverFence> downloadImageMipLevel(video::IDriver* driver, video::IGPUImage* source, video::IGPUBuffer* destination, uint32_t sourceMipLevel = 0u, size_t destOffset = 0ull, bool implicitflush = true)
-			{
-				// will change this, https://github.com/buildaworldnet/IrrlichtBAW/issues/148
-				if (isBlockCompressionFormat(source->getCreationParameters().format))
-					return nullptr;
-
-				auto extent = source->getMipSize(sourceMipLevel);
-				video::IGPUImage::SBufferCopy pRegions[1u] = { {destOffset,extent.x,extent.y,{static_cast<asset::IImage::E_ASPECT_FLAGS>(0u),sourceMipLevel,0u,1u},{0u,0u,0u},{extent.x,extent.y,extent.z}} };
-				driver->copyImageToBuffer(source, destination, 1u, pRegions);
-
-				return driver->placeFence(implicitflush);
 			}
 
 /*

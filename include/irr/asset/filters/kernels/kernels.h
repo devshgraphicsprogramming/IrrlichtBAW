@@ -85,42 +85,25 @@ class CKernelConvolution : public CImageFilterKernel<CKernelConvolution<KernelA,
 		}
 };
 */
-
-
-template<class CRTP, class Ratio>
-inline void CFloatingPointIsotropicSeparableImageFilterKernelBase<CRTP, Ratio>::evaluate(value_type* out, const core::vectorSIMDf& inPos, const value_type*** slices) const
-{
-	const auto startCoord = core::vectorSIMDf(getWindowMinCoord(inPos))-inPos;
-
-	auto accumulate = [](value_type* total, const value_type* partial) -> void
-	{
-		for (auto i=0; i<4; i++)
-			total[i] += partial[i];
-	};
-	for (int32_t z=0; z<window_size[2]; z++)
-	{
-		const value_type** rows = slices[z];
-		value_type sliceSum[] = { 0,0,0,0 };
-		for (int32_t y=0; y<window_size[1]; y++)
-		{
-			const value_type* texels = rows[y];
-			value_type rowSum[] = { 0,0,0,0 };
-			for (int32_t x=0; x<window_size[0]; x++)
-			{
-				auto w = static_cast<const CRTP*>(this)->weight(startCoord+core::vectorSIMDf(x,y,z));
-				for (auto i=0; i<4; i++)
-					rowSum[i] += w*texels[4*x+i];
-			}
-			accumulate(out,rowSum);
-		}
-		accumulate(out,sliceSum);
-	}
-}
 	
 template<class CRTP, typename value_type>
-inline void CImageFilterKernel<CRTP,value_type>::evaluate(value_type* out, const core::vectorSIMDf& inPos, const value_type*** slices) const
+template<class PreFilter, class PostFilter>
+inline void CImageFilterKernel<CRTP,value_type>::evaluateImpl(PreFilter& preFilter, PostFilter& postFilter, value_type* windowSample, core::vectorSIMDf& relativePosAndFactor, const core::vectorSIMDi32& globalTexelCoord) const
 {
-	static_cast<const CRTP*>(this)->evaluate(out,inPos,slices);
+	static_cast<const CRTP*>(this)->create_sample_functor_t(preFilter,postFilter)(windowSample,relativePosAndFactor,globalTexelCoord);
+}
+
+template<class CRTP, class Ratio>
+template<class PreFilter, class PostFilter>
+inline void CFloatingPointIsotropicSeparableImageFilterKernelBase<CRTP,Ratio>::sample_functor_t<PreFilter,PostFilter>::operator()(
+		value_type* windowSample, core::vectorSIMDf& relativePosAndFactor, const core::vectorSIMDi32& globalTexelCoord
+	)
+{
+	preFilter(windowSample, relativePosAndFactor, globalTexelCoord);
+	const auto weight = _this->weight(relativePosAndFactor) * relativePosAndFactor.w;
+	for (int32_t i = 0; i < StaticPolymorphicBase::MaxChannels; i++)
+		windowSample[i] *= weight;
+	postFilter(windowSample, relativePosAndFactor, globalTexelCoord);
 }
 
 } // end namespace asset
