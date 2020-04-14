@@ -2,8 +2,6 @@
 #include <irrlicht.h>
 
 #include "../../source/Irrlicht/COpenGLDriver.h"
-#include "../../ext/ScreenShot/ScreenShot.h"
-
 
 using namespace irr;
 using namespace core;
@@ -129,7 +127,6 @@ int main()
 
 	auto blitFBO = driver->addFrameBuffer();
 	blitFBO->attach(video::EFAP_COLOR_ATTACHMENT0, core::smart_refctd_ptr_dynamic_cast<video::IGPUImageView>(am->findGPUObject(outImgViewRawPtr)));
-	auto frameBuffer = ext::ScreenShot::createDefaultFBOForScreenshoting(device);
 
 	while (device->run())
 	{
@@ -144,11 +141,8 @@ int main()
 		video::COpenGLExtensionHandler::extGlMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
 		driver->blitRenderTargets(blitFBO, nullptr, false, false);
 		
-		driver->blitRenderTargets(nullptr, frameBuffer, false, false);
 		driver->endScene();
 	}
-	
-	ext::ScreenShot::createScreenShoot(device, frameBuffer->getAttachment(video::EFAP_COLOR_ATTACHMENT0)->getCreationParameters().image, "screenshot.png");
 
 	return 0;
 }
