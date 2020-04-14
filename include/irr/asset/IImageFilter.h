@@ -69,6 +69,8 @@ class IImageFilter
 		{
 			public:
 
+				virtual ~IState() {}
+
 				/*
 					Class for holding information about current
 					handled texel range in texel buffer attached

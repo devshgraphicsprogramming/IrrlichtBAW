@@ -15,14 +15,14 @@ namespace asset
 {
 
 // specialized case of CBlitImageFilter
-template<class ResamplingKernel=CTriangleImageFilterKernel, class ReconstructionKernel=CTriangleImageFilterKernel>
+template<class ResamplingKernel=CKaiserImageFilterKernel<>, class ReconstructionKernel=CMitchellImageFilterKernel<> >
 class CMipMapGenerationImageFilter : public CImageFilter<CMipMapGenerationImageFilter<ResamplingKernel,ReconstructionKernel> >, public CBasicImageFilterCommon
 {
 	public:
 		virtual ~CMipMapGenerationImageFilter() {}
 
-		// TODO
-		using Kernel = ReconstructionKernel;//CKernelConvolution<ResamplingKernel, ReconstructionKernel>;
+		// TODO: Improve
+		using Kernel = ResamplingKernel;//CKernelConvolution<ResamplingKernel, ReconstructionKernel>;
 
 		class CProtoState : public IImageFilter::IState
 		{
@@ -60,7 +60,7 @@ class CMipMapGenerationImageFilter : public CImageFilter<CMipMapGenerationImageF
 			if (isBlockCompressionFormat(state->inOutImage->getCreationParameters().format))
 				return false;
 
-			return Kernel::validate(inImage,outImage);
+			return Kernel::validate(image,image);
 		}
 
 		static inline bool execute(state_type* state)
@@ -80,9 +80,8 @@ class CMipMapGenerationImageFilter : public CImageFilter<CMipMapGenerationImageF
 				blit.inMipLevel = prevLevel;
 				blit.outMipLevel = inMipLevel;
 				blit.inImage = blit.outImage = state->inOutImage;
-				// TODO
-				//blit.kernel
-				static_cast<CBlitImageFilterBase<Kernel>::CState&>(blit) = *static_cast<CBlitImageFilterBase<Kernel>::CState*>(state);
+				//blit.kernel = Kernel();
+				static_cast<CBlitImageFilterBase::CStateBase&>(blit) = *static_cast<CBlitImageFilterBase::CStateBase*>(state);
 				if (!CBlitImageFilter<Kernel>::execute(&blit))
 					return false;
 			}

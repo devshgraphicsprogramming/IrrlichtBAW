@@ -198,12 +198,27 @@ class CBlitImageFilter : public CImageFilter<CBlitImageFilter<Kernel> >, public 
 			const auto inExtent = state->inExtent;
 			const auto outExtent = state->outExtent;
 
-
 			const bool nonPremultBlendSemantic = state->alphaSemantic==CState::EAS_SEPARATE_BLEND;
 			const bool coverageSemantic = state->alphaSemantic==CState::EAS_REFERENCE_OR_COVERAGE;
 			const auto alphaRefValue = state->alphaRefValue;
 			for (uint32_t layer=0; layer!=layerCount; layer++)
 			{
+				auto load = [layer,inImg,inMipLevel,&state,inFormat](Kernel::value_type* windowSample, const core::vectorSIMDf& relativePosAndFactor, const core::vectorSIMDi32& globalTexelCoord)
+				{
+					auto texelCoordAndLayer(globalTexelCoord);
+					texelCoordAndLayer.w = layer;
+					//
+					core::vectorSIMDu32 inBlockCoord;
+					const void* srcPix[] = {
+						inImg->getTexelBlockData(inMipLevel,texelCoordAndLayer,inBlockCoord,state->axisWraps),
+						nullptr,
+						nullptr,
+						nullptr
+					};
+					if (srcPix[0])
+						decodePixels<Kernel::value_type>(inFormat,srcPix,windowSample,inBlockCoord.x,inBlockCoord.y);
+				};
+
 				// do the magical coverage adjustment trick suggested by developer of The Witness
 				core::rational inverseCoverage(0);
 				if (coverageSemantic)
@@ -238,7 +253,7 @@ class CBlitImageFilter : public CImageFilter<CBlitImageFilter<Kernel> >, public 
 				// optionals
 				auto* const filteredAlphaArray = reinterpret_cast<Kernel::value_type*>(state->scratchMemory+getRequiredScratchByteSize(kernel));
 				auto* filteredAlphaArrayIt = filteredAlphaArray;
-				auto blit = [outData,outBlockDims,&halfPixelOutOffset,&outToInScale,kernel,nonPremultBlendSemantic,coverageSemantic,&filteredAlphaArrayIt,outFormat](uint32_t writeBlockArrayOffset, core::vectorSIMDu32 writeBlockPos) -> void
+				auto blit = [outData,outBlockDims,&halfPixelOutOffset,&outToInScale,&load,&kernel,nonPremultBlendSemantic,coverageSemantic,&filteredAlphaArrayIt,outFormat](uint32_t writeBlockArrayOffset, core::vectorSIMDu32 writeBlockPos) -> void
 				{
 					void* dstPix = outData+writeBlockArrayOffset;
 
@@ -246,11 +261,6 @@ class CBlitImageFilter : public CImageFilter<CBlitImageFilter<Kernel> >, public 
 					for (auto blockY=0u; blockY<outBlockDims.y; blockY++)
 					for (auto blockX=0u; blockX<outBlockDims.x; blockX++)
 					{
-						auto load = [](Kernel::value_type* windowSample, const core::vectorSIMDf& relativePosAndFactor, const core::vectorSIMDi32& globalTexelCoord)
-						{
-							for (auto i=0; i<Kernel::MaxChannels; i++)
-								windowSample[i] = float(i);
-						};
 						auto* value = valbuf[blockY*outBlockDims.x+blockX];
 						Kernel::value_type avgColor = 0;
 						auto evaluate = [value,nonPremultBlendSemantic,&avgColor](Kernel::value_type* windowSample, const core::vectorSIMDf& relativePosAndFactor, const core::vectorSIMDi32& globalTexelCoord)
@@ -272,6 +282,7 @@ class CBlitImageFilter : public CImageFilter<CBlitImageFilter<Kernel> >, public 
 						else if (nonPremultBlendSemantic && avgColor>FLT_MIN*1024.0*512.0)
 							value[3] = avgColor/(value[0]+value[1]+value[2]);
 					}
+					// TODO IMPROVE: by adding random quantization noise (dithering) to break up any banding, could actually steal a sobol sampler for this
 					asset::encodePixels<Kernel::value_type>(outFormat,dstPix,valbuf[0]);
 				};
 				const core::SRange<const IImage::SBufferCopy> outRegions = outImg->getRegions(outMipLevel);
