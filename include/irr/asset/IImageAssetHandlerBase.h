@@ -72,11 +72,9 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 				auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1);
 				auto newTopRegion = newRegions->front();
 				newTopRegion = *referenceTopRegion;
-			
+
 				const auto texelOrBlockByteSize = asset::getTexelOrBlockBytesize(referenceImageParams.format);
-				const IImage::SBufferCopy::TexelBlockInfo info(referenceImageParams.format);
-				auto byteStrides = newTopRegion.getByteStrides(info, texelOrBlockByteSize);
-				auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(byteStrides.X * byteStrides.Y * byteStrides.Z);
+				auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(texelOrBlockByteSize * newImageParams.extent.width * newImageParams.extent.height * newImageParams.extent.depth);
 
 				newImage = ICPUImage::create(std::move(newImageParams));
 				newImage->setBufferAndRegions(std::move(texelBuffer), newRegions);
