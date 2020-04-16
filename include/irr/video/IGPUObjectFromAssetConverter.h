@@ -437,6 +437,7 @@ auto IGPUObjectFromAssetConverter::create(asset::ICPUImage** const _begin, asset
                     lowestPresentMip++;
                 // generate temporary image view to make sure we don't screw up any explicit mip levels
                 IGPUImageView::SCreationParams tmpViewParams;
+                tmpViewParams.image = gpuimg;
                 tmpViewParams.subresourceRange.levelCount = params.mipLevels+1u-lowestPresentMip;
                 // if not all mip levels have been manually specified
                 if (tmpViewParams.subresourceRange.levelCount>1u)

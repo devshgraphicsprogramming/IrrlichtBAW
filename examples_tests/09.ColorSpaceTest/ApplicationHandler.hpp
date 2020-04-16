@@ -7,7 +7,7 @@
 #include <fstream>
 #include <chrono>
 
-#define SWITCH_IMAGES_PER_X_MILISECONDS 1000
+#define SWITCH_IMAGES_PER_X_MILISECONDS 500
 constexpr std::string_view testingImagePathsFile = "../imagesTestList.txt";
 
 class ApplicationHandler

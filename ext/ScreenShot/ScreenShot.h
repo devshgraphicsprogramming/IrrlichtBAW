@@ -119,11 +119,13 @@ namespace irr
 				Create a ScreenShot with gpu image usage and save it to a file.
 			*/
 
-			bool createScreenShoot(core::smart_refctd_ptr<IrrlichtDevice> device, core::smart_refctd_ptr<video::IGPUImage> gpuImage, const std::string& outFileName)
+			bool createScreenShoot(core::smart_refctd_ptr<IrrlichtDevice> device, const video::IGPUImageView* gpuImageView, const std::string& outFileName)
 			{
 				auto driver = device->getVideoDriver();
 				auto assetManager = device->getAssetManager();
 
+				auto fetchedImageViewParmas = gpuImageView->getCreationParameters();
+				auto gpuImage = fetchedImageViewParmas.image;
 				auto fetchedImageParams = gpuImage->getCreationParameters();
 				auto image = asset::ICPUImage::create(std::move(fetchedImageParams));
 
@@ -155,12 +157,36 @@ namespace irr
 				auto destinationBoundMemory = destinationBuffer->getBoundMemory();
 				destinationBoundMemory->mapMemoryRange(video::IDriverMemoryAllocation::EMCAF_READ, { 0u, memoryRequirements.vulkanReqs.size });
 				auto texelBuffer = core::make_smart_refctd_ptr<asset::CCustomAllocatorCPUBuffer<core::null_allocator<uint8_t>>>(memoryRequirements.vulkanReqs.size, destinationBoundMemory->getMappedPointer(), core::adopt_memory);
+				
+				auto mapPointerGetterFence = driver->placeFence(true);
+				while (mapPointerGetterFence->waitCPU(1000ull, mapPointerGetterFence->canDeferredFlush()) == video::EDFR_TIMEOUT_EXPIRED) {}
+				
 				destinationBoundMemory->unmapMemory();
 
 				image->setBufferAndRegions(std::move(texelBuffer), regions);
+				
+				asset::ICPUImageView::SCreationParams viewParams;
+				viewParams.flags = static_cast<asset::ICPUImageView::E_CREATE_FLAGS>(0u);
+				viewParams.image = image;
+				viewParams.format = viewParams.image->getCreationParameters().format;
+				viewParams.viewType = asset::ICPUImageView::ET_2D;
+				viewParams.subresourceRange.baseArrayLayer = 0u;
+				viewParams.subresourceRange.layerCount = 1u;
+				viewParams.subresourceRange.baseMipLevel = 0u;
+				viewParams.subresourceRange.levelCount = 1u;
 
-				asset::IAssetWriter::SAssetWriteParams wparams(image.get());
-				return assetManager->writeAsset(outFileName, wparams);
+				auto imageView = asset::ICPUImageView::create(std::move(viewParams));
+
+				auto tryToWrite = [&](asset::IAsset* asset)
+				{
+					asset::IAssetWriter::SAssetWriteParams wparams(asset);
+					return assetManager->writeAsset(outFileName, wparams);
+				};
+				
+				if (tryToWrite(image.get()))
+					return true;
+				else
+					return tryToWrite(imageView.get());
 			}
 
 /*

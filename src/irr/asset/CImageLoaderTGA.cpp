@@ -136,7 +136,7 @@ core::smart_refctd_ptr<ICPUImage> createAndconvertImageData(ICPUImage::SCreation
 		region.imageSubresource.baseArrayLayer = 0u;
 		region.imageSubresource.layerCount = 1u;
 		region.bufferOffset = 0u;
-		region.bufferRowLength = pitchTexelOrBlockLength;
+		region.bufferRowLength = asset::IImageAssetHandlerBase::calcPitchInBlocks(imgInfo.extent.width, asset::getTexelOrBlockBytesize(srcFormat));
 		region.bufferImageHeight = 0u;
 		region.imageOffset = { 0u, 0u, 0u };
 		region.imageExtent = imgInfo.extent;
@@ -151,7 +151,7 @@ core::smart_refctd_ptr<ICPUImage> createAndconvertImageData(ICPUImage::SCreation
 		auto referenceBuffer = inputCreationImage->getBuffer();
 		auto referenceRegions = inputCreationImage->getRegions();
 		auto referenceRegion = referenceRegions.begin();
-		const auto newTexelOrBlockByteSize = asset::getTexelOrBlockBytesize(outFormat);
+		const auto newTexelOrBlockByteSize = asset::getTexelOrBlockBytesize(destFormat);
 
 		asset::TexelBlockInfo referenceBlockInfo(referenceImageParams.format);
 		core::vector3du32_SIMD referenceTrueExtent = referenceBlockInfo.convertTexelsToBlocks(referenceRegion->getTexelStrides());
@@ -159,11 +159,9 @@ core::smart_refctd_ptr<ICPUImage> createAndconvertImageData(ICPUImage::SCreation
 		auto newImageParams = referenceImageParams;
 		auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(referenceTrueExtent.X * referenceTrueExtent.Y * referenceTrueExtent.Z * newTexelOrBlockByteSize);
 		auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1);
-		auto newRegion = newRegions->front();
-		newRegion = *referenceRegion;
+		newRegions->front() = *referenceRegion;
 
 		newImageParams.format = destFormat;
-
 		newConvertedImage = ICPUImage::create(std::move(newImageParams));
 		newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
 	}

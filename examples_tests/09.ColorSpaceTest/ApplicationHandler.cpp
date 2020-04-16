@@ -78,7 +78,7 @@ void ApplicationHandler::presentImageOnTheScreen(irr::core::smart_refctd_ptr<irr
 		driver->endScene();
 	}
 
-	ext::ScreenShot::createScreenShoot(device, screenShotFrameBuffer->getAttachment(video::EFAP_COLOR_ATTACHMENT0)->getCreationParameters().image, "screenShot_" + currentHandledImageFileName + ".png");
+	ext::ScreenShot::createScreenShoot(device, screenShotFrameBuffer->getAttachment(video::EFAP_COLOR_ATTACHMENT0), "screenShot_" + currentHandledImageFileName + ".png");
 }
 
 void ApplicationHandler::performImageTest(std::string path)
@@ -105,7 +105,7 @@ void ApplicationHandler::performImageTest(std::string path)
 
 	// Can't do that because write is still broken
 	bool writeable = (extension != "dds");
-	smart_refctd_ptr<IAsset> textureAssetForWritingToFile;
+	smart_refctd_ptr<ICPUImageView> copyImageView;
 
 	auto asset = *cpuTextureContents.first;
 	core::smart_refctd_ptr<video::IGPUImageView> gpuImageView;
@@ -123,16 +123,12 @@ void ApplicationHandler::performImageTest(std::string path)
 			viewParams.subresourceRange.baseMipLevel = 0u;
 			viewParams.subresourceRange.levelCount = 1u;
 
-			textureAssetForWritingToFile = std::move(viewParams.image->clone());
 			cpuImageView = ICPUImageView::create(std::move(viewParams));
-			gpuImageView = driver->getGPUObjectsFromAssets(&cpuImageView.get(), &cpuImageView.get() + 1u)->front();
 		} break;
 
 		case IAsset::ET_IMAGE_VIEW:
 		{
 			cpuImageView = core::smart_refctd_ptr_static_cast<asset::ICPUImageView>(asset);
-			textureAssetForWritingToFile = std::move(cpuImageView->clone());
-			gpuImageView = driver->getGPUObjectsFromAssets(&cpuImageView.get(), &cpuImageView.get() + 1u)->front();
 		} break;
 
 		default:
@@ -141,6 +137,9 @@ void ApplicationHandler::performImageTest(std::string path)
 			break;
 		}
 	}
+
+	copyImageView = core::smart_refctd_ptr_static_cast<ICPUImageView>(cpuImageView->clone());
+	gpuImageView = driver->getGPUObjectsFromAssets(&cpuImageView.get(), &cpuImageView.get() + 1u)->front();
 
 	if (gpuImageView)
 	{
@@ -153,8 +152,15 @@ void ApplicationHandler::performImageTest(std::string path)
 
 	if (writeable)
 	{
-		asset::IAssetWriter::SAssetWriteParams wparams(textureAssetForWritingToFile.get());
-		assetManager->writeAsset((io::path("imageAsset_") + finalFileNameWithExtension).c_str(), wparams);
+		auto tryToWrite = [&](asset::IAsset* asset)
+		{
+			asset::IAssetWriter::SAssetWriteParams wparams(asset);
+			return assetManager->writeAsset((io::path("imageAsset_") + finalFileNameWithExtension).c_str(), wparams);
+		};
+
+		if(!tryToWrite(copyImageView->getCreationParameters().image.get()))
+			if(!tryToWrite(copyImageView.get()))
+				os::Printer::log("An unexcepted error occoured while trying to write the asset!", irr::ELL_WARNING);
 	}
 
 	assetManager->removeCachedGPUObject(asset.get(), gpuImageView);

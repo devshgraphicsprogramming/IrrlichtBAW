@@ -70,11 +70,10 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 				newImageParams.type = IImage::ET_2D;
 
 				auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1);
-				auto newTopRegion = newRegions->front();
-				newTopRegion = *referenceTopRegion;
+				newRegions->front() = *referenceTopRegion;
 
 				const auto texelOrBlockByteSize = asset::getTexelOrBlockBytesize(referenceImageParams.format);
-				auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(texelOrBlockByteSize * newImageParams.extent.width * newImageParams.extent.height * newImageParams.extent.depth);
+				auto texelBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(texelOrBlockByteSize * newRegions->front().bufferRowLength * newImageParams.extent.height * newImageParams.extent.depth);
 
 				newImage = ICPUImage::create(std::move(newImageParams));
 				newImage->setBufferAndRegions(std::move(texelBuffer), newRegions);
@@ -205,7 +204,7 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 				for (auto newRegion = newRegions->begin(); newRegion != newRegions->end(); ++newRegion)
 				{
 					*newRegion = *(referenceRegion++);
-					newRegion->bufferOffset = referenceRegion->bufferOffset * newTexelOrBlockByteSize;
+					newRegion->bufferOffset = newRegion->bufferOffset * newTexelOrBlockByteSize;
 				}
 
 				newImageParams.format = outputFormat;

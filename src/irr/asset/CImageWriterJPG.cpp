@@ -97,7 +97,7 @@ static void jpeg_file_dest(j_compress_ptr cinfo, io::IWriteFile* file)
 }
 
 template<asset::E_FORMAT outFormat>
-core::smart_refctd_ptr<asset::ICPUImage> getJPGConvertedOutput(const asset::ICPUImage* image, uint32_t referenceChannelCount)
+core::smart_refctd_ptr<asset::ICPUImage> getJPGConvertedOutput(const asset::ICPUImage* image)
 {
 	using CONVERSION_FILTER = asset::CConvertFormatImageFilter<asset::EF_UNKNOWN, outFormat>;
 
@@ -115,10 +115,9 @@ core::smart_refctd_ptr<asset::ICPUImage> getJPGConvertedOutput(const asset::ICPU
 		auto newImageParams = referenceImageParams;
 		auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(referenceTrueExtent.X * referenceTrueExtent.Y * referenceTrueExtent.Z * newTexelOrBlockByteSize);
 		auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1);
-		auto newRegion = newRegions->front();
-		newRegion = *referenceRegion;
+		newRegions->front() = *referenceRegion;
 
-		newImageParams.format = referenceChannelCount == 1 ? asset::EF_R8_SRGB : asset::EF_R8G8B8_SRGB;
+		newImageParams.format = outFormat;
 		newConvertedImage = ICPUImage::create(std::move(newImageParams));
 		newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
 
@@ -153,9 +152,9 @@ static bool writeJPEGFile(io::IWriteFile* file, const asset::ICPUImage* image, u
 	{
 		const auto channelCount = asset::getFormatChannelCount(image->getCreationParameters().format);
 		if (channelCount == 1)
-			convertedImage = getJPGConvertedOutput<asset::EF_R8_SRGB>(image, channelCount);
+			convertedImage = getJPGConvertedOutput<asset::EF_R8_SRGB>(image);
 		else
-			convertedImage = getJPGConvertedOutput<asset::EF_R8G8B8_SRGB>(image, channelCount);
+			convertedImage = getJPGConvertedOutput<asset::EF_R8G8B8_SRGB>(image);
 	}
 
 	const auto& convertedImageParams = convertedImage->getCreationParameters();

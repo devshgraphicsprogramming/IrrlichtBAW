@@ -27,7 +27,7 @@ CImageWriterTGA::CImageWriterTGA()
 }
 
 template<asset::E_FORMAT outFormat>
-core::smart_refctd_ptr<asset::ICPUImage> getTGAConvertedOutput(const asset::ICPUImage* image, uint32_t referenceChannelCount)
+core::smart_refctd_ptr<asset::ICPUImage> getTGAConvertedOutput(const asset::ICPUImage* image)
 {
 	using CONVERSION_FILTER = asset::CConvertFormatImageFilter<asset::EF_UNKNOWN, outFormat>;
 
@@ -45,18 +45,10 @@ core::smart_refctd_ptr<asset::ICPUImage> getTGAConvertedOutput(const asset::ICPU
 		auto newImageParams = referenceImageParams;
 		auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(referenceTrueExtent.X * referenceTrueExtent.Y * referenceTrueExtent.Z * newTexelOrBlockByteSize);
 		auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1);
-		auto newRegion = newRegions->front();
-		newRegion = *referenceRegion;
+		auto newRegion = newRegions->begin();
+		*newRegion = *referenceRegion;
 
-		if (referenceChannelCount == 1)
-			newImageParams.format = asset::EF_R8_SRGB;
-		else if (referenceChannelCount == 2)
-			newImageParams.format = asset::EF_A1R5G5B5_UNORM_PACK16;
-		else if( referenceChannelCount == 3)
-			newImageParams.format = asset::EF_R8G8B8_SRGB;
-		else
-			newImageParams.format = asset::EF_R8G8B8A8_SRGB;
-
+		newImageParams.format = outFormat;
 		newConvertedImage = ICPUImage::create(std::move(newImageParams));
 		newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
 
@@ -100,13 +92,13 @@ bool CImageWriterTGA::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	{
 		const auto channelCount = asset::getFormatChannelCount(image->getCreationParameters().format);
 		if (channelCount == 1)
-			convertedImage = getTGAConvertedOutput<asset::EF_R8_SRGB>(image, channelCount);
+			convertedImage = getTGAConvertedOutput<asset::EF_R8_SRGB>(image);
 		else if (channelCount == 2)
-			convertedImage = getTGAConvertedOutput<asset::EF_A1R5G5B5_UNORM_PACK16>(image, channelCount);
+			convertedImage = getTGAConvertedOutput<asset::EF_A1R5G5B5_UNORM_PACK16>(image);
 		else if(channelCount == 3)
-			convertedImage = getTGAConvertedOutput<asset::EF_R8G8B8_SRGB>(image, channelCount);
+			convertedImage = getTGAConvertedOutput<asset::EF_B8G8R8_SRGB>(image);
 		else
-			convertedImage = getTGAConvertedOutput<asset::EF_R8G8B8A8_SRGB>(image, channelCount);
+			convertedImage = getTGAConvertedOutput<asset::EF_B8G8R8A8_SRGB>(image);
 	}
 	
 	const auto& convertedImageParams = convertedImage->getCreationParameters();
@@ -142,13 +134,13 @@ bool CImageWriterTGA::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	
 	switch (convertedFormat)
 	{
-		case asset::EF_R8G8B8A8_SRGB:
+		case asset::EF_B8G8R8A8_SRGB:
 		{
 			imageHeader.PixelDepth = 32;
 			imageHeader.ImageDescriptor |= 8;
 		}
 		break;
-		case asset::EF_R8G8B8_SRGB:
+		case asset::EF_B8G8R8_SRGB:
 		{
 			imageHeader.PixelDepth = 24;
 			imageHeader.ImageDescriptor |= 0;
