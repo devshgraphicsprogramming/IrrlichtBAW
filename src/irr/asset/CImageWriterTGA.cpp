@@ -39,8 +39,8 @@ core::smart_refctd_ptr<asset::ICPUImage> getTGAConvertedOutput(const asset::ICPU
 		auto referenceRegion = referenceRegions.begin();
 		const auto newTexelOrBlockByteSize = asset::getTexelOrBlockBytesize(outFormat);
 
-		IImage::SBufferCopy::TexelBlockInfo referenceBlockInfo(format);
-		core::vector3du32_SIMD referenceTrueExtent = IImage::SBufferCopy::TexelsToBlocks(referenceRegion->getTexelStrides(), referenceBlockInfo);
+		asset::TexelBlockInfo referenceBlockInfo(referenceImageParams.format);
+		core::vector3du32_SIMD referenceTrueExtent = referenceBlockInfo.convertTexelsToBlocks(referenceRegion->getTexelStrides());
 
 		auto newImageParams = referenceImageParams;
 		auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(referenceTrueExtent.X * referenceTrueExtent.Y * referenceTrueExtent.Z * newTexelOrBlockByteSize);
@@ -113,8 +113,8 @@ bool CImageWriterTGA::writeAsset(io::IWriteFile* _file, const SAssetWriteParams&
 	const auto& convertedRegion = convertedImage->getRegions().begin();
 	auto convertedFormat = convertedImageParams.format;
 
-	IImage::SBufferCopy::TexelBlockInfo blockInfo(convertedFormat);
-	core::vector3du32_SIMD trueExtent = IImage::SBufferCopy::TexelsToBlocks(convertedRegion->getTexelStrides(), blockInfo);
+	asset::TexelBlockInfo blockInfo(convertedFormat);
+	core::vector3du32_SIMD trueExtent = blockInfo.convertTexelsToBlocks(convertedRegion->getTexelStrides());
 
 	core::vector3d<uint32_t> dim;
 	dim.X = trueExtent.X;

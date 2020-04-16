@@ -114,15 +114,15 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 		template<E_FORMAT inputFormat, E_FORMAT outputFormat>
 		static inline core::smart_refctd_ptr<ICPUImage> createSingleRowImageFromRawData(void* rowData, uint32_t texelOrBlockLength, bool createWithBufferRowLengthPitch = false)
 		{
-			const auto texelOrBlockByteSize = asset::getTexelOrBlockBytesize(format);
-			const decltype(texelOrBlockLength) pitchTexelOrBlockLength = createWithBufferRowLengthPitch ? calcPitchInBlocks(texelOrBlockLength, texelOrBlockByteSize) : texelOrBlockLength;
-
 			using CONVERSION_FILTER = CConvertFormatImageFilter<inputFormat, outputFormat>;
 			CONVERSION_FILTER convertFilter;
 			CONVERSION_FILTER::state_type state;
 
 			auto createImage = [&](E_FORMAT format, bool copyInputMemory = true)
 			{
+				const auto texelOrBlockByteSize = asset::getTexelOrBlockBytesize(format);
+				const uint32_t pitchTexelOrBlockLength = createWithBufferRowLengthPitch ? calcPitchInBlocks(texelOrBlockLength, texelOrBlockByteSize) : texelOrBlockLength;
+
 				ICPUImage::SCreationParams imgInfo;
 				imgInfo.format = format;
 				imgInfo.type = ICPUImage::ET_1D;

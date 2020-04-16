@@ -120,26 +120,76 @@ bool CImageLoaderTGA::isALoadableFileFormat(io::IReadFile* _file) const
 */
 
 template <E_FORMAT srcFormat, E_FORMAT destFormat>
-void convertImageData(ICPUImage::SCreationParams& imgInfo, core::smart_refctd_ptr<ICPUImage>& newConvertedImage, core::smart_refctd_ptr<ICPUBuffer>& texelBuffer, core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>& regions, bool flip)
+core::smart_refctd_ptr<ICPUImage> createAndconvertImageData(ICPUImage::SCreationParams& imgInfo, core::smart_refctd_ptr<ICPUBuffer>& texelBuffer, core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>& regions, bool flip)
 {
-	CMatchedSizeInOutImageFilterCommon::state_type state;
-	state.extent = imgInfo.extent;
-
 	imgInfo.format = srcFormat;
-	newConvertedImage = ICPUImage::create(std::move(imgInfo));
-	newConvertedImage->setBufferAndRegions(std::move(texelBuffer), regions);
-	state.inImage = newConvertedImage.get();
+	using CONVERSION_FILTER = CConvertFormatImageFilter<srcFormat, destFormat>;
+	CONVERSION_FILTER convertFilter;
+	CONVERSION_FILTER::state_type state;
 
-	CConvertFormatImageFilter<srcFormat, destFormat> convertFiler;
-	convertFiler.execute(&state);
+	core::smart_refctd_ptr<ICPUImage> inputCreationImage;
+	{
+		auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+		ICPUImage::SBufferCopy& region = regions->front();
+
+		region.imageSubresource.mipLevel = 0u;
+		region.imageSubresource.baseArrayLayer = 0u;
+		region.imageSubresource.layerCount = 1u;
+		region.bufferOffset = 0u;
+		region.bufferRowLength = pitchTexelOrBlockLength;
+		region.bufferImageHeight = 0u;
+		region.imageOffset = { 0u, 0u, 0u };
+		region.imageExtent = imgInfo.extent;
+
+		inputCreationImage = asset::ICPUImage::create(std::move(imgInfo));
+		inputCreationImage->setBufferAndRegions(std::move(texelBuffer), regions);
+	}
+
+	core::smart_refctd_ptr<ICPUImage> newConvertedImage;
+	{
+		auto referenceImageParams = inputCreationImage->getCreationParameters();
+		auto referenceBuffer = inputCreationImage->getBuffer();
+		auto referenceRegions = inputCreationImage->getRegions();
+		auto referenceRegion = referenceRegions.begin();
+		const auto newTexelOrBlockByteSize = asset::getTexelOrBlockBytesize(outFormat);
+
+		asset::TexelBlockInfo referenceBlockInfo(referenceImageParams.format);
+		core::vector3du32_SIMD referenceTrueExtent = referenceBlockInfo.convertTexelsToBlocks(referenceRegion->getTexelStrides());
+
+		auto newImageParams = referenceImageParams;
+		auto newCpuBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(referenceTrueExtent.X * referenceTrueExtent.Y * referenceTrueExtent.Z * newTexelOrBlockByteSize);
+		auto newRegions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1);
+		auto newRegion = newRegions->front();
+		newRegion = *referenceRegion;
+
+		newImageParams.format = destFormat;
+
+		newConvertedImage = ICPUImage::create(std::move(newImageParams));
+		newConvertedImage->setBufferAndRegions(std::move(newCpuBuffer), newRegions);
+	}
+
+	auto attachedRegion = newConvertedImage->getRegions().begin();
+
+	state.inImage = inputCreationImage.get();
+	state.outImage = newConvertedImage.get();
+	state.inOffset = { 0, 0, 0 };
+	state.inBaseLayer = 0;
+	state.outOffset = { 0, 0, 0 };
+	state.outBaseLayer = 0;
+	state.extent = attachedRegion->getExtent();
+	state.layerCount = attachedRegion->imageSubresource.layerCount;
+	state.inMipLevel = attachedRegion->imageSubresource.mipLevel;
+	state.outMipLevel = attachedRegion->imageSubresource.mipLevel;
+
+	if (!convertFilter.execute(&state))
+		os::Printer::log("Something went wrong while converting!", ELL_WARNING);
 
 	bool OpenGlFlip = !flip;
-
 	if (OpenGlFlip)
 	{
 		auto newFormat = newConvertedImage->getCreationParameters().format;
-		IImage::SBufferCopy::TexelBlockInfo blockInfo(newFormat);
-		core::vector3du32_SIMD trueExtent = IImage::SBufferCopy::TexelsToBlocks(newConvertedImage->getRegions().begin()->getTexelStrides(), blockInfo);
+		asset::TexelBlockInfo blockInfo(newFormat);
+		core::vector3du32_SIMD trueExtent = blockInfo.convertTexelsToBlocks(newConvertedImage->getRegions().begin()->getTexelStrides());
 
 		auto buffer = newConvertedImage->getBuffer();
 		auto out = reinterpret_cast<uint8_t*>(buffer->getPointer()) + buffer->getSize();
@@ -148,6 +198,8 @@ void convertImageData(ICPUImage::SCreationParams& imgInfo, core::smart_refctd_pt
 		for (uint32_t y = 0; y < trueExtent.Y; ++y)
 			out -= stride;
 	}
+
+	return newConvertedImage;
 };
 
 //! creates a surface from the file
@@ -258,22 +310,22 @@ asset::SAssetBundle CImageLoaderTGA::loadAsset(io::IReadFile* _file, const asset
                     return {};
 				}
 
-				convertImageData<asset::EF_R8_SRGB, asset::EF_R8G8B8A8_SRGB>(imgInfo, newConvertedImage, texelBuffer, regions, flip);		
+				newConvertedImage = createAndconvertImageData<asset::EF_R8_SRGB, asset::EF_R8G8B8A8_SRGB>(imgInfo, texelBuffer, regions, flip);
 			}
 			break;
 		case 16:
 			{
-				convertImageData<asset::EF_A1R5G5B5_UNORM_PACK16, asset::EF_A1R5G5B5_UNORM_PACK16>(imgInfo, newConvertedImage, texelBuffer, regions, flip);
+				newConvertedImage = createAndconvertImageData<asset::EF_A1R5G5B5_UNORM_PACK16, asset::EF_A1R5G5B5_UNORM_PACK16>(imgInfo, texelBuffer, regions, flip);
 			}
 			break;
 		case 24:
 			{
-				convertImageData<asset::EF_B8G8R8_SRGB, asset::EF_R8G8B8_SRGB>(imgInfo, newConvertedImage, texelBuffer, regions, flip);
+				newConvertedImage = createAndconvertImageData<asset::EF_B8G8R8_SRGB, asset::EF_R8G8B8_SRGB>(imgInfo, texelBuffer, regions, flip);
 			}
 			break;
 		case 32:
 			{
-				convertImageData<asset::EF_B8G8R8A8_SRGB, asset::EF_R8G8B8A8_SRGB>(imgInfo, newConvertedImage, texelBuffer, regions, flip);
+			newConvertedImage = createAndconvertImageData<asset::EF_B8G8R8A8_SRGB, asset::EF_R8G8B8A8_SRGB>(imgInfo, texelBuffer, regions, flip);
 			}
 			break;
 		default:
