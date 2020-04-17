@@ -119,7 +119,7 @@ namespace irr
 				Create a ScreenShot with gpu image usage and save it to a file.
 			*/
 
-			bool createScreenShoot(core::smart_refctd_ptr<IrrlichtDevice> device, const video::IGPUImageView* gpuImageView, const std::string& outFileName)
+			bool createScreenShot(core::smart_refctd_ptr<IrrlichtDevice> device, const video::IGPUImageView* gpuImageView, const std::string& outFileName)
 			{
 				auto driver = device->getVideoDriver();
 				auto assetManager = device->getAssetManager();
@@ -188,52 +188,6 @@ namespace irr
 				else
 					return tryToWrite(imageView.get());
 			}
-
-/*
-
-template<typename PathOrFile>
-void writeBufferAsImageToFile(asset::IAssetManager* mgr, const PathOrFile& _outFile, core::vector2d<uint32_t> _size, asset::E_FORMAT _format, video::IGPUBuffer* buff, size_t offset=0ull, bool flipY=true)
-{
-	const uint32_t zero[3] = { 0,0,0 };
-	const uint32_t sizeArray[3] = { _size.X,_size.Y,1u };
-	auto img = core::make_smart_refctd_ptr<asset::CImageData>(nullptr, zero, sizeArray, 0u, _format);
-
-	//! Wonder if we'll need it after Vulkan ?
-	const auto rowSize = (img->getBytesPerPixel()*sizeArray[0]).getRoundedUpInteger();
-	const auto imagePitch = img->getPitchIncludingAlignment();
-	const uint8_t* inData = reinterpret_cast<const uint8_t*>(buff->getBoundMemory()->getMappedPointer());
-	uint8_t* outData = reinterpret_cast<uint8_t*>(img->getData())+imagePitch*(flipY ? (sizeArray[1]-1u):0u);
-	for (uint32_t y=0u; y<sizeArray[1]; y++)
-	{
-		std::move(inData,inData+rowSize,outData);
-		inData += imagePitch;
-		if (flipY)
-			outData -= imagePitch;
-		else
-			outData += imagePitch;
-	}
-
-	asset::IAssetWriter::SAssetWriteParams wparams(img.get());
-	mgr->writeAsset(_outFile, wparams);
-}
-
-template<typename PathOrFile>
-void dirtyCPUStallingScreenshot(IrrlichtDevice* device, const PathOrFile& _outFile, video::IGPUImage* source, uint32_t sourceMipLevel = 0u, bool flipY=true)
-{
-	auto texSize = source->getSize();
-	if (outputFormatOverride==asset::EF_UNKNOWN)
-		outputFormatOverride = source->getColorFormat();
-
-	auto buff = core::smart_refctd_ptr<video::IGPUBuffer>(driver->createDownStreamingGPUBufferOnDedMem((asset::getBytesPerPixel(outputFormatOverride)*texSize[0]*texSize[1]).getIntegerApprox()), core::dont_grab); // TODO
-	buff->getBoundMemory()->mapMemoryRange(video::IDriverMemoryAllocation::EMCAF_READ,{0u,buff->getSize()});
-
-	auto fence = ext::ScreenShot::createScreenShot(driver, source, buff.get(), sourceMipLevel, 0ull,true,outputFormatOverride);
-	while (fence->waitCPU(1000ull, fence->canDeferredFlush()) == video::EDFR_TIMEOUT_EXPIRED) {}
-	ext::ScreenShot::writeBufferAsImageToFile(assetManager, _outFile, { texSize[0],texSize[1] }, outputFormatOverride, buff.get(), 0ull, flipY);
-}
-*/
-
-
 		} // namespace ScreenShot
 	} // namespace ext
 } // namespace irr

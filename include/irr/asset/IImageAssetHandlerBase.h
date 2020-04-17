@@ -103,16 +103,19 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 		}
 
 		/*
-			Create an image containing a single row from taking a raw data 
-			to a single row and convert it to any format. Since it's
+			Create an image containing a single row from taking an ICPUBuffer 
+			as a single row and convert it to any format. Since it's
 			data may not only limit to stuff being displayed on a screen,
 			there is an optiomal parameter for bufferRowLength pitch that
 			is helpful while dealing with specific data which needs it.
 		*/
 
 		template<E_FORMAT inputFormat, E_FORMAT outputFormat>
-		static inline core::smart_refctd_ptr<ICPUImage> createSingleRowImageFromRawData(void* rowData, uint32_t texelOrBlockLength, bool createWithBufferRowLengthPitch = false)
+		static inline core::smart_refctd_ptr<ICPUImage> createSingleRowImageFromRawData(core::smart_refctd_ptr<asset::ICPUBuffer> inputBuffer, bool createWithBufferRowLengthPitch = false)
 		{
+			auto rowData = inputBuffer->getPointer();
+			const uint32_t texelOrBlockLength = inputBuffer->getSize() / asset::getTexelOrBlockBytesize(inputFormat);
+
 			using CONVERSION_FILTER = CConvertFormatImageFilter<inputFormat, outputFormat>;
 			CONVERSION_FILTER convertFilter;
 			CONVERSION_FILTER::state_type state;
@@ -143,7 +146,7 @@ class IImageAssetHandlerBase : public virtual core::IReferenceCounted
 				region.imageSubresource.baseArrayLayer = 0u;
 				region.imageSubresource.layerCount = 1u;
 				region.bufferOffset = 0u;
-				region.bufferRowLength = pitchTexelOrBlockLength;
+				region.bufferRowLength = asset::IImageAssetHandlerBase::calcPitchInBlocks(pitchTexelOrBlockLength * asset::getBlockDimensions(format).X, texelOrBlockByteSize);
 				region.bufferImageHeight = 0u;
 				region.imageOffset = { 0u, 0u, 0u };
 				region.imageExtent = imgInfo.extent;
