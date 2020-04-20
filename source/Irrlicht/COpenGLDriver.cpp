@@ -574,7 +574,7 @@ bool COpenGLDriver::initDriver(CIrrDeviceWin32* device)
 		return false;
 	}
 
-    AuxContexts = _IRR_NEW_ARRAY(SAuxContext,Params.AuxGLContexts+1);
+    AuxContexts = _IRR_NEW_ARRAY(SAuxContext,Params.AuxGLContexts + (decltype(Params.AuxGLContexts))1);
     {
         AuxContexts[0].threadId = std::this_thread::get_id();
         AuxContexts[0].ctx = hrc;
@@ -889,7 +889,7 @@ COpenGLDriver::~COpenGLDriver()
         }
     }
 #endif // _IRR_COMPILE_WITH_X11_DEVICE_
-    _IRR_DELETE_ARRAY(AuxContexts,Params.AuxGLContexts+1);
+    _IRR_DELETE_ARRAY(AuxContexts,Params.AuxGLContexts + (decltype(Params.AuxGLContexts))1);
     glContextMutex.unlock();
 }
 
@@ -2123,7 +2123,7 @@ count = (first_count.resname.count - std::max(0, static_cast<int32_t>(first_coun
         }
 
         //if prev and curr pipeline layouts are compatible for set N, currState.set[N]==nextState.set[N] and the sets were bound with same dynamic offsets, then binding set N would be redundant
-        if ((i < compatibilityLimit) &&
+        if ((i < (decltype(i))compatibilityLimit) &&
             (effectivelyBoundDescriptors.descSets[i].set == nextState.descriptorsParams[_pbp].descSets[i].set) &&
             (effectivelyBoundDescriptors.descSets[i].dynamicOffsets == nextState.descriptorsParams[_pbp].descSets[i].dynamicOffsets)
         ) 

@@ -67,9 +67,9 @@ class CNullDriver : public IVideoDriver
                 return false;
             if (!core::is_aligned_to(_size, 4u))
                 return false;
-            if (_offset >= IGPUMeshBuffer::MAX_PUSH_CONSTANT_BYTESIZE)
+            if ((size_t)_offset >= IGPUMeshBuffer::MAX_PUSH_CONSTANT_BYTESIZE)
                 return false;
-            if ((_offset+_size) > IGPUMeshBuffer::MAX_PUSH_CONSTANT_BYTESIZE)
+            if (((size_t)_offset + (size_t)_size) > IGPUMeshBuffer::MAX_PUSH_CONSTANT_BYTESIZE)
                 return false;
 
             asset::SPushConstantRange updateRange;

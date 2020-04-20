@@ -456,7 +456,7 @@ class IImage : public IDescriptor
 			for (uint32_t i=0u; i<params.mipLevels; i++)
 			{
 				auto levelSize = info.roundToBlockSize(getMipSize(i));
-				auto memsize = size_t(levelSize[0] * levelSize[1])*size_t(levelSize[2] * params.arrayLayers)*bytesPerPixel;
+				auto memsize = (size_t)levelSize[0] * (size_t)levelSize[1] * (size_t)levelSize[2] * (size_t)params.arrayLayers * bytesPerPixel;
 				assert(memsize.getNumerator() % memsize.getDenominator() == 0u);
 				memreq += memsize.getIntegerApprox();
 			}

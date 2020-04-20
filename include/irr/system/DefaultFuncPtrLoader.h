@@ -39,7 +39,7 @@ class DefaultFuncPtrLoader final : FuncPtrLoader
 				lib = dlopen(libname.c_str(), RTLD_LAZY);
 			#endif
 		}
-		DefaultFuncPtrLoader(DefaultFuncPtrLoader&& other) : DefaultFuncPtrLoader()
+		DefaultFuncPtrLoader(DefaultFuncPtrLoader&& other) noexcept : DefaultFuncPtrLoader()
 		{
 			operator=(std::move(other));
 		}
@@ -53,7 +53,7 @@ class DefaultFuncPtrLoader final : FuncPtrLoader
 			#endif
 		}
 
-		inline DefaultFuncPtrLoader& operator=(DefaultFuncPtrLoader&& other)
+		inline DefaultFuncPtrLoader& operator=(DefaultFuncPtrLoader&& other) noexcept
 		{
 			std::swap(lib, other.lib);
 			return *this;

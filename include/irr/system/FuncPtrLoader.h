@@ -14,13 +14,13 @@ class FuncPtrLoader : public core::Uncopyable
 {
 	protected:
 		FuncPtrLoader() = default;
-		FuncPtrLoader(FuncPtrLoader&& other)
+		FuncPtrLoader(FuncPtrLoader&& other) noexcept
 		{
 			operator=(std::move(other));
 		}
 		virtual ~FuncPtrLoader() = default;
 
-		inline FuncPtrLoader& operator=(FuncPtrLoader&& other) {return *this;}
+		inline FuncPtrLoader& operator=(FuncPtrLoader&& other) noexcept {return *this;}
 	public:
 		virtual bool isLibraryLoaded() = 0;
 

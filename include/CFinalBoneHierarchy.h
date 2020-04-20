@@ -126,7 +126,7 @@ namespace asset
 			{
 				size_t sum = 0;
 				for (size_t i = 0; i < boneCount; ++i)
-					sum += boneNames[i].size()+1;
+					sum += (decltype(sum))boneNames[i].size() + (decltype(sum))1;
 				return sum;
 			}
 			static inline size_t getSizeOfSingleBone()

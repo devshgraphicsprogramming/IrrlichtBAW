@@ -599,7 +599,7 @@ class IAssetManager : public core::IReferenceCounted
             const char** exts = _writer->getAssociatedFileExtensions();
             for (uint32_t i = 0u; i < IAsset::ET_STANDARD_TYPES_COUNT; ++i)
             {
-                const IAsset::E_TYPE type = IAsset::E_TYPE(1u << i);
+                const IAsset::E_TYPE type = IAsset::E_TYPE((uint64_t)1 << (uint64_t)i);
                 if ((suppTypes>>i) & 1u)
                 {
                     m_writers.perType.insert(type, _writer.get());
@@ -618,7 +618,7 @@ class IAssetManager : public core::IReferenceCounted
             {
                 if ((suppTypes >> i) & 1u)
                 {
-                    const IAsset::E_TYPE type = IAsset::E_TYPE(1u << i);
+                    const IAsset::E_TYPE type = IAsset::E_TYPE((uint64_t)1 << (uint64_t)i);
                     m_writers.perType.removeObject(_writer, type);
                     while (const char* ext = exts[extIx++])
                         m_writers.perTypeAndFileExt.removeObject(_writer, {type, ext});

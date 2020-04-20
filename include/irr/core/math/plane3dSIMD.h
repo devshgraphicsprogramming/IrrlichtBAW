@@ -98,7 +98,7 @@ class plane3dSIMDf : private vectorSIMDf
 		}
 
 		//!
-        static inline plane3dSIMDf transform(const plane3dSIMDf& _in, const matrix3x4SIMD& _mat)
+        static inline [[maybe_unused]] plane3dSIMDf transform(const plane3dSIMDf& _in, const matrix3x4SIMD& _mat)
         {
             matrix3x4SIMD inv;
             _mat.getInverse(inv);

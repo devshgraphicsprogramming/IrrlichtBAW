@@ -1339,7 +1339,7 @@ private:
 		int32_t i, j;
 
 		// iteration
-		for (i = 1; i <= subdivision; ++i)
+		for (i = 1; i <= (decltype(i))subdivision; ++i)
 		{
 			// copy prev arrays
 			tmpVertices = vertices;
@@ -1434,7 +1434,7 @@ private:
 		int32_t i, j;
 
 		// iteration for subdivision
-		for (i = 1; i <= subdivision; ++i)
+		for (i = 1; i <= (decltype(i))subdivision; ++i)
 		{
 			// copy prev indices
 			tmpIndices = indices;

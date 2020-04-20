@@ -81,7 +81,7 @@ class CFlattenRegionsImageFilter : public CImageFilter<CFlattenRegionsImageFilte
 					rit->imageOffset = { 0u,0u,0u };
 					rit->imageExtent = { localExtent.x,localExtent.y,localExtent.z };
 					auto levelSize = info.roundToBlockSize(localExtent);
-					auto memsize = size_t(levelSize[0]*levelSize[1])*size_t(levelSize[2]*inParams.arrayLayers)*bytesPerPixel;
+					auto memsize = (size_t)levelSize[0] * (size_t)levelSize[1] * (size_t)levelSize[2] * (size_t)inParams.arrayLayers * bytesPerPixel;
 					assert(memsize.getNumerator()%memsize.getDenominator()==0u);
 					bufferSize += memsize.getIntegerApprox();
 				}

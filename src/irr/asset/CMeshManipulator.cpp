@@ -1256,7 +1256,7 @@ E_FORMAT CMeshManipulator::getBestTypeI(E_FORMAT _originalType, size_t* _outSize
         {
             if (isUnsigned)
             {
-                if (!(_min[cmpntNum] >= minValueOfTypeINT(*it, cmpntNum) && _max[cmpntNum] <= maxValueOfTypeINT(*it, cmpntNum))) //! TODO: FIX signed vs. unsigned comparison
+                if (!((int32_t)_min[cmpntNum] >= minValueOfTypeINT(*it, cmpntNum) && _max[cmpntNum] <= maxValueOfTypeINT(*it, cmpntNum))) 
                 {
                     ok = false;
                     break;
@@ -1264,7 +1264,7 @@ E_FORMAT CMeshManipulator::getBestTypeI(E_FORMAT _originalType, size_t* _outSize
             }
             else
             {
-                if (!(((int32_t*)(_min + cmpntNum))[0] >= minValueOfTypeINT(*it, cmpntNum) && ((int32_t*)(_max + cmpntNum))[0] <= maxValueOfTypeINT(*it, cmpntNum))) //! TODO: FIX signed vs. unsigned comparison
+                if (!(((int32_t*)(_min + cmpntNum))[0] >= minValueOfTypeINT(*it, cmpntNum) && (uint32_t)(((int32_t*)(_max + cmpntNum))[0]) <= maxValueOfTypeINT(*it, cmpntNum))) 
                 {
                     ok = false;
                     break;

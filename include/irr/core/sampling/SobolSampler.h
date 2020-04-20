@@ -66,7 +66,7 @@ class SobolSampler
 
 		SobolSampler(uint32_t _dimensions) : dimensions(_dimensions)
 		{
-			directions = _IRR_ALIGNED_MALLOC(dimensions*SOBOL_BITS*sizeof(uint32_t), 64u);
+			directions = _IRR_ALIGNED_MALLOC((size_t)dimensions * (size_t)SOBOL_BITS*sizeof(uint32_t), 64u);
 			generate_direction_vectors();
 		}
 		~SobolSampler()

@@ -49,7 +49,7 @@ namespace irr { namespace asset
 		core::vector<TriData> triangleData(NumPrimitives);
 
 		uint32_t curIdx = 0;
-		for (int32_t tri = 0; tri < NumPrimitives; tri++)
+		for (int32_t tri = 0; tri < (decltype(tri))NumPrimitives; tri++)
 		{
 			TriData &curTri = triangleData[tri];
 
@@ -90,7 +90,7 @@ namespace irr { namespace asset
 		// Fill-in per-vertex triangle lists, and sum the scores of each vertex used
 		// per-triangle, to get the starting triangle score
 		curIdx = 0;
-		for (int32_t tri = 0; tri < NumPrimitives; tri++)
+		for (int32_t tri = 0; tri < (decltype(tri))NumPrimitives; tri++)
 		{
 			TriData &curTri = triangleData[tri];
 
@@ -110,7 +110,7 @@ namespace irr { namespace asset
 			}
 
 			// This will pick the first triangle to add to the list in 'Step 2'
-			_CHECK_NEXT_BEST(curTri.score, tri);
+			_CHECK_NEXT_BEST(curTri.score, (float)tri);
 			_CHECK_NEXT_NEXT_BEST(curTri.score, tri);
 		}
 
@@ -128,13 +128,13 @@ namespace irr { namespace asset
 				nextBestTriScore = nextNextBestTriScore = -1.0f;
 				nextBestTriIdx = nextNextBestTriIdx = -1;
 
-				for (int32_t tri = 0; tri < NumPrimitives; tri++)
+				for (int32_t tri = 0; tri < (decltype(tri))NumPrimitives; tri++)
 				{
 					TriData &curTri = triangleData[tri];
 
 					if (!curTri.isInList)
 					{
-						_CHECK_NEXT_BEST(curTri.score, tri);
+						_CHECK_NEXT_BEST(curTri.score, (float)tri);
 						_CHECK_NEXT_NEXT_BEST(curTri.score, tri);
 					}
 				}
@@ -188,7 +188,7 @@ namespace irr { namespace asset
 					for (int32_t i = 0; i < 3; i++)
 						tri.score += vertexData[tri.vertIdx[i]].score;
 
-					_CHECK_NEXT_BEST(tri.score, *itr);
+					_CHECK_NEXT_BEST(tri.score, (float)*itr);
 					_CHECK_NEXT_NEXT_BEST(tri.score, *itr);
 				}
 			}
@@ -293,7 +293,7 @@ namespace irr { namespace asset
 			// Update cache position on verts still in cache
 			vData.cachePosition = length++;
 
-			for (int32_t i = 0; i < vData.numReferences; i++)
+			for (int32_t i = 0; i < (decltype(i))vData.numReferences; i++)
 			{
 				const int32_t &triIdx = vData.triIndex[i];
 				if (triIdx > -1)

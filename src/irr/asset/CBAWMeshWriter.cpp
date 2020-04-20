@@ -434,7 +434,7 @@ struct LzmaMemMngmnt
 
 		if (lz4CompressBound) // if input is not too large
 		{
-			if (lz4CompressBound > _stackSize)
+			if ((decltype(_stackSize))lz4CompressBound > _stackSize)
 			{
 				dstSize = BlobHeaderLatest::calcEncSize(lz4CompressBound);
 				data = _IRR_ALIGNED_MALLOC(dstSize,_IRR_SIMD_ALIGNMENT);

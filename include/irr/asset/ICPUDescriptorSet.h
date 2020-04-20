@@ -150,8 +150,8 @@ class ICPUDescriptorSet final : public IDescriptorSet<ICPUDescriptorSetLayout>, 
 			{
 				const auto& info = m_bindingInfo->operator[](index);
 				auto _begin = m_descriptors->begin()+info.offset;
-				if (index+1u!=m_bindingInfo->size())
-					return core::SRange<SDescriptorInfo>{_begin, m_descriptors->begin()+m_bindingInfo->operator[](index+1u).offset};
+				if ((size_t)index + 1ull != m_bindingInfo->size())
+					return core::SRange<SDescriptorInfo>{_begin, m_descriptors->begin()+m_bindingInfo->operator[]((size_t)index + 1ull).offset};
 				else
 					return core::SRange<SDescriptorInfo>{_begin, m_descriptors->end()};
 			}
@@ -164,8 +164,8 @@ class ICPUDescriptorSet final : public IDescriptorSet<ICPUDescriptorSetLayout>, 
 			{
 				const auto& info = m_bindingInfo->operator[](index);
 				auto _begin = m_descriptors->begin()+info.offset;
-				if (index+1u!=m_bindingInfo->size())
-					return core::SRange<const SDescriptorInfo>{_begin, m_descriptors->begin()+m_bindingInfo->operator[](index+1u).offset};
+				if ((size_t)index + 1ull != m_bindingInfo->size())
+					return core::SRange<const SDescriptorInfo>{_begin, m_descriptors->begin()+m_bindingInfo->operator[]((size_t)index + 1ull).offset};
 				else
 					return core::SRange<const SDescriptorInfo>{_begin, m_descriptors->end()};
 			}

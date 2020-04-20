@@ -281,7 +281,7 @@ auto IGPUObjectFromAssetConverter::create(asset::ICPUMeshBuffer** _begin, asset:
     core::vector<asset::ICPUDescriptorSet*> cpuDescSets;
     cpuDescSets.reserve(assetCount);
 
-    for (ptrdiff_t i = 0u; i < assetCount; ++i)
+    for (ptrdiff_t i = 0ll; i < (ptrdiff_t)assetCount; ++i)
     {
         asset::ICPUMeshBuffer* cpumb = _begin[i];
 
@@ -310,7 +310,7 @@ auto IGPUObjectFromAssetConverter::create(asset::ICPUMeshBuffer** _begin, asset:
     auto gpuDescSets = getGPUObjectsFromAssets<asset::ICPUDescriptorSet>(cpuDescSets.data(), cpuDescSets.data()+cpuDescSets.size(), _params);
 
     size_t pplnIter = 0ull, bufIter = 0ull, dsIter = 0ull;
-    for (ptrdiff_t i = 0u; i < assetCount; ++i)
+    for (ptrdiff_t i = 0ll; i < (ptrdiff_t)assetCount; ++i)
     {
         asset::ICPUMeshBuffer* cpumb = _begin[i];
 
@@ -833,7 +833,7 @@ inline created_gpu_object_array<asset::ICPUDescriptorSet> IGPUObjectFromAssetCon
     core::vector<asset::ICPUBufferView*> cpuBufviews;
     cpuBufviews.reserve(bufviewCount);
     core::vector<asset::ICPUImageView*> cpuImgViews;
-    cpuImgViews.reserve(storageImgViewCount+sampledImgViewCount);
+    cpuImgViews.reserve((size_t)storageImgViewCount + (size_t)sampledImgViewCount);
     core::vector<asset::ICPUSampler*> cpuSamplers;
     cpuSamplers.reserve(sampledImgViewCount);
     for (ptrdiff_t i=0u; i<assetCount; i++)

@@ -67,7 +67,7 @@ class PoolAddressAllocator : public AddressAllocatorBase<PoolAddressAllocator<_s
             other.freeStackCtr = invalid_address;
         }
 
-        PoolAddressAllocator& operator=(PoolAddressAllocator&& other)
+        PoolAddressAllocator& operator=(PoolAddressAllocator&& other) noexcept
         {
             Base::operator=(std::move(other));
             std::swap(blockCount,other.blockCount);

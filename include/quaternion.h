@@ -359,7 +359,7 @@ inline void quaternion::toEuler(vector3df_SIMD& euler) const
 {
 	vectorSIMDf sqr = *reinterpret_cast<const vectorSIMDf*>(this);
 	sqr *= sqr;
-	const double test = 2.0 * (Y*W - X*Z);
+	const double test = 2.0 * (double)((double)Y * (double)W - (double)X * (double)Z);
 
 	if (core::equals(test, 1.0, 0.000001))
 	{
@@ -382,9 +382,9 @@ inline void quaternion::toEuler(vector3df_SIMD& euler) const
 	else
 	{
 		// heading = rotation about z-axis
-		euler.Z = (float) atan2(2.0 * (X*Y +Z*W),(sqr.X - sqr.Y - sqr.Z + sqr.W));
+		euler.Z = (float) atan2(2.0f * (X*Y + Z*W),(sqr.X - sqr.Y - sqr.Z + sqr.W));
 		// bank = rotation about x-axis
-		euler.X = (float) atan2(2.0 * (Y*Z +X*W),(-sqr.X - sqr.Y + sqr.Z + sqr.W));
+		euler.X = (float) atan2(2.0f * (Y*Z +X*W),(-sqr.X - sqr.Y + sqr.Z + sqr.W));
 		// attitude = rotation about y-axis
 		euler.Y = (float) asin( core::clamp(test, -1.0, 1.0) );
 	}

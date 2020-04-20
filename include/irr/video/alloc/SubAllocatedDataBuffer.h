@@ -77,7 +77,7 @@ class SubAllocatedDataBuffer : public virtual core::IReferenceCounted, protected
                     memcpy(rangeData+numAllocs  ,bytes,sizeof(size_type)*numAllocs);
                 }
                 DefaultDeferredFreeFunctor(const DefaultDeferredFreeFunctor& other) = delete;
-                DefaultDeferredFreeFunctor(DefaultDeferredFreeFunctor&& other) : sadbRef(nullptr), rangeData(nullptr), numAllocs(0u)
+                DefaultDeferredFreeFunctor(DefaultDeferredFreeFunctor&& other) noexcept : sadbRef(nullptr), rangeData(nullptr), numAllocs(0u)
                 {
                     this->operator=(std::forward<DefaultDeferredFreeFunctor>(other));
                 }
@@ -92,7 +92,7 @@ class SubAllocatedDataBuffer : public virtual core::IReferenceCounted, protected
                 }
 
                 DefaultDeferredFreeFunctor& operator=(const DefaultDeferredFreeFunctor& other) = delete;
-                inline DefaultDeferredFreeFunctor& operator=(DefaultDeferredFreeFunctor&& other)
+                inline DefaultDeferredFreeFunctor& operator=(DefaultDeferredFreeFunctor&& other) noexcept
                 {
                     if (rangeData)
                     {
