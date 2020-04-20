@@ -106,7 +106,7 @@ namespace core
 
             inline const void*          getReservedSpacePtr() const noexcept {return reservedSpace;}
 
-            AddressAllocatorBase& operator=(AddressAllocatorBase&& other)
+            AddressAllocatorBase& operator=(AddressAllocatorBase&& other) noexcept
             {
                 std::swap(reservedSpace,other.reservedSpace);
                 std::swap(addressOffset,other.addressOffset);
