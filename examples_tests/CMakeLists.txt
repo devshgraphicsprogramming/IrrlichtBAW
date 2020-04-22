@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+add_subdirectory(01v.HelloWorld EXCLUDE_FROM_ALL)
 add_subdirectory(01.HelloWorld EXCLUDE_FROM_ALL)
 add_subdirectory(03.GPU_Mesh EXCLUDE_FROM_ALL)
 add_subdirectory(04.BuiltinNodes EXCLUDE_FROM_ALL)
