@@ -23,7 +23,7 @@ Pass appripiate arguments to launch the example or load them using predefined fi
 * To load them passing arguments through cmd.
 Loading syntax:
 -OPENEXR_FILE=filename
--CHANNEL_NAMES=name,name,name,... 
+-CHANNEL_NAMES=colorChannelName,albedoChannelName,normalChannelName
 -CAMERA_TRANSFORM=value,value,value,...
 -EXPOSURE_BIAS=value
 -DENOISER_BLEND_FACTOR=value
@@ -31,11 +31,11 @@ Loading syntax:
 -TONEMAPPER=tonemapper=arg1,arg2,arg3,...
 -OUTPUT=file.choosenextension
 Note there mustn't be any space characters!
-Also you mustn't put another data like comments
-- behaviour will be undefined, the app'll crash
+Also you mustn't put another data like comments or behaviour will be undefined, the app'll crash (TODO: not crash on parse failure)
+
 Description and usage:
 OPENEXR_FILE: OpenEXR file containing various channels - type without extension
-CHANNEL_NAMES: name of denoiser input channels - split each next channel using ","
+CHANNEL_NAMES: name of denoiser input channels, first is mandatory rest is optional - split each next channel using ","
 CAMERA_TRANSFORM: values as "initializer list" for camera transform matrix with
 row_major layout (max 9 values - extra values will be ignored)
 EXPOSURE_BIAS: exposure bias value used in shader
@@ -105,49 +105,49 @@ class CommandLineHandler
 {
 	public:
 
-		CommandLineHandler(const int argc, irr::core::vector<std::string> argv, irr::asset::IAssetManager* am);
+		CommandLineHandler(irr::core::vector<std::string> argv, irr::asset::IAssetManager* am);
 
 		auto getInputFilesAmount()
 		{
 			return rawVariables.size();
 		}
 
-		auto getFileNamesBundle()
+		auto& getFileNamesBundle() const
 		{
 			return fileNamesBundle;
 		}
 
-		auto getChannelNamesBundle()
+		auto& getChannelNamesBundle() const
 		{
 			return channelNamesBundle;
 		}
 
-		auto getCameraTransformBundle()
+		auto& getCameraTransformBundle() const
 		{
 			return cameraTransformBundle;
 		}
 
-		auto getExposureBiasBundle()
+		auto& getExposureBiasBundle() const
 		{
 			return exposureBiasBundle;
 		}
 
-		auto getDenoiserBlendFactorBundle()
+		auto& getDenoiserBlendFactorBundle() const
 		{
 			return denoiserBlendFactorBundle;
 		}
 
-		auto getBloomSizeBundle()
+		auto& getBloomSizeBundle() const
 		{
 			return bloomSizeBundle;
 		}
 
-		auto getTonemapperBundle()
+		auto& getTonemapperBundle() const
 		{
 			return tonemapperBundle;
 		}
 
-		auto getOutputFileBundle()
+		auto& getOutputFileBundle() const
 		{
 			return outputFileBundle;
 		}
@@ -183,15 +183,12 @@ class CommandLineHandler
 
 		auto getCameraTransform(uint64_t id = 0)
 		{
-			irr::core::matrix4x3 cameraTransform;
-			for (auto i = 0; i < 9; ++i)
-			{
-				if (i >= rawVariables[id][DTEA_CAMERA_TRANSFORM].second.size())
-					break;
-
-				auto stringValue = *(rawVariables[id][DTEA_CAMERA_TRANSFORM].second.begin() + i);
-				*(cameraTransform.pointer() + i) = std::stof(stringValue);
-			}
+			irr::core::matrix3x4SIMD cameraTransform;
+			const auto send = rawVariables[id][DTEA_CAMERA_TRANSFORM].second.end();
+			auto sit = rawVariables[id][DTEA_CAMERA_TRANSFORM].second.begin();
+			for (auto i=0; i<3u&&sit!=send; i++)
+			for (auto j=0; j<3u&&sit!=send; j++)
+				cameraTransform(i,j) = std::stof(*(sit++));
 
 			return cameraTransform;
 		}
@@ -262,7 +259,7 @@ class CommandLineHandler
 
 		irr::core::vector<std::string> fileNamesBundle;
 		irr::core::vector<irr::core::vector<std::string>> channelNamesBundle;
-		irr::core::vector<irr::core::matrix4x3> cameraTransformBundle;
+		irr::core::vector<irr::core::matrix3x4SIMD> cameraTransformBundle;
 		irr::core::vector<float> exposureBiasBundle;
 		irr::core::vector<float> denoiserBlendFactorBundle;
 		irr::core::vector<irr::core::vector2df> bloomSizeBundle;

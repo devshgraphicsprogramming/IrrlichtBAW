@@ -6,10 +6,10 @@
 
 #ifdef _IRR_COMPILE_WITH_STL_LOADER_
 
+#include "irr/asset/asset.h"
+#include "irr/asset/CQuantNormalCache.h"
+
 #include "CSTLMeshFileLoader.h"
-#include "irr/asset/normal_quantization.h"
-#include "irr/asset/CCPUMesh.h"
-#include "irr/asset/format/convertColor.h"
 
 #include "IReadFile.h"
 #include "os.h"
@@ -40,6 +40,14 @@ static core::smart_refctd_ptr<AssetType> getDefaultAsset(const char* _key, IAsse
 
 SAssetBundle CSTLMeshFileLoader::loadAsset(IReadFile* _file, const IAssetLoader::SAssetLoadParams& _params, IAssetLoader::IAssetLoaderOverride* _override, uint32_t _hierarchyLevel)
 {
+	if (_params.meshManipulatorOverride == nullptr)
+	{
+		_IRR_DEBUG_BREAK_IF(true);
+		assert(false);
+	}
+
+	CQuantNormalCache* const quantNormalCache = _params.meshManipulatorOverride->getQuantNormalCache();
+
 	const size_t filesize = _file->getSize();
 	if (filesize < 6ull) // we need a header
 		return {};
@@ -137,7 +145,7 @@ SAssetBundle CSTLMeshFileLoader::loadAsset(IReadFile* _file, const IAssetLoader:
 		{
 			const void* srcColor[1]{ &attrib };
 			uint32_t color{};
-			video::convertColor<EF_A1R5G5B5_UNORM_PACK16, EF_B8G8R8A8_UNORM>(srcColor, &color, 0u, 0u);
+			convertColor<EF_A1R5G5B5_UNORM_PACK16, EF_B8G8R8A8_UNORM>(srcColor, &color, 0u, 0u);
 			colors.push_back(color);
 		}
 		else
@@ -164,7 +172,7 @@ SAssetBundle CSTLMeshFileLoader::loadAsset(IReadFile* _file, const IAssetLoader:
 	for (size_t i = 0u; i < positions.size(); ++i)
 	{
 		if (i % 3 == 0)
-			normal = asset::quantizeNormal2_10_10_10(normals[i / 3]);
+			normal = quantNormalCache->quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(normals[i / 3]);
 		uint8_t* ptr = ((uint8_t*)(vertexBuf->getPointer())) + i * vtxSize;
 		memcpy(ptr, positions[i].pointer, 3 * 4);
 		((uint32_t*)(ptr + 12))[0] = normal;

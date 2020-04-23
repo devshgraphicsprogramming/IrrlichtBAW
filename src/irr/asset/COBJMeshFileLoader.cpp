@@ -4,17 +4,19 @@
 
 #include "irr/core/core.h"
 
+#include "irr/asset/IMeshManipulator.h"
+#include "irr/asset/IAssetManager.h"
+
 #ifdef _IRR_COMPILE_WITH_OBJ_LOADER_
 
-#include "IFileSystem.h"
-#include "COBJMeshFileLoader.h"
-#include "irr/asset/IMeshManipulator.h"
-#include "IVideoDriver.h"
-#include "irr/video/CGPUMesh.h"
-#include "irr/asset/normal_quantization.h"
-#include "IReadFile.h"
 #include "os.h"
-#include "irr/asset/IAssetManager.h"
+#include "IFileSystem.h"
+#include "IReadFile.h"
+
+#include "irr/asset/CQuantNormalCache.h"
+#include "COBJMeshFileLoader.h"
+
+
 
 /*
 namespace std
@@ -79,6 +81,14 @@ asset::SAssetBundle COBJMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 		_hierarchyLevel,
         _override
     );
+
+	if (_params.meshManipulatorOverride == nullptr)
+	{
+		_IRR_DEBUG_BREAK_IF(true);
+		assert(false);
+	}
+
+	CQuantNormalCache* const quantNormalCache = _params.meshManipulatorOverride->getQuantNormalCache();
 
 	const long filesize = _file->getSize();
 	if (!filesize)
@@ -287,7 +297,7 @@ asset::SAssetBundle COBJMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 					core::vectorSIMDf simdNormal;
 					simdNormal.set(normalsBuffer[Idx[2]].data);
                     simdNormal.makeSafe3D();
-					v.normal32bit = asset::quantizeNormal2_10_10_10(simdNormal);
+					v.normal32bit = quantNormalCache->quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(simdNormal);
                 }
 				else
 				{
