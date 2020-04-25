@@ -60,12 +60,12 @@ CEGUIOpenGLState::~CEGUIOpenGLState()
 void CEGUIOpenGLState::saveOpenGLState()
 {
   *GUIState = video::COpenGLState();
-  *RenderState = irr::video::COpenGLState::collectGLState(CARE_PARAMETERS);
-  video::executeGLDiff(GUIState->getStateDiff(*RenderState,CARE_PARAMETERS));
+  //*RenderState = irr::video::COpenGLState::collectGLState(CARE_PARAMETERS);
+  //video::executeGLDiff(GUIState->getStateDiff(*RenderState,CARE_PARAMETERS));
 }
 void CEGUIOpenGLState::restoreOpenGLState()
 {
-  video::executeGLDiff(RenderState->getStateDiff(irr::video::COpenGLState::collectGLState(CARE_PARAMETERS),CARE_PARAMETERS));
+  //video::executeGLDiff(RenderState->getStateDiff(irr::video::COpenGLState::collectGLState(CARE_PARAMETERS),CARE_PARAMETERS));
 }
 
 } // namespace cegui
