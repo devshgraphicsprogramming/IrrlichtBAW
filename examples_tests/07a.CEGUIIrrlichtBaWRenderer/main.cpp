@@ -36,6 +36,7 @@ enum E_RESOURCE_PROVIDER_ALIAS
 	ERPA_FONTS,
 	ERPA_LAYOUTS,
 	ERPA_LOOKNFEELS,
+	ERPA_LUA_SCRIPTS,
 	ERPA_XML_SCHEMES,
 
 	ERPA_COUNT
@@ -43,12 +44,13 @@ enum E_RESOURCE_PROVIDER_ALIAS
 
 constexpr std::array<ResourceProviderAlias, ERPA_COUNT> resourceProviderAliases =
 {
-	ResourceProviderAlias("schemes", "../../media/cegui_alfisko/schemes/"),
-	ResourceProviderAlias("imagesets", "../../media/cegui_alfisko/imagesets/"),
-	ResourceProviderAlias("fonts", "../../media/cegui_alfisko/fonts/"),
-	ResourceProviderAlias("layouts", "../../media/cegui_alfisko/layouts/"),
-	ResourceProviderAlias("looknfeels", "../../media/cegui_alfisko/looknfeel/"),
-	ResourceProviderAlias("xml_schemas", "../../media/cegui_alfisko/xml_schemas/")
+	ResourceProviderAlias("schemes", "../../media/cegui_data_files/schemes/"),
+	ResourceProviderAlias("imagesets", "../../media/cegui_data_files/imagesets/"),
+	ResourceProviderAlias("fonts", "../../media/cegui_data_files/fonts/"),
+	ResourceProviderAlias("layouts", "../../media/cegui_data_files/layouts/"),
+	ResourceProviderAlias("looknfeels", "../../media/cegui_data_files/looknfeel/"),
+	ResourceProviderAlias("lua_scripts", "../../media/cegui_data_files/lua_scripts/"),
+	ResourceProviderAlias("xml_schemas", "../../media/cegui_data_files/xml_schemas/")
 };
 
 int main()
@@ -57,7 +59,7 @@ int main()
 	params.Bits = 24; 
 	params.ZBufferBits = 24; 
 	params.DriverType = video::EDT_OPENGL; 
-	params.WindowSize = dimension2d<uint32_t>(800, 600);
+	params.WindowSize = dimension2d<uint32_t>(1280, 720);
 	params.Fullscreen = false;
 	params.Vsync = true; 
 	params.Doublebuffer = true;
@@ -73,27 +75,49 @@ int main()
 	for(auto& resourceProvider : resourceProviderAliases)
 		guiResourceProvider->setResourceGroupDirectory(resourceProvider.alias.data(), resourceProvider.path.data());
 
-	CEGUI::ImageManager::setImagesetDefaultResourceGroup("imagesets");
-	CEGUI::Font::setDefaultResourceGroup("fonts");
-	CEGUI::Scheme::setDefaultResourceGroup("schemes");
-	CEGUI::WidgetLookManager::setDefaultResourceGroup("looknfeels");
-	CEGUI::WindowManager::setDefaultResourceGroup("layouts");
+	CEGUI::ImageManager::setImagesetDefaultResourceGroup(resourceProviderAliases[ERPA_IMAGESETS].alias.data());
+	CEGUI::Font::setDefaultResourceGroup(resourceProviderAliases[ERPA_FONTS].alias.data());
+	CEGUI::Scheme::setDefaultResourceGroup(resourceProviderAliases[ERPA_SCHEMES].alias.data());
+	CEGUI::WidgetLookManager::setDefaultResourceGroup(resourceProviderAliases[ERPA_LOOKNFEELS].alias.data());
+	CEGUI::WindowManager::setDefaultResourceGroup(resourceProviderAliases[ERPA_LAYOUTS].alias.data());
+	CEGUI::ScriptModule::setDefaultResourceGroup(resourceProviderAliases[ERPA_LUA_SCRIPTS].alias.data());
 
 	CEGUI::XMLParser* parser = CEGUI::System::getSingleton().getXMLParser();
 	if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
-		parser->setProperty("SchemaDefaultResourceGroup", resourceProviderAliases[ERPA_XML_SCHEMES].alias.data());
+		parser->setProperty("schemas", resourceProviderAliases[ERPA_XML_SCHEMES].alias.data());
 
 	// load a scheme
-	CEGUI::SchemeManager::getSingleton().createFromFile("Alfisko.scheme");
+	auto& taharezLookScheme = CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
 
-	// since schemes contains some data, we can use it to set some assets
-	CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("DejaVuSans-12");
-	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("Alfisko/MouseArrow");
+	auto& mouse = CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor();
+	mouse.setDefaultImage("TaharezLook/MouseArrow");
+	mouse.setVisible(true);
 
-	auto myRoot = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "_MasterRoot");
+	CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultTooltipType("TaharezLook/Tooltip");
+
+	/*  
+		explicitly load layout contating useful data stuff such as positions or
+		sizes of widgets (windows) to avoid doing it manually as some steps bellow
+	*/
+
+	auto myRoot = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("TaharezLookOverview.layout", resourceProviderAliases[ERPA_LAYOUTS].alias.data());
 	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(myRoot);
 
-	device->getCursorControl()->setVisible(false);
+	/*
+
+	auto myRoot = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "root");
+	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(myRoot);
+
+	auto taharezFrameWindow = static_cast<CEGUI::FrameWindow*>(CEGUI::WindowManager::getSingleton().createWindow("TaharezLook/FrameWindow", "testWindow"));
+	myRoot->addChild(taharezFrameWindow);
+
+	taharezFrameWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0.25f, 0.0f), CEGUI::UDim(0.25f, 0.0f)));	// position a quarter of the way in from the top-left of parent.
+	taharezFrameWindow->setSize(CEGUI::USize(CEGUI::UDim(0.5f, 0.0f), CEGUI::UDim(0.5f, 0.0f)));			// set size to be half the size of the parent
+	taharezFrameWindow->setText("Hello IrrlichtBaW! :)");
+
+	*/
+
+	device->getCursorControl()->setVisible(true);
 	QToQuitEventReceiver receiver;
 	device->setEventReceiver(&receiver);
 
@@ -109,6 +133,7 @@ int main()
 		// render()
 
 		// rendering GUI stuff
+		CEGUI::System::getSingleton().getDefaultGUIContext().injectMousePosition(400, 300);
 		CEGUI::System::getSingleton().renderAllGUIContexts();
         
 		driver->endScene();
