@@ -53,8 +53,8 @@ int main()
         // needed for camera to move
         //smgr->drawAll();
 
-        irrlichtBawApp->update();
-        //irrlichtBawApp->renderMesh();
+        //irrlichtBawApp->update();
+        irrlichtBawApp->renderMesh();
         irrlichtBawApp->renderGUI();
         driver->endScene();
     }
