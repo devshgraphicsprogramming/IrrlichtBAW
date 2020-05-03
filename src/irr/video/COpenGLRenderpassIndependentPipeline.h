@@ -103,8 +103,7 @@ class COpenGLRenderpassIndependentPipeline final : public IGPURenderpassIndepend
 	        }
             inline const uint32_t& getStamp(IGPUSpecializedShader::E_SHADER_STAGE _stage) const
             {
-                std::atomic_uint32_t& retval = const_cast<typename std::decay<decltype(*this)>::type*>(this)->getStamp(_stage);
-                return retval;
+                return const_cast<typename std::decay<decltype(*this)>::type*>(this)->getStamp(_stage);
             }
 	        inline void incrementStamps(uint32_t _stages)
 	        {
@@ -125,7 +124,7 @@ class COpenGLRenderpassIndependentPipeline final : public IGPURenderpassIndepend
             for (uint32_t i=0u; i<SHADER_STAGE_COUNT; ++i)
             {
                 auto stage = static_cast<IGPUSpecializedShader::E_SHADER_STAGE>(1u<<i);
-                if (m_stagePresenceMask&stage==0u)
+                if ((m_stagePresenceMask&stage)==0u)
                     continue;
 
                 uint32_t stampValue = _pcState.getStamp(stage);
@@ -202,7 +201,7 @@ class COpenGLRenderpassIndependentPipeline final : public IGPURenderpassIndepend
                     uint64_t mapAttrToBinding;//16*4 bits
                     uint16_t divisors;
                     //E_FORMAT values
-                    uint8_t attribFormatAndComponentCount[16];//attribute X is enabled if attribFormatAndComponentCount[X]!=EF_UNKNOWN
+                    uint8_t attribFormatAndComponentCount[asset::SVertexInputParams::MAX_VERTEX_ATTRIB_COUNT];//attribute X is enabled if attribFormatAndComponentCount[X]!=EF_UNKNOWN
                 } PACK_STRUCT;
     #include "irr/irrunpack.h"
                 uint32_t hashVal[19]{};
