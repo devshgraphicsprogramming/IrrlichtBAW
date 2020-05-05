@@ -10,6 +10,7 @@
 #include <utility>
 #include "portable-file-dialogs/portable-file-dialogs.h"
 #include <CEGUI/RendererModules/OpenGL/GL3Renderer.h>
+#include "../ext/CEGUI/IrrlichtBaW/IrrlichtBaWRenderer.hpp"
 #include <CEGUI/System.h>
 #include <CEGUI/widgets/Slider.h>
 #include <CEGUI/CommonDialogs/ColourPicker/ColourPicker.h>
