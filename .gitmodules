@@ -79,7 +79,7 @@
 	url = https://github.com/AcademySoftwareFoundation/openexr.git
 [submodule "3rdparty/gli"]
 	path = 3rdparty/gli
-	url = https://github.com/g-truc/gli.git
+	url = https://github.com/AnastaZIuk/gli.git
 [submodule "3rdparty/parallel-hashmap"]
 	path = 3rdparty/parallel-hashmap
 	url = https://github.com/greg7mdp/parallel-hashmap
