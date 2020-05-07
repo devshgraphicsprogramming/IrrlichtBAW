@@ -6,14 +6,14 @@ set(IRR_EXT_CEGUI_H
 	CEGUIOpenGLState.h
 	CEGUIOpenGLClip.h
 	Helpers.h
-	IrrlichtBaW/IrrlichtBaWRenderer.hpp
-	IrrlichtBaW/IrrlichtBaWRenderTarget.hpp
-	IrrlichtBaW/IrrlichtBaWRenderQueue.hpp
-	IrrlichtBaW/IrrlichtBaWGeometryBuffer.hpp
-	IrrlichtBaW/IrrlichtBaWRenderingWindow.hpp
-	IrrlichtBaW/IrrlichtBaWRenderEffect.hpp
-	IrrlichtBaW/IrrlichtBaWTextureTarget.hpp
-	IrrlichtBaW/IrrlichtBaWTexture.hpp
+	IrrlichtBaWRenderer.hpp
+	IrrlichtBaWRenderTarget.hpp
+	IrrlichtBaWRenderQueue.hpp
+	IrrlichtBaWGeometryBuffer.hpp
+	IrrlichtBaWRenderingWindow.hpp
+	IrrlichtBaWRenderEffect.hpp
+	IrrlichtBaWTextureTarget.hpp
+	IrrlichtBaWTexture.hpp
 )
 
 set(IRR_EXT_CEGUI_SRC
@@ -21,14 +21,14 @@ set(IRR_EXT_CEGUI_SRC
 	CEGUIOpenGLState.cpp
 	CEGUIOpenGLClip.cpp
 	Helpers.cpp
-	IrrlichtBaW/IrrlichtBaWRenderer.cpp
-	IrrlichtBaW/IrrlichtBaWRenderTarget.cpp
-	IrrlichtBaW/IrrlichtBaWRenderQueue.cpp
-	IrrlichtBaW/IrrlichtBaWGeometryBuffer.cpp
-	IrrlichtBaW/IrrlichtBaWRenderingWindow.cpp
-	IrrlichtBaW/IrrlichtBaWRenderEffect.cpp
-	IrrlichtBaW/IrrlichtBaWTextureTarget.cpp
-	IrrlichtBaW/IrrlichtBaWTexture.cpp
+	IrrlichtBaWRenderer.cpp
+	IrrlichtBaWRenderTarget.cpp
+	IrrlichtBaWRenderQueue.cpp
+	IrrlichtBaWGeometryBuffer.cpp
+	IrrlichtBaWRenderingWindow.cpp
+	IrrlichtBaWRenderEffect.cpp
+	IrrlichtBaWTextureTarget.cpp
+	IrrlichtBaWTexture.cpp
 )
 
 set(IRR_EXT_CEGUI_EXTERNAL_INCLUDE

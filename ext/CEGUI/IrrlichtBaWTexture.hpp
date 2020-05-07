@@ -15,7 +15,7 @@ class IrrlichtBaWTexture final : public CEGUI::Texture
 {
 	public:
 
-		IrrlichtBaWTexture();
+		IrrlichtBaWTexture(irr::core::smart_refctd_ptr<irr::IrrlichtDevice> _device);
 		virtual ~IrrlichtBaWTexture();
 
         virtual const CEGUI::String& getName() const override;
@@ -35,6 +35,15 @@ class IrrlichtBaWTexture final : public CEGUI::Texture
         virtual void blitToMemory(void* targetData) override;
 
         virtual bool isPixelFormatSupported(const PixelFormat fmt) const override;
+
+    private:
+
+        irr::core::smart_refctd_ptr<irr::IrrlichtDevice> device;
+        irr::video::IVideoDriver* driver;
+        // OpenGLRendererBase& d_owner; TODO
+        irr::core::smart_refctd_ptr<irr::video::IGPUImageView> gpuTexture;
+        std::string cachingName;
+        size_t bufferRowLength;
 };
 
 } // namespace cegui
