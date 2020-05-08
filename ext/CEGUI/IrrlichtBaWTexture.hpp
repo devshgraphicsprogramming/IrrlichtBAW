@@ -36,12 +36,17 @@ class IrrlichtBaWTexture final : public CEGUI::Texture
 
         virtual bool isPixelFormatSupported(const PixelFormat fmt) const override;
 
+        static constexpr const auto textureColorAttachment = video::EFAP_COLOR_ATTACHMENT0;
+
     private:
+
+        irr::video::IFrameBuffer* createFrameBuffer(const void* data, asset::E_FORMAT colorAttachmentFormat, size_t width, size_t height);
+        irr::video::IFrameBuffer* createFrameBuffer(core::smart_refctd_ptr<video::IGPUImageView> gpuImageView);
 
         irr::core::smart_refctd_ptr<irr::IrrlichtDevice> device;
         irr::video::IVideoDriver* driver;
         // OpenGLRendererBase& d_owner; TODO
-        irr::core::smart_refctd_ptr<irr::video::IGPUImageView> gpuTexture;
+        irr::video::IFrameBuffer* frameBuffer;
         std::string cachingName;
         size_t bufferRowLength;
 };
