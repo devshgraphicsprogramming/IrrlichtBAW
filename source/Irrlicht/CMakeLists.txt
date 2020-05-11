@@ -250,8 +250,10 @@ set(IRRLICHT_SRCS_SERVER
 )
 
 set(COMMON_INCLUDE_DIRS
+	${Vulkan_INCLUDE_DIR}
 	${THIRD_PARTY_SOURCE_DIR}/convertutf
 	${THIRD_PARTY_SOURCE_DIR}/utfcpp/source
+	${THIRD_PARTY_SOURCE_DIR}/volk
 	${THIRD_PARTY_SOURCE_DIR}/glm
 	${CMAKE_BINARY_DIR}/3rdparty/zlib #for dynamically generated zconf.h
 	${CMAKE_BINARY_DIR}/3rdparty/openexr/IlmBase/config #for dynamically generated IlmBaseConfig.h
@@ -262,6 +264,13 @@ set(COMMON_INCLUDE_DIRS
 
 irr_adjust_flags() # macro defined in root CMakeLists
 irr_adjust_definitions() # macro defined in root CMakeLists
+
+macro(irr_target_link_SDL2 _trgt)	
+	target_link_libraries(${_trgt} PUBLIC
+		SDL2-static
+	)
+	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/SDL2)
+endmacro()
 
 macro(irr_target_link_zlib _trgt)
 	add_dependencies(${_trgt} zlibstatic)
@@ -356,6 +365,7 @@ irr_target_link_shaderc(Irrlicht)
 irr_target_link_libjpeg(Irrlicht)
 irr_target_link_libpng(Irrlicht)
 irr_target_link_openexr(Irrlicht)
+irr_target_link_SDL2(Irrlicht)
 if(_IRR_COMPILE_WITH_GLI_)
 	irr_target_link_gli(Irrlicht)
 endif()
@@ -429,6 +439,7 @@ irr_target_link_shaderc(IrrlichtServer)
 irr_target_link_libjpeg(IrrlichtServer)
 irr_target_link_libpng(IrrlichtServer)
 irr_target_link_openexr(IrrlichtServer)
+irr_target_link_SDL2(IrrlichtServer)
 if(_IRR_COMPILE_WITH_GLI_)
 	irr_target_link_gli(IrrlichtServer)
 endif()

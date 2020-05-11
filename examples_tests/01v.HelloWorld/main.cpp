@@ -1,5 +1,9 @@
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+#define VOLK_IMPLEMENTATION
+#include "volk.h"
+
+#define SDL_MAIN_HANDLED
+#include "SDL.h"
+#include "SDL_vulkan.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -71,7 +75,7 @@ public:
     }
 
 private:
-    GLFWwindow* window;
+    SDL_Window* window;
 
     VkInstance instance;
     VkDebugUtilsMessengerEXT debugMessenger;
@@ -89,7 +93,7 @@ private:
     VkExtent2D swapChainExtent;
     std::vector<VkImageView> swapChainImageViews;
 
-    VkRenderPass renderPass;    
+    VkRenderPass renderPass;
     std::vector<VkFramebuffer> swapChainFramebuffers;
     VkCommandPool commandPool;
     std::vector<VkCommandBuffer> commandBuffers;
@@ -99,17 +103,21 @@ private:
     std::vector<VkFence> inFlightFences;
     std::vector<VkFence> imagesInFlight;
     size_t currentFrame = 0;
-    bool framebufferResized = false;
 
     void initWindow() {
-        glfwInit();
+        if (volkInitialize() != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create window surface!");
+        }
 
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        SDL_SetMainReady();
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
+            throw std::runtime_error("Failed to create window surface!");
+        }
 
-        window = glfwCreateWindow(WIDTH, HEIGHT, "VulkanTest", nullptr, nullptr);
-        glfwSetWindowUserPointer(window, this);
-        glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+        window = SDL_CreateWindow("My App",
+            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            WIDTH, HEIGHT,
+            SDL_WINDOW_VULKAN);
     }
 
     void initVulkan() {
@@ -128,8 +136,17 @@ private:
     }
 
     void mainLoop() {
-        while (!glfwWindowShouldClose(window)) {
-            glfwPollEvents();
+        SDL_Event event;
+        bool quit = false;
+
+        while (!quit) {
+            while (SDL_PollEvent(&event) != 0)
+            {
+                if (event.type == SDL_QUIT)
+                {
+                    quit = true;
+                }
+            }
             drawFrame();
         }
     }
@@ -154,9 +171,8 @@ private:
         vkDestroySurfaceKHR(instance, surface, nullptr);
         vkDestroyInstance(instance, nullptr);
 
-        glfwDestroyWindow(window);
-
-        glfwTerminate();
+        SDL_DestroyWindow(window);
+        SDL_Quit();
     }
 
     void cleanupSwapChain() {
@@ -164,7 +180,7 @@ private:
             vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
         }
 
-        vkFreeCommandBuffers(device, commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());        
+        vkFreeCommandBuffers(device, commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
         vkDestroyRenderPass(device, renderPass, nullptr);
 
         for (size_t i = 0; i < swapChainImageViews.size(); i++) {
@@ -176,12 +192,21 @@ private:
 
     void recreateSwapChain() {
         int width = 0, height = 0;
-        glfwGetFramebufferSize(window, &width, &height);
+        SDL_GL_GetDrawableSize(window, &width, &height);
+
+        SDL_Event event;
+        bool quit = false;
         while (width == 0 || height == 0) {
-            glfwGetFramebufferSize(window, &width, &height);
-            glfwWaitEvents();
+            SDL_GL_GetDrawableSize(window, &width, &height);
+            while (SDL_PollEvent(&event) != 0)
+            {
+                if (event.type == SDL_QUIT)
+                {
+                    quit = true;
+                }
+            }
         }
-        
+
         vkDeviceWaitIdle(device);
 
         cleanupSwapChain();
@@ -231,6 +256,7 @@ private:
         if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
             throw std::runtime_error("failed to create instance!");
         }
+        volkLoadInstance(instance);
     }
 
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
@@ -253,8 +279,8 @@ private:
     }
 
     void createSurface() {
-        if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create window surface!");
+        if (!SDL_Vulkan_CreateSurface(window, instance, &surface) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create window surface!");
         }
     }
 
@@ -431,7 +457,7 @@ private:
         }
         else {
             int width, height;
-            glfwGetFramebufferSize(window, &width, &height);
+            SDL_GL_GetDrawableSize(window, &width, &height);
 
             VkExtent2D actualExtent = {
                 static_cast<uint32_t>(width),
@@ -532,17 +558,16 @@ private:
     }
 
     std::vector<const char*> getRequiredExtensions() {
-        uint32_t glfwExtensionCount = 0;
-        const char** glfwExtensions;
-        glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-        std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+        uint32_t extensionCount;
+        SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, nullptr);
+        std::vector<const char*> extensionNames(extensionCount);
+        SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, extensionNames.data());
 
         if (enableValidationLayers) {
-            extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+            extensionNames.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
         }
 
-        return extensions;
+        return extensionNames;
     }
 
     void createRenderPass() {
@@ -673,8 +698,7 @@ private:
         uint32_t imageIndex;
         VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
-        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized) {
-            framebufferResized = false;
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ) {
             recreateSwapChain();
         }
         else if (result != VK_SUCCESS) {
@@ -740,7 +764,7 @@ private:
         renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
         inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
         imagesInFlight.resize(swapChainImages.size(), VK_NULL_HANDLE);
-        
+
         VkSemaphoreCreateInfo semaphoreInfo{};
         semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -759,9 +783,9 @@ private:
     }
 
     bool checkValidationLayerSupport() {
-        uint32_t layerCount;
+        uint32_t layerCount{};
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
+        
         std::vector<VkLayerProperties> availableLayers(layerCount);
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
@@ -788,11 +812,6 @@ private:
 
         return VK_FALSE;
     }
-
-    static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
-        auto app = reinterpret_cast<HelloWorld*>(glfwGetWindowUserPointer(window));
-        app->framebufferResized = true;
-    }
 };
 
 int main() {
@@ -801,7 +820,7 @@ int main() {
     try {
         app.run();
     }
-    catch (const std::exception & e) {
+    catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
     }
