@@ -16,6 +16,8 @@ include(../cmake/common.cmake)
 
 
 # mandatory
+update_git_submodule(./SDL2)
+update_git_submodule(./volk)
 update_git_submodule(./SPIRV-Headers)
 update_git_submodule(./SPIRV-Tools)
 update_git_submodule(./glslang)
@@ -24,6 +26,7 @@ update_git_submodule(./bzip2)
 update_git_submodule(./lz4)
 update_git_submodule(./spirv_cross)
 update_git_submodule(./zlib)
+update_git_submodule(./openexr)
 update_git_submodule(./utfcpp)
 update_git_submodule(./convertutf)
 update_git_submodule(./libpng)
@@ -36,8 +39,60 @@ update_git_submodule(./glm)
 update_git_submodule(./freetype2)
 update_git_submodule(./portable-file-dialogs)
 
-
+# openssl
 add_subdirectory(openssl openssl EXCLUDE_FROM_ALL)
+
+# volk
+if (Vulkan_FOUND)
+	set(VOLK_PULL_IN_VULKAN ON)
+	add_subdirectory(volk volk EXCLUDE_FROM_ALL)
+endif(Vulkan_FOUND)
+
+# SDL2
+set(SDL_STATIC_ENABLED_BY_DEFAULT ON)
+set(SDL_SHARED_ENABLED_BY_DEFAULT OFF)
+set(SDL_THREADS_ENABLED_BY_DEFAULT OFF)
+set(SDL_LOADSO_ENABLED_BY_DEFAULT ON)
+# should I enable this
+set(SDL_DLOPEN_ENABLED_BY_DEFAULT OFF)
+set(SDL_SUBSYSTEMS "Audio Video Events Joystick Haptic Power Loadso CPUinfo Filesystem Sensor")
+set(SDL_STATIC_PIC ON)
+set(SDL_ATOMIC OFF)
+set(SDL_FILESYSTEM OFF)
+set(SDL_TIMERS OFF)
+# oh why doesn't SDL2 prefix these options?
+set(MMX OFF)
+set(3DNOW OFF)
+set(VIDEO_DIRECTFB OFF)
+set(VIDEO_OPENGL ON)
+set(PTHREADS OFF)
+set(RENDER_D3D OFF)
+set(RENDER_METAL OFF)
+set(VIDEO_VIVANTE OFF)
+# Metal?
+set(VIDEO_KMSDRM OFF)
+set(VIDEO_OFFSCREEN ON)
+set(VIDEO_X11_XCURSOR ON)
+set(VIDEO_X11_XINERAMA OFF)
+set(VIDEO_X11_XINPUT ON)
+set(VIDEO_X11_XRANDR ON)
+set(VIDEO_X11_XSCRNSAVER ON)
+set(VIDEO_X11_XSHAPE ON)
+set(VIDEO_X11_XVM OFF)
+# make sure as much gets shared as possible
+set(OSS OFF)
+set(ALSA_SHARED ON)
+set(JACK_SHARED ON)
+set(ESD_SHARED ON)
+set(PULSEAUDIO_SHARED ON)
+set(ARTS_SHARED ON)
+set(NAS_SHARED ON)
+set(SNDIO_SHARED ON)
+set(FUSIONSOUND_SHARED ON)
+set(LIBSAMPLERATE_SHARED ON)
+set(WAYLAND_SHARED ON)
+set(X11_SHARED ON)
+add_subdirectory(SDL2 SDL2 EXCLUDE_FROM_ALL)
 
 # zlib (target is zlibstatic)
 set(_OLD_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
@@ -48,13 +103,21 @@ add_subdirectory(zlib zlib EXCLUDE_FROM_ALL)
 set(SKIP_INSTALL_ALL ${_OLD_SKIP_INSTALL_ALL})
 set(BUILD_SHARED_LIBS ${_OLD_BUILD_SHARED_LIBS})
 get_target_property(ZLIB_BINARY_DIR zlibstatic "BINARY_DIR")
-get_target_property(ZLIB_NAME zlibstatic "NAME")
+if (MSVC)
+	set(ZLIB_BINARY_DIR_DEBUG "${ZLIB_BINARY_DIR}/Debug")
+	set(ZLIB_BINARY_DIR_RELEASE "${ZLIB_BINARY_DIR}/Release")
+	get_target_property(ZLIB_NAME zlibstatic "NAME")
+	set(ZLIB_DEBUG_POSTFIX "d") # zlib's cmake is a zjeb
+else()
+	set(ZLIB_BINARY_DIR_DEBUG ${ZLIB_BINARY_DIR})
+	set(ZLIB_BINARY_DIR_RELEASE ${ZLIB_BINARY_DIR})
+	get_target_property(ZLIB_NAME zlibstatic "OUTPUT_NAME")
+	set(ZLIB_DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}")
+endif()
 get_target_property(ZLIB_DEBUG_POSTFIX zlibstatic "DEBUG_POSTFIX")
-#message(FATAL_ERROR ${THIRD_PARTY_SOURCE_DIR})
 set(ZLIB_INCLUDE_DIR "${THIRD_PARTY_SOURCE_DIR}/zlib;${THIRD_PARTY_BINARY_DIR}/zlib" CACHE STRING "" FORCE)
-# This probably breaks the non-MSVC build in like 50 different ways
-set(ZLIB_LIBRARY_DEBUG "${ZLIB_BINARY_DIR}/Debug/${CMAKE_STATIC_LIBRARY_PREFIX}${ZLIB_NAME}${ZLIB_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}" CACHE STRING "" FORCE)
-set(ZLIB_LIBRARY_RELEASE "${ZLIB_BINARY_DIR}/Release/${CMAKE_STATIC_LIBRARY_PREFIX}${ZLIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}" CACHE STRING "" FORCE)
+set(ZLIB_LIBRARY_DEBUG "${ZLIB_BINARY_DIR_DEBUG}/${CMAKE_STATIC_LIBRARY_PREFIX}${ZLIB_NAME}${ZLIB_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}" CACHE STRING "" FORCE)
+set(ZLIB_LIBRARY_RELEASE "${ZLIB_BINARY_DIR_RELEASE}/${CMAKE_STATIC_LIBRARY_PREFIX}${ZLIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}" CACHE STRING "" FORCE)
 
 
 set(SPIRV_HEADERS_SKIP_EXAMPLES ON CACHE BOOL "Skip SPIRV-Headers examples")
@@ -95,6 +158,36 @@ option(PNG_TESTS  "Build libpng tests" OFF)
 add_subdirectory(libpng libpng EXCLUDE_FROM_ALL)
 add_dependencies(png_static zlibstatic) #CMake doesn't get it itself
 
+#openexr
+set(_OLD_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+set(_OLD_BUILD_STATIC_LIBS ${BUILD_STATIC_LIBS})
+set(_OLD_BUILD_TESTING ${BUILD_TESTING})
+set(BUILD_SHARED_LIBS OFF)
+set(BUILD_STATIC_LIBS OFF)
+set(BUILD_TESTING OFF)
+set(PYILMBASE_ENABLE OFF CACHE STRING "" FORCE)
+set(OPENEXR_BUILD_UTILS OFF CACHE STRING "" FORCE)
+set(OPENEXR_VIEWERS_ENABLE OFF CACHE STRING "" FORCE)
+add_subdirectory(openexr openexr EXCLUDE_FROM_ALL)
+set(BUILD_SHARED_LIBS ${_OLD_BUILD_SHARED_LIBS})
+set(BUILD_STATIC_LIBS ${_OLD_BUILD_STATIC_LIBS})
+set(BUILD_TESTING ${_OLD_BUILD_TESTING})
+
+#gli
+option(_IRR_COMPILE_WITH_GLI_ "Build with GLI library" ON)
+if(_IRR_COMPILE_WITH_GLI_)
+	set(_OLD_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+	set(_OLD_BUILD_STATIC_LIBS ${BUILD_STATIC_LIBS})
+	set(_OLD_BUILD_TESTING ${BUILD_TESTING})
+	set(BUILD_SHARED_LIBS OFF)
+	set(BUILD_STATIC_LIBS OFF)
+	set(BUILD_TESTING OFF)
+	add_subdirectory(gli gli EXCLUDE_FROM_ALL)
+	set(BUILD_SHARED_LIBS ${_OLD_BUILD_SHARED_LIBS})
+	set(BUILD_STATIC_LIBS ${_OLD_BUILD_STATIC_LIBS})
+	set(BUILD_TESTING ${_OLD_BUILD_TESTING})
+endif()
+
 irr_adjust_flags()
 
 add_library(lzma OBJECT
@@ -130,7 +223,7 @@ add_library(spirv_cross OBJECT
 	spirv_cross/spirv_parser.cpp
 	spirv_cross/spirv_cross_parsed_ir.cpp
 )
-target_compile_definitions(spirv_cross PRIVATE SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS)
+target_compile_definitions(spirv_cross PUBLIC SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS)
 
 add_library(convert_utf OBJECT
 	convertutf/ConvertUTF.cpp
@@ -148,14 +241,22 @@ add_library(aesGladman OBJECT
 	aesGladman/sha1.c
 )
 
-set(_OLD_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
-set(_OLD_BUILD_STATIC_LIBS ${BUILD_STATIC_LIBS})
-set(BUILD_SHARED_LIBS OFF)
-set(BUILD_STATIC_LIBS OFF)
-option(GLM_TEST_ENABLE_CXX_14 "Enable C++ 14" ON)
-if (IRR_FAST_MATH)
-   option(GLM_TEST_ENABLE_FAST_MATH "Enable fast math optimizations" ON)
+if (IRR_BUILD_CEGUI) # I absolutely hate and despise GLM
+	set(_OLD_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+	set(_OLD_BUILD_STATIC_LIBS ${BUILD_STATIC_LIBS})
+	set(BUILD_SHARED_LIBS OFF)
+	set(BUILD_STATIC_LIBS OFF)
+	option(GLM_TEST_ENABLE_CXX_14 "Enable C++ 14" ON)
+	if (IRR_FAST_MATH)
+	   option(GLM_TEST_ENABLE_FAST_MATH "Enable fast math optimizations" ON)
+	endif()
+	option(GLM_TEST_ENABLE_SIMD_SSE4_2 "Enable SSE 4.2 optimizations" ON)
+	option(GLM_TEST_ENABLE "Build unit tests" OFF)
+	add_subdirectory(glm EXCLUDE_FROM_ALL)
+	set(BUILD_SHARED_LIBS ${_OLD_BUILD_SHARED_LIBS})
+	set(BUILD_STATIC_LIBS ${_OLD_BUILD_STATIC_LIBS})
 endif()
+
 option(GLM_TEST_ENABLE_SIMD_SSE4_2 "Enable SSE 4.2 optimizations" ON)
 option(GLM_TEST_ENABLE "Build unit tests" OFF)
 #add_subdirectory(glm EXCLUDE_FROM_ALL)

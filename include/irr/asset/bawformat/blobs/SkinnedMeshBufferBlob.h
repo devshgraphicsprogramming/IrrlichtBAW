@@ -19,7 +19,9 @@ struct IRR_FORCE_EBO SkinnedMeshBufferBlobV3 : TypedBlob<SkinnedMeshBufferBlobV3
 	//! Constructor filling all members
 	explicit SkinnedMeshBufferBlobV3(const ICPUSkinnedMeshBuffer*);
 
+#ifndef NEW_SHADERS
 	video::SCPUMaterial mat;
+#endif
 	core::aabbox3df box;
 	uint64_t descPtr;
 	uint32_t indexType;
@@ -35,7 +37,10 @@ struct IRR_FORCE_EBO SkinnedMeshBufferBlobV3 : TypedBlob<SkinnedMeshBufferBlobV3
 	uint32_t maxVertexBoneInfluences;
 	uint32_t normalAttrId;
 } PACK_STRUCT;
-static_assert(sizeof(SkinnedMeshBufferBlobV3::mat)==197, "sizeof(MeshBufferBlobV0::mat) must be 197");
+//TODO bring it back
+//static_assert(sizeof(SkinnedMeshBufferBlobV0::mat)==197, "sizeof(MeshBufferBlobV0::mat) must be 197");
+
+#ifndef NEW_SHADERS
 static_assert(
     sizeof(SkinnedMeshBufferBlobV3) ==
     sizeof(SkinnedMeshBufferBlobV3::mat) + sizeof(SkinnedMeshBufferBlobV3::box) + sizeof(SkinnedMeshBufferBlobV3::descPtr) + sizeof(SkinnedMeshBufferBlobV3::indexType) + sizeof(SkinnedMeshBufferBlobV3::baseVertex)
@@ -43,6 +48,7 @@ static_assert(
     + sizeof(SkinnedMeshBufferBlobV3::primitiveType) + sizeof(SkinnedMeshBufferBlobV3::posAttrId) + sizeof(SkinnedMeshBufferBlobV3::normalAttrId) + sizeof(SkinnedMeshBufferBlobV3::indexValMin) + sizeof(SkinnedMeshBufferBlobV3::indexValMax) + sizeof(SkinnedMeshBufferBlobV3::maxVertexBoneInfluences),
     "SkinnedMeshBufferBlobV0: Size of blob is not sum of its contents!"
 );
+#endif
 #include "irr/irrunpack.h"
 
 template<>

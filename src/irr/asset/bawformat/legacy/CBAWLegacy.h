@@ -2,6 +2,8 @@
 #define __IRR_CBAW_LEGACY_H_INCLUDED__
 
 #include "irr/asset/format/EFormat.h"
+#include "irr/asset/bawformat/Blob.h"
+#include "irr/asset/ICPUMesh.h"
 
 namespace irr
 {
@@ -11,7 +13,8 @@ namespace asset
 
 // forward declarations
 class CFinalBoneHierarchy;
-
+class ICPUMeshBuffer;
+class ICPUMesh;
 
 namespace legacyv0
 {
@@ -64,6 +67,7 @@ enum E_COMPONENT_TYPE
     ECT_COUNT
 };
 
+#ifndef NEW_SHADERS
 #include "irr/irrpack.h"
 //! Simple struct of essential data of ICPUMeshDataFormatDesc that has to be exported
 //! Irrelevant in version 1.
@@ -89,6 +93,7 @@ static_assert(
     sizeof(MeshDataFormatDescBlobV0::cpa) + sizeof(MeshDataFormatDescBlobV0::attrType) + sizeof(MeshDataFormatDescBlobV0::attrStride) + sizeof(MeshDataFormatDescBlobV0::attrOffset) + sizeof(MeshDataFormatDescBlobV0::attrDivisor) + sizeof(MeshDataFormatDescBlobV0::attrBufPtrs) + sizeof(MeshDataFormatDescBlobV0::idxBufPtr),
     "MeshDataFormatDescBlobV0: Size of blob is not sum of its contents!"
 );
+#endif// !NEW_SHADERS
 
 asset::E_FORMAT mapECT_plus_ECPA_onto_E_FORMAT(E_COMPONENT_TYPE _ct, E_COMPONENTS_PER_ATTRIBUTE _cpa);
 
@@ -157,7 +162,9 @@ static_assert(
 //! Simple struct of essential data of ICPUMeshBuffer that has to be exported
 struct IRR_FORCE_EBO MeshBufferBlobV0 : TypedBlob<MeshBufferBlobV0, ICPUMeshBuffer>, FixedSizeBlob<MeshBufferBlobV0, ICPUMeshBuffer>
 {
+#ifndef NEW_SHADERS
 	video::SCPUMaterial mat;
+#endif
 	core::aabbox3df box;
 	uint64_t descPtr;
 	uint32_t indexType;
@@ -170,6 +177,7 @@ struct IRR_FORCE_EBO MeshBufferBlobV0 : TypedBlob<MeshBufferBlobV0, ICPUMeshBuff
 	uint32_t posAttrId;
 } PACK_STRUCT;
 #include "irr/irrunpack.h"
+#ifndef NEW_SHADERS
 static_assert(sizeof(MeshBufferBlobV0::mat) == 197, "sizeof(MeshBufferBlobV0::mat) must be 197");
 static_assert(
 	sizeof(MeshBufferBlobV0) ==
@@ -178,13 +186,16 @@ static_assert(
 	+ sizeof(MeshBufferBlobV0::primitiveType) + sizeof(MeshBufferBlobV0::posAttrId),
 	"MeshBufferBlobV0: Size of blob is not sum of its contents!"
 	);
+#endif
 
 class ICPUSkinnedMeshBuffer;
 
 #include "irr/irrpack.h"
 struct IRR_FORCE_EBO SkinnedMeshBufferBlobV0 : TypedBlob<SkinnedMeshBufferBlobV0, ICPUSkinnedMeshBuffer>, FixedSizeBlob<SkinnedMeshBufferBlobV0, ICPUSkinnedMeshBuffer>
 {
+#ifndef NEW_SHADERS
 	video::SCPUMaterial mat;
+#endif
 	core::aabbox3df box;
 	uint64_t descPtr;
 	uint32_t indexType;
@@ -200,6 +211,7 @@ struct IRR_FORCE_EBO SkinnedMeshBufferBlobV0 : TypedBlob<SkinnedMeshBufferBlobV0
 	uint32_t maxVertexBoneInfluences;
 } PACK_STRUCT;
 #include "irr/irrunpack.h"
+#ifndef NEW_SHADERS
 static_assert(sizeof(SkinnedMeshBufferBlobV0::mat) == 197, "sizeof(MeshBufferBlobV0::mat) must be 197");
 static_assert(
 	sizeof(SkinnedMeshBufferBlobV0) ==
@@ -208,7 +220,7 @@ static_assert(
 	+ sizeof(SkinnedMeshBufferBlobV0::primitiveType) + sizeof(SkinnedMeshBufferBlobV0::posAttrId) + sizeof(SkinnedMeshBufferBlobV0::indexValMin) + sizeof(SkinnedMeshBufferBlobV0::indexValMax) + sizeof(SkinnedMeshBufferBlobV0::maxVertexBoneInfluences),
 	"SkinnedMeshBufferBlobV0: Size of blob is not sum of its contents!"
 	);
-
+#endif
 }
 
 

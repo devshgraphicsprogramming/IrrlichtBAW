@@ -19,18 +19,24 @@ namespace irr
 namespace asset
 {
 
-// input buffer must be at least twice as long as the longest line in the file
-#define PLY_INPUT_BUFFER_SIZE 51200 // file is loaded in 50k chunks
-
-
-// constructor
-CPLYMeshFileLoader::CPLYMeshFileLoader()
+template<typename AssetType, IAsset::E_TYPE assetType>
+static core::smart_refctd_ptr<AssetType> getDefaultAsset(const char* _key, IAssetManager* _assetMgr)
 {
+	size_t storageSz = 1ull;
+	asset::SAssetBundle bundle;
+	const IAsset::E_TYPE types[]{ assetType, static_cast<IAsset::E_TYPE>(0u) };
+
+	_assetMgr->findAssets(storageSz, &bundle, _key, types);
+	if (bundle.isEmpty())
+		return nullptr;
+	auto assets = bundle.getContents();
+
+	return core::smart_refctd_ptr_static_cast<AssetType>(assets.first[0]);
 }
 
-CPLYMeshFileLoader::~CPLYMeshFileLoader()
-{
-}
+CPLYMeshFileLoader::CPLYMeshFileLoader(IAssetManager* _am) : m_assetMgr{ _am } {}
+
+CPLYMeshFileLoader::~CPLYMeshFileLoader() {}
 
 bool CPLYMeshFileLoader::isALoadableFileFormat(io::IReadFile* _file) const
 {
@@ -69,10 +75,8 @@ asset::SAssetBundle CPLYMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 	if (!_file)
 		return {};
 
-	SContext ctx;
-
+    SContext ctx;
 	ctx.File = _file;
-	ctx.File->grab();
 
 	// attempt to allocate the buffer and fill with data
 	if (!allocateBuffer(ctx))
@@ -80,8 +84,9 @@ asset::SAssetBundle CPLYMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 		return {};
 	}
 
-	core::smart_refctd_ptr<asset::CCPUMesh> mesh;
-	uint32_t vertCount = 0;
+	// start with empty mesh
+    core::smart_refctd_ptr<asset::CCPUMesh> mesh;
+	uint32_t vertCount=0;
 
 	// Currently only supports ASCII meshes
 	if (strcmp(getNextLine(ctx), "ply"))
@@ -149,8 +154,8 @@ asset::SAssetBundle CPLYMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 				else
 				{
 					// get element
-					SPLYElement* el = ctx.ElementList[ctx.ElementList.size()-1];
-
+					SPLYElement* el = ctx.ElementList.back().get();
+				
 					// fill property struct
 					SPLYProperty prop;
 					prop.Type = getPropertyType(word);
@@ -193,15 +198,15 @@ asset::SAssetBundle CPLYMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 			}
 			else if (strcmp(word, "element") == 0)
 			{
-				SPLYElement* el = new SPLYElement;
+                auto el = std::make_unique<SPLYElement>();
 				el->Name = getNextWord(ctx);
 				el->Count = atoi(getNextWord(ctx));
 				el->IsFixedWidth = true;
 				el->KnownSize = 0;
-				ctx.ElementList.push_back(el);
-
 				if (el->Name == "vertex")
 					vertCount = el->Count;
+
+                ctx.ElementList.emplace_back(std::move(el));
 
 			}
 			else if (strcmp(word, "end_header") == 0)
@@ -234,9 +239,8 @@ asset::SAssetBundle CPLYMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 		{
 			// create a mesh buffer
 			auto mb = core::make_smart_refctd_ptr<asset::ICPUMeshBuffer>();
-			auto desc = core::make_smart_refctd_ptr<asset::ICPUMeshDataFormatDesc>();
 
-			mb->setNormalnAttributeIx(EVAI_ATTR3);
+			mb->setNormalnAttributeIx(3u);
       
 			core::vector<core::vectorSIMDf> attribs[4];
 			core::vector<uint32_t> indices;
@@ -262,35 +266,35 @@ asset::SAssetBundle CPLYMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 				else
 				{
 					// skip these elements
-					for (uint32_t j = 0; j < ctx.ElementList[i]->Count; ++j)
+					for (uint32_t j=0; j < ctx.ElementList[i]->Count; ++j)
 						skipElement(ctx, *ctx.ElementList[i]);
 				}
 			}
 
-			if (indices.size())
-			{
-				auto idxBuf = core::make_smart_refctd_ptr<asset::ICPUBuffer>(indices.size() * sizeof(uint32_t));
-				memcpy(idxBuf->getPointer(), indices.data(), idxBuf->getSize());
-				desc->setIndexBuffer(std::move(idxBuf));
+			mb->setPositionAttributeIx(0);
+
+            if (indices.size())
+            {
+				asset::SBufferBinding<ICPUBuffer> indexBinding = {0, core::make_smart_refctd_ptr<asset::ICPUBuffer>(indices.size() * sizeof(uint32_t))};
+                memcpy(indexBinding.buffer->getPointer(), indices.data(), indexBinding.buffer->getSize());
+				auto DATA = reinterpret_cast<uint32_t*>(indexBinding.buffer->getPointer());
 				mb->setIndexCount(indices.size());
-				mb->setIndexType(asset::EIT_32BIT);
-				mb->setPrimitiveType(asset::EPT_TRIANGLES);
-			}
-			else
-			{
-				mb->setPrimitiveType(asset::EPT_POINTS);
+				mb->setIndexBufferBinding(std::move(indexBinding));
+                mb->setIndexType(asset::EIT_32BIT);
+
+				if (!genVertBuffersForMBuffer(mb.get(), attribs))
+					return {};
+            }
+            else
+            {
 				mb->setIndexCount(attribs[E_POS].size());
-				//mb->getMaterial().setFlag(video::EMF_POINTCLOUD, true);
-			}
+				mb->setIndexType(EIT_UNKNOWN);
 
-			mb->setMeshDataAndFormat(std::move(desc));
-
-			if (!genVertBuffersForMBuffer(mb.get(), attribs))
-				return {};
+				if (!genVertBuffersForMBuffer(mb.get(), attribs))
+					return {};
+            }
 
 			mb->recalculateBoundingBox();
-			//if (!hasNormals)
-			//	SceneManager->getMeshManipulator()->recalculateNormals(mb);
 
 			mesh = core::make_smart_refctd_ptr<CCPUMesh>();
 			mesh->addMeshBuffer(std::move(mb));
@@ -298,10 +302,17 @@ asset::SAssetBundle CPLYMeshFileLoader::loadAsset(io::IReadFile* _file, const as
 		}
 	}
 
-	return SAssetBundle({ mesh });
+	return SAssetBundle({std::move(mesh)});
 }
 
-
+static void performActionBasedOnOrientationSystem(const asset::IAssetLoader::SAssetLoadParams& _params, std::function<void()> performOnRightHanded, std::function<void()> performOnLeftHanded)
+{
+	if (_params.loaderFlags & IAssetLoader::ELPF_RIGHT_HANDED_MESHES)
+		performOnRightHanded();
+	else
+		performOnLeftHanded();
+}
+  
 bool CPLYMeshFileLoader::readVertex(SContext& _ctx, const SPLYElement& Element, core::vector<core::vectorSIMDf> _outAttribs[4], const asset::IAssetLoader::SAssetLoadParams& _params)
 {
 	if (!_ctx.IsBinaryFile)
@@ -482,12 +493,10 @@ void CPLYMeshFileLoader::skipProperty(SContext& _ctx, const SPLYProperty &Proper
 bool CPLYMeshFileLoader::allocateBuffer(SContext& _ctx)
 {
 	// Destroy the element list if it exists
-	for (uint32_t i=0; i<_ctx.ElementList.size(); ++i)
-		delete _ctx.ElementList[i];
 	_ctx.ElementList.clear();
 
 	if (!_ctx.Buffer)
-		_ctx.Buffer = new char[PLY_INPUT_BUFFER_SIZE];
+        _ctx.Buffer = _IRR_NEW_ARRAY(char, PLY_INPUT_BUFFER_SIZE);
 
 	// not enough memory?
 	if (!_ctx.Buffer)
@@ -535,7 +544,7 @@ void CPLYMeshFileLoader::fillBuffer(SContext& _ctx)
 		uint32_t count = _ctx.File->read(_ctx.EndPointer, PLY_INPUT_BUFFER_SIZE - length);
 
 		// increment the end pointer by the number of bytes read
-		_ctx.EndPointer = _ctx.EndPointer + count;
+		_ctx.EndPointer += count;
 
 		// if we didn't completely fill the buffer
 		if (count != PLY_INPUT_BUFFER_SIZE - length)
@@ -558,11 +567,16 @@ void CPLYMeshFileLoader::moveForward(SContext& _ctx, uint32_t bytes)
 	if (_ctx.StartPointer + bytes < _ctx.EndPointer)
 		_ctx.StartPointer += bytes;
 	else
-		_ctx.StartPointer = +_ctx.EndPointer;
+		_ctx.StartPointer = _ctx.EndPointer;
 }
 
 bool CPLYMeshFileLoader::genVertBuffersForMBuffer(asset::ICPUMeshBuffer* _mbuf, const core::vector<core::vectorSIMDf> _attribs[4]) const
 {
+	core::vector<uint8_t> availableAttributes;
+	for (auto i = 0; i < 4; ++i)
+		if (!_attribs[i].empty())
+			availableAttributes.push_back(i);
+
 	{
 		size_t check = _attribs[0].size();
 		for (size_t i = 1u; i < 4u; ++i)
@@ -573,56 +587,129 @@ bool CPLYMeshFileLoader::genVertBuffersForMBuffer(asset::ICPUMeshBuffer* _mbuf, 
 				check = _attribs[i].size();
 		}
 	}
-	auto putAttr = [&_attribs](asset::ICPUMeshBuffer* _buf, size_t _attr, asset::E_VERTEX_ATTRIBUTE_ID _vaid)
+	
+	auto putAttr = [&_attribs](asset::ICPUMeshBuffer* _buf, size_t _attr)
 	{
 		size_t i = 0u;
 		for (const core::vectorSIMDf& v : _attribs[_attr])
-			_buf->setAttribute(v, _vaid, i++);
+			_buf->setAttribute(v, _attr, i++);
 	};
 
-	size_t sizes[4];
-	sizes[E_POS] = !_attribs[E_POS].empty() * 3 * sizeof(float);
-	sizes[E_COL] = !_attribs[E_COL].empty() * 4 * sizeof(float);
-	sizes[E_UV] = !_attribs[E_UV].empty() * 2 * sizeof(float);
-	sizes[E_NORM] = !_attribs[E_NORM].empty() * 3 * sizeof(float);
-
-	size_t offsets[4]{ 0u };
-	for (size_t i = 1u; i < 4u; ++i)
-		offsets[i] = offsets[i - 1] + sizes[i - 1];
-
-	const size_t stride = std::accumulate(sizes, sizes + 4, static_cast<size_t>(0));
-
+	auto chooseShaderPath = [&]() -> std::string
 	{
-		auto desc = _mbuf->getMeshDataAndFormat();
+		constexpr std::array<std::pair<uint8_t, std::string_view>, 3> avaiableOptionsForShaders
+		{ 
+			std::make_pair(E_COL, "irr/builtin/materials/debug/vertex_color_debug_shader/specializedshader"),
+			std::make_pair(E_UV, "irr/builtin/materials/debug/uv_debug_shader/specializedshader"),
+			std::make_pair(E_NORM, "irr/builtin/materials/debug/normal_debug_shader/specializedshader")
+		};
 
-		auto buf = core::make_smart_refctd_ptr<asset::ICPUBuffer>(_attribs[E_POS].size() * stride);
-		memcpy(buf->getPointer(), _attribs[E_POS].data(), buf->getSize());
+		for (auto& it : avaiableOptionsForShaders)
+		{
+			auto found = std::find(availableAttributes.begin(), availableAttributes.end(), it.first);
+			if (found != availableAttributes.end())
+				return it.second.data(); 
+		}
 
-		if (sizes[E_POS])
-			desc->setVertexAttrBuffer(core::smart_refctd_ptr(buf), asset::EVAI_ATTR0, asset::EF_R32G32B32_SFLOAT, stride, offsets[E_POS]);
-		if (sizes[E_COL])
-			desc->setVertexAttrBuffer(core::smart_refctd_ptr(buf), asset::EVAI_ATTR1, asset::EF_R32G32B32A32_SFLOAT, stride, offsets[E_COL]);
-		if (sizes[E_UV])
-			desc->setVertexAttrBuffer(core::smart_refctd_ptr(buf), asset::EVAI_ATTR2, asset::EF_R32G32_SFLOAT, stride, offsets[E_UV]);
-		if (sizes[E_NORM])
-			desc->setVertexAttrBuffer(core::smart_refctd_ptr(buf), asset::EVAI_ATTR3, asset::EF_R32G32B32_SFLOAT, stride, offsets[E_NORM]);
+		return avaiableOptionsForShaders[0].second.data(); // if only positions are present, shaders with debug vertex colors are assumed
+	};
+
+	auto mbVertexShader = core::smart_refctd_ptr<ICPUSpecializedShader>();
+	auto mbFragmentShader = core::smart_refctd_ptr<ICPUSpecializedShader>();
+	{
+		const IAsset::E_TYPE types[]{ IAsset::E_TYPE::ET_SPECIALIZED_SHADER, IAsset::E_TYPE::ET_SPECIALIZED_SHADER, static_cast<IAsset::E_TYPE>(0u) };
+		auto bundle = m_assetMgr->findAssets(chooseShaderPath(), types);
+
+		auto refCountedBundle =
+		{
+			core::smart_refctd_ptr_static_cast<ICPUSpecializedShader>(bundle->begin()->getContents().first[0]),
+			core::smart_refctd_ptr_static_cast<ICPUSpecializedShader>((bundle->begin() + 1)->getContents().first[0])
+		};
+
+		for (auto& shader : refCountedBundle)
+		{
+			if (shader->getStage() == ISpecializedShader::ESS_VERTEX)
+				mbVertexShader = std::move(shader);
+			else if(shader->getStage() == ISpecializedShader::ESS_FRAGMENT)
+				mbFragmentShader = std::move(shader);
+		}
+	}
+	auto mbPipelineLayout = getDefaultAsset<ICPUPipelineLayout, IAsset::ET_PIPELINE_LAYOUT>("irr/builtin/loaders/PLY/pipelinelayout", m_assetMgr);
+
+	constexpr size_t DS1_METADATA_ENTRY_CNT = 3ull;
+	core::smart_refctd_dynamic_array<IPipelineMetadata::ShaderInputSemantic> shaderInputsMetadata = core::make_refctd_dynamic_array<decltype(shaderInputsMetadata)>(DS1_METADATA_ENTRY_CNT);
+	{
+		ICPUDescriptorSetLayout* ds1layout = mbPipelineLayout->getDescriptorSetLayout(1u);
+
+		constexpr IPipelineMetadata::E_COMMON_SHADER_INPUT types[DS1_METADATA_ENTRY_CNT]{ IPipelineMetadata::ECSI_WORLD_VIEW_PROJ, IPipelineMetadata::ECSI_WORLD_VIEW, IPipelineMetadata::ECSI_WORLD_VIEW_INVERSE_TRANSPOSE };
+		constexpr uint32_t sizes[DS1_METADATA_ENTRY_CNT]{ sizeof(SBasicViewParameters::MVP), sizeof(SBasicViewParameters::MV), sizeof(SBasicViewParameters::NormalMat) };
+		constexpr uint32_t relOffsets[DS1_METADATA_ENTRY_CNT]{ offsetof(SBasicViewParameters,MVP), offsetof(SBasicViewParameters,MV), offsetof(SBasicViewParameters,NormalMat) };
+		for (uint32_t i = 0u; i < DS1_METADATA_ENTRY_CNT; ++i)
+		{
+			auto& semantic = (shaderInputsMetadata->end() - i - 1u)[0];
+			semantic.type = types[i];
+			semantic.descriptorSection.type = IPipelineMetadata::ShaderInput::ET_UNIFORM_BUFFER;
+			semantic.descriptorSection.uniformBufferObject.binding = ds1layout->getBindings().begin()[0].binding;
+			semantic.descriptorSection.uniformBufferObject.set = 1u;
+			semantic.descriptorSection.uniformBufferObject.relByteoffset = relOffsets[i];
+			semantic.descriptorSection.uniformBufferObject.bytesize = sizes[i];
+			semantic.descriptorSection.shaderAccessFlags = ICPUSpecializedShader::ESS_VERTEX;
+		}
+	}
+	
+	const std::array<SVertexInputAttribParams, 4> vertexAttribParamsAllOptions =
+	{
+		SVertexInputAttribParams(0u, EF_R32G32B32_SFLOAT, 0),
+		SVertexInputAttribParams(1u, EF_R32G32B32A32_SFLOAT, 0),
+		SVertexInputAttribParams(2u, EF_R32G32_SFLOAT, 0),
+		SVertexInputAttribParams(3u, EF_R32G32B32_SFLOAT, 0)
+	};
+
+	SVertexInputParams inputParams;
+	for (auto& attrib : availableAttributes)
+	{
+		const auto currentBitmask = core::createBitmask({ attrib });
+		inputParams.enabledBindingFlags |= currentBitmask;
+		inputParams.enabledAttribFlags |= currentBitmask;
+		inputParams.bindings[attrib] = { 16, EVIR_PER_VERTEX };
+		inputParams.attributes[attrib] = vertexAttribParamsAllOptions[attrib];
 	}
 
-	asset::E_VERTEX_ATTRIBUTE_ID vaids[4];
-	vaids[E_POS] = asset::EVAI_ATTR0;
-	vaids[E_COL] = asset::EVAI_ATTR1;
-	vaids[E_UV] = asset::EVAI_ATTR2;
-	vaids[E_NORM] = asset::EVAI_ATTR3;
+	SBlendParams blendParams;
+	SPrimitiveAssemblyParams primitiveAssemblyParams;
+	if (_mbuf->getIndexBufferBinding()->buffer)
+		primitiveAssemblyParams.primitiveType = E_PRIMITIVE_TOPOLOGY::EPT_TRIANGLE_LIST;
+	else
+		primitiveAssemblyParams.primitiveType = E_PRIMITIVE_TOPOLOGY::EPT_POINT_LIST;
 
-	for (size_t i = 0u; i < 4u; ++i)
+	SRasterizationParams rastarizationParmas;
+
+	auto mbPipeline = core::make_smart_refctd_ptr<ICPURenderpassIndependentPipeline>(std::move(mbPipelineLayout), nullptr, nullptr, inputParams, blendParams, primitiveAssemblyParams, rastarizationParmas);
 	{
-		if (sizes[i])
-			putAttr(_mbuf, i, vaids[i]);
+		mbPipeline->setShaderAtIndex(ICPURenderpassIndependentPipeline::ESSI_VERTEX_SHADER_IX, mbVertexShader.get());
+		mbPipeline->setShaderAtIndex(ICPURenderpassIndependentPipeline::ESSI_FRAGMENT_SHADER_IX, mbFragmentShader.get());
+
+		auto inputParams = mbPipeline->getVertexInputParams();
+
+		for (auto index = 0; index < 4; ++index)
+		{
+			auto attribute = _attribs[index];
+			if (!attribute.empty())
+			{
+				const auto bufferByteSize = attribute.size() * 16ull;
+				auto buffer = core::make_smart_refctd_ptr<asset::ICPUBuffer>(bufferByteSize);
+				memcpy(buffer->getPointer(), attribute.data(), bufferByteSize); // TODO refactor input to take SBufferBinding to avoid memcpy
+
+				_mbuf->setVertexBufferBinding({ 0ul, std::move(buffer) }, index);
+			}
+		}
 	}
 
-	return true;
+	m_assetMgr->setAssetMetadata(mbPipeline.get(), core::make_smart_refctd_ptr<CPLYPipelineMetadata>(1, std::move(shaderInputsMetadata)));
+	_mbuf->setPipeline(std::move(mbPipeline));
+
+    return true;
 }
-
 
 E_PLY_PROPERTY_TYPE CPLYMeshFileLoader::getPropertyType(const char* typeString) const
 {
@@ -757,7 +844,7 @@ char* CPLYMeshFileLoader::getNextWord(SContext& _ctx)
 		++pos;
 	}
 	--pos;
-	_ctx.WordLength = (int32_t)(pos - _ctx.StartPointer);
+    _ctx.WordLength = (int32_t)(pos-_ctx.StartPointer);
 	// return pointer to the start of the word
 	return _ctx.StartPointer;
 }

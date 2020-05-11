@@ -9,6 +9,9 @@
 #include "irr/core/math/floatutil.tcc"
 #include "matrix4SIMD.h"
 
+#include <cmath>
+#include <numeric>
+
 namespace irr
 {
 namespace core
@@ -23,7 +26,7 @@ template<typename T>
 IRR_FORCE_INLINE T abs(const T& a)
 {
 	auto isneg = a < T(0);
-	using bool_type = std::remove_reference<decltype(isneg)>::type;
+	using bool_type = typename std::remove_reference<decltype(isneg)>::type;
 	return core::mix<T,bool_type>(a,-a,isneg);
 }
 
@@ -31,7 +34,7 @@ IRR_FORCE_INLINE T abs(const T& a)
 template<>
 IRR_FORCE_INLINE float sqrt<float>(const float& x)
 {
-	return std::sqrtf(x);
+	return std::sqrt(x); // can't use sqrtf on sqrt
 }
 template<>
 IRR_FORCE_INLINE double sqrt<double>(const double& x)
@@ -95,7 +98,7 @@ IRR_FORCE_INLINE T reciprocal_approxim(const T& x)
 template<>
 IRR_FORCE_INLINE float floor<float>(const float& x)
 {
-	return std::floorf(x);
+	return std::floor(x); // can't use the f-suffix on GCC, doesn't compile
 }
 template<>
 IRR_FORCE_INLINE double floor<double>(const double& x)
@@ -103,7 +106,7 @@ IRR_FORCE_INLINE double floor<double>(const double& x)
 	return std::floor(x);
 }
 template<>
-IRR_FORCE_INLINE vectorSIMDf core::floor<vectorSIMDf>(const vectorSIMDf& x)
+IRR_FORCE_INLINE vectorSIMDf floor<vectorSIMDf>(const vectorSIMDf& x)
 {
 #ifdef __IRR_COMPILE_WITH_SSE3
 	return _mm_floor_ps(x.getAsRegister());
@@ -124,17 +127,17 @@ IRR_FORCE_INLINE T roundEven(const T& x);
 */
 
 template<>
-IRR_FORCE_INLINE float core::ceil<float>(const float& x)
+IRR_FORCE_INLINE float ceil<float>(const float& x)
 {
-	return std::ceilf(x);
+	return std::ceil(x); // can't use the f-suffix on GCC, doesn't compile
 }
 template<>
-IRR_FORCE_INLINE double core::ceil<double>(const double& x)
+IRR_FORCE_INLINE double ceil<double>(const double& x)
 {
 	return std::ceil(x);
 }
 template<>
-IRR_FORCE_INLINE vectorSIMDf core::ceil<vectorSIMDf>(const vectorSIMDf& x)
+IRR_FORCE_INLINE vectorSIMDf ceil<vectorSIMDf>(const vectorSIMDf& x)
 {
 #ifdef __IRR_COMPILE_WITH_SSE3
 	return _mm_ceil_ps(x.getAsRegister());
@@ -152,12 +155,30 @@ IRR_FORCE_INLINE vectorSIMDf min<vectorSIMDf>(const vectorSIMDf& a, const vector
 #error "no implementation"
 #endif
 }
+template<>
+IRR_FORCE_INLINE vectorSIMDu32 min<vectorSIMDu32>(const vectorSIMDu32& a, const vectorSIMDu32& b)
+{
+#ifdef __IRR_COMPILE_WITH_SSE3
+	return _mm_min_epu32(a.getAsRegister(),b.getAsRegister());
+#else
+#error "no implementation"
+#endif
+}
+template<>
+IRR_FORCE_INLINE vectorSIMDi32 min<vectorSIMDi32>(const vectorSIMDi32& a, const vectorSIMDi32& b)
+{
+#ifdef __IRR_COMPILE_WITH_SSE3
+	return _mm_min_epi32(a.getAsRegister(),b.getAsRegister());
+#else
+#error "no implementation"
+#endif
+}
 template<class T>
 IRR_FORCE_INLINE T min(const T& a, const T& b)
 {
 	T vb = T(b);
 	auto asmaller = a<vb;
-	using bool_type = std::remove_reference<decltype(asmaller)>::type;
+	using bool_type = typename std::remove_reference<decltype(asmaller)>::type;
 	return core::mix<T,bool_type>(vb,a,asmaller);
 }
 
@@ -170,12 +191,30 @@ IRR_FORCE_INLINE vectorSIMDf max<vectorSIMDf>(const vectorSIMDf& a, const vector
 #error "no implementation"
 #endif
 }
+template<>
+IRR_FORCE_INLINE vectorSIMDu32 max<vectorSIMDu32>(const vectorSIMDu32& a, const vectorSIMDu32& b)
+{
+#ifdef __IRR_COMPILE_WITH_SSE3
+	return _mm_max_epu32(a.getAsRegister(),b.getAsRegister());
+#else
+#error "no implementation"
+#endif
+}
+template<>
+IRR_FORCE_INLINE vectorSIMDi32 max<vectorSIMDi32>(const vectorSIMDi32& a, const vectorSIMDi32& b)
+{
+#ifdef __IRR_COMPILE_WITH_SSE3
+	return _mm_max_epi32(a.getAsRegister(),b.getAsRegister());
+#else
+#error "no implementation"
+#endif
+}
 template<class T>
 IRR_FORCE_INLINE T max(const T& a, const T& b)
 {
 	T vb = T(b);
 	auto asmaller = a < vb;
-	using bool_type = std::remove_reference<decltype(asmaller)>::type;
+	using bool_type = typename std::remove_reference<decltype(asmaller)>::type;
 	return core::mix<T,bool_type>(a,vb,asmaller);
 }
 
@@ -189,6 +228,28 @@ IRR_FORCE_INLINE vectorSIMDf dot<vectorSIMDf>(const vectorSIMDf& a, const vector
     xmm0 = _mm_mul_ps(xmm0,xmm1);
     xmm0 = _mm_hadd_ps(xmm0,xmm0);
     return _mm_hadd_ps(xmm0,xmm0);
+#else
+#error "no implementation"
+#endif
+}
+template<>
+IRR_FORCE_INLINE vectorSIMDi32 dot<vectorSIMDi32>(const vectorSIMDi32& a, const vectorSIMDi32& b)
+{
+    __m128i xmm0 = (a*b).getAsRegister();
+#ifdef __IRR_COMPILE_WITH_SSE3
+    xmm0 = _mm_hadd_epi32(xmm0,xmm0);
+    return _mm_hadd_epi32(xmm0,xmm0);
+#else
+#error "no implementation"
+#endif
+}
+template<>
+IRR_FORCE_INLINE vectorSIMDu32 dot<vectorSIMDu32>(const vectorSIMDu32& a, const vectorSIMDu32& b)
+{
+    __m128i xmm0 = (a*b).getAsRegister();
+#ifdef __IRR_COMPILE_WITH_SSE3
+    xmm0 = _mm_hadd_epi32(xmm0,xmm0);
+    return _mm_hadd_epi32(xmm0,xmm0);
 #else
 #error "no implementation"
 #endif
@@ -317,6 +378,25 @@ IRR_FORCE_INLINE int32_t findMSB<uint64_t>(uint64_t x)
 #endif
 }
 
+template<>
+IRR_FORCE_INLINE uint32_t bitCount(uint32_t x)
+{
+#ifdef __GNUC__
+	return __builtin_popcount(x);
+#elif defined(_MSC_VER)
+	return __popcnt(x);
+#endif
+}
+template<>
+IRR_FORCE_INLINE uint32_t bitCount(uint64_t x)
+{
+#ifdef __GNUC__
+	return __builtin_popcountl(x);
+#elif defined(_MSC_VER)
+	return static_cast<uint32_t>(__popcnt64(x));
+#endif
+}
+
 
 template<>
 IRR_FORCE_INLINE bool equals<vectorSIMDf>(const vectorSIMDf& a, const vectorSIMDf& b, const vectorSIMDf& tolerance)
@@ -350,6 +430,46 @@ template<typename T>
 IRR_FORCE_INLINE bool equals(const T& a, const T& b, const T& tolerance)
 {
 	return (a + tolerance >= b) && (a - tolerance <= b);
+}
+
+
+template<>
+IRR_FORCE_INLINE vectorSIMDf sin<vectorSIMDf>(const vectorSIMDf& a)
+{
+	// TODO: vastly improve this
+	return vectorSIMDf(sin<float>(a.x),sin<float>(a.y),sin<float>(a.z),sin<float>(a.w));
+}
+template<typename T>
+IRR_FORCE_INLINE T sin(const T& a)
+{
+	return std::sin(a);
+}
+
+
+
+// extras
+
+
+template<>
+IRR_FORCE_INLINE vectorSIMDu32 gcd<vectorSIMDu32>(const vectorSIMDu32& a, const vectorSIMDu32& b)
+{
+	return vectorSIMDu32(gcd<uint32_t>(a.x,b.x),gcd<uint32_t>(a.y,b.y),gcd<uint32_t>(a.z,b.z),gcd<uint32_t>(a.w,b.w));
+}
+template<typename T>
+IRR_FORCE_INLINE T gcd(const T& a, const T& b)
+{
+	return std::gcd(a,b);
+}
+
+template<>
+IRR_FORCE_INLINE vectorSIMDf cyl_bessel_i<vectorSIMDf>(const vectorSIMDf& v, const vectorSIMDf& x)
+{
+	return vectorSIMDf(cyl_bessel_i<float>(v[0],x[0]),cyl_bessel_i<float>(v[1],x[1]),cyl_bessel_i<float>(v[2],x[2]),cyl_bessel_i<float>(v[3],x[3]));
+}
+template<typename T>
+IRR_FORCE_INLINE T cyl_bessel_i(const T& v, const T& x)
+{
+	return std::cyl_bessel_i(double(v),double(x));
 }
 
 

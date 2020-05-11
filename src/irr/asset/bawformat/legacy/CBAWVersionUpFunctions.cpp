@@ -7,6 +7,7 @@ namespace irr
 		template<>
 		io::IReadFile* CBAWMeshFileLoader::createConvertIntoVer_spec<3>(SContext & _ctx, io::IReadFile * _baw2file, asset::IAssetLoader::IAssetLoaderOverride * _override, const CommonDataTuple<2> & _common)
 		{
+#ifndef NEW_SHADERS
 			uint32_t blobCnt{};
 			BlobHeaderVn<2> * headers = nullptr;
 			uint32_t* offsets = nullptr;
@@ -199,11 +200,15 @@ namespace irr
 			auto ret = new io::CMemoryReadFile(baw3mem->getPointer(), baw3mem->getSize(), _baw2file->getFileName());
 			baw3mem->drop();
 			return ret;
+#else
+            return nullptr;
+#endif
 		}
 
         template<>
         io::IReadFile* CBAWMeshFileLoader::createConvertIntoVer_spec<2>(SContext& _ctx, io::IReadFile* _baw1file, asset::IAssetLoader::IAssetLoaderOverride* _override, const CommonDataTuple<1>& _common)
         {
+#ifndef NEW_SHADERS
             uint32_t blobCnt{};
 			BlobHeaderVn<1>* headers = nullptr;
             uint32_t* offsets = nullptr;
@@ -331,11 +336,15 @@ namespace irr
             auto ret = new io::CMemoryReadFile(baw2mem->getPointer(), baw2mem->getSize(), _baw1file->getFileName());
             baw2mem->drop();
             return ret;
+#else
+            return nullptr;
+#endif
         }
 
         template<>
         io::IReadFile* CBAWMeshFileLoader::createConvertIntoVer_spec<1>(SContext& _ctx, io::IReadFile* _baw0file, asset::IAssetLoader::IAssetLoaderOverride* _override, const CommonDataTuple<0>& _common)
         {
+#ifndef NEW_SHADERS
             uint32_t blobCnt{};
             BlobHeaderVn<0>* headers = nullptr;
             uint32_t* offsets = nullptr;
@@ -440,6 +449,9 @@ namespace irr
             auto ret = new io::CMemoryReadFile(baw1mem->getPointer(), baw1mem->getSize(), _baw0file->getFileName());
             baw1mem->drop();
             return ret;
+#else
+            return nullptr;
+#endif
         }
 
     }

@@ -14,200 +14,100 @@
     #pragma GCC diagnostic ignored "-Wuninitialized"
 #endif
 
-namespace irr { namespace video
+namespace irr
 {
-    namespace impl
-    {
-        enum E_TYPE
-        {
-            ET_I64,
-            ET_U64,
-            ET_F64
-        };
-
-        template<asset::E_FORMAT cf>
-        struct format2type :
-            std::conditional<asset::isIntegerFormat<cf>(), 
-                typename std::conditional<asset::isSignedFormat<cf>(),
-                    std::integral_constant<E_TYPE, ET_I64>,
-                    std::integral_constant<E_TYPE, ET_U64>
-                >::type,
-                typename std::conditional<asset::isFloatingPointFormat<cf>() || asset::isNormalizedFormat<cf>() || asset::isScaledFormat<cf>(),
-                    std::integral_constant<E_TYPE, ET_F64>,
-                    void // gen error if format is neither signed/unsigned integer or floating point/normalized/scaled
-                >::type
-            >::type
-        {};
-
-        template<asset::E_FORMAT cf, typename T, E_TYPE fmt_class = format2type<cf>::value>
-        struct SCallDecode
-        {
-            inline void operator()(const void* _pix[4], T* _output, uint32_t _blockX, uint32_t _blockY)
-            {
-                constexpr bool valid =  (std::is_floating_point_v<T>&&fmt_class==ET_F64)||
-                                        (std::is_signed_v<T>&&fmt_class==ET_I64)||
-                                        (std::is_unsigned_v<T>&&fmt_class==ET_U64);
-                IRR_PSEUDO_IF_CONSTEXPR_BEGIN(valid)
-                    decodePixels<cf, T>(_pix, _output, _blockX, _blockY);
-                IRR_PSEUDO_ELSE_CONSTEXPR 
-                    assert(0);
-                IRR_PSEUDO_IF_CONSTEXPR_END
-            }
-        };
+namespace asset
+{
 
 
+struct SwizzleBase
+{
+    _IRR_STATIC_INLINE_CONSTEXPR auto MaxChannels = 4;
+};
 
-        template<asset::E_FORMAT cf, typename T, E_TYPE fmt_class = format2type<cf>::value>
-        struct SCallEncode
-        {
-            inline void operator()(void* _pix, const T* _input)
-            {
-                constexpr bool valid =  (std::is_floating_point_v<T>&&fmt_class==ET_F64)||
-                                        (std::is_signed_v<T>&&fmt_class==ET_I64)||
-                                        (std::is_unsigned_v<T>&&fmt_class==ET_U64);
-                IRR_PSEUDO_IF_CONSTEXPR_BEGIN(valid)
-                    encodePixels<cf, T>(_pix, _input);
-                IRR_PSEUDO_ELSE_CONSTEXPR 
-                    assert(0);
-                IRR_PSEUDO_IF_CONSTEXPR_END
-            }
-        };
-    } //namespace impl
+struct VoidSwizzle : SwizzleBase
+{
+	template<typename InT, typename OutT>
+    void operator()(const InT* in, OutT* out) const;
+};
 
+template<>
+inline void VoidSwizzle::operator()<void,void>(const void* in, void* out) const
+{
+    memcpy(out,in,sizeof(uint64_t)*SwizzleBase::MaxChannels);
+}
 
-	struct DefaultSwizzle
-	{
-		template<typename type>
-		constexpr void operator()(type vect[4]) const {}
-	};
-	struct PolymorphicSwizzle
-	{
-		virtual void impl(double vect[4]) const = 0;
-		virtual void impl(uint64_t vect[4]) const = 0;
-		virtual void impl(int64_t vect[4]) const = 0;
-
-		template<typename type>
-		inline void operator()(type vect[4]) const
-		{
-			impl(vect);
-		}
-	};
-
-    template<asset::E_FORMAT sF, asset::E_FORMAT dF, class Swizzle = DefaultSwizzle >
-    inline void convertColor(const void* srcPix[4], void* dstPix, uint32_t _blockX, uint32_t _blockY, PolymorphicSwizzle* swizzle = nullptr)
-    {
-	#define SWIZZLE(X) \
-		IRR_PSEUDO_IF_CONSTEXPR_BEGIN(/*std::is_void<Swizzle>::value*/false) \
-		{ \
-			if (swizzle) \
-				swizzle->operator()(X); \
-		} \
-		IRR_PSEUDO_ELSE_CONSTEXPR \
-		{ \
-			Swizzle()(X); \
-		} \
-		IRR_PSEUDO_IF_CONSTEXPR_END 
-
-        using namespace asset;
-        if (isIntegerFormat<sF>() && isIntegerFormat<dF>())
-        {
-            using decT = typename std::conditional<isSignedFormat<sF>(), int64_t, uint64_t>::type;
-            using encT = typename std::conditional<isSignedFormat<dF>(), int64_t, uint64_t>::type;
-
-            decT decbuf[4];
-            impl::SCallDecode<sF, decT>{}(srcPix, decbuf, _blockX, _blockY);
-			SWIZZLE(decbuf)
-            impl::SCallEncode<dF, encT>{}(dstPix, reinterpret_cast<encT*>(decbuf));
-        }
-        else if (
-            (isNormalizedFormat<sF>() || isScaledFormat<sF>() || isFloatingPointFormat<sF>()) && (isNormalizedFormat<dF>() || isScaledFormat<dF>() || isFloatingPointFormat<dF>())
-        )
-        {
-            using decT = double;
-            using encT = double;
-
-            decT decbuf[4];
-            impl::SCallDecode<sF, decT>{}(srcPix, decbuf, _blockX, _blockY);
-			SWIZZLE(decbuf)
-            impl::SCallEncode<dF, encT>{}(dstPix, decbuf);
-        }
-        else if ((isFloatingPointFormat<sF>() || isScaledFormat<sF>() || isNormalizedFormat<sF>()) && isIntegerFormat<dF>())
-        {
-            using decT = double;
-            using encT = typename std::conditional<isSignedFormat<dF>(), int64_t, uint64_t>::type;
-
-            decT decbuf[4];
-            impl::SCallDecode<sF, decT>{}(srcPix, decbuf, _blockX, _blockY);
-			SWIZZLE(decbuf)
-            encT encbuf[4];
-            for (uint32_t i = 0u; i < 4u; ++i)
-                encbuf[i] = decbuf[i];
-            impl::SCallEncode<dF, encT>{}(dstPix, encbuf);
-        }
-        else if (isIntegerFormat<sF>() && (isNormalizedFormat<dF>() || isScaledFormat<dF>() || isFloatingPointFormat<dF>()))
-        {
-            using decT = typename std::conditional<isSignedFormat<sF>(), int64_t, uint64_t>::type;
-            using encT = double;
-
-            decT decbuf[4];
-            impl::SCallDecode<sF, decT>{}(srcPix, decbuf, _blockX, _blockY);
-			SWIZZLE(decbuf)
-            encT encbuf[4];
-            for (uint32_t i = 0u; i < 4u; ++i)
-                encbuf[i] = decbuf[i];
-            impl::SCallEncode<dF, encT>{}(dstPix, encbuf);
-        }
-	#undef SWIZZLE
-    }
-    template<asset::E_FORMAT sF, asset::E_FORMAT dF, class Swizzle = DefaultSwizzle >
-    inline void convertColor(const void* srcPix[4], void* dstPix, size_t _pixOrBlockCnt, core::vector3d<uint32_t>& _imgSize, PolymorphicSwizzle* swizzle = nullptr)
-    {
-        using namespace asset;
-
-        const uint32_t srcStride = getTexelOrBlockBytesize(sF);
-        const uint32_t dstStride = getTexelOrBlockBytesize(dF);
-
-        uint32_t hPlaneReduction[4], vPlaneReduction[4], chCntInPlane[4];
-        getHorizontalReductionFactorPerPlane(sF, hPlaneReduction);
-        getVerticalReductionFactorPerPlane(sF, vPlaneReduction);
-        getChannelsPerPlane(sF, chCntInPlane);
-
-        const auto sdims = getBlockDimensions(sF);
-
-        const uint8_t** src = reinterpret_cast<const uint8_t**>(srcPix);
-        uint8_t* const dst_begin = reinterpret_cast<uint8_t*>(dstPix);
-        for (size_t i = 0u; i < _pixOrBlockCnt; ++i)
-        {
-            // assuming _imgSize is always represented in texels
-            const uint32_t px = i % (_imgSize.X / sdims.X);
-            const uint32_t py = i / (_imgSize.X / sdims.X);
-            //px, py are block or texel position
-            //x, y are position within block
-            for (uint32_t x = 0u; x < sdims.X; ++x)
-            {
-                for (uint32_t y = 0u; y < sdims.Y; ++y)
-                {
-                    const ptrdiff_t off = ((sdims.Y * py + y)*_imgSize.X + px * sdims.X + x);
-                    convertColor<sF, dF, Swizzle>(reinterpret_cast<const void**>(src), dst_begin + static_cast<ptrdiff_t>(dstStride)*off, x, y, swizzle);
-                }
-            }
-            if (!isPlanarFormat<sF>())
-            {
-                src[0] += srcStride;
-            }
-            else
-            {
-                const uint32_t px = i % _imgSize.X;
-                const uint32_t py = i / _imgSize.X;
-                for (uint32_t j = 0u; j < 4u; ++j)
-                    src[j] = reinterpret_cast<const uint8_t*>(srcPix[j]) + chCntInPlane[j]*((_imgSize.X/hPlaneReduction[j]) * (py/vPlaneReduction[j]) + px/hPlaneReduction[j]);
-            }
-        }
-    }
+template<typename InT, typename OutT>
+inline void VoidSwizzle::operator()(const InT* in, OutT* out) const
+{
+    std::copy<const InT*,OutT*>(in,in+4,out);
+}
 
 
-    void convertColor(asset::E_FORMAT _sfmt, asset::E_FORMAT _dfmt, const void* _srcPix[4], void* _dstPix, size_t _pixOrBlockCnt, core::vector3d<uint32_t>& _imgSize, PolymorphicSwizzle* swizzle=nullptr);
-}} //irr:video
+struct PolymorphicSwizzle : SwizzleBase
+{
+    virtual void impl(const double in[SwizzleBase::MaxChannels], double out[SwizzleBase::MaxChannels]) const { assert(false); } // not overriden
+	virtual void impl(const uint64_t in[SwizzleBase::MaxChannels], double out[SwizzleBase::MaxChannels]) const { assert(false); } // not overriden
+	virtual void impl(const int64_t in[SwizzleBase::MaxChannels], double out[SwizzleBase::MaxChannels]) const { assert(false); } // not override
+
+	virtual void impl(const double in[SwizzleBase::MaxChannels], uint64_t out[SwizzleBase::MaxChannels]) const { assert(false); } // not overriden
+	virtual void impl(const uint64_t in[SwizzleBase::MaxChannels], uint64_t out[SwizzleBase::MaxChannels]) const { assert(false); } // not overriden
+	virtual void impl(const int64_t in[SwizzleBase::MaxChannels], uint64_t out[SwizzleBase::MaxChannels]) const { assert(false); } // not overriden
+
+	virtual void impl(const double in[SwizzleBase::MaxChannels], int64_t out[SwizzleBase::MaxChannels]) const { assert(false); } // not overriden
+	virtual void impl(const uint64_t in[SwizzleBase::MaxChannels], int64_t out[SwizzleBase::MaxChannels]) const { assert(false); } // not overriden
+	virtual void impl(const int64_t in[SwizzleBase::MaxChannels], int64_t out[SwizzleBase::MaxChannels]) const { assert(false); } // not overriden
+
+	virtual void impl(const void* in, void* out) const { assert(false); } // not overriden
+        
+
+	template<typename InT, typename OutT>
+    void operator()(const InT* in, OutT* out) const;
+};
+
+template<>
+inline void PolymorphicSwizzle::operator()<void,void>(const void* in, void* out) const
+{
+    impl(in, out);
+}
+
+template<typename InT, typename OutT>
+inline void PolymorphicSwizzle::operator()(const InT* in, OutT* out) const
+{
+    impl(in, out);
+}
+
+
+template<E_FORMAT sF, E_FORMAT dF, class Swizzle = VoidSwizzle>
+inline void convertColor(const void* srcPix[4], void* dstPix, uint32_t _blockX, uint32_t _blockY, const Swizzle& swizzle=Swizzle())
+{
+    using decT = typename format_interm_storage_type<sF>::type;
+    using encT = typename format_interm_storage_type<dF>::type;
+
+    constexpr auto MaxChannels = 4;
+    decT decbuf[MaxChannels] = {0, 0, 0, 1};
+    encT encbuf[MaxChannels];
+    decodePixels<sF>(srcPix,decbuf,_blockX,_blockY);
+    swizzle.template operator()<decT,encT>(decbuf, encbuf);
+    encodePixels<dF>(dstPix,encbuf);
+}
+
+template<class Swizzle = VoidSwizzle>
+inline void convertColor(E_FORMAT sF, E_FORMAT dF, const void* srcPix[4], void* dstPix, uint32_t _blockX, uint32_t _blockY, const Swizzle& swizzle=Swizzle())
+{
+    constexpr auto MaxChannels = 4;
+    constexpr auto TexelValueSize = MaxChannels*sizeof(uint64_t);
+    uint8_t decbuf[TexelValueSize];
+    uint8_t encbuf[TexelValueSize];
+
+    decodePixelsRuntime(sF, srcPix, decbuf, _blockX, _blockY);
+    swizzle.template operator()<void,void>(decbuf, encbuf);
+    encodePixelsRuntime(dF, dstPix, encbuf);
+}
+
+
+}
+}
 
 #ifdef __GNUC__
     #pragma GCC diagnostic pop

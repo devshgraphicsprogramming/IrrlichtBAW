@@ -51,6 +51,9 @@ class matrix3x4SIMD// : private AllocationOverrideBase<_IRR_MATRIX_ALIGNMENT> EB
 				rows[i] = vectorSIMDf(_data + 4*i, ALIGNED);
 		}
 
+		float* pointer() { return rows[0].pointer; }
+		const float* pointer() const { return rows[0].pointer; }
+
 		inline matrix3x4SIMD& set(const matrix4x3& _retarded);
 		inline matrix4x3 getAsRetardedIrrlichtMatrix() const;
 

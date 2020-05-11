@@ -6,9 +6,7 @@
 #define __C_IMAGE_LOADER_TGA_H_INCLUDED__
 
 #include "IrrCompileConfig.h"
-
-#include "irr/asset/IAssetLoader.h"
-
+#include "irr/asset/IImageLoader.h"
 
 namespace irr
 {
@@ -63,6 +61,25 @@ namespace asset
 		uint32_t DeveloperOffset;
 		char  Signature[18];
 	} PACK_STRUCT;
+
+	enum STANDARD_TGA_BITS
+	{
+		STB_8_BITS = 8,
+		STB_16_BITS = 16,
+		STB_24_BITS = 24,
+		STB_32_BITS = 32,
+		STB_COUNT
+	};
+
+	enum STANDARD_TGA_IMAGE_TYPE
+	{
+		STIT_NONE = 0,
+		STIT_UNCOMPRESSED_COLOR_MAPPED_IMAGE = 1,
+		STIT_UNCOMPRESSED_RGB_IMAGE = 2,
+		STIT_UNCOMPRESSED_GRAYSCALE_IMAGE = 3,
+		STIT_RLE_TRUE_COLOR_IMAGE = 10,
+		STIT_COUNT
+	};
 	
 // Default alignment
 #include "irr/irrunpack.h"
@@ -74,7 +91,7 @@ namespace asset
 /*!
 	Surface Loader for targa images
 */
-class CImageLoaderTGA : public asset::IAssetLoader
+class CImageLoaderTGA final : public IImageLoader
 {
 public:
     virtual bool isALoadableFileFormat(io::IReadFile* _file) const override;
@@ -92,7 +109,7 @@ public:
 private:
 
 	//! loads a compressed tga. Was written and sent in by Jon Pry, thank you very much!
-	uint8_t* loadCompressedImage(io::IReadFile *file, const STGAHeader& header) const;
+	void loadCompressedImage(io::IReadFile *file, const STGAHeader& header, const uint32_t wholeSizeWithPitchInBytes, core::smart_refctd_ptr<ICPUBuffer>& bufferData) const;
 };
 
 #endif // compiled with loader
@@ -101,4 +118,3 @@ private:
 } // end namespace irr
 
 #endif
-

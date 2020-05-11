@@ -16,10 +16,10 @@ SAssetBundle IAssetLoader::IAssetLoaderOverride::findCachedAsset(const std::stri
     if ((levelFlag & ECF_DUPLICATE_TOP_LEVEL) == ECF_DUPLICATE_TOP_LEVEL)
         return {};
 
-    core::vector<SAssetBundle> found = m_manager->findAssets(inSearchKey, inAssetTypes);
-    if (!found.size())
+    auto found = m_manager->findAssets(inSearchKey, inAssetTypes);
+    if (!found->size())
         return handleSearchFail(inSearchKey, ctx, hierarchyLevel);
-    return chooseRelevantFromFound(found, ctx, hierarchyLevel);
+    return chooseRelevantFromFound(found->begin(), found->end(), ctx, hierarchyLevel);
 }
 
 void IAssetLoader::IAssetLoaderOverride::insertAssetIntoCache(SAssetBundle& asset, const std::string& supposedKey, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel)
@@ -49,4 +49,9 @@ SAssetBundle IAssetLoader::interm_getAssetInHierarchy(IAssetManager* _mgr, io::I
 SAssetBundle IAssetLoader::interm_getAssetInHierarchy(IAssetManager* _mgr, const std::string& _filename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel)
 {
     return _mgr->getAssetInHierarchy(_filename, _params, _hierarchyLevel);
+}
+
+void IAssetLoader::interm_setAssetMutable(const IAssetManager* _mgr, IAsset* _asset, bool _val)
+{
+    _mgr->setAssetMutable(_asset, _val);
 }

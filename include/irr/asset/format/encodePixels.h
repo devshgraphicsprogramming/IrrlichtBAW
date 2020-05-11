@@ -7,9 +7,47 @@
 #include "irr/core/core.h"
 #include "irr/asset/format/EFormat.h"
 
-
-namespace irr { namespace video
+namespace irr
+{
+namespace asset
 {	
+
+    // TODO: @Crisspl move this to EFormat and give it better names
+	template<typename T>
+	inline constexpr uint64_t getRangeValueOfVariable(bool maxValue = true)
+	{
+		if (std::is_same<T, uint8_t>::value)
+			return 255ull * (maxValue ? 1 : 0);
+		else if (std::is_same<T, uint16_t>::value)
+			return 	65535ull * (maxValue ? 1 : 0);
+		else if (std::is_same<T, uint32_t>::value)
+			return 	4294967295ull * (maxValue ? 1 : 0);
+
+		else if (std::is_same<T, int8_t>::value)
+			return 127ull * (maxValue ? 1 : -1);
+		else if (std::is_same<T, int16_t>::value)
+			return 32767ull * (maxValue ? 1 : -1);
+		else if (std::is_same<T, int32_t>::value)
+			return 2147483647ull * (maxValue ? 1 : -1);
+		else
+			return -1; // handle an error
+	}
+
+    // Only some formats use this, so its pointless kind-of
+	template<asset::E_FORMAT format, typename T>
+	inline void clampVariableProperly(T& variableToAssignClampingTo, const double& variableToClamp)
+	{
+		constexpr uint64_t max = getRangeValueOfVariable<T>(true);
+		constexpr uint64_t min = getRangeValueOfVariable<T>(false);
+		constexpr float epsilon = 0.4f;
+		constexpr float epsilonToAddToMin = (min < 0 ? -epsilon : epsilon);
+
+		if (irr::asset::isNormalizedFormat(format))                                             
+			variableToAssignClampingTo = static_cast<T>(core::clamp(variableToClamp * static_cast<double>(max), min + epsilonToAddToMin, max + epsilon));
+		else
+			variableToAssignClampingTo = static_cast<T>(core::clamp(variableToClamp, min + epsilonToAddToMin, max + epsilon));
+	}
+
     template<asset::E_FORMAT fmt, typename T>
     inline typename 
     std::enable_if<
@@ -490,40 +528,40 @@ namespace irr { namespace video
     inline void encodePixels<asset::EF_R8G8B8_UNORM, double>(void* _pix, const double* _input)
     {
         uint8_t* pix = reinterpret_cast<uint8_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i]*255.;
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_R8G8B8_UNORM>(pix[i], _input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_R8G8B8_SNORM, double>(void* _pix, const double* _input)
     {
         int8_t* pix = reinterpret_cast<int8_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i] * 127.;
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_R8G8B8_SNORM>(pix[i], _input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_R8G8B8_USCALED, double>(void* _pix, const double* _input)
     {
         uint8_t* pix = reinterpret_cast<uint8_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i];
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_R8G8B8_USCALED>(pix[i], _input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_R8G8B8_SSCALED, double>(void* _pix, const double* _input)
     {
         int8_t* pix = reinterpret_cast<int8_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i];
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_R8G8B8_SSCALED>(pix[i], _input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_R8G8B8_UINT, uint64_t>(void* _pix, const uint64_t* _input)
     {
         uint8_t* pix = reinterpret_cast<uint8_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i];
+		for (uint32_t i = 0u; i < 3u; ++i)
+            pix[i] = static_cast<int8_t>(_input[i]);
     }
 	
     template<>
@@ -531,39 +569,39 @@ namespace irr { namespace video
     {
         int8_t* pix = reinterpret_cast<int8_t*>(_pix);
         for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i];
+            pix[i] = static_cast<int8_t>(_input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_B8G8R8_UNORM, double>(void* _pix, const double* _input)
     {
         uint8_t* pix = reinterpret_cast<uint8_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[2u-i] = _input[i] * 255.;
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_B8G8R8_UNORM>(pix[2u - i], _input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_B8G8R8_SNORM, double>(void* _pix, const double* _input)
     {
         int8_t* pix = reinterpret_cast<int8_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[2u-i] = _input[i] * 127;
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_B8G8R8_SNORM>(pix[2u - i], _input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_B8G8R8_USCALED, double>(void* _pix, const double* _input)
     {
         uint8_t* pix = reinterpret_cast<uint8_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[2u-i] = _input[i];
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_B8G8R8_USCALED>(pix[2u - i], _input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_B8G8R8_SSCALED, double>(void* _pix, const double* _input)
     {
         int8_t* pix = reinterpret_cast<int8_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[2u-i] = _input[i];
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_B8G8R8_SSCALED>(pix[2u - i], _input[i]);
     }
 	
     template<>
@@ -571,7 +609,7 @@ namespace irr { namespace video
     {
         uint8_t* pix = reinterpret_cast<uint8_t*>(_pix);
         for (uint32_t i = 0u; i < 3u; ++i)
-            pix[2u-i] = _input[i];
+            pix[2u-i] = static_cast<uint8_t>(_input[i]);
     }
 	
     template<>
@@ -579,7 +617,7 @@ namespace irr { namespace video
     {
         int8_t* pix = reinterpret_cast<int8_t*>(_pix);
         for (uint32_t i = 0u; i < 3u; ++i)
-            pix[2u-i] = _input[i];
+            pix[2u-i] = static_cast<int8_t>(_input[i]);
     }
 	
     template<>
@@ -1754,32 +1792,32 @@ namespace irr { namespace video
     inline void encodePixels<asset::EF_R16G16B16_UNORM, double>(void* _pix, const double* _input)
     {
         uint16_t* pix = reinterpret_cast<uint16_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i] * 65535.;
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_R16G16B16_UNORM>(pix[i], _input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_R16G16B16_SNORM, double>(void* _pix, const double* _input)
     {
         int16_t* pix = reinterpret_cast<int16_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i] * 32767;
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_R16G16B16_SNORM>(pix[i], _input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_R16G16B16_USCALED, double>(void* _pix, const double* _input)
     {
         uint16_t* pix = reinterpret_cast<uint16_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i];
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_R16G16B16_USCALED>(pix[i], _input[i]);
     }
 	
     template<>
     inline void encodePixels<asset::EF_R16G16B16_SSCALED, double>(void* _pix, const double* _input)
     {
         int16_t* pix = reinterpret_cast<int16_t*>(_pix);
-        for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i];
+		for (uint32_t i = 0u; i < 3u; ++i)
+			clampVariableProperly<asset::EF_R16G16B16_SSCALED>(pix[i], _input[i]);
     }
 	
     template<>
@@ -1787,7 +1825,7 @@ namespace irr { namespace video
     {
         uint16_t* pix = reinterpret_cast<uint16_t*>(_pix);
         for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i];
+            pix[i] = static_cast<uint16_t>(_input[i]);
     }
 	
     template<>
@@ -1795,7 +1833,7 @@ namespace irr { namespace video
     {
         int16_t* pix = reinterpret_cast<int16_t*>(_pix);
         for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i] * 65535.;
+            pix[i] = static_cast<int16_t>(_input[i] * 65535.);
     }
 	
     template<>
@@ -2061,7 +2099,7 @@ namespace irr { namespace video
     {
         uint32_t* pix = reinterpret_cast<uint32_t*>(_pix);
         for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i];
+            pix[i] = static_cast<uint32_t>(_input[i]);
     }
 	
     template<>
@@ -2069,7 +2107,7 @@ namespace irr { namespace video
     {
         int32_t* pix = reinterpret_cast<int32_t*>(_pix);
         for (uint32_t i = 0u; i < 3u; ++i)
-            pix[i] = _input[i];
+            pix[i] = static_cast<int32_t>(_input[i]);
     }
 	
     template<>
@@ -2077,7 +2115,7 @@ namespace irr { namespace video
     {
         uint32_t* pix = reinterpret_cast<uint32_t*>(_pix);
         for (uint32_t i = 0u; i < 4u; ++i)
-            pix[i] = _input[i];
+            pix[i] = static_cast<uint32_t>(_input[i]);
     }
 	
     template<>
@@ -2085,7 +2123,7 @@ namespace irr { namespace video
     {
         int32_t* pix = reinterpret_cast<int32_t*>(_pix);
         for (uint32_t i = 0u; i < 4u; ++i)
-            pix[i] = _input[i];
+            pix[i] = static_cast<int32_t>(_input[i]);
     }
 	
     template<>
@@ -2203,15 +2241,6 @@ namespace irr { namespace video
 
     }
 
-    namespace impl
-    {
-    inline double lin2srgb(double _lin)
-    {
-        if (_lin <= 0.0031308) return _lin * 12.92;
-        return 1.055 * pow(_lin, 1./2.4) - 0.055;
-    }
-    }
-
     template<>
     inline void encodePixels<asset::EF_R8G8B8_SRGB, double>(void* _pix, const double* _input)
     {
@@ -2219,21 +2248,21 @@ namespace irr { namespace video
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 0));
-            double inp = impl::lin2srgb(_input[0]);
+            double inp = core::lin2srgb(_input[0]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 0);
         }
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 8));
-            double inp = impl::lin2srgb(_input[1]);
+            double inp = core::lin2srgb(_input[1]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 8);
         }
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 16));
-            double inp = impl::lin2srgb(_input[2]);
+            double inp = core::lin2srgb(_input[2]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 16);
         }
@@ -2247,21 +2276,21 @@ namespace irr { namespace video
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 0));
-            double inp = impl::lin2srgb(_input[2]);
+            double inp = core::lin2srgb(_input[2]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 0);
         }
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 8));
-            double inp = impl::lin2srgb(_input[1]);
+            double inp = core::lin2srgb(_input[1]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 8);
         }
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 16));
-            double inp = impl::lin2srgb(_input[0]);
+            double inp = core::lin2srgb(_input[0]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 16);
         }
@@ -2275,21 +2304,21 @@ namespace irr { namespace video
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 0));
-            double inp = impl::lin2srgb(_input[0]);
+            double inp = core::lin2srgb(_input[0]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 0);
         }
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 8));
-            double inp = impl::lin2srgb(_input[1]);
+            double inp = core::lin2srgb(_input[1]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 8);
         }
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 16));
-            double inp = impl::lin2srgb(_input[2]);
+            double inp = core::lin2srgb(_input[2]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 16);
         }
@@ -2308,21 +2337,21 @@ namespace irr { namespace video
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 0));
-            double inp = impl::lin2srgb(_input[2]);
+            double inp = core::lin2srgb(_input[2]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 0);
         }
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 8));
-            double inp = impl::lin2srgb(_input[1]);
+            double inp = core::lin2srgb(_input[1]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 8);
         }
         {
             const uint32_t mask = 0xffULL;
             pix &= (~(mask << 16));
-            double inp = impl::lin2srgb(_input[0]);
+            double inp = core::lin2srgb(_input[0]);
             inp *= 255.;
             pix |= ((uint64_t(inp) & mask) << 16);
         }
@@ -2352,7 +2381,7 @@ namespace irr { namespace video
             uint32_t& pix = reinterpret_cast<uint32_t*>(_pix)[0];
             pix = 0u;
             for (uint32_t i = 0u; i < 3u; ++i)
-                pix |= (f[i](_input[i]) << (11*i));
+                pix |= (f[i](static_cast<float>(_input[i])) << (11*i));
         }
     }
 	
@@ -2402,7 +2431,7 @@ namespace irr { namespace video
         {
             float* pix = reinterpret_cast<float*>(_pix);
             for (uint32_t i = 0u; i < chCnt; ++i)
-                pix[i] = _input[i];
+                pix[i] = static_cast<float>(_input[i]);
         }
     }
     template<>
@@ -2605,7 +2634,23 @@ namespace irr { namespace video
         default: return false;
         }
     }
-	
-}} //irr::video
+    
+
+    inline void encodePixelsRuntime(asset::E_FORMAT _fmt, void* _pix, const void* _input)
+    {
+        if (isIntegerFormat(_fmt))
+        {
+            if (isSignedFormat(_fmt))
+                encodePixels<int64_t>(_fmt, _pix, reinterpret_cast<const int64_t*>(_input));
+            else
+                encodePixels<uint64_t>(_fmt, _pix, reinterpret_cast<const uint64_t*>(_input));
+        }
+        else
+            encodePixels<double>(_fmt, _pix, reinterpret_cast<const double*>(_input));
+    }
+
+
+}
+}
 
 #endif //__IRR_ENCODE_PIXELS_H_INCLUDED__

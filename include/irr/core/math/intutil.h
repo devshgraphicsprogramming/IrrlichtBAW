@@ -8,6 +8,7 @@
 #include "IrrCompileConfig.h"
 
 #include <limits.h> // For INT_MAX / UINT_MAX
+#include <initializer_list>
 #include <type_traits>
 #ifdef _MSC_VER
     #include <intrin.h>
@@ -70,6 +71,23 @@ IRR_FORCE_INLINE constexpr INT_TYPE align(INT_TYPE alignment, INT_TYPE size, INT
 
     space = newSpace;
     return address = nextAlignedAddr;
+}
+
+//! Get bitmask from variadic arguments passed. 
+/*
+    For example if you were to create bitmask for vertex attributes
+    having positions inteeger set as 0, colors as 1 and normals
+    as 3, just pass them to it and use the value returned.
+*/
+
+template<typename BITMASK_TYPE>
+IRR_FORCE_INLINE constexpr uint64_t createBitmask(std::initializer_list<BITMASK_TYPE> initializer)
+{
+    static_assert(std::is_integral<BITMASK_TYPE>::value || std::is_enum<BITMASK_TYPE>::value, "Integral or enum required.");
+    uint64_t retval {};
+    for (const auto& it : initializer)
+        retval |= (1ull << it);
+    return retval;
 }
 
 } // end namespace core

@@ -34,20 +34,36 @@ endif()
 # include utility macros/functions
 include(common)
 
+#[[ Loaders and writers compile options available to edit by user
+	All revelant _IRR_COMPILE_WITH will be there]]
+option(_IRR_COMPILE_WITH_MTL_LOADER_ "Compile with MTL Loader" ON)
+option(_IRR_COMPILE_WITH_OBJ_LOADER_ "Compile with OBJ Loader" ON)
+#option(_IRR_COMPILE_WITH_OBJ_WRITER_ "Compile with OBJ Writer" ON) uncomment when writer exists
+option(_IRR_COMPILE_WITH_STL_LOADER_ "Compile with STL Loader" ON)
+option(_IRR_COMPILE_WITH_STL_WRITER_ "Compile with STL Writer" ON)
+option(_IRR_COMPILE_WITH_PLY_LOADER_ "Compile with PLY Loader" ON)
+option(_IRR_COMPILE_WITH_PLY_WRITER_ "Compile with PLY Writer" ON)
+option(_IRR_COMPILE_WITH_BAW_LOADER_ "Compile with BAW Loader" ON)
+option(_IRR_COMPILE_WITH_BAW_WRITER_ "Compile with BAW Writer" ON)
+option(_IRR_COMPILE_WITH_JPG_LOADER_ "Compile with JPG Loader" ON)
+option(_IRR_COMPILE_WITH_JPG_WRITER_ "Compile with JPG Writer" ON)
+option(_IRR_COMPILE_WITH_PNG_LOADER_ "Compile with PNG Loader" ON)
+option(_IRR_COMPILE_WITH_PNG_WRITER_ "Compile with PNG Writer" ON)
+option(_IRR_COMPILE_WITH_TGA_LOADER_ "Compile with TGA Loader" ON)
+option(_IRR_COMPILE_WITH_TGA_WRITER_ "Compile with TGA Writer" ON)
+option(_IRR_COMPILE_WITH_OPENEXR_LOADER_ "Compile with OpenEXR Loader" ON)
+option(_IRR_COMPILE_WITH_OPENEXR_WRITER_ "Compile with OpenEXR Writer" ON)
+option(_IRR_COMPILE_WITH_GLI_LOADER_ "Compile with GLI Loader" ON)
+option(_IRR_COMPILE_WITH_GLI_WRITER_ "Compile with GLI Writer" ON)
+
 irr_get_conf_dir(IRRLICHT_CONF_DIR_DEBUG Debug)
 irr_get_conf_dir(IRRLICHT_CONF_DIR_RELEASE Release)
 
 set(_IRR_COMPILE_WITH_OPENGL_ ${IRR_COMPILE_WITH_OPENGL})
 if (IRR_COMPILE_WITH_OPENCL)
-	find_package(OpenCL)
-
-	if (OpenCL_FOUND)
-		message(STATUS "Building with OpenCL interop")
+	message(STATUS "Building with OpenCL interop")
 		
-		set(_IRR_COMPILE_WITH_OPENCL_ ${IRR_COMPILE_WITH_OPENCL})
-	else()
-		message(STATUS "OpenCL not found")
-	endif()
+	set(_IRR_COMPILE_WITH_OPENCL_ ${IRR_COMPILE_WITH_OPENCL})
 endif()
 if (IRR_COMPILE_WITH_CUDA)
 	message(STATUS "Building with CUDA interop")
@@ -71,26 +87,29 @@ file(GLOB_RECURSE IRRLICHT_HEADERS_PRIV2 "${IRR_ROOT_PATH}/src/irr/*.h")
 set(IRRLICHT_HEADERS ${IRRLICHT_HEADERS_PUBLIC} ${IRRLICHT_HEADERS_PIRV1} ${IRRLICHT_HEADERS_PRIV2})
 
 
-set(IRRLICHT_SRCS_COMMON
+set(IRR_CORE_SOURCES
+# Reference Counted
+	IReferenceCounted.cpp
 # Core Memory
 	${IRR_ROOT_PATH}/src/irr/core/memory/CLeakDebugger.cpp
-
-# Pixel Formats
-	${IRR_ROOT_PATH}/src/irr/asset/format/convertColor.cpp
-
-# Mesh loaders
-	${IRR_ROOT_PATH}/src/irr/asset/CBAWMeshFileLoader.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/COBJMeshFileLoader.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CPLYMeshFileLoader.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CSTLMeshFileLoader.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CXMeshFileLoader.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CBufferLoaderBIN.cpp
-
-# Mesh writers
-	${IRR_ROOT_PATH}/src/irr/asset/CBAWMeshWriter.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CPLYMeshWriter.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CSTLMeshWriter.cpp
-	
+)
+set(IRR_SYSTEM_SOURCES
+# Junk to refactor
+	CFileList.cpp
+	CFileSystem.cpp
+	CLimitReadFile.cpp
+	CMemoryFile.cpp
+	CReadFile.cpp
+	CWriteFile.cpp
+	CMountPointReader.cpp
+	CPakReader.cpp
+	CTarReader.cpp
+	CZipReader.cpp
+	CLogger.cpp
+	COSOperator.cpp
+	os.cpp
+)
+set(IRR_ASSET_SOURCES	
 # Assets
 	${IRR_ROOT_PATH}/src/irr/asset/IAsset.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/IAssetManager.cpp
@@ -103,29 +122,79 @@ set(IRRLICHT_SRCS_COMMON
 	
 # Shaders
 	${IRR_ROOT_PATH}/src/irr/asset/IGLSLCompiler.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/ICPUShader.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CShaderIntrospector.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CGLSLLoader.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CSPVLoader.cpp
+	
+# Pipeline loaders
+	${IRR_ROOT_PATH}/src/irr/asset/CGraphicsPipelineLoaderMTL.cpp
 
-# Other mesh-related stuff
+# Meshes
+	${IRR_ROOT_PATH}/src/irr/asset/CCPUSkinnedMesh.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CForsythVertexCacheOptimizer.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CSmoothNormalGenerator.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CQuantNormalCache.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CGeometryCreator.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CMeshManipulator.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/COverdrawMeshOptimizer.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CSmoothNormalGenerator.cpp
+
+# Mesh loaders
+	${IRR_ROOT_PATH}/src/irr/asset/CBAWMeshFileLoader.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/COBJMeshFileLoader.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CPLYMeshFileLoader.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CSTLMeshFileLoader.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CBufferLoaderBIN.cpp
+
+# Mesh writers
+	${IRR_ROOT_PATH}/src/irr/asset/CBAWMeshWriter.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CPLYMeshWriter.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CSTLMeshWriter.cpp
+
+# BaW Format
+	${IRR_ROOT_PATH}/src/irr/asset/bawformat/TypedBlob.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/bawformat/CBAWFile.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/bawformat/legacy/CBAWLegacy.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/bawformat/legacy/CBAWVersionUpFunctions.cpp
 	${IRR_ROOT_PATH}/src/irr/asset/bawformat/CBlobsLoadingManager.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CForsythVertexCacheOptimizer.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CSmoothNormalGenerator.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CMeshManipulator.cpp
-	CMeshSceneNode.cpp
-	CMeshSceneNodeInstanced.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/COverdrawMeshOptimizer.cpp
-	CSkinnedMeshSceneNode.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/bawformat/TypedBlob.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CCPUSkinnedMesh.cpp
 
-# Scene objects
+# Images
+	${IRR_ROOT_PATH}/src/irr/asset/IImageAssetHandlerBase.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/filters/CBasicImageFilterCommon.cpp
+
+# Image loaders
+	${IRR_ROOT_PATH}/src/irr/asset/IImageLoader.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CImageLoaderJPG.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CImageLoaderPNG.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CImageLoaderTGA.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CImageLoaderOpenEXR.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CGLILoader.cpp
+
+# Image writers
+	${IRR_ROOT_PATH}/src/irr/asset/IImageWriter.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CImageWriterJPG.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CImageWriterPNG.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CImageWriterTGA.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CImageWriterOpenEXR.cpp
+	${IRR_ROOT_PATH}/src/irr/asset/CGLIWriter.cpp
+)
+set(IRR_VIDEO_SOURCES
+# Allocators
+	${IRR_ROOT_PATH}/src/irr/video/alloc/GPUMemoryAllocatorBase.cpp
+	${IRR_ROOT_PATH}/src/irr/video/alloc/SimpleGPUBufferAllocator.cpp
+
+# Junk to refactor
+	IDriver.cpp
+	CNullDriver.cpp
+	${IRR_ROOT_PATH}/src/irr/video/COpenGLSpecializedShader.cpp
+	FW_Mutex.cpp
+	CFPSCounter.cpp
+)
+set(IRR_SCENE_SOURCES
+# Junk to refactor
+	CSkinnedMeshSceneNode.cpp
 	CCameraSceneNode.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CGeometryCreator.cpp
 	CSceneManager.cpp
-	CSkyBoxSceneNode.cpp
-	CSkyDomeSceneNode.cpp
 
 # Animators
 	CSceneNodeAnimatorCameraFPS.cpp
@@ -136,57 +205,21 @@ set(IRRLICHT_SRCS_COMMON
 	CSceneNodeAnimatorFlyStraight.cpp
 	CSceneNodeAnimatorFollowSpline.cpp
 	CSceneNodeAnimatorRotation.cpp
+)
+set(IRRLICHT_SRCS_COMMON
+	${IRR_CORE_SOURCES}
+	${IRR_SYSTEM_SOURCES}
+	${IRR_ASSET_SOURCES}
+	${IRR_VIDEO_SOURCES}
+	${IRR_SCENE_SOURCES}
 
-# Driver-specific objects
-	IDriver.cpp
-	CNullDriver.cpp
-	COpenGLDriver.cpp
-	COpenGLExtensionHandler.cpp
-	COpenGLFrameBuffer.cpp
-	COpenGLSLMaterialRenderer.cpp
-	COpenGLTexture.cpp
-	STextureSamplingParams.cpp
-	FW_Mutex.cpp
-
-# Image processing
-	${IRR_ROOT_PATH}/src/irr/asset/CImageLoaderDDS.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CImageLoaderJPG.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CImageLoaderPNG.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CImageLoaderTGA.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CImageWriterJPG.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CImageWriterPNG.cpp
-	${IRR_ROOT_PATH}/src/irr/asset/CImageWriterTGA.cpp
-
-# Video
-	CFPSCounter.cpp
-	CVideoModeList.cpp
-	${IRR_ROOT_PATH}/src/irr/video/alloc/GPUMemoryAllocatorBase.cpp
-	${IRR_ROOT_PATH}/src/irr/video/alloc/SimpleGPUBufferAllocator.cpp
-
-# Input/output
-	CFileList.cpp
-	CFileSystem.cpp
-	CLimitReadFile.cpp
-	CMemoryFile.cpp
-	CReadFile.cpp
-	CWriteFile.cpp
-	CMountPointReader.cpp
-	CPakReader.cpp
-	CTarReader.cpp
-	CZipReader.cpp
-
-# Other
+# Junk to refactor
 	IrrlichtDevice.cpp
-	CIrrDeviceSDL.cpp
 	CIrrDeviceLinux.cpp
 	CIrrDeviceConsole.cpp
 	CIrrDeviceStub.cpp
 	CIrrDeviceWin32.cpp
-	CLogger.cpp
-	COSOperator.cpp
 	Irrlicht.cpp
-	os.cpp
-	IReferenceCounted.cpp
 )
 if (MSVC)
 	list(APPEND IRRLICHT_SRCS_COMMON pch.cpp) # @crisspl why are only some sources appended? also why sources?
@@ -195,20 +228,13 @@ endif()
 set(IRRLICHT_SRCS_NORMAL
 	# Vulkan
 
-	# OpenCL
-	COpenGL2DTextureArray.cpp
-	COpenGL2DTexture.cpp
-	COpenGL3DTexture.cpp
-	COpenGLCubemapTexture.cpp
-	COpenGLMultisampleTextureArray.cpp
-	COpenGLMultisampleTexture.cpp
+	#opengl
+	COpenCLHandler.cpp
+	COpenGLDriver.cpp
+	COpenGLExtensionHandler.cpp
+	COpenGLFrameBuffer.cpp
 	COpenGLQuery.cpp
-	COpenGLTransformFeedback.cpp
-	COpenGLVAOSpec.cpp
-	COpenGL1DTexture.cpp
-	COpenGL1DTextureArray.cpp
-	COpenGLCubemapArrayTexture.cpp
-	COpenGLCubemapTexture.cpp
+	${IRR_ROOT_PATH}/src/irr/video/COpenGLPipelineCache.cpp
 	
 	# CUDA
 	${IRR_ROOT_PATH}/src/irr/video/CCUDAHandler.cpp
@@ -226,7 +252,10 @@ set(IRRLICHT_SRCS_SERVER
 set(COMMON_INCLUDE_DIRS
 	${THIRD_PARTY_SOURCE_DIR}/convertutf
 	${THIRD_PARTY_SOURCE_DIR}/utfcpp/source
-	$<TARGET_PROPERTY:zlibstatic,BINARY_DIR> #for dynamically generated zconf.h
+	${THIRD_PARTY_SOURCE_DIR}/glm
+	${CMAKE_BINARY_DIR}/3rdparty/zlib #for dynamically generated zconf.h
+	${CMAKE_BINARY_DIR}/3rdparty/openexr/IlmBase/config #for dynamically generated IlmBaseConfig.h
+	${CMAKE_BINARY_DIR}/3rdparty/openexr/OpenEXR/config #for dynamically generated OpenEXRConfig.h
 	$<TARGET_PROPERTY:png_static,BINARY_DIR> #for dynamically generated pnglibconf.h
 	$<TARGET_PROPERTY:jpeg,BINARY_DIR> #for dynamically generated jconfig.h
 )
@@ -237,10 +266,12 @@ irr_adjust_definitions() # macro defined in root CMakeLists
 macro(irr_target_link_zlib _trgt)
 	add_dependencies(${_trgt} zlibstatic)
 	target_link_libraries(${_trgt} INTERFACE
-		zlibstatic
+		"$<$<CONFIG:DEBUG>:${ZLIB_LIBRARY_DEBUG}>"
+		"$<$<CONFIG:RELEASE>:${ZLIB_LIBRARY_RELEASE}>"
 	)
 	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/zlib)
 endmacro()
+
 #Parallel hashmap
 macro(irr_target_include_parallel_hashmap _trgt)
 	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/parallel-hashmap/parallel_hashmap)
@@ -266,21 +297,41 @@ macro(irr_target_link_shaderc _trgt)
 	target_link_libraries(${_trgt} INTERFACE
 		shaderc
 	)
-	target_include_directories(${_trgt} PUBLIC ${IRR_ROOT_PATH}/3rdparty/shaderc/libshaderc/include)
+	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/shaderc/libshaderc/include)
 endmacro()
 macro(irr_target_link_libjpeg _trgt)
 	add_dependencies(${_trgt} jpeg)
 	target_link_libraries(${_trgt} INTERFACE
 		jpeg
 	)
-	target_include_directories(${_trgt} PUBLIC ${IRR_ROOT_PATH}/3rdparty/libjpeg)
+	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/libjpeg)
 endmacro()
 macro(irr_target_link_libpng _trgt)
 	add_dependencies(${_trgt} png_static)
 	target_link_libraries(${_trgt} INTERFACE
 		png_static
 	)
-	target_include_directories(${_trgt} PUBLIC ${IRR_ROOT_PATH}/3rdparty/libpng)
+	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/libpng)
+endmacro()
+macro(irr_target_link_openexr _trgt)
+	add_dependencies(${_trgt} OpenEXR::IlmImf)
+	target_link_libraries(${_trgt} INTERFACE 
+		OpenEXR::IlmImf
+	)
+	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/openexr/OpenEXR/IlmImf
+							   ${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/openexr/IlmBase/Half
+							   ${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/openexr/IlmBase/Iex
+							   ${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/openexr/IlmBase/IexMath
+							   ${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/openexr/IlmBase/Imath
+							   ${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/openexr/IlmBase/IlmThread						   
+	)
+endmacro()
+macro(irr_target_link_gli _trgt)
+	add_dependencies(${_trgt} gli)
+	target_link_libraries(${_trgt} INTERFACE
+		gli
+	)
+	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/gli)
 endmacro()
 
 # get function for cross-compiler PCH configuration
@@ -304,6 +355,10 @@ irr_target_link_openssl(Irrlicht)
 irr_target_link_shaderc(Irrlicht)
 irr_target_link_libjpeg(Irrlicht)
 irr_target_link_libpng(Irrlicht)
+irr_target_link_openexr(Irrlicht)
+if(_IRR_COMPILE_WITH_GLI_)
+	irr_target_link_gli(Irrlicht)
+endif()
 irr_target_include_parallel_hashmap(Irrlicht)
 
 target_link_libraries(Irrlicht INTERFACE ${OPENGL_gl_LIBRARY})
@@ -336,27 +391,11 @@ endif()
 
 
 if (IRR_COMPILE_WITH_CUDA)
-	if (WIN32)
-		target_link_libraries(Irrlicht INTERFACE
-			${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}/../lib/x64/nvrtc.lib
-		)
-	endif()
 	target_include_directories(Irrlicht PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 endif()
 
-if (IRR_COMPILE_WITH_OPENCL AND OpenCL_FOUND)
-	target_link_libraries(Irrlicht PUBLIC OpenCL::OpenCL)
-endif()
-
-find_package(Vulkan)
-if (Vulkan_FOUND)
-	message(STATUS "Building with Vulkan driver")
-else()
-	message(STATUS "Vulkan driver is not enabled")
-endif()
-
 target_compile_definitions(Irrlicht 
-	PRIVATE	_IRR_STATIC_LIB_
+	PRIVATE	_IRR_STATIC_LIB_ SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS
 	PUBLIC	UNW_LOCAL_ONLY
 )
 
@@ -364,7 +403,7 @@ if(IRR_PCH)
     if (UNIX)
         if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
             ADD_PRECOMPILED_HEADER(Irrlicht pch.h "${IRRLICHT_CONF_DIR_RELEASE}" FORCEINCLUDE)
-	elseif (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+		elseif (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
             ADD_PRECOMPILED_HEADER(Irrlicht pch.h "${IRRLICHT_CONF_DIR_DEBUG}" FORCEINCLUDE)
         endif()
     else()
@@ -389,6 +428,10 @@ irr_target_link_openssl(IrrlichtServer)
 irr_target_link_shaderc(IrrlichtServer)
 irr_target_link_libjpeg(IrrlichtServer)
 irr_target_link_libpng(IrrlichtServer)
+irr_target_link_openexr(IrrlichtServer)
+if(_IRR_COMPILE_WITH_GLI_)
+	irr_target_link_gli(IrrlichtServer)
+endif()
 irr_target_include_parallel_hashmap(IrrlichtServer)
 
 target_include_directories(IrrlichtServer PUBLIC 
@@ -404,6 +447,7 @@ target_include_directories(IrrlichtServer PRIVATE ${IRR_ROOT_PATH}/src ${IRR_ROO
 target_compile_definitions(IrrlichtServer PRIVATE
 	_IRR_STATIC_LIB_
 	_IRR_SERVER_
+	SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS
 )
 
 

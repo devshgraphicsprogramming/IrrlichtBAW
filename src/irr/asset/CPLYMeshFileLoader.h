@@ -7,11 +7,15 @@
 
 #include "irr/asset/IAssetLoader.h"
 #include "irr/asset/ICPUMeshBuffer.h"
+#include "irr/asset/CPLYPipelineMetadata.h"
 
 namespace irr
 {
 namespace asset
 {
+
+// input buffer must be at least twice as long as the longest line in the file
+#define PLY_INPUT_BUFFER_SIZE 51200 // file is loaded in 50k chunks
 
 enum E_PLY_PROPERTY_TYPE
 {
@@ -25,7 +29,7 @@ enum E_PLY_PROPERTY_TYPE
 };
 
 //! Meshloader capable of loading obj meshes.
-class CPLYMeshFileLoader : public asset::IAssetLoader
+class CPLYMeshFileLoader : public IAssetLoader
 {
 protected:
 	//! Destructor
@@ -33,7 +37,7 @@ protected:
 
 public:
 	//! Constructor
-	CPLYMeshFileLoader();
+	CPLYMeshFileLoader(IAssetManager* _am);
 
     virtual bool isALoadableFileFormat(io::IReadFile* _file) const override;
 
@@ -43,11 +47,10 @@ public:
         return ext;
     }
 
-    virtual uint64_t getSupportedAssetTypesBitfield() const override { return asset::IAsset::ET_MESH; }
+    virtual uint64_t getSupportedAssetTypesBitfield() const override { return IAsset::ET_MESH; }
 
 	//! creates/loads an animated mesh from the file.
-    virtual asset::SAssetBundle loadAsset(io::IReadFile* _file, const asset::IAssetLoader::SAssetLoadParams& _params, asset::IAssetLoader::IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) override;
-
+    virtual SAssetBundle loadAsset(io::IReadFile* _file, const IAssetLoader::SAssetLoadParams& _params, IAssetLoader::IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) override;
 private:
 
 	struct SPLYProperty
@@ -126,28 +129,25 @@ private:
 
     struct SContext
     {
-        core::vector<SPLYElement*> ElementList;
-
-        io::IReadFile *File = nullptr;
-        char *Buffer = nullptr;
+        core::vector<std::unique_ptr<SPLYElement>> ElementList;
+	
+		io::IReadFile* File;
+		char* Buffer = nullptr;
         bool IsBinaryFile = false, IsWrongEndian = false, EndOfFile = false;
         int32_t LineLength = 0, WordLength = 0;
-        char *StartPointer = nullptr, *EndPointer = nullptr, *LineEndPointer = nullptr;
+		char* StartPointer = nullptr, *EndPointer = nullptr, *LineEndPointer = nullptr;
 
-        ~SContext()
-        {
-            if (File)
-                File->drop();
-            File = nullptr;
-            if (Buffer)
-            {
-                delete[] Buffer;
-                Buffer = nullptr;
-            }
-            for (auto& e : ElementList)
-                if (e) delete e;
-            ElementList.clear();
-        }
+		std::function<void()> deallocate = [&]()
+		{ 
+			if (Buffer)
+			{
+				_IRR_DELETE_ARRAY(Buffer, PLY_INPUT_BUFFER_SIZE);
+				Buffer = nullptr;
+			}
+			ElementList.clear();
+		};
+
+		core::SRAIIBasedExiter<decltype(deallocate)> exiter = core::makeRAIIExiter(deallocate);
     };
 
     enum { E_POS = 0, E_UV = 2, E_NORM = 3, E_COL = 1 };
@@ -158,24 +158,27 @@ private:
 	void fillBuffer(SContext& _ctx);
 	E_PLY_PROPERTY_TYPE getPropertyType(const char* typeString) const;
 
-	bool readVertex(SContext& _ctx, const SPLYElement &Element, core::vector<core::vectorSIMDf> _attribs[4], const asset::IAssetLoader::SAssetLoadParams& _params);
+	bool readVertex(SContext& _ctx, const SPLYElement &Element, core::vector<core::vectorSIMDf> _attribs[4], const IAssetLoader::SAssetLoadParams& _params);
 	bool readFace(SContext& _ctx, const SPLYElement &Element, core::vector<uint32_t>& _outIndices);
+
 	void skipElement(SContext& _ctx, const SPLYElement &Element);
 	void skipProperty(SContext& _ctx, const SPLYProperty &Property);
 	float getFloat(SContext& _ctx, E_PLY_PROPERTY_TYPE t);
 	uint32_t getInt(SContext& _ctx, E_PLY_PROPERTY_TYPE t);
 	void moveForward(SContext& _ctx, uint32_t bytes);
 
-    bool genVertBuffersForMBuffer(asset::ICPUMeshBuffer* _mbuf, const core::vector<core::vectorSIMDf> _attribs[4]) const;
+    bool genVertBuffersForMBuffer(ICPUMeshBuffer* _mbuf, const core::vector<core::vectorSIMDf> _attribs[4]) const;
 
 	template<typename aType>
 	static inline void performActionBasedOnOrientationSystem(aType& varToHandle, void (*performOnCertainOrientation)(aType& varToHandle))
 	{
 		performOnCertainOrientation(varToHandle);
 	}
+
+	IAssetManager* m_assetMgr;
 };
 
-} // end namespace scene
+} // end namespace asset
 } // end namespace irr
 
 #endif

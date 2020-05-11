@@ -4,7 +4,6 @@
 
 #include "CSkinnedMeshSceneNode.h"
 #include "irr/video/CGPUSkinnedMesh.h"
-#include "IMaterialRenderer.h"
 #include "irr/asset/IMesh.h"
 #include "ISceneManager.h"
 
@@ -92,6 +91,7 @@ void CSkinnedMeshSceneNode::OnRegisterSceneNode()
             if (!mb||mb->getIndexCount()<1)
                 continue;
 
+#ifndef NEW_SHADERS
             video::IMaterialRenderer* rnd =
                 driver->getMaterialRenderer(mb->getMaterial().MaterialType);
 
@@ -99,6 +99,7 @@ void CSkinnedMeshSceneNode::OnRegisterSceneNode()
                 ++transparentCount;
             else
                 ++solidCount;
+#endif
 
             if (solidCount && transparentCount)
                 break;
@@ -156,6 +157,7 @@ void CSkinnedMeshSceneNode::OnAnimate(uint32_t timeMs)
 //! renders the node.
 void CSkinnedMeshSceneNode::render()
 {
+#ifndef NEW_SHADERS
 	video::IVideoDriver* driver = SceneManager->getVideoDriver();
 
 	if (!mesh || !driver)
@@ -181,7 +183,7 @@ void CSkinnedMeshSceneNode::render()
             {
                 const video::SGPUMaterial& material = mb->getMaterial();
 
-                video::IMaterialRenderer* rnd = driver->getMaterialRenderer(material.MaterialType);
+                video::IMaterialRenderer* rnd = driver->getMaterialRenderer(0);
                 bool transparent = (rnd && rnd->isTransparent());
 
                 // only render transparent buffer if this is the transparent render pass
@@ -194,6 +196,17 @@ void CSkinnedMeshSceneNode::render()
             }
         }
     }
+
+	// for debug purposes only:
+	if (DebugDataVisible && PassCount==1)
+	{
+        driver->setTransform(video::E4X3TS_WORLD, AbsoluteTransformation);
+
+		video::SGPUMaterial debug_mat;
+        debug_mat.Thickness = 3.f;
+		driver->setMaterial(debug_mat);
+	}
+#endif
 }
 
 

@@ -8,15 +8,20 @@
 #include <array>
 #include <ostream>
 
-#include "irr/core/Types.h"
+#include "irr/core/core.h"
 #include "CConcurrentObjectCache.h"
 
 #include "IFileSystem.h"
 #include "IReadFile.h"
 #include "IWriteFile.h"
+#include "IAssetLoader.h"
+#include "IAssetWriter.h"
+#include "irr/core/Types.h"
+#include "irr/asset/IGLSLCompiler.h"
 
 #include "irr/asset/IGeometryCreator.h"
 #include "irr/asset/IMeshManipulator.h"
+#include "irr/asset/CQuantNormalCache.h"
 #include "irr/asset/IAssetLoader.h"
 #include "irr/asset/IAssetWriter.h"
 
@@ -26,13 +31,28 @@ namespace irr
 {
 namespace asset
 {
-    class IAssetManager;
 
-    std::function<void(SAssetBundle&)> makeAssetGreetFunc(const IAssetManager* const _mgr);
-    std::function<void(SAssetBundle&)> makeAssetDisposeFunc(const IAssetManager* const _mgr);
+class IAssetManager;
 
-	class IAssetManager : public core::IReferenceCounted
-	{
+
+std::function<void(SAssetBundle&)> makeAssetGreetFunc(const IAssetManager* const _mgr);
+std::function<void(SAssetBundle&)> makeAssetDisposeFunc(const IAssetManager* const _mgr);
+
+
+//! Class responsible for handling loading of assets from file system or other resources
+/**
+	It provides a loading, writing and creation functionality that is almost thread-safe.
+	There is one issue with threading, starting loading the same asset at the exact same time 
+	may end up with two copies in the cache.
+
+	IAssetManager performs caching of CPU assets associated with resource handles such as names, 
+	filenames, UUIDs. However there are separate caches for each asset type.
+
+	@see IAsset
+
+*/
+class IAssetManager : public core::IReferenceCounted, public core::QuitSignalling
+{
         // the point of those functions is that lambdas returned by them "inherits" friendship
         friend std::function<void(SAssetBundle&)> makeAssetGreetFunc(const IAssetManager* const _mgr);
         friend std::function<void(SAssetBundle&)> makeAssetDisposeFunc(const IAssetManager* const _mgr);
@@ -105,6 +125,7 @@ namespace asset
 
         core::smart_refctd_ptr<IGeometryCreator> m_geometryCreator;
         core::smart_refctd_ptr<IMeshManipulator> m_meshManipulator;
+        core::smart_refctd_ptr<IGLSLCompiler> m_glslCompiler;
         // called as a part of constructor only
         void initializeMeshTools();
 
@@ -122,16 +143,20 @@ namespace asset
                 m_cpuGpuCache[i] = new CpuGpuCacheType();
 
 			addLoadersAndWriters();
+            insertBuiltinAssets();
         }
 
 		inline io::IFileSystem* getFileSystem() const { return m_fileSystem.get(); }
 
         const IGeometryCreator* getGeometryCreator() const;
-        const IMeshManipulator* getMeshManipulator() const;
+        IMeshManipulator* getMeshManipulator();
+        IGLSLCompiler* getGLSLCompiler() const { return m_glslCompiler.get(); }
 
     protected:
 		virtual ~IAssetManager()
 		{
+            quitEventHandler.execute();
+
 			for (size_t i = 0u; i < m_assetCache.size(); ++i)
 				if (m_assetCache[i])
 					delete m_assetCache[i];
@@ -152,24 +177,55 @@ namespace asset
 			}
 		}
 
+		//TODO change name
         //! _supposedFilename is filename as it was, not touched by loader override with _override->getLoadFilename()
-        //TODO change name
+		/**
+			Attempts to fetch an Asset Bundle. Valid loaders for certain extension are searched. So if we were to handle .baw file extension, specified
+			loaders dealing with it would be fetched. If none of those loaders can't deal with the file, then one more tryout is performed, so a function
+			iterates through all available loaders regardless of supported file extensions they deal with counting on that one of them might work.
+
+            If (_params.cacheFlags & ECF_DONT_CACHE_TOP_LEVEL)==ECF_DONT_CACHE_TOP_LEVEL, returned bundle is not being cached.
+            (_params.cacheFlags & ECF_DUPLICATE_TOP_LEVEL)==ECF_DUPLICATE_TOP_LEVEL implies behaviour with ECF_DONT_CACHE_TOP_LEVEL, but Asset is not searched for in the cache (loaders tryout always happen).
+			With no flags (for top hierarchy level) given, Asset is looked for in the cache (whether it is already loaded), or - if not found - added to the cache just after getting loaded.
+            Empty bundle is returned if no loader could load the Asset.
+
+			Take a look on @param _hierarchyLevel.
+            Hierarchy level is distance in such chain/tree from Root Asset (the one you asked for by calling IAssetManager::getAsset()) and the currently loaded Asset (needed by Root Asset).
+            Calling getAssetInHierarchy()  with _hierarchyLevel=0 is synonymous to calling getAsset().
+
+			For more details about hierarchy levels see IAssetLoader.
+
+			There is a term in reference to above - \bDowngrade\b. 
+			You can find Downgrades in Assets definitions. For instance ICPUMesh::IMAGEVIEW_HIERARCHYLEVELS_BELOW.
+			The syntax is simple - \b(Current level + Downgrade)\b. You ought to pass just like that a expression to _hierarchyLevel.
+			For instance you can pass (topHierarchyLevel + ICPUMesh::IMAGEVIEW_HIERARCHYLEVELS_BELOW), when expecting to load a ICPUImageView from a file that is needed by the ICPUMesh currently being loaded by an IAssetLoader.
+
+            @see IAssetLoader::SAssetLoadParams
+			@see IAssetLoader
+			@see SAssetBundle
+		*/
         SAssetBundle getAssetInHierarchy(io::IReadFile* _file, const std::string& _supposedFilename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel, IAssetLoader::IAssetLoaderOverride* _override)
         {
-            IAssetLoader::SAssetLoadContext ctx{_params, _file};
+            IAssetLoader::SAssetLoadParams params(_params);
+            if (params.meshManipulatorOverride == nullptr)
+            {
+                params.meshManipulatorOverride = m_meshManipulator.get();
+            }
+
+            IAssetLoader::SAssetLoadContext ctx{params, _file};
 
             std::string filename = _file ? _file->getFileName().c_str() : _supposedFilename;
             io::IReadFile* file = _override->getLoadFile(_file, filename, ctx, _hierarchyLevel);
             filename = file ? file->getFileName().c_str() : _supposedFilename;
 
-            const uint64_t levelFlags = _params.cacheFlags >> ((uint64_t)_hierarchyLevel * 2ull);
+            const uint64_t levelFlags = params.cacheFlags >> ((uint64_t)_hierarchyLevel * 2ull);
 
             SAssetBundle asset;
             if ((levelFlags & IAssetLoader::ECF_DUPLICATE_TOP_LEVEL) != IAssetLoader::ECF_DUPLICATE_TOP_LEVEL)
             {
-                core::vector<SAssetBundle> found = findAssets(filename);
-                if (found.size())
-                    return _override->chooseRelevantFromFound(found, ctx, _hierarchyLevel);
+                auto found = findAssets(filename);
+                if (found->size())
+                    return _override->chooseRelevantFromFound(found->begin(), found->end(), ctx, _hierarchyLevel);
                 else if (!(asset = _override->handleSearchFail(filename, ctx, _hierarchyLevel)).isEmpty())
                     return asset;
             }
@@ -182,12 +238,12 @@ namespace asset
 
             for (auto loaderItr = capableLoadersRng.first; loaderItr != capableLoadersRng.second; ++loaderItr) // loaders associated with the file's extension tryout
             {
-                if (loaderItr->second->isALoadableFileFormat(file) && !(asset = loaderItr->second->loadAsset(file, _params, _override, _hierarchyLevel)).isEmpty())
+                if (loaderItr->second->isALoadableFileFormat(file) && !(asset = loaderItr->second->loadAsset(file, params, _override, _hierarchyLevel)).isEmpty())
                     break;
             }
             for (auto loaderItr = std::begin(m_loaders.vector); asset.isEmpty() && loaderItr != std::end(m_loaders.vector); ++loaderItr) // all loaders tryout
             {
-                if ((*loaderItr)->isALoadableFileFormat(file) && !(asset = (*loaderItr)->loadAsset(file, _params, _override, _hierarchyLevel)).isEmpty())
+                if ((*loaderItr)->isALoadableFileFormat(file) && !(asset = (*loaderItr)->loadAsset(file, params, _override, _hierarchyLevel)).isEmpty())
                     break;
             }
 
@@ -208,15 +264,15 @@ namespace asset
             return asset;
         }
         //TODO change name
-        SAssetBundle getAssetInHierarchy(const std::string& _filename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel, IAssetLoader::IAssetLoaderOverride* _override)
+        SAssetBundle getAssetInHierarchy(const std::string& _filePath, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel, IAssetLoader::IAssetLoaderOverride* _override)
         {
             IAssetLoader::SAssetLoadContext ctx(_params, nullptr);
 
-            std::string filename = _filename;
-            _override->getLoadFilename(filename, ctx, _hierarchyLevel);
-            io::IReadFile* file = m_fileSystem->createAndOpenFile(filename.c_str());
+            std::string filePath = _filePath;
+            _override->getLoadFilename(filePath, ctx, _hierarchyLevel);
+            io::IReadFile* file = m_fileSystem->createAndOpenFile(filePath.c_str());
 
-            SAssetBundle asset = getAssetInHierarchy(file, _filename, _params, _hierarchyLevel, _override);
+            SAssetBundle asset = getAssetInHierarchy(file, _filePath, _params, _hierarchyLevel, _override);
 
             if (file)
                 file->drop();
@@ -263,6 +319,26 @@ namespace asset
         }
 
         //TODO change name
+		//! Check whether Assets exist in cache using a key and optionally their types
+		/*
+			\param _inOutStorageSize holds beginning size of Assets. Note that it changes,
+			but if we expect 5 objects, it will hold finally (5 * sizeOfAsset) or \bless\b since 
+			operation may fail.
+			\param _out is a pointer that specifies an adress that new SAssetBundle will be copied to.
+			\param _key stores a key used for Assets searching.
+			\param _types stores null-terminated Asset types for better performance while searching.
+
+			If types of Assets are specified, task is easier and more performance is ensured, 
+			because Assets are being searched only in certain cache using a key (cache that matches
+			with Assets type). If there aren't any types specified, Assets are being search in whole cache.
+
+			Found Assets are being copied to _out.
+
+			If Assets exist, true is returned - otherwise false.
+
+			@see SAssetBundle
+			@see IAsset::E_TYPE
+		*/
         inline bool findAssets(size_t& _inOutStorageSize, SAssetBundle* _out, const std::string& _key, const IAsset::E_TYPE* _types = nullptr) const
         {
             size_t availableSize = _inOutStorageSize;
@@ -295,8 +371,9 @@ namespace asset
             }
             return res;
         }
-        //TODO change name (plural)
-        inline core::vector<SAssetBundle> findAssets(const std::string& _key, const IAsset::E_TYPE* _types = nullptr) const
+        
+		//! It finds Assets and returnes all found. 
+        inline core::smart_refctd_dynamic_array<SAssetBundle> findAssets(const std::string& _key, const IAsset::E_TYPE* _types = nullptr) const
         {
             size_t reqSz = 0u;
             if (_types)
@@ -314,12 +391,17 @@ namespace asset
                 for (const auto& cache : m_assetCache)
                     reqSz += cache->getSize();
             }
-            core::vector<SAssetBundle> res(reqSz);
-            findAssets(reqSz, res.data(), _key, _types);
-            res.resize(reqSz);
-            return res;
+			auto res = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<SAssetBundle> >(reqSz);
+            findAssets(reqSz, res->data(), _key, _types);
+            auto retval = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<SAssetBundle> >(reqSz);
+            std::move(res->begin(), res->begin()+reqSz, retval->begin());
+			return retval;
         }
 
+		//! It injects metadata into Asset structure
+		/**
+			@see IAssetMetadata
+		*/
         inline void setAssetMetadata(IAsset* _asset, core::smart_refctd_ptr<IAssetMetadata>&& _metadata)
         {
             _asset->setMetadata(std::move(_metadata));
@@ -359,13 +441,15 @@ namespace asset
         }
 
         //! This function frees most of the memory consumed by IAssets, but not destroying them.
-        /** Keeping assets around (by their pointers) helps a lot by letting the loaders retrieve them from the cache and not load cpu objects which have been loaded, converted to gpu resources and then would have been disposed of. However each dummy object needs to have a GPU object associated with it in yet-another-cache for use when we convert CPU objects to GPU objects.*/
-        void convertAssetToEmptyCacheHandle(IAsset* _asset, core::smart_refctd_ptr<core::IReferenceCounted>&& _gpuObject)
+        /** Keeping assets around (by their pointers) helps a lot by letting the loaders retrieve them from the cache 
+		and not load cpu objects which have been loaded, converted to gpu resources and then would have been disposed of.
+		However each dummy object needs to have a GPU object associated with it in yet-another-cache for use when we convert CPU objects to GPU objects.*/
+        void convertAssetToEmptyCacheHandle(IAsset* _asset, core::smart_refctd_ptr<core::IReferenceCounted>&& _gpuObject, uint32_t referenceLevelsBelowToConvert=~0u)
         {
+            _asset->convertToDummyObject(referenceLevelsBelowToConvert);
 			const uint32_t ix = IAsset::typeFlagToIndex(_asset->getAssetType());
-            _asset->grab();
-            _asset->convertToDummyObject();
-            m_cpuGpuCache[ix]->insert(_asset, std::move(_gpuObject));
+            if (m_cpuGpuCache[ix]->insert(_asset, std::move(_gpuObject)))
+                _asset->grab();
         }
 
 		core::smart_refctd_ptr<core::IReferenceCounted> findGPUObject(const IAsset* _asset)
@@ -380,6 +464,41 @@ namespace asset
             return nullptr;
         }
 
+		//! utility function to find from path instead of asset
+		inline core::smart_refctd_dynamic_array<core::smart_refctd_ptr<core::IReferenceCounted> > findGPUObject(const std::string& _key, IAsset::E_TYPE _type)
+		{
+			IAsset::E_TYPE type[] = {_type,static_cast<IAsset::E_TYPE>(0u)};
+			auto assets = findAssets(_key,type);
+			if (!assets->size())
+				return nullptr;
+
+			size_t outputSize = 0u;
+			for (auto it=assets->begin(); it!=assets->end(); it++)
+			{
+				outputSize += it->getSize();
+				if (it->getSize())
+					assert(it->getAssetType() == _type);
+			}
+			if (!outputSize)
+				return nullptr;
+
+			const uint32_t ix = IAsset::typeFlagToIndex(_type);
+
+			auto retval = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<core::smart_refctd_ptr<core::IReferenceCounted> > >(outputSize);
+			auto outIt = retval->data();
+			for (auto it=assets->begin(); it!=assets->end(); it++)
+			{
+				const auto& contents = it->getContents();
+				for (auto it2=contents.first; it2!=contents.second; it2++)
+				{
+					size_t storageSz = 1u;
+					m_cpuGpuCache[ix]->findAndStoreRange(it2->get(), storageSz, outIt++);
+					assert(storageSz);
+				}
+			}
+			return retval;
+		}
+
 		//! Removes one GPU object matched to an IAsset.
         bool removeCachedGPUObject(const IAsset* _asset, const core::smart_refctd_ptr<core::IReferenceCounted>& _gpuObject)
         {
@@ -392,8 +511,22 @@ namespace asset
 
 		// we need a removeCachedGPUObjects(const IAsset* _asset) but CObjectCache.h needs a `removeAllAssociatedObjects(const Key& _key)`
 
+        //! Removes all GPU objects from the specified caches, all caches by default
+        /* TODO
+        void clearAllGPUObjects(const uint64_t& _assetTypeBitFlags = 0xffffffffffffffffull)
+        {
+            for (size_t i = 0u; i < IAsset::ET_STANDARD_TYPES_COUNT; ++i)
+            {
+                if ((_assetTypeBitFlags >> i) & 1ull)
+                {
+                    TODO
+                }
+            }
+        }*/
+
         //! Writing an asset
-        /** Compression level is a number between 0 and 1 to signify how much storage we are trading for writing time or quality, this is a non-linear scale and has different meanings and results with different asset types and writers. */
+        /** Compression level is a number between 0 and 1 to signify how much storage we are trading for writing time or quality, this is a non-linear 
+		scale and has different meanings and results with different asset types and writers. */
         bool writeAsset(const std::string& _filename, const IAssetWriter::SAssetWriteParams& _params, IAssetWriter::IAssetWriterOverride* _override)
         {
             IAssetWriter::IAssetWriterOverride defOverride;
@@ -436,7 +569,7 @@ namespace asset
         }
 
         // Asset Loaders [FOLLOWING ARE NOT THREAD SAFE]
-        uint32_t getAssetLoaderCount() { return m_loaders.vector.size(); }
+        uint32_t getAssetLoaderCount() { return static_cast<uint32_t>(m_loaders.vector.size()); }
 
         //! @returns 0xdeadbeefu on failure or 0-based index on success.
         uint32_t addAssetLoader(core::smart_refctd_ptr<IAssetLoader>&& _loader)
@@ -447,7 +580,7 @@ namespace asset
             while (const char* ext = exts[extIx++])
                 m_loaders.perFileExt.insert(ext, _loader.get());
             m_loaders.pushToVector(std::move(_loader));
-            return m_loaders.vector.size()-1u;
+            return static_cast<uint32_t>(m_loaders.vector.size())-1u;
         }
         void removeAssetLoader(IAssetLoader* _loader)
         {
@@ -461,7 +594,7 @@ namespace asset
         }
 
         // Asset Writers [FOLLOWING ARE NOT THREAD SAFE]
-        uint32_t getAssetWriterCount() { return m_writers.perType.getSize(); } // todo.. well, it's not really writer count.. but rather type<->writer association count
+        uint32_t getAssetWriterCount() { return static_cast<uint32_t>(m_writers.perType.getSize()); } // todo.. well, it's not really writer count.. but rather type<->writer association count
 
         void addAssetWriter(core::smart_refctd_ptr<IAssetWriter>&& _writer)
         {
@@ -539,9 +672,15 @@ namespace asset
         //TODO change name
         inline void setAssetCached(SAssetBundle& _asset, bool _val) const { _asset.setCached(_val); }
 
+        inline void setAssetMutable(IAsset* _asset, bool _val) const { _asset->m_mutable = _val; }
+
 		//
 		void addLoadersAndWriters();
-	};
+
+        void insertBuiltinAssets();
+};
+
+
 }
 }
 

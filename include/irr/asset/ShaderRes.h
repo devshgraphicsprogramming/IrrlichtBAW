@@ -3,11 +3,13 @@
 
 #include <cstdint>
 #include "irr/macros.h"
-#include "irr/asset/ShaderCommons.h"
-#include "irr/asset/format/EFormat.h"
+#include "irr/asset/ICPUImageView.h"
 
-namespace irr { namespace asset
+namespace irr
 {
+namespace asset
+{
+
 enum E_SHADER_RESOURCE_TYPE : uint8_t
 {
     //! GLSL declaration: e.g. `sampler2D`
@@ -36,6 +38,16 @@ enum E_SHADER_INFO_TYPE : uint8_t
     //! e.g. `out vec4 Color;` in fragment shader
     ESIT_STAGE_OUTPUT
 };
+enum E_GLSL_VAR_TYPE
+{
+    EGVT_U64,
+    EGVT_I64,
+    EGVT_U32,
+    EGVT_I32,
+    EGVT_F64,
+    EGVT_F32,
+    EGVT_UNKNOWN_OR_STRUCT
+};
 
 template<E_SHADER_RESOURCE_TYPE restype>
 struct SShaderResource;
@@ -43,8 +55,9 @@ struct SShaderResource;
 template<>
 struct SShaderResource<ESRT_COMBINED_IMAGE_SAMPLER>
 {
-    bool arrayed;
     bool multisample;
+    IImageView<ICPUImage>::E_TYPE viewType;
+    bool shadow;
 };
 template<>
 struct SShaderResource<ESRT_SAMPLED_IMAGE>
@@ -54,8 +67,9 @@ struct SShaderResource<ESRT_SAMPLED_IMAGE>
 template<>
 struct SShaderResource<ESRT_STORAGE_IMAGE>
 {
-    E_FORMAT approxFormat;
-
+    E_FORMAT format;
+    IImageView<ICPUImage>::E_TYPE viewType;
+    bool shadow;
 };
 template<>
 struct SShaderResource<ESRT_UNIFORM_TEXEL_BUFFER>
@@ -92,6 +106,7 @@ struct SShaderMemoryBlock
     {
         //! count==1 implies not array
         uint32_t count;
+        bool countIsSpecConstant;
         uint32_t offset;
         uint32_t size;
         uint32_t arrayStride;
@@ -100,11 +115,21 @@ struct SShaderMemoryBlock
         //! (mtxRowCnt>1 && mtxColCnt==1) implies vector
         //! (mtxRowCnt==1 && mtxColCnt==1) implies basic type (i.e. int/uint/float/...)
         uint32_t mtxRowCnt, mtxColCnt;
+        //! rowMajor=false implies col-major
+        bool rowMajor;
+        E_GLSL_VAR_TYPE type;
+        //TODO change to core::dynamic_array later
+        struct SMembers {
+            SMember* array;
+            size_t count;
+        } members;
+        std::string name;
     };
-    struct {
-        SMember* array;
-        size_t count;
-    } members;
+
+    SMember::SMembers members;
+
+    //! Note: for SSBOs and UBOs it's the block name, but for push_constant it's the instance name.
+    std::string name;
 
     //! size!=rtSizedArrayOneElementSize implies that last member is rutime-sized array (e.g. buffer SSBO { float buf[]; }).
     //! Use getRuntimeSize for size of the struct with assumption of passed number of elements.
@@ -156,6 +181,11 @@ struct SShaderResourceVariant
 
     union Variant
     {
+        Variant() {}
+        Variant(const Variant& other) { memcpy(this, &other, sizeof(Variant)); }
+        Variant& operator=(const Variant& other) { memcpy(this, &other, sizeof(Variant)); return *this; }
+        ~Variant() {}
+
         SShaderResource<ESRT_COMBINED_IMAGE_SAMPLER> combinedImageSampler;
         SShaderResource<ESRT_SAMPLED_IMAGE> sampledImage;
         SShaderResource<ESRT_STORAGE_IMAGE> storageImage;
@@ -190,6 +220,10 @@ struct SShaderInfo<ESIT_STAGE_OUTPUT>
 struct SShaderInfoVariant
 {
     uint32_t location;
+    struct {
+        E_GLSL_VAR_TYPE basetype;
+        uint32_t elements;
+    } glslType;
     E_SHADER_INFO_TYPE type;
 
     template<E_SHADER_INFO_TYPE type>

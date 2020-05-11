@@ -10,12 +10,15 @@
 
 #ifdef __IRR_COMPILE_WITH_X86_SIMD_
 
-#ifndef __IRR_COMPILE_WITH_X86_SIMD_
-#error "Check your compiler or project settings for the -m*sse* flag, or upgrade your CPU"
+#ifdef __IRR_COMPILE_WITH_X86_SIMD_
+    #include <nmmintrin.h>
+#else
+    #error "Check your compiler or project settings for the -m*sse* flag, or upgrade your CPU"
 #endif // __IRR_COMPILE_WITH_X86_SIMD_
 
+#include <type_traits>
 #include <stdint.h>
-
+#include <math.h>
 
 #include "irr/core/alloc/AlignedBase.h"
 #include "vector2d.h"
@@ -99,8 +102,17 @@ namespace core
         };
 	}
 
+#include "SIMDswizzle.h"
+
+	namespace impl
+	{
+		struct IRR_FORCE_EBO empty_base {};
+	}
+
     //a class for bitwise shizz
-	template <int components> class IRR_FORCE_EBO vectorSIMDBool : public impl::vectorSIMDIntBase<vectorSIMDBool<components> >
+	template <int components> class IRR_FORCE_EBO vectorSIMDBool : 
+		public impl::vectorSIMDIntBase<vectorSIMDBool<components> >, 
+		public std::conditional_t<components==4, SIMD_32bitSwizzleAble<vectorSIMDBool<components>, __m128i>, impl::empty_base>
     {
         typedef impl::vectorSIMDIntBase<vectorSIMDBool<components> > Base;
         static_assert(core::isPoT(components)&&components<=16u,"Wrong number of components!\n");
@@ -254,8 +266,6 @@ namespace core
 	//typedef vectorSIMDBool<2> vector2db_SIMD;
 
 
-#include "SIMDswizzle.h"
-
 #ifdef __GNUC__
 // warning: ignoring attributes on template argument __m128i {aka __vector(2) long long int} [-Wignored-attributes] (etc...)
 #   pragma GCC diagnostic push
@@ -266,20 +276,71 @@ namespace core
     class IRR_FORCE_EBO vectorSIMD_32 : public SIMD_32bitSwizzleAble<vectorSIMD_32<T>,__m128i>, public impl::vectorSIMDIntBase<vectorSIMD_32<T> >
 	{
         typedef impl::vectorSIMDIntBase<vectorSIMD_32<T> > Base;
+
+		#define COMPARISON_DISPATCH(func_epi32,func_epi16,func_epi8,LEFT,RIGHT) \
+			__m128i a = LEFT; \
+			__m128i b = RIGHT; \
+			IRR_PSEUDO_IF_CONSTEXPR_BEGIN(!std::is_signed<T>::value) \
+			{ \
+				__m128i mask; \
+				IRR_PSEUDO_IF_CONSTEXPR_BEGIN(std::is_same<T,uint32_t>::value) \
+				{ \
+					mask = _mm_set1_epi32(-0x80000000); \
+				} \
+				IRR_PSEUDO_ELSE_CONSTEXPR \
+				{ \
+					IRR_PSEUDO_IF_CONSTEXPR_BEGIN(std::is_same<T,uint16_t>::value) \
+					{ \
+						mask = _mm_set1_epi16(-0x8000); \
+					} \
+					IRR_PSEUDO_ELSE_CONSTEXPR \
+					{ \
+						static_assert(!std::is_same<T,uint8_t>::value,"unimplemented for types other than uint{8,16,32}_t"); \
+						mask = _mm_set1_epi8(-0x80); \
+					} \
+					IRR_PSEUDO_IF_CONSTEXPR_END \
+				} \
+				IRR_PSEUDO_IF_CONSTEXPR_END \
+				a = _mm_xor_si128(mask,LEFT); \
+				b = _mm_xor_si128(mask,RIGHT); \
+			} \
+			IRR_PSEUDO_IF_CONSTEXPR_END \
+			__m128i result; \
+			IRR_PSEUDO_IF_CONSTEXPR_BEGIN(sizeof(T)==4u) \
+			{ \
+				result = func_epi32(a,b); \
+			} \
+			IRR_PSEUDO_ELSE_CONSTEXPR \
+			{ \
+				IRR_PSEUDO_IF_CONSTEXPR_BEGIN(sizeof(T)==2u) \
+				{ \
+					result = func_epi16(a,b); \
+				} \
+				IRR_PSEUDO_ELSE_CONSTEXPR \
+				{ \
+					static_assert(sizeof(T)!=1u,"unimplemented for types other than {u}int{8,16,32}_t"); \
+					result = func_epi8(a,b); \
+				} \
+				IRR_PSEUDO_IF_CONSTEXPR_END \
+			} \
+			IRR_PSEUDO_IF_CONSTEXPR_END \
+			return result
+
 	public:
 	    using Base::Base;
 #ifdef _MSC_VER
         // in MSVC default ctor is not inherited?
         vectorSIMD_32() : Base() {}
 #endif
+		inline vectorSIMD_32(const vectorSIMD_32& other) : Base() {operator=(other);}
 
-        //! Constructor with four different values, FASTEST IF the values are constant literals
+        	//! Constructor with four different values, FASTEST IF the values are constant literals
 		//yes this is correct usage with _mm_set_**(), due to little endianness the thing gets set in "reverse" order
 		inline explicit vectorSIMD_32(T nx, T ny, T nz, T nw) {_mm_store_si128((__m128i*)pointer,_mm_set_epi32(nw,nz,ny,nx));}
 		//! 3d constructor
-		inline explicit vectorSIMD_32(T nx, T ny, T nz) {_mm_store_si128((__m128i*)pointer,_mm_set_epi32(0.f,nz,ny,nx));}
+		inline explicit vectorSIMD_32(T nx, T ny, T nz) {_mm_store_si128((__m128i*)pointer,_mm_set_epi32(0,nz,ny,nx));}
 		//! 2d constructor
-		inline explicit vectorSIMD_32(T nx, T ny) {_mm_store_si128((__m128i*)pointer,_mm_set_epi32(0.f,0.f,ny,nx));}
+		inline explicit vectorSIMD_32(T nx, T ny) {_mm_store_si128((__m128i*)pointer,_mm_set_epi32(0,0,ny,nx));}
 		//! Fast Constructor from ints, they come in normal order [0]=X,[1]=Y, etc.
 		inline vectorSIMD_32(const T* const array) {_mm_store_si128((__m128i*)pointer,_mm_loadu_si128((const __m128i*)array));}
 		//! Fastest Constructor from ints, they come in normal order [0]=X,[1]=Y, etc.
@@ -320,8 +381,8 @@ namespace core
 		// TODO: these are messed up (they care about past the vector)
 		inline vectorSIMD_32<T> operator*(const vectorSIMD_32<T>& other) const
 		{
-			// TODO: do something nicer and faster like https://github.com/vectorclass
-			return vectorSIMD_32<T>(x * other.x, y * other.y, z * other.z, w * other.w);
+			// "but since it only stores the lower 32bits, it's really a sign-oblivious instruction that you can use for both"
+			return _mm_mullo_epi32(Base::getAsRegister(),other.getAsRegister());
 		}
 		inline vectorSIMD_32<T>& operator*=(const vectorSIMD_32<T>& other)
 		{
@@ -338,39 +399,53 @@ namespace core
 			return operator=(operator/(other));
 		}
 
-		//operators against scalars
-		inline vectorSIMD_32<T>  operator+(T val) const { return (*this)+vectorSIMD_32<T>(val); }
-		inline vectorSIMD_32<T>& operator+=(T val) { return ( (*this) += vectorSIMD_32<T>(val) ); }
+		inline vectorSIMD_32<T> operator%(const vectorSIMD_32<T>& other) const
+		{
+			// TODO: if /= can't be done then %= can't either
+			return vectorSIMD_32<T>(x % other.x, y % other.y, z % other.z, w % other.w);
+		}
+		inline vectorSIMD_32<T>& operator%=(const vectorSIMD_32<T>& other)
+		{
+			return operator=(operator%(other));
+		}
 
-		inline vectorSIMD_32<T> operator-(T val) const { return (*this)-vectorSIMD_32<T>(val); }
-		inline vectorSIMD_32<T>& operator-=(T val) { return ( (*this) -= vectorSIMD_32<T>(val) ); }
+		//operators against scalars
+		inline vectorSIMD_32<T>  operator+(T val) const { return operator+(vectorSIMD_32<T>(val)); }
+		inline vectorSIMD_32<T>& operator+=(T val) { return operator+=(vectorSIMD_32<T>(val)); }
+
+		inline vectorSIMD_32<T> operator-(T val) const { return operator-(vectorSIMD_32<T>(val)); }
+		inline vectorSIMD_32<T>& operator-=(T val) { return operator-=(vectorSIMD_32<T>(val)); }
 
 		// TODO: these are messed up (they care about past the vector)
-		inline vectorSIMD_32<T>  operator*(T val) const { return (*this)*vectorSIMD_32<T>(val); }
-		inline vectorSIMD_32<T>& operator*=(T val) { return ( (*this) *= vectorSIMD_32<T>(val) ); }
+		inline vectorSIMD_32<T>  operator*(T val) const { return operator*(vectorSIMD_32<T>(val)); }
+		friend inline vectorSIMD_32<T> operator*(T val, const vectorSIMD_32<T>& vec) { return vec*val; }
+		inline vectorSIMD_32<T>& operator*=(T val) { return operator*=(vectorSIMD_32<T>(val)); }
 
 		inline vectorSIMD_32<T> operator/(T val) const { return operator/(vectorSIMD_32<T>(val)); }
 		inline vectorSIMD_32<T>& operator/=(T val) { return operator/=(vectorSIMD_32<T>(val)); }
 
-/*
-		//! I AM BREAKING IRRLICHT'S COMPARISON OPERATORS
-		inline vector4db_SIMD operator<=(const vectorSIMDf& other) const
+		inline vectorSIMD_32<T> operator%(T val) const { return operator%(vectorSIMD_32<T>(val)); }
+		inline vectorSIMD_32<T>& operator%=(T val) const { return operator%=(vectorSIMD_32<T>(val)); }
+
+		//!
+		inline vector4db_SIMD operator<=(const vectorSIMD_32<T>& other) const
 		{
-		    return _mm_cmple_ps(getAsRegister(),other.getAsRegister());
+			return !operator>(other);
 		}
-		inline vector4db_SIMD operator>=(const vectorSIMDf& other) const
+		inline vector4db_SIMD operator>=(const vectorSIMD_32<T>& other) const
 		{
-		    return _mm_cmpge_ps(getAsRegister(),other.getAsRegister());
+			return !operator<(other);
 		}
-		inline vector4db_SIMD operator<(const vectorSIMDf& other) const
+		inline vector4db_SIMD operator<(const vectorSIMD_32<T>& other) const
 		{
-		    return _mm_cmplt_ps(getAsRegister(),other.getAsRegister());
+			COMPARISON_DISPATCH(_mm_cmplt_epi32,_mm_cmplt_epi16,_mm_cmplt_epi8,vectorSIMDIntBase::getAsRegister(),other.getAsRegister());
 		}
-		inline vector4db_SIMD operator>(const vectorSIMDf& other) const
+		inline vector4db_SIMD operator>(const vectorSIMD_32<T>& other) const
 		{
-		    return _mm_cmpgt_ps(getAsRegister(),other.getAsRegister());
+			COMPARISON_DISPATCH(_mm_cmpgt_epi32,_mm_cmpgt_epi16,_mm_cmpgt_epi8,vectorSIMDIntBase::getAsRegister(), other.getAsRegister());
 		}
-*/
+	#undef COMPARISON_DISPATCH
+
 		inline vector4db_SIMD operator==(const vectorSIMD_32<T>& other) const
 		{
 			return vector4db_SIMD(_mm_cmpeq_epi32(vectorSIMDIntBase::getAsRegister(),other.getAsRegister()));
@@ -779,6 +854,13 @@ namespace core
 	template <>
 	template <int mask>
 	inline __m128i SIMD_32bitSwizzleAble<vectorSIMD_32<uint32_t>, __m128i>::shuffleFunc(__m128i reg) const
+	{
+		return _mm_shuffle_epi32(reg, mask);
+	}
+
+	template <>
+	template <int mask>
+	inline __m128i SIMD_32bitSwizzleAble<vectorSIMDBool<4>, __m128i>::shuffleFunc(__m128i reg) const
 	{
 		return _mm_shuffle_epi32(reg, mask);
 	}

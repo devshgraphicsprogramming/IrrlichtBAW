@@ -2,13 +2,9 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifdef _IRR_COMPILE_WITH_OPENGL_
-
 #include "COpenGLExtensionHandler.h"
 
-
-#include "SMaterial.h" // for MATERIAL_MAX_TEXTURES
-
+#ifdef _IRR_COMPILE_WITH_OPENGL_
 namespace irr
 {
 namespace video
@@ -69,72 +65,7 @@ namespace video
 
 #define glBindVertexArray_MACRO COpenGLExtensionHandler::extGlBindVertexArray
 
-#include "COpenGLStateManagerImpl.h"
-
-
-
-
-E_SHADER_CONSTANT_TYPE getIrrUniformType(GLenum oglType)
-{
-    switch (oglType)
-    {
-    case GL_FLOAT:
-        return ESCT_FLOAT;
-    case GL_FLOAT_VEC2:
-        return ESCT_FLOAT_VEC2;
-    case GL_FLOAT_VEC3:
-        return ESCT_FLOAT_VEC3;
-    case GL_FLOAT_VEC4:
-        return ESCT_FLOAT_VEC4;
-    case GL_INT:
-        return ESCT_INT;
-    case GL_INT_VEC2:
-        return ESCT_INT_VEC2;
-    case GL_INT_VEC3:
-        return ESCT_INT_VEC3;
-    case GL_INT_VEC4:
-        return ESCT_INT_VEC4;
-    case GL_UNSIGNED_INT:
-        return ESCT_UINT;
-    case GL_UNSIGNED_INT_VEC2:
-        return ESCT_UINT_VEC2;
-    case GL_UNSIGNED_INT_VEC3:
-        return ESCT_UINT_VEC3;
-    case GL_UNSIGNED_INT_VEC4:
-        return ESCT_UINT_VEC4;
-    case GL_BOOL:
-        return ESCT_BOOL;
-    case GL_BOOL_VEC2:
-        return ESCT_BOOL_VEC2;
-    case GL_BOOL_VEC3:
-        return ESCT_BOOL_VEC3;
-    case GL_BOOL_VEC4:
-        return ESCT_BOOL_VEC4;
-    case GL_FLOAT_MAT2:
-        return ESCT_FLOAT_MAT2;
-    case GL_FLOAT_MAT3:
-        return ESCT_FLOAT_MAT3;
-    case GL_FLOAT_MAT4:
-        return ESCT_FLOAT_MAT4;
-    case GL_FLOAT_MAT2x3:
-        return ESCT_FLOAT_MAT2x3;
-    case GL_FLOAT_MAT2x4:
-        return ESCT_FLOAT_MAT2x4;
-    case GL_FLOAT_MAT3x2:
-        return ESCT_FLOAT_MAT3x2;
-    case GL_FLOAT_MAT3x4:
-        return ESCT_FLOAT_MAT3x4;
-    case GL_FLOAT_MAT4x2:
-        return ESCT_FLOAT_MAT4x2;
-    case GL_FLOAT_MAT4x3:
-        return ESCT_FLOAT_MAT4x3;
-    case GL_SAMPLER_1D:
-    default:
-        return ESCT_INVALID_COUNT;
-    }
-
-    return ESCT_INVALID_COUNT;
-}
+//#include "COpenGLStateManagerImpl.h"
 
 
 uint16_t COpenGLExtensionHandler::Version = 0;
@@ -149,7 +80,7 @@ int32_t COpenGLExtensionHandler::reqTBOAlignment = 0;
 
 uint64_t COpenGLExtensionHandler::maxUBOSize = 0;
 uint64_t COpenGLExtensionHandler::maxSSBOSize = 0;
-uint64_t COpenGLExtensionHandler::maxTBOSize = 0;
+uint64_t COpenGLExtensionHandler::maxTBOSizeInTexels = 0;
 uint64_t COpenGLExtensionHandler::maxBufferSize = 0;
 
 int32_t COpenGLExtensionHandler::minMemoryMapAlignment = 0;
@@ -167,8 +98,16 @@ uint32_t COpenGLExtensionHandler::MaxVertexStreams = 1;
 uint32_t COpenGLExtensionHandler::MaxXFormFeedbackComponents = 64;
 uint32_t COpenGLExtensionHandler::MaxGPUWaitTimeout = 0;
 uint32_t COpenGLExtensionHandler::InvocationSubGroupSize[2] = {32,64};
+GLuint COpenGLExtensionHandler::SPIR_VextensionsCount = 0u;
+core::smart_refctd_dynamic_array<const GLubyte*> COpenGLExtensionHandler::SPIR_Vextensions;
 uint32_t COpenGLExtensionHandler::MaxGeometryVerticesOut = 65535;
 float COpenGLExtensionHandler::MaxTextureLODBias = 0.f;
+
+uint32_t COpenGLExtensionHandler::maxUBOBindings = 0u;
+uint32_t COpenGLExtensionHandler::maxSSBOBindings = 0u;
+uint32_t COpenGLExtensionHandler::maxTextureBindings = 0u;
+uint32_t COpenGLExtensionHandler::maxTextureBindingsCompute = 0u;
+uint32_t COpenGLExtensionHandler::maxImageBindings = 0u;
 
 //uint32_t COpenGLExtensionHandler::MaxXFormFeedbackInterleavedAttributes = GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS;
 //uint32_t COpenGLExtensionHandler::MaxXFormFeedbackSeparateAttributes = GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS;
@@ -211,6 +150,7 @@ PFNGLTEXTURESTORAGE3DPROC COpenGLExtensionHandler::pGlTextureStorage3D = nullptr
 PFNGLTEXTURESTORAGE2DMULTISAMPLEPROC COpenGLExtensionHandler::pGlTextureStorage2DMultisample = nullptr;
 PFNGLTEXTURESTORAGE3DMULTISAMPLEPROC COpenGLExtensionHandler::pGlTextureStorage3DMultisample = nullptr;
 PFNGLTEXTUREBUFFERPROC COpenGLExtensionHandler::pGlTextureBuffer = nullptr;
+PFNGLTEXTUREVIEWPROC COpenGLExtensionHandler::pGlTextureView = nullptr;
 PFNGLTEXTUREBUFFERRANGEPROC COpenGLExtensionHandler::pGlTextureBufferRange = nullptr;
 PFNGLTEXTURESTORAGE1DEXTPROC COpenGLExtensionHandler::pGlTextureStorage1DEXT = nullptr;
 PFNGLTEXTURESTORAGE2DEXTPROC COpenGLExtensionHandler::pGlTextureStorage2DEXT = nullptr;
@@ -245,13 +185,10 @@ PFNGLCOMPRESSEDTEXTURESUBIMAGE3DPROC COpenGLExtensionHandler::pGlCompressedTextu
 PFNGLCOMPRESSEDTEXTURESUBIMAGE1DEXTPROC COpenGLExtensionHandler::pGlCompressedTextureSubImage1DEXT = nullptr;
 PFNGLCOMPRESSEDTEXTURESUBIMAGE2DEXTPROC COpenGLExtensionHandler::pGlCompressedTextureSubImage2DEXT = nullptr;
 PFNGLCOMPRESSEDTEXTURESUBIMAGE3DEXTPROC COpenGLExtensionHandler::pGlCompressedTextureSubImage3DEXT = nullptr;
-PFNGLCOPYTEXSUBIMAGE3DPROC COpenGLExtensionHandler::pGlCopyTexSubImage3D = nullptr;
-PFNGLCOPYTEXTURESUBIMAGE1DPROC COpenGLExtensionHandler::pGlCopyTextureSubImage1D = nullptr;
-PFNGLCOPYTEXTURESUBIMAGE2DPROC COpenGLExtensionHandler::pGlCopyTextureSubImage2D = nullptr;
-PFNGLCOPYTEXTURESUBIMAGE3DPROC COpenGLExtensionHandler::pGlCopyTextureSubImage3D = nullptr;
-PFNGLCOPYTEXTURESUBIMAGE1DEXTPROC COpenGLExtensionHandler::pGlCopyTextureSubImage1DEXT = nullptr;
-PFNGLCOPYTEXTURESUBIMAGE2DEXTPROC COpenGLExtensionHandler::pGlCopyTextureSubImage2DEXT = nullptr;
-PFNGLCOPYTEXTURESUBIMAGE3DEXTPROC COpenGLExtensionHandler::pGlCopyTextureSubImage3DEXT = nullptr;
+PFNGLCOPYIMAGESUBDATAPROC COpenGLExtensionHandler::pGlCopyImageSubData = nullptr;
+PFNGLTEXTUREPARAMETERIUIVPROC COpenGLExtensionHandler::pGlTextureParameterIuiv = nullptr;
+PFNGLTEXTUREPARAMETERIUIVEXTPROC COpenGLExtensionHandler::pGlTextureParameterIuivEXT = nullptr;
+PFNGLTEXPARAMETERIUIVPROC COpenGLExtensionHandler::pGlTexParameterIuiv = nullptr;
 PFNGLGENERATEMIPMAPPROC COpenGLExtensionHandler::pGlGenerateMipmap = nullptr;
 PFNGLGENERATETEXTUREMIPMAPPROC COpenGLExtensionHandler::pGlGenerateTextureMipmap = nullptr;
 PFNGLGENERATETEXTUREMIPMAPEXTPROC COpenGLExtensionHandler::pGlGenerateTextureMipmapEXT = nullptr;
@@ -265,9 +202,33 @@ PFNGLBINDSAMPLERPROC COpenGLExtensionHandler::pGlBindSampler = nullptr;
 PFNGLBINDSAMPLERSPROC COpenGLExtensionHandler::pGlBindSamplers = nullptr;
 PFNGLSAMPLERPARAMETERIPROC COpenGLExtensionHandler::pGlSamplerParameteri = nullptr;
 PFNGLSAMPLERPARAMETERFPROC COpenGLExtensionHandler::pGlSamplerParameterf = nullptr;
+PFNGLSAMPLERPARAMETERFVPROC COpenGLExtensionHandler::pGlSamplerParameterfv = nullptr;
 
 //
 PFNGLBINDIMAGETEXTUREPROC COpenGLExtensionHandler::pGlBindImageTexture = nullptr;
+PFNGLBINDIMAGETEXTURESPROC COpenGLExtensionHandler::pGlBindImageTextures = nullptr;
+
+//bindless textures
+//ARB
+PFNGLGETTEXTUREHANDLEARBPROC COpenGLExtensionHandler::pGlGetTextureHandleARB = nullptr;
+PFNGLGETTEXTURESAMPLERHANDLEARBPROC COpenGLExtensionHandler::pGlGetTextureSamplerHandleARB = nullptr;
+PFNGLMAKETEXTUREHANDLERESIDENTARBPROC COpenGLExtensionHandler::pGlMakeTextureHandleResidentARB = nullptr;
+PFNGLMAKETEXTUREHANDLENONRESIDENTARBPROC COpenGLExtensionHandler::pGlMakeTextureHandleNonResidentARB = nullptr;
+PFNGLGETIMAGEHANDLEARBPROC COpenGLExtensionHandler::pGlGetImageHandleARB = nullptr;
+PFNGLMAKEIMAGEHANDLERESIDENTARBPROC COpenGLExtensionHandler::pGlMakeImageHandleResidentARB = nullptr;
+PFNGLMAKEIMAGEHANDLENONRESIDENTARBPROC COpenGLExtensionHandler::pGlMakeImageHandleNonResidentARB = nullptr;
+PFNGLISTEXTUREHANDLERESIDENTARBPROC COpenGLExtensionHandler::pGlIsTextureHandleResidentARB = nullptr;
+PFNGLISIMAGEHANDLERESIDENTARBPROC COpenGLExtensionHandler::pGlIsImageHandleResidentARB = nullptr;
+//NV
+PFNGLGETTEXTUREHANDLENVPROC COpenGLExtensionHandler::pGlGetTextureHandleNV = nullptr;
+PFNGLGETTEXTURESAMPLERHANDLENVPROC COpenGLExtensionHandler::pGlGetTextureSamplerHandleNV = nullptr;
+PFNGLMAKETEXTUREHANDLERESIDENTNVPROC COpenGLExtensionHandler::pGlMakeTextureHandleResidentNV = nullptr;
+PFNGLMAKETEXTUREHANDLENONRESIDENTNVPROC COpenGLExtensionHandler::pGlMakeTextureHandleNonResidentNV = nullptr;
+PFNGLGETIMAGEHANDLENVPROC COpenGLExtensionHandler::pGlGetImageHandleNV = nullptr;
+PFNGLMAKEIMAGEHANDLERESIDENTNVPROC COpenGLExtensionHandler::pGlMakeImageHandleResidentNV = nullptr;
+PFNGLMAKEIMAGEHANDLENONRESIDENTNVPROC COpenGLExtensionHandler::pGlMakeImageHandleNonResidentNV = nullptr;
+PFNGLISTEXTUREHANDLERESIDENTNVPROC COpenGLExtensionHandler::pGlIsTextureHandleResidentNV = nullptr;
+PFNGLISIMAGEHANDLERESIDENTNVPROC COpenGLExtensionHandler::pGlIsImageHandleResidentNV = nullptr;
 
         //stuff
 PFNGLBINDBUFFERBASEPROC COpenGLExtensionHandler::pGlBindBufferBase = nullptr;
@@ -284,6 +245,10 @@ PFNGLDELETEPROGRAMPROC COpenGLExtensionHandler::pGlDeleteProgram = nullptr;
 PFNGLDELETESHADERPROC COpenGLExtensionHandler::pGlDeleteShader = nullptr;
 PFNGLGETATTACHEDSHADERSPROC COpenGLExtensionHandler::pGlGetAttachedShaders = nullptr;
 PFNGLCREATESHADERPROC COpenGLExtensionHandler::pGlCreateShader = nullptr;
+PFNGLCREATESHADERPROGRAMVPROC COpenGLExtensionHandler::pGlCreateShaderProgramv = nullptr;
+PFNGLCREATEPROGRAMPIPELINESPROC COpenGLExtensionHandler::pGlCreateProgramPipelines = nullptr;
+PFNGLDELETEPROGRAMPIPELINESPROC COpenGLExtensionHandler::pGlDeleteProgramPipelines = nullptr;
+PFNGLUSEPROGRAMSTAGESPROC COpenGLExtensionHandler::pGlUseProgramStages = nullptr;
 PFNGLSHADERSOURCEPROC COpenGLExtensionHandler::pGlShaderSource = nullptr;
 PFNGLCOMPILESHADERPROC COpenGLExtensionHandler::pGlCompileShader = nullptr;
 PFNGLATTACHSHADERPROC COpenGLExtensionHandler::pGlAttachShader = nullptr;
@@ -319,6 +284,8 @@ PFNGLPROGRAMUNIFORMMATRIX4X3FVPROC COpenGLExtensionHandler::pGlProgramUniformMat
 //
 PFNGLGETACTIVEUNIFORMPROC COpenGLExtensionHandler::pGlGetActiveUniform = nullptr;
 PFNGLBINDPROGRAMPIPELINEPROC COpenGLExtensionHandler::pGlBindProgramPipeline = nullptr;
+PFNGLGETPROGRAMBINARYPROC COpenGLExtensionHandler::pGlGetProgramBinary = nullptr;
+PFNGLPROGRAMBINARYPROC COpenGLExtensionHandler::pGlProgramBinary = nullptr;
 
 // Criss
 PFNGLMEMORYBARRIERPROC COpenGLExtensionHandler::pGlMemoryBarrier = nullptr;
@@ -465,6 +432,8 @@ PFNGLDRAWARRAYSINDIRECTPROC COpenGLExtensionHandler::pGlDrawArraysIndirect = nul
 PFNGLDRAWELEMENTSINDIRECTPROC COpenGLExtensionHandler::pGlDrawElementsIndirect = nullptr;
 PFNGLMULTIDRAWARRAYSINDIRECTPROC COpenGLExtensionHandler::pGlMultiDrawArraysIndirect = nullptr;
 PFNGLMULTIDRAWELEMENTSINDIRECTPROC COpenGLExtensionHandler::pGlMultiDrawElementsIndirect = nullptr;
+PFNGLMULTIDRAWARRAYSINDIRECTCOUNTPROC COpenGLExtensionHandler::pGlMultiDrawArrysIndirectCount = nullptr;
+PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTPROC COpenGLExtensionHandler::pGlMultiDrawElementsIndirectCount = nullptr;
 //
 PFNGLCREATETRANSFORMFEEDBACKSPROC COpenGLExtensionHandler::pGlCreateTransformFeedbacks = nullptr;
 PFNGLGENTRANSFORMFEEDBACKSPROC COpenGLExtensionHandler::pGlGenTransformFeedbacks = nullptr;
@@ -816,13 +785,22 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 	GLint num = 0;
 
 	glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &reqUBOAlignment);
+    assert(core::is_alignment(reqUBOAlignment));
 	glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &reqSSBOAlignment);
+    assert(core::is_alignment(reqSSBOAlignment));
 	glGetIntegerv(GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT, &reqTBOAlignment);
+    assert(core::is_alignment(reqTBOAlignment));
 
     extGlGetInteger64v(GL_MAX_UNIFORM_BLOCK_SIZE, reinterpret_cast<GLint64*>(&maxUBOSize));
     extGlGetInteger64v(GL_MAX_SHADER_STORAGE_BLOCK_SIZE, reinterpret_cast<GLint64*>(&maxSSBOSize));
-    extGlGetInteger64v(GL_MAX_TEXTURE_BUFFER_SIZE, reinterpret_cast<GLint64*>(&maxTBOSize));
-    maxBufferSize = std::max(maxUBOSize, std::max(maxSSBOSize, maxTBOSize));
+    extGlGetInteger64v(GL_MAX_TEXTURE_BUFFER_SIZE, reinterpret_cast<GLint64*>(&maxTBOSizeInTexels));
+    maxBufferSize = std::max(maxUBOSize, maxSSBOSize);
+
+    glGetIntegerv(GL_MAX_COMBINED_UNIFORM_BLOCKS, reinterpret_cast<GLint*>(&maxUBOBindings));
+    glGetIntegerv(GL_MAX_COMBINED_SHADER_STORAGE_BLOCKS, reinterpret_cast<GLint*>(&maxSSBOBindings));
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<GLint*>(&maxTextureBindings));
+    glGetIntegerv(GL_MAX_COMPUTE_TEXTURE_IMAGE_UNITS, reinterpret_cast<GLint*>(&maxTextureBindingsCompute));
+    glGetIntegerv(GL_MAX_COMBINED_IMAGE_UNIFORMS, reinterpret_cast<GLint*>(&maxImageBindings));
 
 	glGetIntegerv(GL_MIN_MAP_BUFFER_ALIGNMENT, &minMemoryMapAlignment);
 
@@ -884,9 +862,6 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 		pGlCompressedTextureSubImage1D = nullptr;
 		pGlCompressedTextureSubImage2D = nullptr;
 		pGlCompressedTextureSubImage3D = nullptr;
-		pGlCopyTextureSubImage1D = nullptr;
-		pGlCopyTextureSubImage2D = nullptr;
-		pGlCopyTextureSubImage3D = nullptr;
 		pGlGenerateTextureMipmap = nullptr;
 		pGlCreateSamplers = nullptr;
 		pGlBindAttribLocation = nullptr;
@@ -943,9 +918,6 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
     pGlCompressedTextureSubImage1DEXT = nullptr;
     pGlCompressedTextureSubImage2DEXT = nullptr;
     pGlCompressedTextureSubImage3DEXT = nullptr;
-    pGlCopyTextureSubImage1DEXT = nullptr;
-    pGlCopyTextureSubImage2DEXT = nullptr;
-    pGlCopyTextureSubImage3DEXT = nullptr;
     pGlGenerateTextureMipmapEXT = nullptr;
     pGlCheckNamedFramebufferStatusEXT = nullptr;
     pGlNamedFramebufferTextureEXT = nullptr;
@@ -976,8 +948,7 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 
     num=0;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &num);
-    //can we get rid of that? I don't really see reason for this clamp at this level of abstraction
-	MaxTextureUnits = core::min(static_cast<uint8_t>(num), static_cast<uint8_t>(MATERIAL_MAX_TEXTURES));
+	MaxTextureUnits = num;
 
     //num=100000000u;
 	//glGetIntegerv(GL_MAX_ELEMENTS_INDICES,&num);
@@ -1079,6 +1050,19 @@ void COpenGLExtensionHandler::loadFunctions()
         InvocationSubGroupSize[1] = 32;
     }
 
+    if (FeatureAvailable[IRR_ARB_spirv_extensions])
+    {
+        glGetIntegerv(GL_NUM_SPIR_V_EXTENSIONS, reinterpret_cast<GLint*>(&SPIR_VextensionsCount));
+        if (SPIR_VextensionsCount)
+            SPIR_Vextensions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<const GLubyte*> >(SPIR_VextensionsCount);
+        for (GLuint i = 0u; i < SPIR_VextensionsCount; ++i)
+            (*SPIR_Vextensions)[i] = pGlGetStringi(GL_SPIR_V_EXTENSIONS, i);
+    }
+    else
+    {
+        SPIR_VextensionsCount = 0u;
+    }
+
     /**
     pGl = () IRR_OGL_LOAD_EXTENSION("gl");
     **/
@@ -1109,6 +1093,7 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlTextureStorage3DMultisample = (PFNGLTEXTURESTORAGE3DMULTISAMPLEPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage3DMultisample");
     pGlTextureBuffer = (PFNGLTEXTUREBUFFERPROC) IRR_OGL_LOAD_EXTENSION( "glTextureBuffer");
     pGlTextureBufferRange = (PFNGLTEXTUREBUFFERRANGEPROC) IRR_OGL_LOAD_EXTENSION( "glTextureBufferRange");
+	pGlTextureView = (PFNGLTEXTUREVIEWPROC) IRR_OGL_LOAD_EXTENSION( "glTextureView");
     pGlTextureStorage1DEXT = (PFNGLTEXTURESTORAGE1DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage1DEXT");
     pGlTextureStorage2DEXT = (PFNGLTEXTURESTORAGE2DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage2DEXT");
     pGlTextureStorage3DEXT = (PFNGLTEXTURESTORAGE3DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glTextureStorage3DEXT");
@@ -1142,29 +1127,50 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlCompressedTextureSubImage1DEXT = (PFNGLCOMPRESSEDTEXTURESUBIMAGE1DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glCompressedTextureSubImage1DEXT");
     pGlCompressedTextureSubImage2DEXT = (PFNGLCOMPRESSEDTEXTURESUBIMAGE2DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glCompressedTextureSubImage2DEXT");
     pGlCompressedTextureSubImage3DEXT = (PFNGLCOMPRESSEDTEXTURESUBIMAGE3DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glCompressedTextureSubImage3DEXT");
-    pGlCopyTexSubImage3D = (PFNGLCOPYTEXSUBIMAGE3DPROC) IRR_OGL_LOAD_EXTENSION( "glCopyTexSubImage3D");
-    pGlCopyTextureSubImage1D = (PFNGLCOPYTEXTURESUBIMAGE1DPROC) IRR_OGL_LOAD_EXTENSION( "glCopyTextureSubImage1D");
-    pGlCopyTextureSubImage2D = (PFNGLCOPYTEXTURESUBIMAGE2DPROC) IRR_OGL_LOAD_EXTENSION( "glCopyTextureSubImage2D");
-    pGlCopyTextureSubImage3D = (PFNGLCOPYTEXTURESUBIMAGE3DPROC) IRR_OGL_LOAD_EXTENSION( "glCopyTextureSubImage3D");
-    pGlCopyTextureSubImage1DEXT = (PFNGLCOPYTEXTURESUBIMAGE1DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glCopyTextureSubImage1DEXT");
-    pGlCopyTextureSubImage2DEXT = (PFNGLCOPYTEXTURESUBIMAGE2DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glCopyTextureSubImage2DEXT");
-    pGlCopyTextureSubImage3DEXT = (PFNGLCOPYTEXTURESUBIMAGE3DEXTPROC) IRR_OGL_LOAD_EXTENSION( "glCopyTextureSubImage3DEXT");
+	pGlCopyImageSubData = (PFNGLCOPYIMAGESUBDATAPROC) IRR_OGL_LOAD_EXTENSION( "glCopyImageSubData");
+	pGlTextureParameterIuiv = (PFNGLTEXTUREPARAMETERIUIVPROC) IRR_OGL_LOAD_EXTENSION( "glTextureParameterIuiv");
+	pGlTextureParameterIuivEXT = (PFNGLTEXTUREPARAMETERIUIVEXTPROC) IRR_OGL_LOAD_EXTENSION( "glTextureParameterIuivEXT");
+	pGlTexParameterIuiv = (PFNGLTEXPARAMETERIUIVPROC) IRR_OGL_LOAD_EXTENSION( "glTexParameterIuiv");
     pGlGenerateMipmap = (PFNGLGENERATEMIPMAPPROC) IRR_OGL_LOAD_EXTENSION( "glGenerateMipmap");
     pGlGenerateTextureMipmap = (PFNGLGENERATETEXTUREMIPMAPPROC) IRR_OGL_LOAD_EXTENSION( "glGenerateTextureMipmap");
     pGlGenerateTextureMipmapEXT = (PFNGLGENERATETEXTUREMIPMAPEXTPROC) IRR_OGL_LOAD_EXTENSION( "glGenerateTextureMipmapEXT");
     pGlClampColor = (PFNGLCLAMPCOLORPROC) IRR_OGL_LOAD_EXTENSION( "glClampColor");
 
     //samplers
+    pGlCreateSamplers = (PFNGLCREATESAMPLERSPROC)IRR_OGL_LOAD_EXTENSION("glCreateSamplers");
     pGlGenSamplers = (PFNGLGENSAMPLERSPROC) IRR_OGL_LOAD_EXTENSION( "glGenSamplers");
     pGlDeleteSamplers = (PFNGLDELETESAMPLERSPROC) IRR_OGL_LOAD_EXTENSION( "glDeleteSamplers");
     pGlBindSampler = (PFNGLBINDSAMPLERPROC) IRR_OGL_LOAD_EXTENSION( "glBindSampler");
     pGlBindSamplers = (PFNGLBINDSAMPLERSPROC) IRR_OGL_LOAD_EXTENSION( "glBindSamplers");
     pGlSamplerParameteri = (PFNGLSAMPLERPARAMETERIPROC) IRR_OGL_LOAD_EXTENSION( "glSamplerParameteri");
     pGlSamplerParameterf = (PFNGLSAMPLERPARAMETERFPROC) IRR_OGL_LOAD_EXTENSION( "glSamplerParameterf");
+    pGlSamplerParameterfv = (PFNGLSAMPLERPARAMETERFVPROC)IRR_OGL_LOAD_EXTENSION("glSamplerParameterfv");
 
     //
     pGlBindImageTexture = (PFNGLBINDIMAGETEXTUREPROC) IRR_OGL_LOAD_EXTENSION( "glBindImageTexture");
+    pGlBindImageTextures = (PFNGLBINDIMAGETEXTURESPROC) IRR_OGL_LOAD_EXTENSION( "glBindImageTextures" );
 
+	//bindless texture
+	//ARB
+	pGlGetTextureHandleARB = (PFNGLGETTEXTUREHANDLEARBPROC) IRR_OGL_LOAD_EXTENSION("glGetTextureHandleARB");
+	pGlGetTextureSamplerHandleARB = (PFNGLGETTEXTURESAMPLERHANDLEARBPROC) IRR_OGL_LOAD_EXTENSION("glGetTextureSamplerHandleARB");
+	pGlMakeTextureHandleResidentARB = (PFNGLMAKETEXTUREHANDLERESIDENTARBPROC) IRR_OGL_LOAD_EXTENSION("glMakeTextureHandleResidentAR");
+	pGlMakeTextureHandleNonResidentARB = (PFNGLMAKETEXTUREHANDLENONRESIDENTARBPROC) IRR_OGL_LOAD_EXTENSION("glMakeTextureHandleNonResidentARB");
+	pGlGetImageHandleARB = (PFNGLGETIMAGEHANDLEARBPROC) IRR_OGL_LOAD_EXTENSION("glGetImageHandleARB");
+	pGlMakeImageHandleResidentARB = (PFNGLMAKEIMAGEHANDLERESIDENTARBPROC) IRR_OGL_LOAD_EXTENSION("glMakeImageHandleResidentARB");
+	pGlMakeImageHandleNonResidentARB = (PFNGLMAKEIMAGEHANDLENONRESIDENTARBPROC) IRR_OGL_LOAD_EXTENSION("glMakeImageHandleNonResidentARB");
+	pGlIsTextureHandleResidentARB = (PFNGLISTEXTUREHANDLERESIDENTARBPROC) IRR_OGL_LOAD_EXTENSION("glIsTextureHandleResidentARB");
+	pGlIsImageHandleResidentARB = (PFNGLISTEXTUREHANDLERESIDENTARBPROC) IRR_OGL_LOAD_EXTENSION("glIsImageHandleResidentARB");
+	//NV
+	pGlGetTextureHandleNV = (PFNGLGETTEXTUREHANDLENVPROC)IRR_OGL_LOAD_EXTENSION("glGetTextureHandleNV");
+	pGlGetTextureSamplerHandleNV = (PFNGLGETTEXTURESAMPLERHANDLENVPROC)IRR_OGL_LOAD_EXTENSION("glGetTextureSamplerHandleNV");
+	pGlMakeTextureHandleResidentNV = (PFNGLMAKETEXTUREHANDLERESIDENTNVPROC)IRR_OGL_LOAD_EXTENSION("glMakeTextureHandleResidentAR");
+	pGlMakeTextureHandleNonResidentNV = (PFNGLMAKETEXTUREHANDLENONRESIDENTNVPROC)IRR_OGL_LOAD_EXTENSION("glMakeTextureHandleNonResidentNV");
+	pGlGetImageHandleNV = (PFNGLGETIMAGEHANDLENVPROC)IRR_OGL_LOAD_EXTENSION("glGetImageHandleNV");
+	pGlMakeImageHandleResidentNV = (PFNGLMAKEIMAGEHANDLERESIDENTNVPROC)IRR_OGL_LOAD_EXTENSION("glMakeImageHandleResidentNV");
+	pGlMakeImageHandleNonResidentNV = (PFNGLMAKEIMAGEHANDLENONRESIDENTNVPROC)IRR_OGL_LOAD_EXTENSION("glMakeImageHandleNonResidentNV");
+	pGlIsTextureHandleResidentNV = (PFNGLISTEXTUREHANDLERESIDENTNVPROC)IRR_OGL_LOAD_EXTENSION("glIsTextureHandleResidentNV");
+	pGlIsImageHandleResidentNV = (PFNGLISTEXTUREHANDLERESIDENTNVPROC)IRR_OGL_LOAD_EXTENSION("glIsImageHandleResidentNV");
 
     //
     pGlBindBufferBase = (PFNGLBINDBUFFERBASEPROC) IRR_OGL_LOAD_EXTENSION("glBindBufferBase");
@@ -1174,6 +1180,10 @@ void COpenGLExtensionHandler::loadFunctions()
 
 	// get fragment and vertex program function pointers
 	pGlCreateShader = (PFNGLCREATESHADERPROC) IRR_OGL_LOAD_EXTENSION("glCreateShader");
+    pGlCreateShaderProgramv = (PFNGLCREATESHADERPROGRAMVPROC) IRR_OGL_LOAD_EXTENSION("glCreateShaderProgramv");
+    pGlCreateProgramPipelines = (PFNGLCREATEPROGRAMPIPELINESPROC) IRR_OGL_LOAD_EXTENSION("glCreateProgramPipelines");
+    pGlDeleteProgramPipelines = (PFNGLDELETEPROGRAMPIPELINESPROC) IRR_OGL_LOAD_EXTENSION("glDeleteProgramPipelines");
+    pGlUseProgramStages = (PFNGLUSEPROGRAMSTAGESPROC)IRR_OGL_LOAD_EXTENSION("glUseProgramStages");
 	pGlShaderSource = (PFNGLSHADERSOURCEPROC) IRR_OGL_LOAD_EXTENSION("glShaderSource");
 	pGlCompileShader = (PFNGLCOMPILESHADERPROC) IRR_OGL_LOAD_EXTENSION("glCompileShader");
 	pGlCreateProgram = (PFNGLCREATEPROGRAMPROC) IRR_OGL_LOAD_EXTENSION("glCreateProgram");
@@ -1212,6 +1222,8 @@ void COpenGLExtensionHandler::loadFunctions()
 	pGlProgramUniformMatrix4x3fv = (PFNGLPROGRAMUNIFORMMATRIX4X3FVPROC) IRR_OGL_LOAD_EXTENSION("glProgramUniformMatrix4x3fv");
 	pGlGetActiveUniform = (PFNGLGETACTIVEUNIFORMPROC) IRR_OGL_LOAD_EXTENSION("glGetActiveUniform");
     pGlBindProgramPipeline = (PFNGLBINDPROGRAMPIPELINEPROC) IRR_OGL_LOAD_EXTENSION("glBindProgramPipeline");
+    pGlGetProgramBinary = (PFNGLGETPROGRAMBINARYPROC) IRR_OGL_LOAD_EXTENSION("glGetProgramBinary");
+    pGlProgramBinary = (PFNGLPROGRAMBINARYPROC) IRR_OGL_LOAD_EXTENSION("glProgramBinary");
 
 	//Criss
 	pGlMemoryBarrier = (PFNGLMEMORYBARRIERPROC) IRR_OGL_LOAD_EXTENSION("glMemoryBarrier");
@@ -1356,6 +1368,16 @@ void COpenGLExtensionHandler::loadFunctions()
     pGlDrawElementsIndirect = (PFNGLDRAWELEMENTSINDIRECTPROC) IRR_OGL_LOAD_EXTENSION("glDrawElementsIndirect");
     pGlMultiDrawArraysIndirect = (PFNGLMULTIDRAWARRAYSINDIRECTPROC) IRR_OGL_LOAD_EXTENSION("glMultiDrawArraysIndirect");
     pGlMultiDrawElementsIndirect = (PFNGLMULTIDRAWELEMENTSINDIRECTPROC) IRR_OGL_LOAD_EXTENSION("glMultiDrawElementsIndirect");
+    if (Version >= 460)
+    {
+        pGlMultiDrawArrysIndirectCount = (PFNGLMULTIDRAWARRAYSINDIRECTCOUNTPROC) IRR_OGL_LOAD_EXTENSION("glMultiDrawArraysIndirectCount");
+        pGlMultiDrawElementsIndirectCount = (PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTPROC) IRR_OGL_LOAD_EXTENSION("glMultiDrawElementsIndirectCount");
+    }
+    else if (FeatureAvailable[IRR_ARB_indirect_parameters])
+    {
+        pGlMultiDrawArrysIndirectCount = (PFNGLMULTIDRAWARRAYSINDIRECTCOUNTARBPROC) IRR_OGL_LOAD_EXTENSION("glMultiDrawArraysIndirectCountARB");
+        pGlMultiDrawElementsIndirectCount = (PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTARBPROC) IRR_OGL_LOAD_EXTENSION("glMultiDrawElementsIndirectCountARB");
+    }
     //
 	pGlCreateTransformFeedbacks = (PFNGLCREATETRANSFORMFEEDBACKSPROC) IRR_OGL_LOAD_EXTENSION("glCreateTransformFeedbacks");
 	pGlGenTransformFeedbacks = (PFNGLGENTRANSFORMFEEDBACKSPROC) IRR_OGL_LOAD_EXTENSION("glGenTransformFeedbacks");

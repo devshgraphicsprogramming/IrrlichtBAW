@@ -27,6 +27,8 @@ class quaternion : private vectorSIMDf
 		//! Default Constructor
 		inline quaternion() : vectorSIMDf(0,0,0,1) {}
 
+		inline quaternion(const quaternion& other) : vectorSIMDf(static_cast<const vectorSIMDf&>(other)) {}
+
 		inline quaternion(const float* data) : vectorSIMDf(data) {}
 
 		//! Constructor
@@ -38,7 +40,7 @@ class quaternion : private vectorSIMDf
 		//! Constructor which converts a matrix to a quaternion
 		explicit quaternion(const matrix3x4SIMD& m);
 
-        inline float* getPointer() {return pointer;}
+      		inline float* getPointer() {return pointer;}
 
 		//! Equalilty operator
 		inline vector4db_SIMD operator==(const quaternion& other) const {return vectorSIMDf::operator==(other);}
@@ -427,19 +429,19 @@ inline quaternion quaternion::rotationFromTo(const vector3df_SIMD& from, const v
 // sets new quaternion based on euler angles
 inline quaternion& quaternion::set(const float& roll, const float& pitch, const float& yaw)
 {
-	double angle;
+	float angle;
 
-	angle = roll * 0.5;
-	const float sr = sin(angle);
-	const float cr = cos(angle);
+	angle = roll * 0.5f;
+	const float sr = sinf(angle);
+	const float cr = cosf(angle);
 
-	angle = pitch * 0.5;
-	const float sp = sin(angle);
+	angle = pitch * 0.5f;
+	const float sp = sinf(angle);
 	const float cp = cos(angle);
 
-	angle = yaw * 0.5;
-	const float sy = sin(angle);
-	const float cy = cos(angle);
+	angle = yaw * 0.5f;
+	const float sy = sinf(angle);
+	const float cy = cosf(angle);
 
 	const float cpcy = cp * cy;
 	const float spcy = sp * cy;

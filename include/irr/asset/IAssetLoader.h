@@ -7,8 +7,53 @@
 #include "IAsset.h"
 #include "IReadFile.h"
 
-namespace irr { namespace asset
+namespace irr
 {
+namespace asset
+{
+
+class IMeshManipulator;
+
+//! A class automating process of loading Assets from resources, eg. files
+/**
+	Every Asset must be loaded by a particular class derived from IAssetLoader.
+	These classes must be registered with IAssetManager::addAssetLoader() which will 
+	add it to the list of loaders (grab return 0-based index) or just not register 
+	the loader upon failure (don’t grab and return 0xdeadbeefu).
+
+	The loading is impacted by caching and resource duplication flags, defined as IAssetLoader::E_CACHING_FLAGS.
+
+	The flag having an impact on loading an Asset is a bitfield with 2 bits per level,
+	so the enums provide are some useful constants. Different combinations are valid as well, so
+	
+	\code{.cpp}
+    IAssetLoader::SAssetLoadParams params;
+	params.cacheFlags = static_cast<E_CACHING_FLAGS>(ECF_DONT_CACHE_TOP_LEVEL << 4ull);
+    //synonymous to:
+    params.cacheFlags = ECF_DONT_CACHE_LEVEL(2);
+    //where ECF_DONT_CACHE_LEVEL() is a utility function.
+	\endcode
+
+	Means that anything on level 2 will not get cached (top is 0, but we have shifted for 4 bits,
+	where 2 bits represent one single level, so we've been on second level).
+    Notice that loading process can be seen as a chain. When you're loading a mesh, it can references a submesh.
+    Submesh can reference graphics pipeline and descriptor set. Descriptor set can reference, for example, textures.
+    Hierarchy level is distance in such chain/tree from Root Asset (the one you asked for by calling IAssetManager::getAsset()) and the currently loaded Asset (needed by Root Asset).
+    
+	When the class derived from IAssetLoader is added, its put once on an 
+	vector<IAssetLoader*> and once on an multimap<std::string,IAssetLoader*> 
+	inside the IAssetManager for every associated file extension it reports.
+
+	The loaders are tried in the order they were registered per file extensions, 
+	and later in the global order in case of needing to fallback to examining files.
+
+	An IAssetLoader can only be removed/deregistered by its original pointer or global loader index.
+
+    @see IAssetLoader::SAssetLoadParams
+	@see IAsset
+	@see IAssetManager
+	@see IAssetWriter
+*/
 
 class IAssetLoader : public virtual core::IReferenceCounted
 {
@@ -58,6 +103,7 @@ public:
         const E_CACHING_FLAGS cacheFlags;
         const char* relativeDir;
         const E_LOADER_PARAMETER_FLAGS loaderFlags;				//!< Flags having an impact on extraordinary tasks during loading process
+		IMeshManipulator* meshManipulatorOverride = nullptr;    //!< pointer used for specifying custom mesh manipulator to use, if nullptr - default mesh manipulator will be used
     };
 
     //! Struct for keeping the state of the current loadoperation for safe threading
@@ -119,9 +165,9 @@ public:
 
         //! Since more then one asset of the same key of the same type can exist, this function is called right after search for cached assets (if anything was found) and decides which of them is relevant.
         //! Note: this function can assume that `found` is never empty.
-        inline virtual SAssetBundle chooseRelevantFromFound(const core::vector<SAssetBundle>& found, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel)
+        inline virtual SAssetBundle chooseRelevantFromFound(const SAssetBundle* foundBegin, const SAssetBundle* foundEnd, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel)
         {
-            return found.front();
+            return *foundBegin;
         }
 
         //! Only called when the asset was searched for, no correct asset was found
@@ -147,64 +193,66 @@ public:
 			// otherwise it was already absolute
 		}
 
-        // (Criss) Also what does this one?
-        inline virtual io::IReadFile* getLoadFile(io::IReadFile* inFile, const std::string& supposedFilename, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel)
-        {
-            return inFile;
-        }
-        // I would really like to merge getLoadFilename and getLoadFile into one function!
+		//! This function can be used to swap out the actually opened (or unknown unopened file if `inFile` is nullptr) file for a different one.
+		/** Especially useful if you've used some sort of a fake path and the file won't load from that path just via `io::IFileSystem` . */
+		inline virtual io::IReadFile* getLoadFile(io::IReadFile* inFile, const std::string& supposedFilename, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel)
+		{
+			return inFile;
+		}
 
-        //! When you sometimes have different passwords for different assets
-        /** \param inOutDecrKeyLen expects length of buffer `outDecrKey`, then function writes into it length of actual key.
-                Write to `outDecrKey` happens only if output value of `inOutDecrKeyLen` is less or equal to input value of `inOutDecrKeyLen`.
-        \param supposedFilename is the string after modification by getLoadFilename.
-        \param attempt if decryption or validation algorithm supports reporting failure, you can try different key*/
-        inline virtual bool getDecryptionKey(uint8_t* outDecrKey, size_t& inOutDecrKeyLen, const uint32_t& attempt, const io::IReadFile* assetsFile, const std::string& supposedFilename, const std::string& cacheKey, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel)
-        {
-            if (ctx.params.decryptionKeyLen <= inOutDecrKeyLen)
-                memcpy(outDecrKey, ctx.params.decryptionKey, ctx.params.decryptionKeyLen);
-            inOutDecrKeyLen = ctx.params.decryptionKeyLen;
-            return attempt == 0u; // no failed attempts
-        }
+		//! When you sometimes have different passwords for different assets
+		/** \param inOutDecrKeyLen expects length of buffer `outDecrKey`, then function writes into it length of actual key.
+				Write to `outDecrKey` happens only if output value of `inOutDecrKeyLen` is less or equal to input value of `inOutDecrKeyLen`.
+		\param supposedFilename is the string after modification by getLoadFilename.
+		\param attempt if decryption or validation algorithm supports reporting failure, you can try different key*/
+		inline virtual bool getDecryptionKey(uint8_t* outDecrKey, size_t& inOutDecrKeyLen, const uint32_t& attempt, const io::IReadFile* assetsFile, const std::string& supposedFilename, const std::string& cacheKey, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel)
+		{
+			if (ctx.params.decryptionKeyLen <= inOutDecrKeyLen)
+				memcpy(outDecrKey, ctx.params.decryptionKey, ctx.params.decryptionKeyLen);
+			inOutDecrKeyLen = ctx.params.decryptionKeyLen;
+			return attempt == 0u; // no failed attempts
+		}
 
-        //! Only called when the was unable to be loaded
-        inline virtual SAssetBundle handleLoadFail(bool& outAddToCache, const io::IReadFile* assetsFile, const std::string& supposedFilename, const std::string& cacheKey, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel)
-        {
-            outAddToCache = false; // if you want to return a “default error asset”
-            return SAssetBundle();
-        }
+		//! Only called when the was unable to be loaded
+		inline virtual SAssetBundle handleLoadFail(bool& outAddToCache, const io::IReadFile* assetsFile, const std::string& supposedFilename, const std::string& cacheKey, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel)
+		{
+			outAddToCache = false; // if you want to return a “default error asset”
+			return SAssetBundle();
+		}
 
-        //! After a successful load of an asset or sub-asset
-        //TODO change name
-        virtual void insertAssetIntoCache(SAssetBundle& asset, const std::string& supposedKey, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel);
-    };
+		//! After a successful load of an asset or sub-asset
+		//TODO change name
+		virtual void insertAssetIntoCache(SAssetBundle& asset, const std::string& supposedKey, const SAssetLoadContext& ctx, const uint32_t& hierarchyLevel);
+	};
 
 public:
-    //! Check if the file might be loaded by this class
-    /** Check might look into the file.
-    \param file File handle to check.
-    \return True if file seems to be loadable. */
-    virtual bool isALoadableFileFormat(io::IReadFile* _file) const = 0;
+	//! Check if the file might be loaded by this class
+	/** Check might look into the file.
+	\param file File handle to check.
+	\return True if file seems to be loadable. */
+	virtual bool isALoadableFileFormat(io::IReadFile* _file) const = 0;
 
-    //! Returns an array of string literals terminated by nullptr
-    virtual const char** getAssociatedFileExtensions() const = 0;
+	//! Returns an array of string literals terminated by nullptr
+	virtual const char** getAssociatedFileExtensions() const = 0;
 
-    //! Returns the assets loaded by the loader
-    /** Bits of the returned value correspond to each IAsset::E_TYPE
-    enumeration member, and the return value cannot be 0. */
-    virtual uint64_t getSupportedAssetTypesBitfield() const { return 0; }
+	//! Returns the assets loaded by the loader
+	/** Bits of the returned value correspond to each IAsset::E_TYPE
+	enumeration member, and the return value cannot be 0. */
+	virtual uint64_t getSupportedAssetTypesBitfield() const { return 0; }
 
-    //! Loads an asset from an opened file, returns nullptr in case of failure.
-    virtual SAssetBundle loadAsset(io::IReadFile* _file, const SAssetLoadParams& _params, IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) = 0;
+	//! Loads an asset from an opened file, returns nullptr in case of failure.
+	virtual SAssetBundle loadAsset(io::IReadFile* _file, const SAssetLoadParams& _params, IAssetLoaderOverride* _override = nullptr, uint32_t _hierarchyLevel = 0u) = 0;
 
 protected:
-    // accessors for loaders
-    SAssetBundle interm_getAssetInHierarchy(IAssetManager* _mgr, io::IReadFile* _file, const std::string& _supposedFilename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel, IAssetLoader::IAssetLoaderOverride* _override);
-    SAssetBundle interm_getAssetInHierarchy(IAssetManager* _mgr, const std::string& _filename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel, IAssetLoader::IAssetLoaderOverride* _override);
-    SAssetBundle interm_getAssetInHierarchy(IAssetManager* _mgr, io::IReadFile* _file, const std::string& _supposedFilename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel);
-    SAssetBundle interm_getAssetInHierarchy(IAssetManager* _mgr, const std::string& _filename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel);
+	// accessors for loaders
+	SAssetBundle interm_getAssetInHierarchy(IAssetManager* _mgr, io::IReadFile* _file, const std::string& _supposedFilename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel, IAssetLoader::IAssetLoaderOverride* _override);
+	SAssetBundle interm_getAssetInHierarchy(IAssetManager* _mgr, const std::string& _filename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel, IAssetLoader::IAssetLoaderOverride* _override);
+	SAssetBundle interm_getAssetInHierarchy(IAssetManager* _mgr, io::IReadFile* _file, const std::string& _supposedFilename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel);
+	SAssetBundle interm_getAssetInHierarchy(IAssetManager* _mgr, const std::string& _filename, const IAssetLoader::SAssetLoadParams& _params, uint32_t _hierarchyLevel);
+    void interm_setAssetMutable(const IAssetManager* _mgr, IAsset* _asset, bool _val);
 };
 
-}}
+}
+}
 
 #endif

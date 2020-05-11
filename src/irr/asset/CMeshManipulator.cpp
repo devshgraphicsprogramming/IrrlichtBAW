@@ -12,7 +12,6 @@
 
 #include "os.h"
 #include "irr/asset/asset.h"
-#include "irr/asset/normal_quantization.h"
 #include "irr/asset/CMeshManipulator.h"
 #include "irr/asset/CSmoothNormalGenerator.h"
 #include "irr/asset/CForsythVertexCacheOptimizer.h"
@@ -23,18 +22,12 @@ namespace irr
 namespace asset
 {
 
-// declared as extern in SVertexManipulator.h
-core::vector<QuantizationCacheEntry2_10_10_10> normalCacheFor2_10_10_10Quant;
-core::vector<QuantizationCacheEntry8_8_8> normalCacheFor8_8_8Quant;
-core::vector<QuantizationCacheEntry16_16_16> normalCacheFor16_16_16Quant;
-core::vector<QuantizationCacheEntryHalfFloat> normalCacheForHalfFloatQuant;
-
-
 //! Flips the direction of surfaces. Changes backfacing triangles to frontfacing
 //! triangles and vice versa.
 //! \param mesh: Mesh on which the operation is performed.
 void IMeshManipulator::flipSurfaces(ICPUMeshBuffer* inbuffer)
 {
+#ifndef NEW_SHADERS
 	if (!inbuffer)
 		return;
 
@@ -133,10 +126,12 @@ void IMeshManipulator::flipSurfaces(ICPUMeshBuffer* inbuffer)
         default: break;
         }
     }
+#endif
 }
 
 core::smart_refctd_ptr<ICPUMeshBuffer> CMeshManipulator::createMeshBufferFetchOptimized(const ICPUMeshBuffer* _inbuffer)
 {
+#ifndef NEW_SHADERS
 	if (!_inbuffer || !_inbuffer->getMeshDataAndFormat() || !_inbuffer->getIndices())
 		return NULL;
 
@@ -240,11 +235,15 @@ core::smart_refctd_ptr<ICPUMeshBuffer> CMeshManipulator::createMeshBufferFetchOp
 	_IRR_DEBUG_BREAK_IF(nextVert > vertexCount)
 
 	return outbuffer;
+#else
+    return nullptr;
+#endif
 }
 
 //! Creates a copy of the mesh, which will only consist of unique primitives
 core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::createMeshBufferUniquePrimitives(ICPUMeshBuffer* inbuffer, bool _makeIndexBuf)
 {
+#ifndef NEW_SHADERS
 	if (!inbuffer)
 		return 0;
     IMeshDataFormatDesc<ICPUBuffer>* oldDesc = inbuffer->getMeshDataAndFormat();
@@ -348,10 +347,13 @@ core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::createMeshBufferUniqueP
 	}
 
 	return clone;
+#else
+    return nullptr;
+#endif
 }
 
 //
-core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::calculateSmoothNormals(ICPUMeshBuffer* inbuffer, bool makeNewMesh, float epsilon, E_VERTEX_ATTRIBUTE_ID normalAttrID, VxCmpFunction vxcmp)
+core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::calculateSmoothNormals(ICPUMeshBuffer* inbuffer, bool makeNewMesh, float epsilon, uint32_t normalAttrID, VxCmpFunction vxcmp)
 {
 	if (inbuffer == nullptr)
 	{
@@ -375,6 +377,7 @@ core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::calculateSmoothNormals(
 // Used by createMeshBufferWelded only
 static bool cmpVertices(ICPUMeshBuffer* _inbuf, const void* _va, const void* _vb, size_t _vsize, const IMeshManipulator::SErrorMetric* _errMetrics)
 {
+#ifndef NEW_SHADERS
     auto cmpInteger = [](uint32_t* _a, uint32_t* _b, size_t _n) -> bool {
         return !memcmp(_a, _b, _n*4);
     };
@@ -412,11 +415,15 @@ static bool cmpVertices(ICPUMeshBuffer* _inbuf, const void* _va, const void* _vb
     }
 
     return true;
+#else
+    return false;
+#endif
 }
 
 //! Creates a copy of a mesh, which will have identical vertices welded together
 core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::createMeshBufferWelded(ICPUMeshBuffer *inbuffer, const SErrorMetric* _errMetrics, const bool& optimIndexType, const bool& makeNewMesh)
 {
+#ifndef NEW_SHADERS
     if (!inbuffer)
         return nullptr;
     IMeshDataFormatDesc<ICPUBuffer>* oldDesc = inbuffer->getMeshDataAndFormat();
@@ -554,10 +561,14 @@ core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::createMeshBufferWelded(
         return clone;
     else
         return core::smart_refctd_ptr<ICPUMeshBuffer>(inbuffer);
+#else
+    return nullptr;
+#endif
 }
 
 core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::createOptimizedMeshBuffer(const ICPUMeshBuffer* _inbuffer, const SErrorMetric* _errMetric)
 {
+#ifndef NEW_SHADERS
 	if (!_inbuffer)
 		return nullptr;
 	auto outbuffer = createMeshBufferDuplicate(_inbuffer);
@@ -726,10 +737,14 @@ core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::createOptimizedMeshBuff
 	}
 
 	return outbuffer;
+#else
+    return nullptr;
+#endif
 }
 
 void IMeshManipulator::requantizeMeshBuffer(ICPUMeshBuffer* _meshbuffer, const SErrorMetric* _errMetric)
 {
+#ifndef NEW_SHADERS
 	CMeshManipulator::SAttrib newAttribs[EVAI_COUNT];
 	for (size_t i = 0u; i < EVAI_COUNT; ++i)
 		newAttribs[i].vaid = (E_VERTEX_ATTRIBUTE_ID)i;
@@ -807,43 +822,52 @@ void IMeshManipulator::requantizeMeshBuffer(ICPUMeshBuffer* _meshbuffer, const S
 			}
 		}
 	}
+#endif
 }
 
 
 template<>
 void CMeshManipulator::copyMeshBufferMemberVars<ICPUMeshBuffer>(ICPUMeshBuffer* _dst, const ICPUMeshBuffer* _src)
 {
-    _dst->setBaseInstance(
-        _src->getBaseInstance()
-    );
-    _dst->setBaseVertex(
-        _src->getBaseVertex()
-    );
-    _dst->setIndexBufferOffset(
-        _src->getIndexBufferOffset()
-    );
-    _dst->setBoundingBox(
-        _src->getBoundingBox()
-    );
-    _dst->setIndexCount(
-        _src->getIndexCount()
-    );
-    _dst->setIndexType(
-        _src->getIndexType()
-    );
+	_dst->setBoundingBox(
+		_src->getBoundingBox()
+	);
+	for (uint32_t i = 0u; i < ICPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT; i++)
+		_dst->setVertexBufferBinding(
+			SBufferBinding(_src->getVertexBufferBindings()[i]), i
+		);
+	_dst->setIndexBufferBinding(
+		SBufferBinding(_src->getIndexBufferBinding())
+	);/*
+	_dst->setAttachedDescriptorSet(
+		core::smart_refctd_ptr<ICPUDescriptorSet>(_src->getAttachedDescriptorSet())
+	);
+	_dst->setPipeline(
+		core::smart_refctd_ptr<ICPURenderpassIndependentPipeline>(_src->getPipeline())
+	);*/
+	_dst->setIndexType(
+		_src->getIndexType()
+	);
+	_dst->setBaseVertex(
+		_src->getBaseVertex()
+	);
+	memcpy(_dst->getPushConstantsDataPtr(),_src->getPushConstantsDataPtr(),ICPUMeshBuffer::MAX_PUSH_CONSTANT_BYTESIZE);
+	_dst->setIndexCount(
+		_src->getIndexCount()
+	);
     _dst->setInstanceCount(
         _src->getInstanceCount()
     );
-    _dst->setPrimitiveType(
-        _src->getPrimitiveType()
-    );
+	_dst->setBaseInstance(
+		_src->getBaseInstance()
+	);
     _dst->setPositionAttributeIx(
         _src->getPositionAttributeIx()
     );
 	_dst->setNormalnAttributeIx(
 		_src->getNormalAttributeIx()
 	);
-    _dst->getMaterial() = _src->getMaterial();
+    //_dst->getMaterial() = _src->getMaterial();
 }
 template<>
 void CMeshManipulator::copyMeshBufferMemberVars<ICPUSkinnedMeshBuffer>(ICPUSkinnedMeshBuffer* _dst, const ICPUSkinnedMeshBuffer* _src)
@@ -860,6 +884,7 @@ void CMeshManipulator::copyMeshBufferMemberVars<ICPUSkinnedMeshBuffer>(ICPUSkinn
 
 core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::createMeshBufferDuplicate(const ICPUMeshBuffer* _src)
 {
+#ifndef NEW_SHADERS
 	if (!_src)
 		return nullptr;
 
@@ -919,11 +944,14 @@ core::smart_refctd_ptr<ICPUMeshBuffer> IMeshManipulator::createMeshBufferDuplica
 	dst->setMeshDataAndFormat(std::move(newDesc));
 
 	return dst;
+#else
+    return nullptr;
+#endif
 }
 
 void IMeshManipulator::filterInvalidTriangles(ICPUMeshBuffer* _input)
 {
-    if (!_input || !_input->getMeshDataAndFormat() || !_input->getIndices())
+    if (!_input || !_input->getPipeline() || !_input->getIndices())
         return;
 
     switch (_input->getIndexType())
@@ -951,7 +979,7 @@ void CMeshManipulator::_filterInvalidTriangles(ICPUMeshBuffer* _input)
     Triangle* const newEnd = std::remove_if(begin, end,
         [&_input](const Triangle& _t) {
             core::vectorSIMDf p0, p1, p2;
-            const E_VERTEX_ATTRIBUTE_ID pvaid = _input->getPositionAttributeIx();
+            const uint32_t pvaid = _input->getPositionAttributeIx();
             _input->getAttribute(p0, pvaid, _t.i[0]);
             _input->getAttribute(p1, pvaid, _t.i[1]);
             _input->getAttribute(p2, pvaid, _t.i[2]);
@@ -962,24 +990,28 @@ void CMeshManipulator::_filterInvalidTriangles(ICPUMeshBuffer* _input)
     auto newBuf = core::make_smart_refctd_ptr<ICPUBuffer>(newSize);
     memcpy(newBuf->getPointer(), copy, newSize);
     _IRR_ALIGNED_FREE(copy);
-    _input->getMeshDataAndFormat()->setIndexBuffer(std::move(newBuf));
-    _input->setIndexBufferOffset(0);
+
+    SBufferBinding<ICPUBuffer> idxBufBinding;
+    idxBufBinding.offset = 0ull;
+    idxBufBinding.buffer = std::move(newBuf);
+    _input->setIndexBufferBinding(std::move(idxBufBinding));
     _input->setIndexCount(newSize/sizeof(IdxT));
 }
 template void CMeshManipulator::_filterInvalidTriangles<uint16_t>(ICPUMeshBuffer* _input);
 template void CMeshManipulator::_filterInvalidTriangles<uint32_t>(ICPUMeshBuffer* _input);
 
-core::vector<core::vectorSIMDf> CMeshManipulator::findBetterFormatF(E_FORMAT* _outType, size_t* _outSize, E_FORMAT* _outPrevType, const ICPUMeshBuffer* _meshbuffer, E_VERTEX_ATTRIBUTE_ID _attrId, const SErrorMetric& _errMetric)
+core::vector<core::vectorSIMDf> CMeshManipulator::findBetterFormatF(E_FORMAT* _outType, size_t* _outSize, E_FORMAT* _outPrevType, const ICPUMeshBuffer* _meshbuffer, uint32_t _attrId, const SErrorMetric& _errMetric, CQuantNormalCache& _cache)
 {
-	const E_FORMAT thisType = _meshbuffer->getMeshDataAndFormat()->getAttribFormat(_attrId);
+	if (!_meshbuffer->getPipeline())
+        return {};
+
+	const E_FORMAT thisType = _meshbuffer->getAttribFormat(_attrId);
 
     if (!isFloatingPointFormat(thisType) && !isNormalizedFormat(thisType) && !isScaledFormat(thisType))
         return {};
 
 	core::vector<core::vectorSIMDf> attribs;
 
-	if (!_meshbuffer->getMeshDataAndFormat())
-		return attribs;
 
     const uint32_t cpa = getFormatChannelCount(thisType);
 
@@ -1010,7 +1042,7 @@ core::vector<core::vectorSIMDf> CMeshManipulator::findBetterFormatF(E_FORMAT* _o
 
 	for (const SAttribTypeChoice& t : possibleTypes)
 	{
-		if (calcMaxQuantizationError({ thisType }, t, attribs, _errMetric))
+		if (calcMaxQuantizationError({ thisType }, t, attribs, _errMetric, _cache))
 		{
             if (getTexelOrBlockBytesize(t.type) < getTexelOrBlockBytesize(thisType))
             {
@@ -1025,9 +1057,12 @@ core::vector<core::vectorSIMDf> CMeshManipulator::findBetterFormatF(E_FORMAT* _o
 	return attribs;
 }
 
-core::vector<CMeshManipulator::SIntegerAttr> CMeshManipulator::findBetterFormatI(E_FORMAT* _outType, size_t* _outSize, E_FORMAT* _outPrevType, const ICPUMeshBuffer* _meshbuffer, E_VERTEX_ATTRIBUTE_ID _attrId, const SErrorMetric& _errMetric)
+core::vector<CMeshManipulator::SIntegerAttr> CMeshManipulator::findBetterFormatI(E_FORMAT* _outType, size_t* _outSize, E_FORMAT* _outPrevType, const ICPUMeshBuffer* _meshbuffer, uint32_t _attrId, const SErrorMetric& _errMetric)
 {
-    const E_FORMAT thisType = _meshbuffer->getMeshDataAndFormat()->getAttribFormat(_attrId);
+	if (!_meshbuffer->getPipeline())
+        return {};
+
+    const E_FORMAT thisType = _meshbuffer->getAttribFormat(_attrId);
 
     if (!isIntegerFormat(thisType))
         return {};
@@ -1037,8 +1072,6 @@ core::vector<CMeshManipulator::SIntegerAttr> CMeshManipulator::findBetterFormatI
 
 	core::vector<SIntegerAttr> attribs;
 
-	if (!_meshbuffer->getMeshDataAndFormat())
-		return attribs;
 
     const uint32_t cpa = getFormatChannelCount(thisType);
 
@@ -1419,11 +1452,11 @@ core::vector<CMeshManipulator::SAttribTypeChoice> CMeshManipulator::findTypesOfP
 	return possibleTypes;
 }
 
-bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcType, const SAttribTypeChoice& _dstType, const core::vector<core::vectorSIMDf>& _srcData, const SErrorMetric& _errMetric)
+bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcType, const SAttribTypeChoice& _dstType, const core::vector<core::vectorSIMDf>& _srcData, const SErrorMetric& _errMetric, CQuantNormalCache& _cache)
 {
     using namespace video;
 
-	using QuantF_t = core::vectorSIMDf(*)(const core::vectorSIMDf&, E_FORMAT, E_FORMAT);
+	using QuantF_t = core::vectorSIMDf(*)(const core::vectorSIMDf&, E_FORMAT, E_FORMAT, CQuantNormalCache & _cache);
 
 	QuantF_t quantFunc = nullptr;
 
@@ -1435,9 +1468,9 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
         case EF_R8G8_SNORM:
         case EF_R8G8B8_SNORM:
         case EF_R8G8B8A8_SNORM:
-			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT) -> core::vectorSIMDf {
+			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT, CQuantNormalCache& _cache) -> core::vectorSIMDf {
 				uint8_t buf[32];
-				((uint32_t*)buf)[0] = quantizeNormal888(_in);
+				((uint32_t*)buf)[0] = _cache.quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_8_8_8>(_in);
 
 				core::vectorSIMDf retval;
 				ICPUMeshBuffer::getAttribute(retval, buf, EF_R8G8B8A8_SNORM);
@@ -1447,9 +1480,9 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
 			break;
 		case EF_A2R10G10B10_SNORM_PACK32:
 		case EF_A2B10G10R10_SNORM_PACK32: // bgra
-			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT) -> core::vectorSIMDf {
+			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT, CQuantNormalCache& _cache) -> core::vectorSIMDf {
 				uint8_t buf[32];
-				((uint32_t*)buf)[0] = quantizeNormal2_10_10_10(_in);
+				((uint32_t*)buf)[0] = _cache.quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(_in);
 
 				core::vectorSIMDf retval;
 				ICPUMeshBuffer::getAttribute(retval, buf, EF_A2R10G10B10_SNORM_PACK32);
@@ -1461,26 +1494,12 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
         case EF_R16G16_SNORM:
         case EF_R16G16B16_SNORM:
         case EF_R16G16B16A16_SNORM:
-			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT) -> core::vectorSIMDf {
+			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT, CQuantNormalCache& _cache) -> core::vectorSIMDf {
 				uint8_t buf[32];
-				((uint64_t*)buf)[0] = quantizeNormal16_16_16(_in);
+				((uint64_t*)buf)[0] = _cache.quantizeNormal<E_QUANT_NORM_CACHE_TYPE::Q_16_16_16>(_in);
 
 				core::vectorSIMDf retval;
 				ICPUMeshBuffer::getAttribute(retval, buf, EF_R16G16B16A16_SNORM);
-				retval.w = 1.f;
-				return retval;
-			};
-			break;
-        case EF_R16_SFLOAT:
-        case EF_R16G16_SFLOAT:
-        case EF_R16G16B16_SFLOAT:
-        case EF_R16G16B16A16_SFLOAT:
-			quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT, E_FORMAT) -> core::vectorSIMDf {
-				uint8_t buf[32];
-				((uint64_t*)buf)[0] = quantizeNormalHalfFloat(_in);
-
-				core::vectorSIMDf retval;
-				ICPUMeshBuffer::getAttribute(retval, buf, EF_R16G16B16A16_SFLOAT);
 				retval.w = 1.f;
 				return retval;
 			};
@@ -1492,7 +1511,7 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
 	}
 	else
 	{
-		quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT _inType, E_FORMAT _outType) -> core::vectorSIMDf {
+		quantFunc = [](const core::vectorSIMDf& _in, E_FORMAT _inType, E_FORMAT _outType, CQuantNormalCache& _cache) -> core::vectorSIMDf {
 			uint8_t buf[32];
 			ICPUMeshBuffer::setAttribute(_in, buf, _outType);
 			core::vectorSIMDf out(0.f, 0.f, 0.f, 1.f);
@@ -1507,7 +1526,7 @@ bool CMeshManipulator::calcMaxQuantizationError(const SAttribTypeChoice& _srcTyp
 
 	for (const core::vectorSIMDf& d : _srcData)
 	{
-		const core::vectorSIMDf quantized = quantFunc(d, _srcType.type, _dstType.type);
+		const core::vectorSIMDf quantized = quantFunc(d, _srcType.type, _dstType.type, _cache);
         if (!compareFloatingPointAttribute(d, quantized, getFormatChannelCount(_srcType.type), _errMetric))
             return false;
 	}

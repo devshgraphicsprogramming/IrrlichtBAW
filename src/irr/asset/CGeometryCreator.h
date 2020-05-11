@@ -16,7 +16,7 @@ namespace asset
 //! class for creating geometry on the fly
 class CGeometryCreator : public IGeometryCreator
 {
-	private:
+	public:
 	#include "irr/irrpack.h"
 		struct CubeVertex
 		{
@@ -33,6 +33,10 @@ class CGeometryCreator : public IGeometryCreator
 			void setUv(uint8_t u, uint8_t v) { uv[0] = u; uv[1] = v; }
 		} PACK_STRUCT;
 
+	public:
+		CGeometryCreator(IMeshManipulator* const _defaultMeshManipulator);
+
+		private:
 		struct RectangleVertex
 		{
 			RectangleVertex(const core::vector3df_SIMD& _pos, const video::SColor& _color, const core::vector2du32_SIMD _uv, const core::vector3df_SIMD _normal)
@@ -75,30 +79,51 @@ class CGeometryCreator : public IGeometryCreator
 			float uv[2];
 			uint32_t normal;
 		} PACK_STRUCT;
+
+		struct IcosphereVertex
+		{
+			IcosphereVertex() : pos{ 0.f, 0.f, 0.f }, normals{ 0.f, 0.f, 0.f }, uv{ 0.f, 0.f } {}
+
+			float pos[3];
+			float normals[3];
+			float uv[2];
+		} PACK_STRUCT;
 	#include "irr/irrunpack.h"
 
+
+		using SphereVertex = CylinderVertex;
+		using ArrowVertex = CylinderVertex;
+
+		//smart_refctd_ptr?
+		IMeshManipulator* const defaultMeshManipulator;
+
 	public:
-		core::smart_refctd_ptr<asset::ICPUMesh> createCubeMesh(const core::vector3df& size) const override;
+		return_type createCubeMesh(const core::vector3df& size) const override;
 
-		core::smart_refctd_ptr<asset::ICPUMesh> createArrowMesh(const uint32_t tesselationCylinder,
-				const uint32_t tesselationCone, const float height,
-				const float cylinderHeight, const float width0,
-				const float width1, const video::SColor vtxColor0,
-				const video::SColor vtxColor1) const override;
+		return_type createArrowMesh(const uint32_t tesselationCylinder,
+									const uint32_t tesselationCone, const float height,
+									const float cylinderHeight, const float width0,
+									const float width1, const video::SColor vtxColor0,
+									const video::SColor vtxColor1,
+									IMeshManipulator* const meshManipulatorOverride = nullptr) const override;
 
-		core::smart_refctd_ptr<asset::ICPUMesh> createSphereMesh(float radius, uint32_t polyCountX, uint32_t polyCountY) const override;
+		return_type createSphereMesh(float radius, uint32_t polyCountX, uint32_t polyCountY, IMeshManipulator* const meshManipulatorOverride = nullptr) const override;
 
-		core::smart_refctd_ptr<asset::ICPUMesh> createCylinderMesh(float radius, float length, uint32_t tesselation,
-					const video::SColor& color=0xffffffff) const override;
+		return_type createCylinderMesh(	float radius, float length, uint32_t tesselation,
+										const video::SColor& color=0xffffffff,
+										IMeshManipulator* const meshManipulatorOverride = nullptr) const override;
 
-		core::smart_refctd_ptr<asset::ICPUMesh> createConeMesh(float radius, float length, uint32_t tesselation,
-					const video::SColor& colorTop=0xffffffff,
-					const video::SColor& colorBottom=0xffffffff,
-					float oblique=0.f) const override;
+		return_type createConeMesh(	float radius, float length, uint32_t tesselation,
+									const video::SColor& colorTop=0xffffffff,
+									const video::SColor& colorBottom=0xffffffff,
+									float oblique=0.f,
+									IMeshManipulator* const meshManipulatorOverride = nullptr) const override;
 
-		core::smart_refctd_ptr<asset::ICPUMesh> createRectangleMesh(const core::vector2df_SIMD& _size = core::vector2df_SIMD(0.5f, 0.5f)) const override;
+		return_type createRectangleMesh(const core::vector2df_SIMD& _size = core::vector2df_SIMD(0.5f, 0.5f)) const override;
 
-		core::smart_refctd_ptr<asset::ICPUMesh> createDiskMesh(float radius, uint32_t tesselation) const override;
+		return_type createDiskMesh(float radius, uint32_t tesselation) const override;
+
+		return_type createIcoSphere(float radius = 1.0f, uint32_t subdivision = 1, bool smooth = false) const override;
 
 };
 

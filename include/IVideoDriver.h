@@ -10,67 +10,17 @@
 #include "matrixutil.h"
 #include "dimension2d.h"
 #include "position2d.h"
-#include "SMaterial.h"
 #include "IDriverFence.h"
-#include "ITransformFeedback.h"
 #include "SExposedVideoData.h"
 #include "IDriver.h"
 #include "irr/video/CDerivativeMapCreator.h"
+#include "irr/video/IGPUBufferView.h"
+#include "irr/video/IGPURenderpassIndependentPipeline.h"
 
 namespace irr
 {
-namespace io
-{
-	class IReadFile;
-	class IWriteFile;
-} // end namespace io
-
 namespace video
 {
-	class CImageData;
-	class IImageLoader;
-	class IImageWriter;
-	class IMaterialRenderer;
-	class IGPUProgrammingServices;
-
-	//! enumeration for geometry transformation states
-	enum E_4X3_TRANSFORMATION_STATE
-	{
-		//! View transformation
-		E4X3TS_VIEW = 0,
-		//! World transformation
-		E4X3TS_WORLD,
-		//!
-		E4X3TS_WORLD_VIEW,
-		//!
-		E4X3TS_VIEW_INVERSE,
-		//!
-		E4X3TS_WORLD_INVERSE,
-		//!
-		E4X3TS_WORLD_VIEW_INVERSE,
-		//!
-		E4X3TS_NORMAL_MATRIX,
-		//! Not used
-		E4X3TS_COUNT
-	};
-	enum E_PROJECTION_TRANSFORMATION_STATE
-	{
-		//! Projection transformation
-		EPTS_PROJ,
-		//!
-		EPTS_PROJ_VIEW,
-		//!
-		EPTS_PROJ_VIEW_WORLD,
-		//!
-		EPTS_PROJ_INVERSE,
-		//!
-		EPTS_PROJ_VIEW_INVERSE,
-		//!
-		EPTS_PROJ_VIEW_WORLD_INVERSE,
-		//! Not used
-		EPTS_COUNT
-	};
-
 	enum E_SCREEN_BUFFERS
 	{
 		ESB_FRONT_LEFT=0,
@@ -78,41 +28,35 @@ namespace video
 		ESB_BACK_LEFT,
 		ESB_BACK_RIGHT
 	};
+    enum E_PIPELINE_BIND_POINT
+    {
+        EPBP_GRAPHICS = 0,
+        EPBP_COMPUTE = 1,
+        EPBP_COUNT
+    };
 
-	enum E_MIP_CHAIN_ERROR
-	{
-	    EMCE_NO_ERR=0,
-	    EMCE_SUB_IMAGE_OUT_OF_BOUNDS,
-	    EMCE_MIP_LEVEL_OUT_OF_BOUND,
-	    EMCE_INVALID_IMAGE,
-	    EMCE_OTHER_ERR
-	};
-
-	//! Interface to driver which is able to perform 2d and 3d graphics functions.
-	/** This interface is one of the most important interfaces of
-	the Irrlicht Engine: All rendering and texture manipulation is done with
-	this interface. You are able to use the Irrlicht Engine by only
-	invoking methods of this interface if you like to, although the
-	irr::scene::ISceneManager interface provides a lot of powerful classes
-	and methods to make the programmer's life easier.
-	*/
+	//! Legacy and deprecated system
 	class IVideoDriver : public IDriver
 	{
 	public:
         IVideoDriver(IrrlichtDevice* _dev) : IDriver(_dev) {}
 
 
-
         virtual bool initAuxContext() = 0;
         virtual bool deinitAuxContext() = 0;
 
 
-        virtual bool isAllowedVertexAttribFormat(asset::E_FORMAT _fmt) const = 0;
-        virtual bool isColorRenderableFormat(asset::E_FORMAT _fmt) const = 0;
-        virtual bool isAllowedImageStoreFormat(asset::E_FORMAT _fmt) const = 0;
-        virtual bool isAllowedTextureFormat(asset::E_FORMAT _fmt) const = 0;
-        virtual bool isHardwareBlendableFormat(asset::E_FORMAT _fmt) const = 0;
+        virtual bool bindGraphicsPipeline(const video::IGPURenderpassIndependentPipeline* _gpipeline) = 0;
 
+        virtual bool bindComputePipeline(const video::IGPUComputePipeline* _cpipeline) = 0;
+
+        virtual bool bindDescriptorSets(E_PIPELINE_BIND_POINT _pipelineType, const IGPUPipelineLayout* _layout,
+            uint32_t _first, uint32_t _count, const IGPUDescriptorSet* const* _descSets, core::smart_refctd_dynamic_array<uint32_t>* _dynamicOffsets) = 0;
+
+        virtual bool dispatch(uint32_t _groupCountX, uint32_t _groupCountY, uint32_t _groupCountZ) = 0;
+        virtual bool dispatchIndirect(const IGPUBuffer* _indirectBuf, size_t _offset) = 0;
+
+        virtual bool pushConstants(const IGPUPipelineLayout* _layout, uint32_t _stages, uint32_t _offset, uint32_t _size, const void* _values) = 0;
 
 		//! Applications must call this method before performing any rendering.
 		/** This method can clear the back- and the z-buffer.
@@ -146,63 +90,26 @@ namespace video
 		//!
 		virtual void issueGPUTextureBarrier() =0;
 
-		//! Sets transformation matrices.
-		/** \param state Transformation type to be set, e.g. view,
-		world, or projection.
-		\param mat Matrix describing the transformation. */
-		virtual void setTransform(const E_4X3_TRANSFORMATION_STATE& state, const core::matrix3x4SIMD& mat) =0;
-
-		virtual void setTransform(const E_PROJECTION_TRANSFORMATION_STATE& state, const core::matrix4SIMD& mat) =0;
-
-		//! Returns the transformation set by setTransform
-		/** \param state Transformation type to query
-		\return Matrix describing the transformation. */
-		virtual const core::matrix3x4SIMD& getTransform(const E_4X3_TRANSFORMATION_STATE& state) =0;
-
-		virtual const core::matrix4SIMD& getTransform(const E_PROJECTION_TRANSFORMATION_STATE& state) =0;
-
-		//! Sets a material.
-		/** All 3d drawing functions will draw geometry using this material thereafter.
-		\param material: Material to be used from now on. */
-		virtual void setMaterial(const SGPUMaterial& material) =0;
-
-        //! A.
-        virtual IMultisampleTexture* addMultisampleTexture(const IMultisampleTexture::E_MULTISAMPLE_TEXTURE_TYPE& type, const uint32_t& samples, const uint32_t* size,
-                                                           asset::E_FORMAT format = asset::EF_B8G8R8A8_UNORM, const bool& fixedSampleLocations = false) {return nullptr;}
-
-        //! A.
-        virtual ITextureBufferObject* addTextureBufferObject(IGPUBuffer* buf, const ITextureBufferObject::E_TEXURE_BUFFER_OBJECT_FORMAT& format = ITextureBufferObject::ETBOF_RGBA8,
-                                                             const size_t& offset=0, const size_t& length=0) {return nullptr;}
-
+		//!
 		virtual void blitRenderTargets(IFrameBuffer* in, IFrameBuffer* out,
                                         bool copyDepth=true, bool copyStencil=true,
 										core::recti srcRect=core::recti(0,0,0,0),
 										core::recti dstRect=core::recti(0,0,0,0),
-										bool bilinearFilter=false) = 0;
+										bool bilinearFilter=false) {}
 
-		virtual void removeMultisampleTexture(IMultisampleTexture* tex) =0;
-
-		virtual void removeTextureBufferObject(ITextureBufferObject* tbo) =0;
-
-        virtual void removeFrameBuffer(IFrameBuffer* framebuf) = 0;
-
-		virtual void removeAllMultisampleTextures() =0;
-
-		virtual void removeAllTextureBufferObjects() =0;
+		//!
+		virtual void removeFrameBuffer(IFrameBuffer* framebuf) {}
 
 		//! This only removes all IFrameBuffers created in the calling thread.
-		virtual void removeAllFrameBuffers() =0;
+		virtual void removeAllFrameBuffers() {}
 
 
 		//! Queries
 		virtual void beginQuery(IQueryObject* query) = 0;
 		virtual void endQuery(IQueryObject* query) = 0;
-		virtual void beginQuery(IQueryObject* query, const size_t& index) = 0;
-		virtual void endQuery(IQueryObject* query, const size_t& index) = 0;
-
 
 		//! Sets new multiple render targets.
-		virtual bool setRenderTarget(IFrameBuffer* frameBuffer, bool setNewViewport=true) = 0;
+		virtual bool setRenderTarget(IFrameBuffer* frameBuffer, bool setNewViewport=true) {return false;}
 
 		//! Clears the ZBuffer.
 		/** Note that you usually need not to call this method, as it
@@ -211,211 +118,46 @@ namespace video
 		you have to render some special things, you can clear the
 		zbuffer during the rendering process with this method any time.
 		*/
-		virtual void clearZBuffer(const float &depth=0.0) =0;
+		virtual void clearZBuffer(const float &depth=0.0) {}
 
-		virtual void clearStencilBuffer(const int32_t &stencil) =0;
+		virtual void clearStencilBuffer(const int32_t &stencil) {}
 
-		virtual void clearZStencilBuffers(const float &depth, const int32_t &stencil) =0;
+		virtual void clearZStencilBuffers(const float &depth, const int32_t &stencil) {}
 
-		virtual void clearColorBuffer(const E_FBO_ATTACHMENT_POINT &attachment, const int32_t* vals) =0;
-		virtual void clearColorBuffer(const E_FBO_ATTACHMENT_POINT &attachment, const uint32_t* vals) =0;
-		virtual void clearColorBuffer(const E_FBO_ATTACHMENT_POINT &attachment, const float* vals) =0;
+		virtual void clearColorBuffer(const E_FBO_ATTACHMENT_POINT &attachment, const int32_t* vals) {}
+		virtual void clearColorBuffer(const E_FBO_ATTACHMENT_POINT &attachment, const uint32_t* vals) {}
+		virtual void clearColorBuffer(const E_FBO_ATTACHMENT_POINT &attachment, const float* vals) {}
 
-		virtual void clearScreen(const E_SCREEN_BUFFERS &buffer, const float* vals) =0;
-		virtual void clearScreen(const E_SCREEN_BUFFERS &buffer, const uint32_t* vals) =0;
-
-
-
-		virtual ITransformFeedback* createTransformFeedback() = 0;
-
-		//!
-		virtual void bindTransformFeedback(ITransformFeedback* xformFeedback) = 0;
-
-		virtual ITransformFeedback* getBoundTransformFeedback() = 0;
-
-        /** Only POINTS, LINES, and TRIANGLES are allowed as capture types.. no strips or fans!
-        This issues an implicit call to bindTransformFeedback()
-        **/
-		virtual void beginTransformFeedback(ITransformFeedback* xformFeedback, const E_MATERIAL_TYPE& xformFeedbackShader, const asset::E_PRIMITIVE_TYPE& primType=asset::EPT_POINTS) = 0;
-
-		//! A redundant wrapper call to ITransformFeedback::pauseTransformFeedback(), made just for clarity
-		virtual void pauseTransformFeedback() = 0;
-
-		//! A redundant wrapper call to ITransformFeedback::pauseTransformFeedback(), made just for clarity
-		virtual void resumeTransformFeedback() = 0;
-
-        //! This issues an implicit call to bindTransformFeedback(NULL)
-		virtual void endTransformFeedback() = 0;
+		virtual void clearScreen(const E_SCREEN_BUFFERS &buffer, const float* vals) {}
+		virtual void clearScreen(const E_SCREEN_BUFFERS& buffer, const uint32_t* vals) {}
 
 
 		//! Sets a new viewport.
 		/** Every rendering operation is done into this new area.
 		\param area: Rectangle defining the new area of rendering
 		operations. */
-		virtual void setViewPort(const core::rect<int32_t>& area) =0;
+		virtual void setViewPort(const core::rect<int32_t>& area) {}
 
 		//! Gets the area of the current viewport.
 		/** \return Rectangle of the current viewport. */
 		virtual const core::rect<int32_t>& getViewPort() const =0;
-
-		//! Draws a 2d image without any special effects
-		/** \param texture Pointer to texture to use.
-		\param destPos Upper left 2d destination position where the
-		image will be drawn. */
-		virtual void draw2DImage(const video::ITexture* texture,
-			const core::position2d<int32_t>& destPos) =0;
-
-		//! Draws a 2d image using a color
-		/** (if color is other than
-		Color(255,255,255,255)) and the alpha channel of the texture.
-		\param texture Texture to be drawn.
-		\param destPos Upper left 2d destination position where the
-		image will be drawn.
-		\param sourceRect Source rectangle in the image.
-		\param clipRect Pointer to rectangle on the screen where the
-		image is clipped to.
-		If this pointer is NULL the image is not clipped.
-		\param color Color with which the image is drawn. If the color
-		equals Color(255,255,255,255) it is ignored. Note that the
-		alpha component is used: If alpha is other than 255, the image
-		will be transparent.
-		\param useAlphaChannelOfTexture: If true, the alpha channel of
-		the texture is used to draw the image.*/
-		virtual void draw2DImage(const video::ITexture* texture, const core::position2d<int32_t>& destPos,
-			const core::rect<int32_t>& sourceRect, const core::rect<int32_t>* clipRect =0,
-			SColor color=SColor(255,255,255,255), bool useAlphaChannelOfTexture=false) =0;
-
-		//! Draws a set of 2d images, using a color and the alpha channel of the texture.
-		/** The images are drawn beginning at pos and concatenated in
-		one line. All drawings are clipped against clipRect (if != 0).
-		The subtextures are defined by the array of sourceRects and are
-		chosen by the indices given.
-		\param texture Texture to be drawn.
-		\param pos Upper left 2d destination position where the image
-		will be drawn.
-		\param sourceRects Source rectangles of the image.
-		\param indices List of indices which choose the actual
-		rectangle used each time.
-		\param kerningWidth Offset to Position on X
-		\param clipRect Pointer to rectangle on the screen where the
-		image is clipped to.
-		If this pointer is 0 then the image is not clipped.
-		\param color Color with which the image is drawn.
-		Note that the alpha component is used. If alpha is other than
-		255, the image will be transparent.
-		\param useAlphaChannelOfTexture: If true, the alpha channel of
-		the texture is used to draw the image. */
-		virtual void draw2DImageBatch(const video::ITexture* texture,
-				const core::position2d<int32_t>& pos,
-				const core::vector<core::rect<int32_t> >& sourceRects,
-				const core::vector<int32_t>& indices,
-				int32_t kerningWidth=0,
-				const core::rect<int32_t>* clipRect=0,
-				SColor color=SColor(255,255,255,255),
-				bool useAlphaChannelOfTexture=false) =0;
-
-		//! Draws a set of 2d images, using a color and the alpha channel of the texture.
-		/** All drawings are clipped against clipRect (if != 0).
-		The subtextures are defined by the array of sourceRects and are
-		positioned using the array of positions.
-		\param texture Texture to be drawn.
-		\param positions Array of upper left 2d destinations where the
-		images will be drawn.
-		\param sourceRects Source rectangles of the image.
-		\param clipRect Pointer to rectangle on the screen where the
-		images are clipped to.
-		If this pointer is 0 then the image is not clipped.
-		\param color Color with which the image is drawn.
-		Note that the alpha component is used. If alpha is other than
-		255, the image will be transparent.
-		\param useAlphaChannelOfTexture: If true, the alpha channel of
-		the texture is used to draw the image. */
-		virtual void draw2DImageBatch(const video::ITexture* texture,
-				const core::vector<core::position2d<int32_t> >& positions,
-				const core::vector<core::rect<int32_t> >& sourceRects,
-				const core::rect<int32_t>* clipRect=0,
-				SColor color=SColor(255,255,255,255),
-				bool useAlphaChannelOfTexture=false) =0;
-
-		//! Draws a part of the texture into the rectangle. Note that colors must be an array of 4 colors if used.
-		/** Suggested and first implemented by zola.
-		\param texture The texture to draw from
-		\param destRect The rectangle to draw into
-		\param sourceRect The rectangle denoting a part of the texture
-		\param clipRect Clips the destination rectangle (may be 0)
-		\param colors Array of 4 colors denoting the color values of
-		the corners of the destRect
-		\param useAlphaChannelOfTexture True if alpha channel will be
-		blended. */
-		virtual void draw2DImage(const video::ITexture* texture, const core::rect<int32_t>& destRect,
-			const core::rect<int32_t>& sourceRect, const core::rect<int32_t>* clipRect =0,
-			const video::SColor * const colors=0, bool useAlphaChannelOfTexture=false) =0;
-
-		//! Draws a 2d rectangle.
-		/** \param color Color of the rectangle to draw. The alpha
-		component will not be ignored and specifies how transparent the
-		rectangle will be.
-		\param pos Position of the rectangle.
-		\param clip Pointer to rectangle against which the rectangle
-		will be clipped. If the pointer is null, no clipping will be
-		performed. */
-		virtual void draw2DRectangle(SColor color, const core::rect<int32_t>& pos,
-			const core::rect<int32_t>* clip =0) =0;
-
-		//! Draws a 2d rectangle with a gradient.
-		/** \param colorLeftUp Color of the upper left corner to draw.
-		The alpha component will not be ignored and specifies how
-		transparent the rectangle will be.
-		\param colorRightUp Color of the upper right corner to draw.
-		The alpha component will not be ignored and specifies how
-		transparent the rectangle will be.
-		\param colorLeftDown Color of the lower left corner to draw.
-		The alpha component will not be ignored and specifies how
-		transparent the rectangle will be.
-		\param colorRightDown Color of the lower right corner to draw.
-		The alpha component will not be ignored and specifies how
-		transparent the rectangle will be.
-		\param pos Position of the rectangle.
-		\param clip Pointer to rectangle against which the rectangle
-		will be clipped. If the pointer is null, no clipping will be
-		performed. */
-		virtual void draw2DRectangle(const core::rect<int32_t>& pos,
-				SColor colorLeftUp, SColor colorRightUp,
-				SColor colorLeftDown, SColor colorRightDown,
-				const core::rect<int32_t>* clip =0) =0;
-
-		//! Draws the outline of a 2D rectangle.
-		/** \param pos Position of the rectangle.
-		\param color Color of the rectangle to draw. The alpha component
-		specifies how transparent the rectangle outline will be. */
-		virtual void draw2DRectangleOutline(const core::recti& pos,
-				SColor color=SColor(255,255,255,255)) =0;
-
-		//! Draws a 2d line. Both start and end will be included in coloring.
-		/** \param start Screen coordinates of the start of the line
-		in pixels.
-		\param end Screen coordinates of the start of the line in
-		pixels.
-		\param color Color of the line to draw. */
-		virtual void draw2DLine(const core::position2d<int32_t>& start,
-					const core::position2d<int32_t>& end,
-					SColor color=SColor(255,255,255,255)) =0;
-
 
 		//! Draws a mesh buffer
 		/** \param mb Buffer to draw */
 		virtual void drawMeshBuffer(const video::IGPUMeshBuffer* mb) =0;
 
 		//! Indirect Draw
-		virtual void drawArraysIndirect(const asset::IMeshDataFormatDesc<video::IGPUBuffer>* vao,
-                                        const asset::E_PRIMITIVE_TYPE& mode,
+		virtual void drawArraysIndirect(const asset::SBufferBinding<IGPUBuffer> _vtxBindings[IGPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT],
+                                        asset::E_PRIMITIVE_TOPOLOGY mode,
                                         const IGPUBuffer* indirectDrawBuff,
-                                        const size_t& offset, const size_t& count, const size_t& stride) =0;
-		virtual void drawIndexedIndirect(const asset::IMeshDataFormatDesc<video::IGPUBuffer>* vao,
-                                        const asset::E_PRIMITIVE_TYPE& mode,
-                                        const asset::E_INDEX_TYPE& type,
+                                        size_t offset, size_t maxCount, size_t stride,
+                                        const IGPUBuffer* countBuffer = nullptr, size_t countOffset = 0u) = 0;
+		virtual void drawIndexedIndirect(const asset::SBufferBinding<IGPUBuffer> _vtxBindings[IGPUMeshBuffer::MAX_ATTR_BUF_BINDING_COUNT],
+                                        asset::E_PRIMITIVE_TOPOLOGY mode,
+                                        asset::E_INDEX_TYPE indexType, const IGPUBuffer* indexBuff,
                                         const IGPUBuffer* indirectDrawBuff,
-                                        const size_t& offset, const size_t& count, const size_t& stride) =0;
+                                        size_t offset, size_t maxCount, size_t stride,
+                                        const IGPUBuffer* countBuffer = nullptr, size_t countOffset = 0u) = 0;
 
 		//! Get the size of the screen or render window.
 		/** \return Size of screen or render window. */
@@ -443,97 +185,16 @@ namespace video
 		\return Amount of primitives drawn in the last frame. */
 		virtual uint32_t getPrimitiveCountDrawn( uint32_t mode =0 ) const =0;
 
-		//! Returns the maximum amount of primitives
-		/** (mostly vertices) which the device is able to render.
-		\return Maximum amount of primitives. */
-		virtual uint32_t getMaximalIndicesCount() const =0;
-
-		//! Enables or disables a texture creation flag.
-		/** These flags define how textures should be created. By
-		changing this value, you can influence for example the speed of
-		rendering a lot. But please note that the video drivers take
-		this value only as recommendation. It could happen that you
-		enable the ETCF_ALWAYS_16_BIT mode, but the driver still creates
-		32 bit textures.
-		\param flag Texture creation flag.
-		\param enabled Specifies if the given flag should be enabled or
-		disabled. */
-		virtual void setTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag, bool enabled=true) =0;
-
-		//! Returns if a texture creation flag is enabled or disabled.
-		/** You can change this value using setTextureCreationFlag().
-		\param flag Texture creation flag.
-		\return The current texture creation flag enabled mode. */
-		virtual bool getTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag) const =0;
-
 		//! Event handler for resize events. Only used by the engine internally.
 		/** Used to notify the driver that the window was resized.
 		Usually, there is no need to call this method. */
 		virtual void OnResize(const core::dimension2d<uint32_t>& size) =0;
-
-		//! Adds a new material renderer to the video device.
-		/** Use this method to extend the VideoDriver with new material
-		types. To extend the engine using this method do the following:
-		Derive a class from IMaterialRenderer and override the methods
-		you need. For setting the right renderstates, you can try to
-		get a pointer to the real rendering device using
-		IVideoDriver::getExposedVideoData(). Add your class with
-		IVideoDriver::addMaterialRenderer(). To use an object being
-		displayed with your new material, set the MaterialType member of
-		the SGPUMaterial struct to the value returned by this method.
-		If you simply want to create a new material using vertex and/or
-		pixel shaders it would be easier to use the
-		video::IGPUProgrammingServices interface which you can get
-		using the getGPUProgrammingServices() method.
-		\param renderer A pointer to the new renderer.
-		\param name Optional name for the material renderer entry.
-		\return The number of the material type which can be set in
-		SGPUMaterial::MaterialType to use the renderer. -1 is returned if
-		an error occured. */
-		virtual int32_t addMaterialRenderer(IMaterialRenderer* renderer, const char* name =0) =0;
-
-		//! Get access to a material renderer by index.
-		/** \param idx Id of the material renderer. Can be a value of
-		the E_MATERIAL_TYPE enum or a value which was returned by
-		addMaterialRenderer().
-		\return Pointer to material renderer or null if not existing. */
-		virtual IMaterialRenderer* getMaterialRenderer(uint32_t idx) =0;
-
-		//! Get amount of currently available material renderers.
-		/** \return Amount of currently available material renderers. */
-		virtual uint32_t getMaterialRendererCount() const =0;
-
-		//! Get name of a material renderer
-		/** This string can, e.g., be used to test if a specific
-		renderer already has been registered/created, or use this
-		string to store data about materials: This returned name will
-		be also used when serializing materials.
-		\param idx Id of the material renderer. Can be a value of the
-		E_MATERIAL_TYPE enum or a value which was returned by
-		addMaterialRenderer().
-		\return String with the name of the renderer, or 0 if not
-		exisiting */
-		virtual const char* getMaterialRendererName(uint32_t idx) const =0;
-
-		//! Sets the name of a material renderer.
-		/** Will have no effect on built-in material renderers.
-		\param idx: Id of the material renderer. Can be a value of the
-		E_MATERIAL_TYPE enum or a value which was returned by
-		addMaterialRenderer().
-		\param name: New name of the material renderer. */
-		virtual void setMaterialRendererName(int32_t idx, const char* name) =0;
 
 		//! Returns driver and operating system specific data about the IVideoDriver.
 		/** This method should only be used if the engine should be
 		extended without having to modify the source of the engine.
 		\return Collection of device dependent pointers. */
 		virtual const SExposedVideoData& getExposedVideoData() =0;
-
-		//! Gets the IGPUProgrammingServices interface.
-		/** \return Pointer to the IGPUProgrammingServices. Returns 0
-		if the video driver does not support this. For example the
-		Software driver and the Null driver will always return 0. */
-		virtual IGPUProgrammingServices* getGPUProgrammingServices() =0;
 
 		//! Enable or disable a clipping plane.
 		/** There are at least 6 clipping planes available for the user
@@ -542,30 +203,9 @@ namespace video
 		MaxUserClipPlanes.
 		\param enable If true, enable the clipping plane else disable
 		it. */
-		virtual void enableClipPlane(uint32_t index, bool enable) =0;
+		virtual void enableClipPlane(uint32_t index, bool enable) {}
 
         virtual const CDerivativeMapCreator* getDerivativeMapCreator() const { return nullptr; }
-
-		//! Get the 2d override material for altering its values
-		/** The 2d override materual allows to alter certain render
-		states of the 2d methods. Not all members of SGPUMaterial are
-		honored, especially not MaterialType and Textures. Moreover,
-		the zbuffer is always ignored, and lighting is always off. All
-		other flags can be changed, though some might have to effect
-		in most cases.
-		Please note that you have to enable/disable this effect with
-		enableInitMaterial2D(). This effect is costly, as it increases
-		the number of state changes considerably. Always reset the
-		values when done.
-		\return Material reference which should be altered to reflect
-		the new settings.
-		*/
-		virtual SGPUMaterial& getMaterial2D() =0;
-
-		//! Enable the 2d override material
-		/** \param enable Flag which tells whether the material shall be
-		enabled or disabled. */
-		virtual void enableMaterial2D(bool enable=true) =0;
 	};
 
 } // end namespace video

@@ -11,38 +11,47 @@ namespace FullScreenTriangle
 {
 
 
-#include "irr/irrpack.h"
-struct ScreenTriangleVertexStruct
+inline auto createFullScreenTriangle(asset::IAssetManager* am, video::IVideoDriver* driver)
 {
-    int8_t     Pos[2];
-    int8_t    TexCoord[2];
-} PACK_STRUCT;
-#include "irr/irrunpack.h"
+	std::tuple<core::smart_refctd_ptr<video::IGPUSpecializedShader>,asset::SVertexInputParams,asset::SPrimitiveAssemblyParams> retval;
 
+	asset::IAsset::E_TYPE types[] = { asset::IAsset::ET_SPECIALIZED_SHADER,static_cast<asset::IAsset::E_TYPE>(0u) };
+	auto found = am->findAssets("irr/builtin/specializedshaders/fullscreentriangle.vert",types);
+	assert(found->size());
+	auto first = found->begin();
+	assert(!first->isEmpty());
+	auto pShader = &(*first->getContents().first);
+	std::get<core::smart_refctd_ptr<video::IGPUSpecializedShader> >(retval) = driver->getGPUObjectsFromAssets<asset::ICPUSpecializedShader>(pShader,pShader+1u)->front();
+	std::get<core::smart_refctd_ptr<video::IGPUSpecializedShader> >(retval) = driver->getGPUObjectsFromAssets<asset::ICPUSpecializedShader>(pShader,pShader+1u)->front();
 
-inline core::smart_refctd_ptr<video::IGPUMeshBuffer> createFullScreenTriangle(video::IVideoDriver* driver)
-{
-    ScreenTriangleVertexStruct vertices[3];
-    vertices[0] = {{-1, 1},{0,0}};
-    vertices[1] = {{-1,-3},{0,2}};
-    vertices[2] = {{ 3, 1},{2,0}};
-
-    auto buff = core::smart_refctd_ptr<video::IGPUBuffer>(driver->createDeviceLocalGPUBufferOnDedMem(sizeof(vertices)),core::dont_grab);
-    driver->updateBufferRangeViaStagingBuffer(buff.get(),0,sizeof(vertices),vertices);
-
-
-    auto triangleMeshBuffer = core::make_smart_refctd_ptr<video::IGPUMeshBuffer>();
+	auto& inputParams = std::get<asset::SVertexInputParams>(retval);
 	{
-		auto desc = driver->createGPUMeshDataFormatDesc();
-
-		desc->setVertexAttrBuffer(core::smart_refctd_ptr(buff),asset::EVAI_ATTR0,asset::EF_R8G8B8A8_SSCALED,sizeof(ScreenTriangleVertexStruct),0);
-		desc->setVertexAttrBuffer(core::smart_refctd_ptr(buff),asset::EVAI_ATTR1,asset::EF_R8G8B8A8_SSCALED,sizeof(ScreenTriangleVertexStruct),offsetof(ScreenTriangleVertexStruct,TexCoord[0]));
-		triangleMeshBuffer->setIndexCount(3u);
-    
-		triangleMeshBuffer->setMeshDataAndFormat(std::move(desc));
+		inputParams.enabledBindingFlags = inputParams.enabledAttribFlags = 0u;
+		for (size_t i=0ull; i<asset::SVertexInputParams::MAX_VERTEX_ATTRIB_COUNT; i++)
+			inputParams.attributes[i] = {0u,asset::EF_UNKNOWN,0u};
+		for (size_t i=0ull; i<asset::SVertexInputParams::MAX_ATTR_BUF_BINDING_COUNT; i++)
+			inputParams.bindings[i] = {0u,asset::EVIR_PER_VERTEX};
 	}
 
-    return triangleMeshBuffer;
+	auto& assemblyParams = std::get<asset::SPrimitiveAssemblyParams>(retval);
+	assemblyParams.primitiveRestartEnable = false;
+	assemblyParams.primitiveType = asset::EPT_TRIANGLE_LIST;
+	assemblyParams.tessPatchVertCount = 3u;
+
+    return retval;
+}
+
+inline auto createFullScreenTriangle(core::smart_refctd_ptr<video::IGPUSpecializedShader>&& fragShader, core::smart_refctd_ptr<video::IGPUPipelineLayout>&& pipelineLayout, asset::IAssetManager* am, video::IVideoDriver* driver, const asset::SBlendParams& blendParams={}, const asset::SRasterizationParams& rasterParams={})
+{
+	auto protoPipeline = createFullScreenTriangle(am,driver);
+
+	video::IGPUSpecializedShader* shaders[] = {std::get<core::smart_refctd_ptr<video::IGPUSpecializedShader> >(protoPipeline).get(),fragShader.get()};
+	auto pipeline = driver->createGPURenderpassIndependentPipeline(nullptr,std::move(pipelineLayout),shaders,shaders+2,std::get<asset::SVertexInputParams>(protoPipeline),blendParams,std::get<asset::SPrimitiveAssemblyParams>(protoPipeline),rasterParams);
+
+	asset::SBufferBinding<video::IGPUBuffer> bindings[16];
+	auto meshbuffer = core::make_smart_refctd_ptr<video::IGPUMeshBuffer>(std::move(pipeline), nullptr, bindings, asset::SBufferBinding<video::IGPUBuffer>{});
+	meshbuffer->setIndexCount(3u);
+	return meshbuffer;
 }
 
 }

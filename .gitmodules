@@ -74,6 +74,12 @@
 	path = 3rdparty/CEGUI/glew
 	url = https://github.com/AnastaZIuk/glew-cmake.git
 	branch = master
+[submodule "3rdparty/openexr"]
+	path = 3rdparty/openexr
+	url = https://github.com/AcademySoftwareFoundation/openexr.git
+[submodule "3rdparty/gli"]
+	path = 3rdparty/gli
+	url = https://github.com/g-truc/gli.git
 [submodule "3rdparty/parallel-hashmap"]
 	path = 3rdparty/parallel-hashmap
 	url = https://github.com/greg7mdp/parallel-hashmap
@@ -84,3 +90,10 @@
 [submodule "3rdparty/jitify"]
 	path = 3rdparty/jitify
 	url = https://github.com/NVIDIA/jitify
+[submodule "3rdparty/SDL2"]
+	path = 3rdparty/SDL2
+	url = https://github.com/spurious/SDL-mirror.git
+	branch = release-2.0.12
+[submodule "3rdparty/volk"]
+	path = 3rdparty/volk
+	url = https://github.com/zeux/volk.git

@@ -7,6 +7,14 @@
 #include <limits>       // std::numeric_limits
 #include <utility>
 
+#ifdef _IRR_WINDOWS_API_
+    #define WIN32_LEAN_AND_MEAN
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    #include <Windows.h>
+    #include <wingdi.h>
+#endif
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !(defined(_IRR_COMPILE_WITH_X11_DEVICE_)||defined(_IRR_WINDOWS_API_))
 	#include <SDL/SDL_video.h>
     #define GL_GLEXT_LEGACY 1
@@ -808,8 +816,8 @@ P.S. Maybe Ghost == Pending
 
                     glViewportArray_vals[i][0] = 0;
                     glViewportArray_vals[i][1] = 0;
-                    glViewportArray_vals[i][2] = windowSizeX;
-                    glViewportArray_vals[i][3] = windowSizeY;
+                    glViewportArray_vals[i][2] = static_cast<float>(windowSizeX);
+                    glViewportArray_vals[i][3] = static_cast<float>(windowSizeY);
 
                     glScissorArray_vals[i][0] = 0;
                     glScissorArray_vals[i][1] = 0;

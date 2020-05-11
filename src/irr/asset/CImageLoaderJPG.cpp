@@ -9,7 +9,8 @@
 #include "IReadFile.h"
 #include "os.h"
 #include "irr/asset/ICPUBuffer.h"
-#include "irr/asset/ICPUTexture.h"
+#include "irr/asset/ICPUImageView.h"
+#include "irr/asset/format/EFormat.h"
 #include <string>
 
 #include <stdio.h> // required for jpeglib.h
@@ -228,19 +229,36 @@ asset::SAssetBundle CImageLoaderJPG::loadAsset(io::IReadFile* _file, const asset
 	// read _file parameters with jpeg_read_header()
 	jpeg_read_header(&cinfo, TRUE);
 
+    uint32_t imageSize[3] = { cinfo.image_width,cinfo.image_height,1 };
+    const uint32_t& width = imageSize[0];
+    const uint32_t& height = imageSize[1];
+
+    ICPUImage::SCreationParams imgInfo;
+    imgInfo.type = ICPUImage::ET_2D;
+    imgInfo.extent.width = width;
+    imgInfo.extent.height = height;
+    imgInfo.extent.depth = 1u;
+    imgInfo.mipLevels = 1u;
+    imgInfo.arrayLayers = 1u;
+    imgInfo.samples = ICPUImage::ESCF_1_BIT;
+    imgInfo.flags = static_cast<IImage::E_CREATE_FLAGS>(0u);
+
 	switch (cinfo.jpeg_color_space)
 	{
 		case JCS_GRAYSCALE:
 			cinfo.out_color_components = 1;
 			cinfo.output_gamma = 1.0; // output_gamma is a dead variable in libjpegturbo and jpeglib
+            imgInfo.format = EF_R8_SRGB;
 			break;
 		case JCS_RGB:
 			cinfo.out_color_components = 3;
-			cinfo.output_gamma = 2.2333333f; // output_gamma is a dead variable in libjpegturbo and jpeglib
+			cinfo.output_gamma = 2.2333333; // output_gamma is a dead variable in libjpegturbo and jpeglib
+            imgInfo.format = EF_R8G8B8_SRGB;
 			break;
 		case JCS_YCbCr:
 			cinfo.out_color_components = 3;
-			cinfo.output_gamma = 2.2333333f; // output_gamma is a dead variable in libjpegturbo and jpeglib
+			cinfo.output_gamma = 2.2333333; // output_gamma is a dead variable in libjpegturbo and jpeglib
+            imgInfo.format = EF_R8G8B8_SRGB;
 			// it seems that libjpeg does Y'UV to R'G'B'conversion automagically
 			// however be prepared that the colors might be a bit "off"
 			// https://en.wikipedia.org/wiki/YCbCr#JPEG_conversion
@@ -273,12 +291,9 @@ asset::SAssetBundle CImageLoaderJPG::loadAsset(io::IReadFile* _file, const asset
 	
 	// Get image data
 	uint32_t rowspan = cinfo.image_width * cinfo.out_color_components;
-	uint32_t imageSize[3] = {cinfo.image_width,cinfo.image_height,1};
-	uint32_t& width = imageSize[0];
-	uint32_t& height = imageSize[1];
 
 	// Allocate memory for buffer
-	auto output = core::make_smart_refctd_ptr<asset::ICPUBuffer>(rowspan*height);
+	auto buffer = core::make_smart_refctd_ptr<asset::ICPUBuffer>(rowspan*height);
 
 	// Here we use the library's state variable cinfo.output_scanline as the
 	// loop counter, so that we don't have to keep track ourselves.
@@ -286,7 +301,7 @@ asset::SAssetBundle CImageLoaderJPG::loadAsset(io::IReadFile* _file, const asset
 	constexpr uint32_t MaxJPEGResolution = 65535u;
 	uint8_t* rowPtr[MaxJPEGResolution];
 	for (uint32_t i = 0; i < height; ++i)
-		rowPtr[i] = &reinterpret_cast<uint8_t*>(output->getPointer())[i*rowspan];
+		rowPtr[i] = &reinterpret_cast<uint8_t*>(buffer->getPointer())[i*rowspan];
 
 	// Read rows from bottom order to match OpenGL coords
 	uint32_t rowsRead = 0;
@@ -295,31 +310,27 @@ asset::SAssetBundle CImageLoaderJPG::loadAsset(io::IReadFile* _file, const asset
 	
 	// Finish decompression
 	jpeg_finish_decompress(&cinfo);
-	
-	asset::CImageData* image = nullptr;
-	uint32_t nullOffset[3] = {0,0,0};
-	switch (cinfo.jpeg_color_space)
-	{
-		case JCS_GRAYSCALE:
-			// https://github.com/buildaworldnet/IrrlichtBAW/pull/273#issuecomment-491492010
-			image = new asset::CImageData(output->getPointer(),nullOffset,imageSize,0u,asset::EF_R8_SRGB,1);
-			break;
-		case JCS_RGB:
-			image = new asset::CImageData(output->getPointer(),nullOffset,imageSize,0u,asset::EF_R8G8B8_SRGB,1);
-			break;
-		case JCS_YCbCr:
-			// libjpeg does implicit conversion to R'G'B'
-			image = new asset::CImageData(output->getPointer(),nullOffset,imageSize,0u,asset::EF_R8G8B8_SRGB,1);
-			break;
-		default: // should never get here
-			os::Printer::log("Unsupported color space, operation aborted.", ELL_ERROR);
-            return {};
-			break;
-	}
 
-	ICPUTexture* tex = ICPUTexture::create({image}, _file->getFileName().c_str());
-	image->drop();
-    return SAssetBundle({core::smart_refctd_ptr<IAsset>(tex, core::dont_grab)});
+	auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ICPUImage::SBufferCopy>>(1u);
+	ICPUImage::SBufferCopy& region = regions->front();
+	//region.imageSubresource.aspectMask = ...; //waits for Vulkan
+	region.imageSubresource.mipLevel = 0u;
+	region.imageSubresource.baseArrayLayer = 0u;
+	region.imageSubresource.layerCount = 1u;
+	region.bufferOffset = 0u;
+	region.bufferRowLength = asset::IImageAssetHandlerBase::calcPitchInBlocks(width, getTexelOrBlockBytesize(imgInfo.format));
+	region.bufferImageHeight = 0u; //tightly packed
+	region.imageOffset = { 0u, 0u, 0u };
+	region.imageExtent = imgInfo.extent;
+
+	core::smart_refctd_ptr<ICPUImage> image = ICPUImage::create(std::move(imgInfo));
+	image->setBufferAndRegions(std::move(buffer), regions);
+
+	if (image->getCreationParameters().format == asset::EF_R8_SRGB)
+		image = asset::IImageAssetHandlerBase::convertR8ToR8G8B8Image(image);
+	
+    return SAssetBundle({image});
+
 #endif
 }
 
@@ -327,4 +338,3 @@ asset::SAssetBundle CImageLoaderJPG::loadAsset(io::IReadFile* _file, const asset
 } // end namespace irr
 
 #endif
-

@@ -129,9 +129,9 @@ const core::vectorSIMDf& CCameraSceneNode::getTarget() const
 
 //! sets the up vector of the camera
 //! \param pos: New upvector of the camera.
-void CCameraSceneNode::setUpVector(const core::vector3df& pos)
+void CCameraSceneNode::setUpVector(const core::vectorSIMDf& up)
 {
-	UpVector.set(pos);
+	UpVector = up;
 }
 
 
@@ -187,13 +187,14 @@ void CCameraSceneNode::render()
 		viewMatrix = core::matrix3x4SIMD::buildCameraLookAtMatrixRH(pos, Target, up);
 	concatMatrix = core::matrix4SIMD::concatenateBFollowedByAPrecisely(projMatrix, core::matrix4SIMD(viewMatrix));
 	recalculateViewArea();
-
+#ifndef  NEW_SHADERS
 	video::IVideoDriver* driver = SceneManager->getVideoDriver();
 	if ( driver)
 	{
 		driver->setTransform(video::EPTS_PROJ,projMatrix);
 		driver->setTransform(video::E4X3TS_VIEW, viewMatrix );
 	}
+#endif
 }
 
 

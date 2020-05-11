@@ -9,6 +9,7 @@
 #ifndef _FW_MUTEX_H_
 #define _FW_MUTEX_H_
 
+#include "IrrCompileConfig.h"
 //#define FW_MUTEX_H_CXX11_IMPL
 
 #if defined(FW_MUTEX_H_CXX11_IMPL)
@@ -77,7 +78,7 @@ inline void FW_SleepNano(const uint64_t &nanoseconds)
         do {
             SwitchToThread();
             QueryPerformanceCounter((LARGE_INTEGER *) &time2);
-        } while((time2-time1) < nanoseconds*freq/__int64(1000000000));
+        } while((time2-time1) < __int64(nanoseconds)*freq/__int64(1000000000));
     }
 #else
 	if (!nanoseconds)

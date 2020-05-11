@@ -34,6 +34,7 @@
 // this actually includes file depending on build type (Debug/Release)
 #include "BuildConfigOptions.h"
 
+#define NEW_SHADERS 1
 
 #ifdef _IRR_TARGET_ARCH_ARM_
 #   define __IRR_COMPILE_WITH_ARM_SIMD_ // NEON
@@ -92,23 +93,6 @@
 #   endif
 #endif
 
-
-//! Maximum number of textures and input images we can feed to a shader
-/** These limits will most likely be below your GPU hardware limits
-**/
-#define _IRR_MATERIAL_MAX_TEXTURES_ 8
-#define _IRR_MATERIAL_MAX_IMAGES_ 8
-
-//! Maximum of other shader input (output) slots
-#define _IRR_MATERIAL_maxDYNAMIC_SHADER_STORAGE_OBJECTS_ 4
-#define _IRR_MATERIAL_maxSHADER_STORAGE_OBJECTS_ (16-_IRR_MATERIAL_maxDYNAMIC_SHADER_STORAGE_OBJECTS_) //opengl has one set of slots for both
-#define _IRR_MATERIAL_maxDYNAMIC_UNIFORM_BUFFER_OBJECTS_ 8
-#define _IRR_MATERIAL_maxUNIFORM_BUFFER_OBJECTS_ (24-_IRR_MATERIAL_maxDYNAMIC_UNIFORM_BUFFER_OBJECTS_) //opengl has one set of slots for both
-
-//! Maximum number of output buffers and streams a Transform Feedback Object can have
-#define _IRR_XFORM_FEEDBACK_MAX_BUFFERS_ 4 //depr
-#define _IRR_XFORM_FEEDBACK_MAX_STREAMS_ 4 //depr
-
 //! Define _IRR_COMPILE_WITH_X11_ to compile the Irrlicht engine with X11 support.
 /** If you do not wish the engine to be compiled with X11, comment this
 define out. */
@@ -146,105 +130,6 @@ the engine will no longer read .png images. */
 
 //! Uncomment the following line if you want to ignore the deprecated warnings
 //#define IGNORE_DEPRECATED_WARNING
-
-
-//! Define _IRR_COMPILE_WITH_X_LOADER_ if you want to use Microsoft X files
-#define _IRR_COMPILE_WITH_X_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_X_LOADER_
-#undef _IRR_COMPILE_WITH_X_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_LMTS_LOADER_ if you want to load LMTools files
-//#define _IRR_COMPILE_WITH_LMTS_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_LMTS_LOADER_
-#undef _IRR_COMPILE_WITH_LMTS_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_OBJ_LOADER_ if you want to load Wavefront OBJ files
-#define _IRR_COMPILE_WITH_OBJ_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_OBJ_LOADER_
-#undef _IRR_COMPILE_WITH_OBJ_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_OCT_LOADER_ if you want to load FSRad OCT files
-//#define _IRR_COMPILE_WITH_OCT_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_OCT_LOADER_
-#undef _IRR_COMPILE_WITH_OCT_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_LWO_LOADER_ if you want to load Lightwave3D files
-//#define _IRR_COMPILE_WITH_LWO_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_LWO_LOADER_
-#undef _IRR_COMPILE_WITH_LWO_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_STL_LOADER_ if you want to load stereolithography files
-#define _IRR_COMPILE_WITH_STL_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_STL_LOADER_
-#undef _IRR_COMPILE_WITH_STL_LOADER_
-#endif
-#define _IRR_COMPILE_WITH_BAW_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_BAW_LOADER_
-#undef _IRR_COMPILE_WITH_BAW_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_PLY_LOADER_ if you want to load Polygon (Stanford Triangle) files
-#define _IRR_COMPILE_WITH_PLY_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_PLY_LOADER_
-#undef _IRR_COMPILE_WITH_PLY_LOADER_
-#endif
-
-//! Define _IRR_COMPILE_WITH_STL_WRITER_ if you want to write .stl files
-#define _IRR_COMPILE_WITH_STL_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_STL_WRITER_
-#undef _IRR_COMPILE_WITH_STL_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_BAW_WRITER_ if you want to write .baw files
-#define _IRR_COMPILE_WITH_BAW_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_BAW_WRITER_
-#undef _IRR_COMPILE_WITH_BAW_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_PLY_WRITER_ if you want to write .ply files
-#define _IRR_COMPILE_WITH_PLY_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_PLY_WRITER_
-#undef _IRR_COMPILE_WITH_PLY_WRITER_
-#endif
-
-//! Define _IRR_COMPILE_WITH_JPG_LOADER_ if you want to load .jpg files
-#define _IRR_COMPILE_WITH_JPG_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_JPG_LOADER_
-#undef _IRR_COMPILE_WITH_JPG_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_PNG_LOADER_ if you want to load .png files
-#define _IRR_COMPILE_WITH_PNG_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_PNG_LOADER_
-#undef _IRR_COMPILE_WITH_PNG_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_DDS_LOADER_ if you want to load .dds files
-// Outcommented because
-// a) it doesn't compile on 64-bit currently
-// b) anyone enabling it should be aware that S3TC compression algorithm which might be used in that loader
-// is patented in the US by S3 and they do collect license fees when it's used in applications.
-// So if you are unfortunate enough to develop applications for US market and their broken patent system be careful.
-#define _IRR_COMPILE_WITH_DDS_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_DDS_LOADER_
-#undef _IRR_COMPILE_WITH_DDS_LOADER_
-#endif
-//! Define _IRR_COMPILE_WITH_TGA_LOADER_ if you want to load .tga files
-#define _IRR_COMPILE_WITH_TGA_LOADER_
-#ifdef NO_IRR_COMPILE_WITH_TGA_LOADER_
-#undef _IRR_COMPILE_WITH_TGA_LOADER_
-#endif
-
-//! Define _IRR_COMPILE_WITH_JPG_WRITER_ if you want to write .jpg files
-#define _IRR_COMPILE_WITH_JPG_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_JPG_WRITER_
-#undef _IRR_COMPILE_WITH_JPG_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_PNG_WRITER_ if you want to write .png files
-#define _IRR_COMPILE_WITH_PNG_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_PNG_WRITER_
-#undef _IRR_COMPILE_WITH_PNG_WRITER_
-#endif
-//! Define _IRR_COMPILE_WITH_TGA_WRITER_ if you want to write .tga files
-#define _IRR_COMPILE_WITH_TGA_WRITER_
-#ifdef NO_IRR_COMPILE_WITH_TGA_WRITER_
-#undef _IRR_COMPILE_WITH_TGA_WRITER_
-#endif
 
 //! Define __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_ if you want to open ZIP and GZIP archives
 /** ZIP reading has several more options below to configure. */
@@ -348,6 +233,7 @@ case asset::Blob::EnumValue:\
 	return asset::BlobClassName::Function(__VA_ARGS__);
 
 //! Used inside CBlobsLoadingManager. Adds support of given blob types.
+// @crisspl / @Anastazluk fix this shit for new pipeline !!!
 #define _IRR_SUPPORTED_BLOBS(Function, ...) \
 _IRR_ADD_BLOB_SUPPORT(RawBufferBlobV3, EBT_RAW_DATA_BUFFER, Function, __VA_ARGS__)\
 _IRR_ADD_BLOB_SUPPORT(TexturePathBlobV3, EBT_TEXTURE_PATH, Function, __VA_ARGS__)\

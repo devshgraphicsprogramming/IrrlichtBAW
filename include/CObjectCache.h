@@ -114,7 +114,7 @@ namespace impl
         //! Otherwise (T is not pointer type) ImmutableValueType_impl is `const T`.
         using ImmutableValueType_impl = 
         std::conditional_t<
-            std::is_pointer_v<ValueType_impl>,
+            std::is_pointer<ValueType_impl>::value,
             const NoPtrValueType_impl*,
             const ValueType_impl
         >;
@@ -286,9 +286,13 @@ namespace impl
         if (verif)\
         {\
         IRR_PSEUDO_IF_CONSTEXPR_BEGIN(IsMultiCache)\
+	{\
             this->greet(res->second);\
+    	}\
         IRR_PSEUDO_ELSE_CONSTEXPR\
+	{\
             this->greet(res.first->second);\
+    	}\
         IRR_PSEUDO_IF_CONSTEXPR_END\
         }\
 	} \
@@ -360,7 +364,7 @@ namespace impl
         static inline RngType findRange_internal(typename Base::ContainerT& _container, const typename Base::KeyType_impl& _key)
         {
             auto cmpf = [](const typename Base::PairType& _a, const typename Base::PairType& _b) -> bool { return _a.first < _b.first; };
-            typename Base::PairType lookingFor{_key, nullptr};
+            typename Base::PairType lookingFor{ _key, typename Base::ValueType_impl{} };
 
             RngType range;
             range.first = std::lower_bound(std::begin(_container), std::end(_container), lookingFor, cmpf);

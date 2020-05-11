@@ -36,8 +36,8 @@ namespace scene
 
 	public:
 		//! constructor
-		CSceneManager(IrrlichtDevice* device, video::IVideoDriver* driver, irr::ITimer* timer, io::IFileSystem* fs,
-			gui::ICursorControl* cursorControl);
+		CSceneManager(	IrrlichtDevice* device, video::IVideoDriver* driver,
+						irr::ITimer* timer, io::IFileSystem* fs, gui::ICursorControl* cursorControl);
 
 		//! returns the video driver
 		virtual video::IVideoDriver* getVideoDriver();
@@ -47,17 +47,6 @@ namespace scene
 
         virtual IrrlichtDevice* getDevice() override;
 
-		//! adds a cube scene node to the scene. It is a simple cube of (1,1,1) size.
-		//! the returned pointer must not be dropped.
-		virtual IMeshSceneNode* addCubeSceneNode(float size=10.0f, IDummyTransformationSceneNode* parent=0, int32_t id=-1,
-			const core::vector3df& position = core::vector3df(0,0,0),	const core::vector3df& rotation = core::vector3df(0,0,0),	const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f));
-
-		//! Adds a sphere scene node to the scene.
-		virtual IMeshSceneNode* addSphereSceneNode(float radius=5.0f, int32_t polyCount=16, IDummyTransformationSceneNode* parent=0, int32_t id=-1,
-			const core::vector3df& position = core::vector3df(0,0,0),
-			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f));
-
         //!
         virtual ISkinnedMeshSceneNode* addSkinnedMeshSceneNode(
 			core::smart_refctd_ptr<video::IGPUSkinnedMesh>&& mesh,
@@ -66,20 +55,6 @@ namespace scene
             const core::vector3df& position = core::vector3df(0,0,0),
             const core::vector3df& rotation = core::vector3df(0,0,0),
             const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)) override;
-
-		//! adds a scene node for rendering a static mesh
-		//! the returned pointer must not be dropped.
-		virtual IMeshSceneNode* addMeshSceneNode(core::smart_refctd_ptr<video::IGPUMesh>&& mesh, IDummyTransformationSceneNode* parent=0, int32_t id=-1,
-			const core::vector3df& position = core::vector3df(0,0,0),
-			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f),
-			bool alsoAddIfMeshPointerZero=false) override;
-
-        //!
-        virtual IMeshSceneNodeInstanced* addMeshSceneNodeInstanced(IDummyTransformationSceneNode* parent=0, int32_t id=-1,
-			const core::vector3df& position = core::vector3df(0,0,0),
-			const core::vector3df& rotation = core::vector3df(0,0,0),
-			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f));
 
         //!
 		virtual void OnAnimate(uint32_t timeMs);
@@ -131,17 +106,12 @@ namespace scene
 
 		//! Adds a skybox scene node. A skybox is a big cube with 6 textures on it and
 		//! is drawn around the camera position.
-		virtual ISceneNode* addSkyBoxSceneNode(	core::smart_refctd_ptr<video::ITexture>&& top,
-												core::smart_refctd_ptr<video::ITexture>&& bottom,
-												core::smart_refctd_ptr<video::ITexture>&& left,
-												core::smart_refctd_ptr<video::ITexture>&& right,
-												core::smart_refctd_ptr<video::ITexture>&& front,
-												core::smart_refctd_ptr<video::ITexture>&& back,
+		virtual IMeshSceneNode* addSkyBoxSceneNode(	core::smart_refctd_ptr<video::IGPUImageView>&& cubemap,
 												IDummyTransformationSceneNode* parent = 0, int32_t id = -1) override;
 
 		//! Adds a skydome scene node. A skydome is a large (half-) sphere with a
 		//! panoramic texture on it and is drawn around the camera position.
-		virtual ISceneNode* addSkyDomeSceneNode(core::smart_refctd_ptr<video::IVirtualTexture>&& texture,
+		virtual IMeshSceneNode* addSkyDomeSceneNode(core::smart_refctd_ptr<video::IGPUImageView>&& texture,
 												uint32_t horiRes = 16, uint32_t vertRes = 8, float texturePercentage = 0.9,
 												float spherePercentage = 2.0, float radius = 1000.f,
 												IDummyTransformationSceneNode * parent = 0, int32_t id = -1) override;
@@ -245,7 +215,7 @@ namespace scene
 					Node(n), renderPriority(0x80000000u)
 				{
 					renderPriority = n->getRenderPriorityScore();
-#ifdef REIMPLEMENT_THIS
+#ifndef NEW_SHADERS
 					if (n->getMaterialCount())
 						Material = n->getMaterial(0).MaterialType;
 #endif
@@ -253,7 +223,7 @@ namespace scene
 
 				bool operator < (const DefaultNodeEntry& other) const
 				{
-#ifdef REIMPLEMENT_THIS
+#ifndef NEW_SHADERS
 					return (renderPriority < other.renderPriority)||(renderPriority==other.renderPriority && Material<other.Material);
 #else
 					return renderPriority < other.renderPriority;
@@ -263,7 +233,7 @@ namespace scene
 				ISceneNode* Node;
 			private:
 				uint32_t renderPriority;
-#ifdef REIMPLEMENT_THIS
+#ifndef NEW_SHADERS
 				video::E_MATERIAL_TYPE Material;
 #endif
 		};

@@ -8,6 +8,7 @@
 
 #include <float.h>
 #include <stdint.h>
+#include <cmath>
 
 #include "irr/macros.h"
 
@@ -67,6 +68,68 @@ IRR_FORCE_INLINE T HALF_PI()
 	return PI<T>() * T(0.5);
 }
 
+namespace impl
+{
+	constexpr uint16_t NAN_U16		= 0x7FFFu;
+    constexpr uint32_t NAN_U32      = 0x7FFFFFFFu;
+	constexpr uint64_t NAN_U64		= 0x7fffffffFFFFFFFFull;
+    constexpr uint32_t INFINITY_U32 = 0x7F800000u;
+}
+
+//! don't get rid of these, -ffast-math breaks inf and NaN handling on GCC
+template<typename T>
+T nan();
+
+//TODO (?) we could have some core::half typedef or something..
+template<>
+IRR_FORCE_INLINE uint16_t nan<uint16_t>() { return impl::NAN_U16; }
+
+template<>
+IRR_FORCE_INLINE float nan<float>() { return reinterpret_cast<const float&>(impl::NAN_U32); }
+
+template<>
+IRR_FORCE_INLINE double nan<double>() { return reinterpret_cast<const double&>(impl::NAN_U64); }
+
+template<typename T>
+T infinity();
+
+template<>
+IRR_FORCE_INLINE float infinity<float>() {return reinterpret_cast<const float&>(impl::INFINITY_U32);}
+
+
+template<typename T>
+bool isnan(T val);
+
+template<>
+IRR_FORCE_INLINE bool isnan<double>(double val) 
+{
+    //all exponent bits set, at least one mantissa bit set
+    return (reinterpret_cast<uint64_t&>(val)&0x7fffffffFFFFFFFFull) > 0x7ff0000000000000ull;
+}
+
+template<>
+IRR_FORCE_INLINE bool isnan<float>(float val) 
+{
+    //all exponent bits set, at least one mantissa bit set
+    return (reinterpret_cast<uint32_t&>(val)&0x7fffffffu) > 0x7f800000u;
+}
+
+template<>
+IRR_FORCE_INLINE bool isnan<uint16_t>(uint16_t val)
+{
+	//all exponent bits set, at least one mantissa bit set
+	return (val & 0x7fffu) > 0x7c00u;
+}
+
+template<typename T>
+bool isinf(T val);
+
+template<>
+IRR_FORCE_INLINE bool isinf<float>(float val)
+{
+    //all exponent bits set, none mantissa bit set
+    return (reinterpret_cast<uint32_t&>(val)&0x7fffffffu) == 0x7f800000u;
+}
 
 union FloatIntUnion32
 {
@@ -144,9 +207,9 @@ inline float unpack11bitFloat(uint32_t _fp)
 		return f32;
 	}
 	else if (exp == 31 && !mant)
-		return INFINITY;
+		return core::infinity<float>();
 	else if (exp == 31 && mant)
-		return NAN;
+		return core::nan<float>();
 
 	return -1.f;
 }
@@ -208,9 +271,9 @@ inline float unpack10bitFloat(uint32_t _fp)
 		return f32;
 	}
 	else if (exp == 31 && !mant)
-		return INFINITY;
+		return core::infinity<float>();
 	else if (exp == 31 && mant)
-		return NAN;
+		return core::nan<float>();
 	return -1.f;
 }
 
@@ -323,6 +386,37 @@ class Float16Compressor
 			return v.f;
 		}
 };
+
+IRR_FORCE_INLINE float nextafter32(float x, float y)
+{
+	return std::nextafterf(x, y);
+}
+IRR_FORCE_INLINE double nextafter64(double x, double y)
+{
+	return std::nextafter(x, y);
+}
+inline uint16_t nextafter16(uint16_t x, uint16_t y)
+{
+	if (x==y)
+		return y;
+
+	if (isnan(x) || isnan(y))
+		return impl::NAN_U16;
+
+	uint16_t ax = x & ((1u<<15) - 1u);
+	uint16_t ay = y & ((1u<<15) - 1u);
+	if (ax == 0u) {
+		if (ay == 0u)
+			return y;
+		x = (y & 1u<<15) | 1u;
+	}
+	else if (ax>ay || ((x ^ y) & 1u<<15))
+		--x;
+	else
+		++x;
+
+	return x;
+}
 
 }
 }

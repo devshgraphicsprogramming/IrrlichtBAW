@@ -1,58 +1,20 @@
 #define _IRR_STATIC_LIB_
+#include <iostream>
+#include <cstdio>
 #include <irrlicht.h>
 
+//! I advise to check out this file, its a basic input handler
 #include "../common/QToQuitEventReceiver.h"
+#include "../../ext/FullScreenTriangle/FullScreenTriangle.h"
 
-// TODO: remove dependency
-#include "../src/irr/asset/CBAWMeshWriter.h"
+//#include "../../ext/ScreenShot/ScreenShot.h"
+
 
 using namespace irr;
 using namespace core;
 
-
-class SimpleCallBack : public video::IShaderConstantSetCallBack
-{
-    int32_t mvpUniformLocation;
-    int32_t cameraDirUniformLocation;
-    int32_t texUniformLocation[4];
-    video::E_SHADER_CONSTANT_TYPE mvpUniformType;
-    video::E_SHADER_CONSTANT_TYPE cameraDirUniformType;
-    video::E_SHADER_CONSTANT_TYPE texUniformType[4];
-public:
-    SimpleCallBack() : cameraDirUniformLocation(-1), cameraDirUniformType(video::ESCT_FLOAT_VEC3) {}
-
-    virtual void PostLink(video::IMaterialRendererServices* services, const video::E_MATERIAL_TYPE& materialType, const core::vector<video::SConstantLocationNamePair>& constants)
-    {
-        for (size_t i=0; i<constants.size(); i++)
-        {
-            if (constants[i].name=="MVP")
-            {
-                mvpUniformLocation = constants[i].location;
-                mvpUniformType = constants[i].type;
-            }
-            else if (constants[i].name=="cameraPos")
-            {
-                cameraDirUniformLocation = constants[i].location;
-                cameraDirUniformType = constants[i].type;
-            }
-        }
-    }
-
-    virtual void OnSetConstants(video::IMaterialRendererServices* services, int32_t userData)
-    {
-        core::vectorSIMDf modelSpaceCamPos;
-        modelSpaceCamPos.set(services->getVideoDriver()->getTransform(video::E4X3TS_WORLD_VIEW_INVERSE).getTranslation());
-        services->setShaderConstant(&modelSpaceCamPos,cameraDirUniformLocation,cameraDirUniformType,1);
-        services->setShaderConstant(services->getVideoDriver()->getTransform(video::EPTS_PROJ_VIEW_WORLD).pointer(),mvpUniformLocation,mvpUniformType,1);
-    }
-
-    virtual void OnUnsetMaterial() {}
-};
-
-
 int main()
 {
-    srand(time(0));
 	// create device with full flexibility over creation parameters
 	// you can add more parameters if desired, check irr::SIrrlichtCreationParameters
 	irr::SIrrlichtCreationParameters params;
@@ -64,101 +26,152 @@ int main()
 	params.Vsync = true; //! If supported by target platform
 	params.Doublebuffer = true;
 	params.Stencilbuffer = false; //! This will not even be a choice soon
-	IrrlichtDevice* device = createDeviceEx(params);
+	auto device = createDeviceEx(params);
 
-	if (device == 0)
+	if (!device)
 		return 1; // could not create selected driver.
 
 
+	//! disable mouse cursor, since camera will force it to the middle
+	//! and we don't want a jittery cursor in the middle distracting us
 	device->getCursorControl()->setVisible(false);
 
+	//! Since our cursor will be enslaved, there will be no way to close the window
+	//! So we listen for the "Q" key being pressed and exit the application
 	QToQuitEventReceiver receiver;
 	device->setEventReceiver(&receiver);
 
 
-	video::IVideoDriver* driver = device->getVideoDriver();
+	auto* driver = device->getVideoDriver();
+	auto* smgr = device->getSceneManager();
+    auto* am = device->getAssetManager();
+    auto* fs = am->getFileSystem();
 
-    SimpleCallBack* cb = new SimpleCallBack();
-    video::E_MATERIAL_TYPE newMaterialType = (video::E_MATERIAL_TYPE)driver->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles("../mesh.vert",
-                                                        "","","", //! No Geometry or Tessellation Shaders
-                                                        "../mesh.frag",
-                                                        3,video::EMT_SOLID, //! 3 vertices per primitive (this is tessellation shader relevant only
-                                                        cb, //! Our Shader Callback
-                                                        0); //! No custom user data
-    cb->drop();
+    //
+    auto* qnc = am->getMeshManipulator()->getQuantNormalCache();
+    //loading cache from file
+    qnc->loadNormalQuantCacheFromFile<asset::E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10>(fs,"../../tmp/normalCache101010.sse", true);
 
+    // register the zip
+    device->getFileSystem()->addFileArchive("../../media/sponza.zip");
 
+    asset::IAssetLoader::SAssetLoadParams lp;
+    auto meshes_bundle = am->getAsset("sponza.obj", lp);
+    assert(!meshes_bundle.isEmpty());
+    auto mesh = meshes_bundle.getContents().first[0];
+    auto mesh_raw = static_cast<asset::ICPUMesh*>(mesh.get());
 
-	scene::ISceneManager* smgr = device->getSceneManager();
-	driver->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, true);
-	scene::ICameraSceneNode* camera =
-		smgr->addCameraSceneNodeFPS(0,100.0f,0.01f);
+    //saving cache to file
+    qnc->saveCacheToFile(asset::E_QUANT_NORM_CACHE_TYPE::Q_2_10_10_10,fs,"../../tmp/normalCache101010.sse");
+
+    //we can safely assume that all meshbuffers within mesh loaded from OBJ has same DS1 layout (used for camera-specific data)
+    //so we can create just one DS
+    asset::ICPUDescriptorSetLayout* ds1layout = mesh_raw->getMeshBuffer(0u)->getPipeline()->getLayout()->getDescriptorSetLayout(1u);
+    uint32_t ds1UboBinding = 0u;
+    for (const auto& bnd : ds1layout->getBindings())
+        if (bnd.type==asset::EDT_UNIFORM_BUFFER)
+        {
+            ds1UboBinding = bnd.binding;
+            break;
+        }
+
+    size_t neededDS1UBOsz = 0ull;
+    {
+        auto pipelineMetadata = static_cast<const asset::IPipelineMetadata*>(mesh_raw->getMeshBuffer(0u)->getPipeline()->getMetadata());
+        for (const auto& shdrIn : pipelineMetadata->getCommonRequiredInputs())
+            if (shdrIn.descriptorSection.type==asset::IPipelineMetadata::ShaderInput::ET_UNIFORM_BUFFER && shdrIn.descriptorSection.uniformBufferObject.set==1u && shdrIn.descriptorSection.uniformBufferObject.binding==ds1UboBinding)
+                neededDS1UBOsz = std::max<size_t>(neededDS1UBOsz, shdrIn.descriptorSection.uniformBufferObject.relByteoffset+shdrIn.descriptorSection.uniformBufferObject.bytesize);
+    }
+
+    auto gpuds1layout = driver->getGPUObjectsFromAssets(&ds1layout, &ds1layout+1)->front();
+
+    auto gpuubo = driver->createDeviceLocalGPUBufferOnDedMem(neededDS1UBOsz);
+    auto gpuds1 = driver->createGPUDescriptorSet(std::move(gpuds1layout));
+    {
+        video::IGPUDescriptorSet::SWriteDescriptorSet write;
+        write.dstSet = gpuds1.get();
+        write.binding = ds1UboBinding;
+        write.count = 1u;
+        write.arrayElement = 0u;
+        write.descriptorType = asset::EDT_UNIFORM_BUFFER;
+        video::IGPUDescriptorSet::SDescriptorInfo info;
+        {
+            info.desc = gpuubo;
+            info.buffer.offset = 0ull;
+            info.buffer.size = neededDS1UBOsz;
+        }
+        write.info = &info;
+        driver->updateDescriptorSets(1u, &write, 0u, nullptr);
+    }
+
+    auto gpumesh = driver->getGPUObjectsFromAssets(&mesh_raw, &mesh_raw+1)->front();
+
+	//! we want to move around the scene and view it from different angles
+	scene::ICameraSceneNode* camera = smgr->addCameraSceneNodeFPS(0,100.0f,0.5f);
+
 	camera->setPosition(core::vector3df(-4,0,0));
 	camera->setTarget(core::vector3df(0,0,0));
-	camera->setNearValue(0.01f);
-	camera->setFarValue(100.0f);
+	camera->setNearValue(1.f);
+	camera->setFarValue(5000.0f);
+
     smgr->setActiveCamera(camera);
 
-	io::IFileSystem* fs = device->getFileSystem();
-
-	// from Criss:
-	// here i'm testing baw mesh writer and loader
-	// (import from .stl/.obj, then export to .baw, then import from .baw :D)
-	// Seems to work for those two simple meshes, but need more testing!
-
-    auto am = device->getAssetManager();
-
-	//! Test Loading of Obj
-    asset::IAssetLoader::SAssetLoadParams lparams;
-    auto cpumesh = core::smart_refctd_ptr_static_cast<asset::ICPUMesh>(*am->getAsset("../../media/extrusionLogo_TEST_fixed.stl", lparams).getContents().first);
-	// export mesh
-    asset::CBAWMeshWriter::WriteProperties bawprops;
-    asset::IAssetWriter::SAssetWriteParams wparams(cpumesh.get(), asset::EWF_COMPRESSED, 0.f, 0, nullptr, &bawprops);
-	am->writeAsset("extrusionLogo_TEST_fixed.baw", wparams);
-	// end export
-
-	// import .baw mesh (test)
-    cpumesh = core::smart_refctd_ptr_static_cast<asset::ICPUMesh>(*am->getAsset("extrusionLogo_TEST_fixed.baw", lparams).getContents().first);
-	// end import
-
-	//!
-	auto setMaterialTypeOnAllMaterials = [](auto* node, auto newMaterialType)
-	{
-		auto* mesh = node->getMesh();
-		for (auto i = 0u; i < mesh->getMeshBufferCount(); i++)
-		{
-			auto& material = mesh->getMeshBuffer(i)->getMaterial();
-			material.MaterialType = newMaterialType;
-		}
-	};
-
-    if (cpumesh)
-		setMaterialTypeOnAllMaterials(smgr->addMeshSceneNode(std::move(driver->getGPUObjectsFromAssets(&cpumesh.get(), (&cpumesh.get())+1)->operator[](0))),newMaterialType);
-
-    cpumesh = core::smart_refctd_ptr_static_cast<asset::ICPUMesh>(*am->getAsset("../../media/cow.obj", lparams).getContents().first);
-	// export mesh
-    wparams.rootAsset = cpumesh.get();
-	am->writeAsset("cow.baw", wparams);
-	// end export
-
-	// import .baw mesh (test)
-	cpumesh = core::smart_refctd_ptr_static_cast<asset::ICPUMesh>(*am->getAsset("cow.baw", lparams).getContents().first);
-	// end import
-
-    if (cpumesh)
-		setMaterialTypeOnAllMaterials(smgr->addMeshSceneNode(std::move(driver->getGPUObjectsFromAssets(&cpumesh.get(), (&cpumesh.get())+1)->operator[](0)),0,-1,core::vector3df(3.f,1.f,0.f)),newMaterialType);
-
-
 	uint64_t lastFPSTime = 0;
-
-	while(device->run() && receiver.keepOpen() )
-	//if (device->isWindowActive())
+	while(device->run() && receiver.keepOpen())
 	{
-		driver->beginScene(true, true, video::SColor(255,0,0,255) );
+		driver->beginScene(true, true, video::SColor(255,255,255,255) );
 
         //! This animates (moves) the camera and sets the transforms
-        //! Also draws the meshbuffer
-        smgr->drawAll();
+		camera->OnAnimate(std::chrono::duration_cast<std::chrono::milliseconds>(device->getTimer()->getTime()).count());
+		camera->render();
+
+        core::vector<uint8_t> uboData(gpuubo->getSize());
+        auto pipelineMetadata = static_cast<const asset::IPipelineMetadata*>(mesh_raw->getMeshBuffer(0u)->getPipeline()->getMetadata());
+        for (const auto& shdrIn : pipelineMetadata->getCommonRequiredInputs())
+        {
+            if (shdrIn.descriptorSection.type==asset::IPipelineMetadata::ShaderInput::ET_UNIFORM_BUFFER && shdrIn.descriptorSection.uniformBufferObject.set==1u && shdrIn.descriptorSection.uniformBufferObject.binding==ds1UboBinding)
+            {
+                switch (shdrIn.type)
+                {
+                case asset::IPipelineMetadata::ECSI_WORLD_VIEW_PROJ:
+                {
+                    core::matrix4SIMD mvp = camera->getConcatenatedMatrix();
+                    memcpy(uboData.data()+shdrIn.descriptorSection.uniformBufferObject.relByteoffset, mvp.pointer(), shdrIn.descriptorSection.uniformBufferObject.bytesize);
+                }
+                break;
+                case asset::IPipelineMetadata::ECSI_WORLD_VIEW:
+                {
+                    core::matrix3x4SIMD MV = camera->getViewMatrix();
+                    memcpy(uboData.data() + shdrIn.descriptorSection.uniformBufferObject.relByteoffset, MV.pointer(), shdrIn.descriptorSection.uniformBufferObject.bytesize);
+                }
+                break;
+                case asset::IPipelineMetadata::ECSI_WORLD_VIEW_INVERSE_TRANSPOSE:
+                {
+                    core::matrix3x4SIMD MV = camera->getViewMatrix();
+                    memcpy(uboData.data()+shdrIn.descriptorSection.uniformBufferObject.relByteoffset, MV.pointer(), shdrIn.descriptorSection.uniformBufferObject.bytesize);
+                }
+                break;
+                }
+            }
+        }       
+        driver->updateBufferRangeViaStagingBuffer(gpuubo.get(), 0ull, gpuubo->getSize(), uboData.data());
+
+        for (uint32_t i = 0u; i < gpumesh->getMeshBufferCount(); ++i)
+        {
+            video::IGPUMeshBuffer* gpumb = gpumesh->getMeshBuffer(i);
+            const video::IGPURenderpassIndependentPipeline* pipeline = gpumb->getPipeline();
+            const video::IGPUDescriptorSet* ds3 = gpumb->getAttachedDescriptorSet();
+
+            driver->bindGraphicsPipeline(pipeline);
+            const video::IGPUDescriptorSet* gpuds1_ptr = gpuds1.get();
+            driver->bindDescriptorSets(video::EPBP_GRAPHICS, pipeline->getLayout(), 1u, 1u, &gpuds1_ptr, nullptr);
+            const video::IGPUDescriptorSet* gpuds3_ptr = gpumb->getAttachedDescriptorSet();
+            if (gpuds3_ptr)
+                driver->bindDescriptorSets(video::EPBP_GRAPHICS, pipeline->getLayout(), 3u, 1u, &gpuds3_ptr, nullptr);
+            driver->pushConstants(pipeline->getLayout(), video::IGPUSpecializedShader::ESS_FRAGMENT, 0u, gpumb->MAX_PUSH_CONSTANT_BYTESIZE, gpumb->getPushConstantsDataPtr());
+
+            driver->drawMeshBuffer(gpumb);
+        }
 
 		driver->endScene();
 
@@ -166,16 +179,19 @@ int main()
 		uint64_t time = device->getTimer()->getRealTime();
 		if (time-lastFPSTime > 1000)
 		{
-			std::wostringstream sstr;
-			sstr << L"Builtin Nodes Demo - Irrlicht Engine FPS:" << driver->getFPS() << " PrimitvesDrawn:" << driver->getPrimitiveCountDrawn();
+			std::wostringstream str;
+			str << L"Meshloaders Demo - IrrlichtBAW Engine [" << driver->getName() << "] FPS:" << driver->getFPS() << " PrimitvesDrawn:" << driver->getPrimitiveCountDrawn();
 
-			device->setWindowCaption(sstr.str().c_str());
+			device->setWindowCaption(str.str().c_str());
 			lastFPSTime = time;
 		}
 	}
 
-    
-	device->drop();
+	//create a screenshot
+	{
+		core::rect<uint32_t> sourceRect(0, 0, params.WindowSize.Width, params.WindowSize.Height);
+		//ext::ScreenShot::dirtyCPUStallingScreenshot(device, "screenshot.png", sourceRect, asset::EF_R8G8B8_SRGB);
+	}
 
 	return 0;
 }
