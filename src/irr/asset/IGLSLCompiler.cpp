@@ -11,7 +11,7 @@
 #include "irr/asset/CGLSLVertexUtilsBuiltinIncludeLoader.h"
 #include "irr/asset/CGLSLBumpMappingBuiltinIncludeLoader.h"
 #include "irr/asset/CGLSLBrokenDriverWorkaroundsBuiltinIncludeLoader.h"
-#include "irr/asset/CGLSLTexturePackerBuiltinIncludeLoader.h"
+#include "irr/asset/CGLSLVirtualTexturingBuiltinIncludeLoader.h"
 
 #include "os.h"
 
@@ -28,7 +28,7 @@ IGLSLCompiler::IGLSLCompiler(io::IFileSystem* _fs) : m_inclHandler(core::make_sm
     m_inclHandler->addBuiltinIncludeLoader(core::make_smart_refctd_ptr<asset::CGLSLVertexUtilsBuiltinIncludeLoader>());
     m_inclHandler->addBuiltinIncludeLoader(core::make_smart_refctd_ptr<asset::CGLSLBumpMappingBuiltinIncludeLoader>());
     m_inclHandler->addBuiltinIncludeLoader(core::make_smart_refctd_ptr<asset::CGLSLBrokenDriverWorkaroundsBuiltinIncludeLoader>());
-    m_inclHandler->addBuiltinIncludeLoader(core::make_smart_refctd_ptr<asset::CGLSLTexturePackerBuiltinIncludeLoader>());
+    m_inclHandler->addBuiltinIncludeLoader(core::make_smart_refctd_ptr<asset::CGLSLVirtualTexturingBuiltinIncludeLoader>());
 	// TODO: Add BSDF includes here!
 }
 

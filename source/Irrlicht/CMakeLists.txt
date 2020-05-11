@@ -62,15 +62,9 @@ irr_get_conf_dir(IRRLICHT_CONF_DIR_RELWITHDEBINFO RelWithDebInfo)
 
 set(_IRR_COMPILE_WITH_OPENGL_ ${IRR_COMPILE_WITH_OPENGL})
 if (IRR_COMPILE_WITH_OPENCL)
-	find_package(OpenCL)
-
-	if (OpenCL_FOUND)
-		message(STATUS "Building with OpenCL interop")
+	message(STATUS "Building with OpenCL interop")
 		
-		set(_IRR_COMPILE_WITH_OPENCL_ ${IRR_COMPILE_WITH_OPENCL})
-	else()
-		message(STATUS "OpenCL not found")
-	endif()
+	set(_IRR_COMPILE_WITH_OPENCL_ ${IRR_COMPILE_WITH_OPENCL})
 endif()
 if (IRR_COMPILE_WITH_CUDA)
 	message(STATUS "Building with CUDA interop")
@@ -200,7 +194,6 @@ set(IRR_VIDEO_SOURCES
 )
 set(IRR_SCENE_SOURCES
 # Junk to refactor
-	CMeshSceneNode.cpp
 	CSkinnedMeshSceneNode.cpp
 	CCameraSceneNode.cpp
 	CSceneManager.cpp
@@ -221,9 +214,9 @@ set(IRRLICHT_SRCS_COMMON
 	${IRR_ASSET_SOURCES}
 	${IRR_VIDEO_SOURCES}
 	${IRR_SCENE_SOURCES}
+
 # Junk to refactor
 	IrrlichtDevice.cpp
-	CIrrDeviceSDL.cpp
 	CIrrDeviceLinux.cpp
 	CIrrDeviceConsole.cpp
 	CIrrDeviceStub.cpp
@@ -271,10 +264,11 @@ irr_adjust_definitions() # macro defined in root CMakeLists
 
 macro(irr_target_link_zlib _trgt)
 	add_dependencies(${_trgt} zlibstatic)
+
 	target_link_libraries(${_trgt} INTERFACE
-		"$<$<CONFIG:DEBUG>:${ZLIB_LIBRARY_DEBUG}>"
-		"$<$<CONFIG:RELEASE>:${ZLIB_LIBRARY_RELEASE}>"
-		"$<$<CONFIG:RELWITHDEBINFO>:${ZLIB_LIBRARY_RELWITHDEBINFO}>"
+		$<$<CONFIG:Debug>:${ZLIB_LIBRARY_DEBUG}>
+		$<$<CONFIG:Release>:${ZLIB_LIBRARY_RELEASE}>
+		$<$<CONFIG:RelWithDebInfo>:${ZLIB_LIBRARY_RELWITHDEBINFO}>
 	)
 	target_include_directories(${_trgt} PUBLIC ${THIRD_PARTY_SOURCE_DIR}/zlib)
 endmacro()
@@ -435,17 +429,6 @@ endif()
 
 if (IRR_COMPILE_WITH_CUDA)
 	target_include_directories(Irrlicht PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
-endif()
-
-if (IRR_COMPILE_WITH_OPENCL AND OpenCL_FOUND)
-	target_link_libraries(Irrlicht PUBLIC OpenCL::OpenCL)
-endif()
-
-find_package(Vulkan)
-if (Vulkan_FOUND)
-	message(STATUS "Building with Vulkan driver")
-else()
-	message(STATUS "Vulkan driver is not enabled")
 endif()
 
 target_compile_definitions(Irrlicht 

@@ -37,7 +37,7 @@ namespace video
 /** This interface only deals with OpenGL and Vulkan concepts which do not require a command to be recorded in a command buffer
 and then submitted to a command queue, i.e. functions which only require VkDevice or VkPhysicalDevice.
 Examples of such functionality are the creation of buffers, textures, etc.*/
-class IDriver : public virtual core::IReferenceCounted, public IVideoCapabilityReporter
+class IDriver : public virtual core::IReferenceCounted, public IVideoCapabilityReporter, public core::QuitSignalling
 {
     protected:
 		core::smart_refctd_ptr<StreamingTransientDataBufferMT<> > defaultDownloadBuffer;
@@ -377,7 +377,7 @@ class IDriver : public virtual core::IReferenceCounted, public IVideoCapabilityR
         created_gpu_object_array<AssetType> getGPUObjectsFromAssets(AssetType* const* const _begin, AssetType* const* const _end, IGPUObjectFromAssetConverter* _converter = nullptr);
 		//! With a custom converter, you can override it to for example; pack all buffers into one, pack all images into one atlas, etc.
 		template<typename AssetType>
-		created_gpu_object_array<AssetType> getGPUObjectsFromAssets(const core::smart_refctd_ptr<asset::IAsset>* _begin, const core::smart_refctd_ptr<asset::IAsset>* _end, IGPUObjectFromAssetConverter* _converter = nullptr);
+		created_gpu_object_array<AssetType> getGPUObjectsFromAssets(const core::smart_refctd_ptr<AssetType>* _begin, const core::smart_refctd_ptr<AssetType>* _end, IGPUObjectFromAssetConverter* _converter = nullptr);
 
 	//====================== THIS STUFF SHOULD BE IN A video::ICommandBuffer =====================
 		//! TODO: make with VkBufferCopy and take a list of multiple copies to carry out (maybe rename to copyBufferRanges)

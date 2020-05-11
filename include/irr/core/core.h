@@ -16,7 +16,6 @@
 #include "irr/core/alloc/aligned_allocator.h"
 #include "irr/core/alloc/aligned_allocator_adaptor.h"
 #include "irr/core/alloc/AllocatorTrivialBases.h"
-#include "irr/core/alloc/ContiguousPoolAddressAllocator.h"
 #include "irr/core/alloc/GeneralpurposeAddressAllocator.h"
 #include "irr/core/alloc/HeterogenousMemoryAddressAllocatorAdaptor.h"
 #include "irr/core/alloc/IAddressAllocator.h"
@@ -53,6 +52,7 @@
 #include "irr/core/string/UniqueStringLiteralType.h"
 // other useful things
 #include "irr/core/BaseClasses.h"
+#include "irr/core/SingleEventHandler.h"
 #include "irr/core/EventDeferredHandler.h"
 #include "irr/core/IBuffer.h"
 #include "irr/core/IReferenceCounted.h"

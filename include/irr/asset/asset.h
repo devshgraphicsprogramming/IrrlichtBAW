@@ -39,6 +39,7 @@
 #include "irr/asset/ISPIR_VProgram.h"
 #include "irr/asset/ICPUShader.h"
 #include "irr/asset/ICPUSpecializedShader.h"
+#include "irr/asset/CShaderIntrospector.h"
 // pipelines
 // meshes
 #include "irr/asset/ICPUMeshBuffer.h"
@@ -67,5 +68,9 @@
 #include "irr/asset/CMTLPipelineMetadata.h"
 #include "irr/asset/CPLYPipelineMetadata.h"
 #include "irr/asset/CSTLPipelineMetadata.h"
+
+//VT
+#include "irr/asset/IVirtualTexture.h"
+#include "irr/asset/ICPUVirtualTexture.h"
 
 #endif
