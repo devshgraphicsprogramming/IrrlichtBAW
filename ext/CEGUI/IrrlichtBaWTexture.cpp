@@ -5,6 +5,26 @@ using namespace irr;
 using namespace ext;
 using namespace cegui;
 
+static constexpr std::string_view _IRR_TEXTURE_MUST_EXIST_ = "To perform the function, gpu texture must exist at that point!";
+static constexpr std::string_view _IRR_CEGUI_UNSUPPORTED_FORMAT_ = "Unsupported pixel format detected!";
+static constexpr std::string_view _IRR_WRONG_CASTING_ = "Something went wrong while casting, empty pointer detected!";
+static constexpr std::string_view _IRR_NOT_TIGHTLY_PACKED_ = "Width of memory data passed doesn't pass requirements - it isn't tightly packed!";
+
+video::IDriverMemoryBacked::SDriverMemoryRequirements getMemoryRequirements(size_t vulkanReqsSize)
+{
+    video::IDriverMemoryBacked::SDriverMemoryRequirements requirements;
+    requirements.vulkanReqs.size = vulkanReqsSize;
+    requirements.vulkanReqs.alignment = 4;
+    requirements.vulkanReqs.memoryTypeBits = 0xffffffffu;
+    requirements.memoryHeapLocation = video::IDriverMemoryAllocation::ESMT_DEVICE_LOCAL;
+    requirements.mappingCapability = video::IDriverMemoryAllocation::EMCAF_READ_AND_WRITE;
+    requirements.prefersDedicatedAllocation = true;
+    requirements.requiresDedicatedAllocation = true;
+
+    return requirements;
+}
+
+
 IrrlichtBaWTexture::IrrlichtBaWTexture(irr::core::smart_refctd_ptr<irr::IrrlichtDevice> _device)
     : device(_device), bufferRowLength(0)
 {
@@ -16,71 +36,6 @@ IrrlichtBaWTexture::~IrrlichtBaWTexture()
 
 }
 
-core::smart_refctd_ptr<video::IGPUImageView> createAndFillAttachement(irr::video::IVideoDriver* driver, const void* data, asset::E_FORMAT colorAttachmentFormat, size_t width, size_t height)
-{
-    asset::ICPUImage::SCreationParams imgInfo;
-    imgInfo.format = colorAttachmentFormat;
-    imgInfo.type = asset::ICPUImage::ET_2D;
-    imgInfo.extent.width = width;
-    imgInfo.extent.height = height;
-    imgInfo.extent.depth = 1u;
-    imgInfo.mipLevels = 1u;
-    imgInfo.arrayLayers = 1u;
-    imgInfo.samples = asset::ICPUImage::ESCF_1_BIT;
-    imgInfo.flags = static_cast<asset::IImage::E_CREATE_FLAGS>(0u);
-
-    auto image = asset::ICPUImage::create(std::move(imgInfo));
-    const auto texelFormatBytesize = getTexelOrBlockBytesize(image->getCreationParameters().format);
-
-    core::smart_refctd_ptr<asset::ICPUBuffer> texelBuffer = core::make_smart_refctd_ptr<asset::CCustomAllocatorCPUBuffer<core::null_allocator<uint8_t>>>(image->getImageDataSizeInBytes(), data, core::adopt_memory);
-    auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<asset::ICPUImage::SBufferCopy>>(1u);
-    asset::ICPUImage::SBufferCopy& region = regions->front();
-
-    region.imageSubresource.mipLevel = 0u;
-    region.imageSubresource.baseArrayLayer = 0u;
-    region.imageSubresource.layerCount = 1u;
-    region.bufferOffset = 0u;
-    region.bufferRowLength = image->getCreationParameters().extent.width;
-    region.bufferImageHeight = 0u;
-    region.imageOffset = { 0u, 0u, 0u };
-    region.imageExtent = image->getCreationParameters().extent;
-
-    image->setBufferAndRegions(std::move(texelBuffer), regions);
-
-    asset::ICPUImageView::SCreationParams imgViewInfo;
-    imgViewInfo.image = std::move(image);
-    imgViewInfo.format = colorAttachmentFormat;
-    imgViewInfo.viewType = asset::IImageView<asset::ICPUImage>::ET_2D;
-    imgViewInfo.flags = static_cast<asset::ICPUImageView::E_CREATE_FLAGS>(0u);
-    imgViewInfo.subresourceRange.baseArrayLayer = 0u;
-    imgViewInfo.subresourceRange.baseMipLevel = 0u;
-    imgViewInfo.subresourceRange.layerCount = imgInfo.arrayLayers;
-    imgViewInfo.subresourceRange.levelCount = imgInfo.mipLevels;
-
-    auto imageView = asset::ICPUImageView::create(std::move(imgViewInfo));
-    auto gpuImageView = driver->getGPUObjectsFromAssets(&imageView.get(), &imageView.get() + 1)->front();
-
-    return std::move(gpuImageView);
-}
-
-irr::video::IFrameBuffer* IrrlichtBaWTexture::createFrameBuffer(const void* data, asset::E_FORMAT colorAttachmentFormat, size_t width, size_t height)
-{
-    auto gpuImageViewColorBuffer = createAndFillAttachement(driver, data, colorAttachmentFormat, width, height);
-
-    auto frameBuffer = driver->addFrameBuffer();
-    frameBuffer->attach(textureColorAttachment, std::move(gpuImageViewColorBuffer));
-
-    return frameBuffer;
-}
-
-irr::video::IFrameBuffer* IrrlichtBaWTexture::createFrameBuffer(core::smart_refctd_ptr<video::IGPUImageView> gpuImageView)
-{
-    auto frameBuffer = driver->addFrameBuffer();
-    frameBuffer->attach(textureColorAttachment, std::move(gpuImageView));
-
-    return frameBuffer;
-}
-
 const CEGUI::String& IrrlichtBaWTexture::getName() const
 {
     return cachingName;
@@ -88,43 +43,43 @@ const CEGUI::String& IrrlichtBaWTexture::getName() const
 
 const CEGUI::Sizef& IrrlichtBaWTexture::getSize() const
 {
-    bool status = frameBuffer;
+    bool status = gpuImageViewTexture.get();
 
     if (status)
     {
-        auto& params = frameBuffer->getAttachment(textureColorAttachment)->getCreationParameters().image->getCreationParameters();
+        auto& params = gpuImageViewTexture->getCreationParameters().image->getCreationParameters();
         return { params.extent.width, params.extent.height };
     }
     else
     {
-        assert(status);
+        assert(status, _IRR_TEXTURE_MUST_EXIST_.data());
         return { 0, 0 };
     }  
 }
 
 const CEGUI::Sizef& IrrlichtBaWTexture::getOriginalDataSize() const
 {
-    bool status = frameBuffer;
+    bool status = gpuImageViewTexture.get();
 
     if (status)
     {
-        auto& params = frameBuffer->getAttachment(textureColorAttachment)->getCreationParameters().image->getCreationParameters();
+        auto& params = gpuImageViewTexture->getCreationParameters().image->getCreationParameters();
         return { bufferRowLength ? bufferRowLength : params.extent.width, params.extent.height };
     }
     else 
     {
-        assert(status);
+        assert(status, _IRR_TEXTURE_MUST_EXIST_.data());
         return { 0, 0 };
     }
 }
 
 const CEGUI::Vector2f& IrrlichtBaWTexture::getTexelScaling() const
 {
-    bool status = frameBuffer;
+    bool status = gpuImageViewTexture.get();
 
     if (status)
     {
-        auto& params = frameBuffer->getAttachment(textureColorAttachment)->getCreationParameters().image->getCreationParameters();
+        auto& params = gpuImageViewTexture->getCreationParameters().image->getCreationParameters();
         auto width = bufferRowLength ? bufferRowLength : params.extent.width;
 
         return
@@ -135,23 +90,20 @@ const CEGUI::Vector2f& IrrlichtBaWTexture::getTexelScaling() const
     }
     else
     {
-        assert(status);
+        assert(status, _IRR_TEXTURE_MUST_EXIST_.data());
         return { 0, 0 };
     }
 }
 
 void IrrlichtBaWTexture::loadFromFile(const CEGUI::String& filename, const CEGUI::String& resourceGroup)
 {
-    if (frameBuffer)
-        frameBuffer->drop();
-
     auto path = resourceGroup + filename;
     auto assetManager = device->getAssetManager();
 
     auto params = asset::IAssetLoader::SAssetLoadParams();
-    auto bundle = assetManager->getAsset(path, params);
+    auto bundle = assetManager->getAsset(path, params);  /// TODO - we need to have separate caching for CEGUI
     auto cpuImage = asset::IAsset::castDown<asset::ICPUImage>(bundle.getContents().first[0]);
-    assert(cpuImage.get(), "something went wrong while casting, empty pointer detected!");
+    assert(cpuImage.get(), _IRR_WRONG_CASTING_.data());
 
     bufferRowLength = cpuImage->getRegions().begin()->bufferRowLength;
 
@@ -167,41 +119,20 @@ void IrrlichtBaWTexture::loadFromFile(const CEGUI::String& filename, const CEGUI
 
     auto cpuImageView = asset::ICPUImageView::create(std::move(imageViewInfo));
 
-    // cachingName = ""     TODO Okay, so we have to get likely GL id or something similar. Should I cast it to OpenGL image or maybe we should get CPU cache string?
+    cachingName = "";   /// TODO - having seperate caching for CEGUI, we can assign the variables here
 
-    auto newTexture = device->getVideoDriver()->getGPUObjectsFromAssets(&cpuImageView.get(), &cpuImageView.get() + 1u)->front();
-    frameBuffer = createFrameBuffer(newTexture);
+    gpuImageViewTexture = device->getVideoDriver()->getGPUObjectsFromAssets(&cpuImageView.get(), &cpuImageView.get() + 1u)->front();
 }
 
 void IrrlichtBaWTexture::loadFromMemory(const void* buffer, const CEGUI::Sizef& buffer_size, PixelFormat pixel_format)
 {
-    if (frameBuffer)
-        frameBuffer->drop();
-
-    asset::E_FORMAT newFormat = [&]()
-    {
-        switch (pixel_format)
-        {
-            case PixelFormat::PF_RGB: return asset::EF_R8G8B8_SRGB;
-            case PixelFormat::PF_RGBA: return asset::EF_R8G8B8A8_SRGB;
-            case PixelFormat::PF_RGBA_4444: return asset::EF_R4G4B4A4_UNORM_PACK16;
-            case PixelFormat::PF_RGB_565: return asset::EF_R5G6B5_UNORM_PACK16;
-            case PixelFormat::PF_PVRTC2: return asset::EF_PVRTC2_2BPP_SRGB_BLOCK_IMG;
-            case PixelFormat::PF_PVRTC4: return asset::EF_PVRTC2_4BPP_SRGB_BLOCK_IMG;
-            case PixelFormat::PF_RGB_DXT1: return asset::EF_BC1_RGB_SRGB_BLOCK;
-            case PixelFormat::PF_RGBA_DXT1: return asset::EF_BC1_RGBA_SRGB_BLOCK;
-            case PixelFormat::PF_RGBA_DXT3: return asset::EF_BC2_SRGB_BLOCK;
-            case PixelFormat::PF_RGBA_DXT5: return asset::EF_BC3_SRGB_BLOCK;
-                
-            default:
-                return asset::EF_UNKNOWN;
-        }
-    }();
-
+    asset::E_FORMAT newFormat = getTranslatedFormat(pixel_format);
     auto texelOrBlockByteSize = asset::getTexelOrBlockBytesize(newFormat);
-    auto bufferByteSize = buffer_size.d_width * buffer_size.d_height * texelOrBlockByteSize;
-    core::smart_refctd_ptr<asset::ICPUBuffer> cpuPixelBuffer = core::make_smart_refctd_ptr<asset::CCustomAllocatorCPUBuffer<core::null_allocator<uint8_t>>>(bufferByteSize, buffer, core::adopt_memory);
-    core::smart_refctd_ptr<video::IGPUBuffer> gpuPixelBuffer = driver->getGPUObjectsFromAssets(&cpuPixelBuffer.get(), &cpuPixelBuffer.get() + 1u)->front();
+
+    auto requirements = getMemoryRequirements(buffer_size.d_width * buffer_size.d_height * texelOrBlockByteSize);
+
+    auto gpuBuffer = driver->createGPUBufferOnDedMem(requirements);
+    driver->updateBufferRangeViaStagingBuffer(gpuBuffer.get(), 0, requirements.vulkanReqs.size, buffer);
 
     asset::IImage::SCreationParams imageParams;
     imageParams.flags = static_cast<asset::IImage::E_CREATE_FLAGS>(0);
@@ -211,7 +142,8 @@ void IrrlichtBaWTexture::loadFromMemory(const void* buffer, const CEGUI::Sizef& 
     imageParams.mipLevels = 1;
     imageParams.arrayLayers = 1;
 
-    assert((asset::IImageAssetHandlerBase::calcPitchInBlocks(imageParams.extent.width, texelOrBlockByteSize) == imageParams.extent.width), "Width of memory data passed doesn't pass requirements - it isn't tightly packed!");
+    assert((asset::IImageAssetHandlerBase::calcPitchInBlocks(imageParams.extent.width, texelOrBlockByteSize) == imageParams.extent.width), _IRR_NOT_TIGHTLY_PACKED_.data());
+    auto gpuImage = driver->createGPUImage(std::move(imageParams));
 
     auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<asset::ICPUImage::SBufferCopy>>(1u);
     asset::ICPUImage::SBufferCopy& region = regions->front();
@@ -220,12 +152,11 @@ void IrrlichtBaWTexture::loadFromMemory(const void* buffer, const CEGUI::Sizef& 
     region.imageSubresource.layerCount = 1u;
     region.bufferOffset = 0u;
     region.bufferRowLength = 0;
-    region.bufferImageHeight = 0u; 
+    region.bufferImageHeight = 0u;
     region.imageOffset = { 0u, 0u, 0u };
     region.imageExtent = imageParams.extent;
 
-    auto gpuImage = device->getVideoDriver()->createGPUImage(std::move(imageParams));
-    driver->copyBufferToImage(gpuPixelBuffer.get(), gpuImage.get(), regions->size(), regions->begin());
+    driver->copyBufferToImage(gpuBuffer.get(), gpuImage.get(), regions->size(), regions->begin());
 
     asset::IImageView<video::IGPUImage>::SCreationParams viewParams;
     viewParams.flags = static_cast<decltype(viewParams.flags)>(0);
@@ -233,59 +164,105 @@ void IrrlichtBaWTexture::loadFromMemory(const void* buffer, const CEGUI::Sizef& 
     viewParams.image = gpuImage;
     viewParams.subresourceRange.baseArrayLayer = 0;
     viewParams.subresourceRange.baseMipLevel = 0;
-    viewParams.subresourceRange.layerCount = 1;
-    viewParams.subresourceRange.levelCount = 1;
+    viewParams.subresourceRange.layerCount = imageParams.arrayLayers;
+    viewParams.subresourceRange.levelCount = imageParams.mipLevels;
     viewParams.viewType = decltype(viewParams.viewType)::ET_2D;
 
-    frameBuffer = createFrameBuffer(driver->createGPUImageView(std::move(viewParams)));
+    gpuImageViewTexture = driver->createGPUImageView(std::move(viewParams));
 }
 
 void IrrlichtBaWTexture::blitFromMemory(const void* sourceData, const CEGUI::Rectf& area)
 {
-    bool status = frameBuffer;
+    bool status = gpuImageViewTexture.get();
 
     if (status)
     {
-        auto gpuTexture = frameBuffer->getAttachment(textureColorAttachment);
-        auto& viewParams = gpuTexture->getCreationParameters();
+        auto& viewParams = gpuImageViewTexture->getCreationParameters();
         auto& extent = viewParams.image->getCreationParameters().extent;
-        irr::core::recti coverArea(area.left(), area.top(), area.getWidth(), area.getHeight());
 
-        auto temporaryInFrameBuffer = createFrameBuffer(sourceData, viewParams.format, extent.width, extent.height);
-        driver->blitRenderTargets(temporaryInFrameBuffer, frameBuffer, false, false, coverArea, coverArea);
-        temporaryInFrameBuffer->drop();
+        auto requirements = getMemoryRequirements(area.getWidth() * area.getHeight() * asset::getTexelOrBlockBytesize(viewParams.format));
+
+        auto gpuBuffer = driver->createGPUBufferOnDedMem(requirements);
+        driver->updateBufferRangeViaStagingBuffer(gpuBuffer.get(), 0, requirements.vulkanReqs.size, sourceData);
+
+        auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<asset::ICPUImage::SBufferCopy>>(1u);
+        asset::ICPUImage::SBufferCopy& region = regions->front();
+        region.imageSubresource.mipLevel = 0u;
+        region.imageSubresource.baseArrayLayer = 0u;
+        region.imageSubresource.layerCount = 1u;
+        region.bufferOffset = 0u;
+        region.bufferRowLength = 0;
+        region.bufferImageHeight = 0u;
+        region.imageOffset = { area.left(), area.top(), 0u };
+        region.imageExtent = extent;
+
+        driver->copyBufferToImage(gpuBuffer.get(), gpuImageViewTexture->getCreationParameters().image.get(), regions->size(), regions->begin());
     }
     else
-        assert(status);
+        assert(status, _IRR_TEXTURE_MUST_EXIST_.data());
 }
 
 void IrrlichtBaWTexture::blitToMemory(void* targetData)
 {
-    bool status = frameBuffer;
+    bool status = gpuImageViewTexture.get();
 
     if (status)
     {
-        auto gpuTexture = frameBuffer->getAttachment(textureColorAttachment);
-        auto& viewParams = gpuTexture->getCreationParameters();
+        auto& viewParams = gpuImageViewTexture->getCreationParameters();
         auto& extent = viewParams.image->getCreationParameters().extent;
+        const auto bufferByteSize = asset::getTexelOrBlockBytesize(viewParams.format) * extent.width * extent.height;
 
-        auto temporaryOutFrameBuffer = createFrameBuffer(targetData, viewParams.format, extent.width, extent.height);
-        driver->blitRenderTargets(frameBuffer, temporaryOutFrameBuffer, false, false);
- 
-        auto bufferByteSize = viewParams.image->getImageDataSizeInBytes();
-        auto destinationBoundMemory = const_cast<video::IDriverMemoryAllocation*>(viewParams.image->getBoundMemory()); // not sure
-        destinationBoundMemory->mapMemoryRange(video::IDriverMemoryAllocation::EMCAF_READ, { 0u, bufferByteSize });
-        core::smart_refctd_ptr<asset::ICPUBuffer> pixelBuffer = core::make_smart_refctd_ptr<asset::CCustomAllocatorCPUBuffer<core::null_allocator<uint8_t>>>(bufferByteSize, destinationBoundMemory->getMappedPointer(), core::adopt_memory);
+        video::IDriverMemoryBacked::SDriverMemoryRequirements requirements = getMemoryRequirements(bufferByteSize);
+        auto gpuBuffer = driver->createGPUBufferOnDedMem(requirements);
 
-        memcpy(targetData, pixelBuffer->getPointer(), pixelBuffer->getSize());
+        auto regions = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<asset::ICPUImage::SBufferCopy>>(1u);
+        asset::ICPUImage::SBufferCopy& region = regions->front();
+        region.imageSubresource.mipLevel = 0u;
+        region.imageSubresource.baseArrayLayer = 0u;
+        region.imageSubresource.layerCount = 1u;
+        region.bufferOffset = 0u;
+        region.bufferRowLength = 0;
+        region.bufferImageHeight = 0u;
+        region.imageOffset = { 0, 0, 0u };
+        region.imageExtent = extent;
 
-        temporaryOutFrameBuffer->drop();
+        driver->copyImageToBuffer(viewParams.image.get(), gpuBuffer.get(), regions->size(), regions->begin());
+        auto clientBoundMemory = gpuBuffer->getBoundMemory();
+        clientBoundMemory->mapMemoryRange(video::IDriverMemoryAllocation::EMCAF_READ, { 0u, bufferByteSize });
+        memcpy(targetData, clientBoundMemory->getMappedPointer(), bufferByteSize);
+        clientBoundMemory->unmapMemory();
     }
     else
-        assert(status);
+        assert(status, _IRR_TEXTURE_MUST_EXIST_.data());
 }
 
 bool IrrlichtBaWTexture::isPixelFormatSupported(const PixelFormat fmt) const
 {
-    return true;
+    return getTranslatedFormat(fmt);
+}
+
+asset::E_FORMAT IrrlichtBaWTexture::getTranslatedFormat(const PixelFormat ceguiFormat)
+{
+    asset::E_FORMAT newFormat = [&]()
+    {
+        switch (ceguiFormat)
+        {
+            case PixelFormat::PF_RGB: return asset::EF_R8G8B8_SRGB;
+            case PixelFormat::PF_RGBA: return asset::EF_R8G8B8A8_SRGB;
+            case PixelFormat::PF_RGBA_4444: return asset::EF_R4G4B4A4_UNORM_PACK16;
+            case PixelFormat::PF_RGB_565: _IRR_FALLTHROUGH;
+            case PixelFormat::PF_PVRTC2: _IRR_FALLTHROUGH;
+            case PixelFormat::PF_PVRTC4: return asset::EF_UNKNOWN;
+            case PixelFormat::PF_RGB_DXT1: return asset::EF_BC1_RGB_SRGB_BLOCK;
+            case PixelFormat::PF_RGBA_DXT1: return asset::EF_BC1_RGBA_SRGB_BLOCK;
+            case PixelFormat::PF_RGBA_DXT3: return asset::EF_BC2_SRGB_BLOCK;
+            case PixelFormat::PF_RGBA_DXT5: return asset::EF_BC3_SRGB_BLOCK;
+
+        default:
+            return asset::EF_UNKNOWN;
+        }
+    }();
+
+    assert(newFormat != asset::EF_UNKNOWN, _IRR_CEGUI_UNSUPPORTED_FORMAT_.data());
+    return newFormat;
 }
