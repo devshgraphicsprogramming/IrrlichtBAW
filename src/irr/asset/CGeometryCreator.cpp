@@ -512,7 +512,7 @@ CGeometryCreator::return_type CGeometryCreator::createCylinderMesh(float radius,
 	return retval;
 }
 
-/* A cone with proper normals and texture coords */
+/* A cone with normals and proper texture coords */
 CGeometryCreator::return_type CGeometryCreator::createConeMesh(	float radius, float length, uint32_t tesselation,
 																const video::SColor& colorTop,
 																const video::SColor& colorBottom,
