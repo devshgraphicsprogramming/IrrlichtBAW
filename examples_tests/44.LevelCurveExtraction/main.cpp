@@ -80,7 +80,7 @@ void main()
     numHorLines = uint(floor(maxLevel/levelPlanesDistance)-ceil(minLevel/levelPlanesDistance-1));
     if(numHorLines>0)
     {
-        uint outID = atomicAdd(lineDraw[0].count,2 * numHorLines) * 3;
+        uint outID = atomicAdd(lineDraw.count,2 * numHorLines) * 3;
         float beginLevel = ceil(minLevel/levelPlanesDistance)*levelPlanesDistance;
 
         const vec3 edgeVectors[3] = vec3[3](
