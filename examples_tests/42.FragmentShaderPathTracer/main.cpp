@@ -4,7 +4,8 @@
 
 #include "irr/ext/FullScreenTriangle/FullScreenTriangle.h"
 #include "irr/ext/ScreenShot/ScreenShot.h"
-
+#include "SPIRV-Tools/include/spirv-tools/optimizer.hpp" 
+#include <shaderc\shaderc.hpp>
 using namespace irr;
 using namespace core;
 using namespace asset;
@@ -213,7 +214,36 @@ int main()
 
 	auto createGpuResources = [&](std::string pathToShader) -> std::pair<core::smart_refctd_ptr<video::IGPURenderpassIndependentPipeline>, core::smart_refctd_ptr<video::IGPUMeshBuffer>>
 	{
-		auto cpuFragmentSpecializedShader = core::smart_refctd_ptr_static_cast<asset::ICPUSpecializedShader>(assetManager->getAsset(pathToShader, {}).getContents().begin()[0]);
+		auto cpuFragmentSpecializedShader = core::smart_refctd_ptr_static_cast<asset::ICPUSpecializedShader>(
+			assetManager->getAsset(pathToShader, {}).getContents().begin()[0]);
+		auto begin = reinterpret_cast<const char*>(cpuFragmentSpecializedShader->getUnspecialized()->getSPVorGLSL()->getPointer());
+		auto end = begin + cpuFragmentSpecializedShader->getUnspecialized()->getSPVorGLSL()->getSize();
+		std::string shadercode(begin, end);
+
+		spvtools::Optimizer opt(SPV_ENV_UNIVERSAL_1_3);
+		spvtools::SpirvTools spvTool(SPV_ENV_UNIVERSAL_1_3);
+
+		auto* comp = assetManager->getGLSLCompiler();
+
+		asset::ICPUShader::insertGLSLExtensionsDefines(shadercode, driver->getSupportedGLSLExtensions().get());
+		auto glslShader_woIncludes = comp->resolveIncludeDirectives(shadercode.c_str(), irr::asset::ISpecializedShader::E_SHADER_STAGE::ESS_FRAGMENT, pathToShader.c_str());
+		auto spvShader = comp->createSPIRVFromGLSL(
+			reinterpret_cast<const char*>(glslShader_woIncludes->getSPVorGLSL()->getPointer()),
+			irr::asset::ISpecializedShader::E_SHADER_STAGE::ESS_FRAGMENT,
+			"main",
+			"fragshader"
+		);
+
+
+
+		/*std::cout << std::string(reinterpret_cast<const char*>(spvShader->getSPVorGLSL()->getPointer()), reinterpret_cast<const char*>(spvShader->getSPVorGLSL()->getPointer()) + spvShader->getSPVorGLSL()->getSize());*/
+		std::vector<uint32_t> binary;
+		if (!opt.Run(reinterpret_cast<const uint32_t*>(spvShader->getSPVorGLSL()->getPointer()), spvShader->getSPVorGLSL()->getSize(), &binary))
+		{
+			assert(false);	//this gets called, Run() fails when equivalent of spvTool.Validate is called
+		}
+
+
 		ISpecializedShader::SInfo info = cpuFragmentSpecializedShader->getSpecializationInfo();
 		info.m_backingBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(sizeof(ShaderParameters));
 		memcpy(info.m_backingBuffer->getPointer(),&kShaderParameters,sizeof(ShaderParameters));
