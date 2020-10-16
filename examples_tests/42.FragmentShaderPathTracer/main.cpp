@@ -144,7 +144,7 @@ void APIENTRY openGLCBFunc(GLenum source, GLenum type, GLuint id, GLenum severit
 struct ShaderParameters
 {
 	const uint32_t MaxDepthLog2 = 3; //5
-	const uint32_t MaxSamplesLog2 = 10; //18
+	const uint32_t MaxSamplesLog2 = 12; //18
 } kShaderParameters;
 
 int main()
@@ -216,6 +216,7 @@ int main()
 	{
 		auto cpuFragmentSpecializedShader = core::smart_refctd_ptr_static_cast<asset::ICPUSpecializedShader>(
 			assetManager->getAsset(pathToShader, {}).getContents().begin()[0]);
+		ICPUSpecializedShader::SInfo infoCpy = cpuFragmentSpecializedShader->getSpecializationInfo();
 		auto begin = reinterpret_cast<const char*>(cpuFragmentSpecializedShader->getUnspecialized()->getSPVorGLSL()->getPointer());
 		auto end = begin + cpuFragmentSpecializedShader->getUnspecialized()->getSPVorGLSL()->getSize();
 		std::string shadercode(begin, end);
@@ -231,28 +232,42 @@ int main()
 			reinterpret_cast<const char*>(glslShader_woIncludes->getSPVorGLSL()->getPointer()),
 			irr::asset::ISpecializedShader::E_SHADER_STAGE::ESS_FRAGMENT,
 			"main",
-			"fragshader"
+			pathToShader.c_str()
 		);
-
-
-
-		/*std::cout << std::string(reinterpret_cast<const char*>(spvShader->getSPVorGLSL()->getPointer()), reinterpret_cast<const char*>(spvShader->getSPVorGLSL()->getPointer()) + spvShader->getSPVorGLSL()->getSize());*/
-		std::vector<uint32_t> binary;
-		if (!opt.Run(reinterpret_cast<const uint32_t*>(spvShader->getSPVorGLSL()->getPointer()), spvShader->getSPVorGLSL()->getSize(), &binary))
+		ICPUSpecializedShader::SInfo optShaderInfo;
 		{
-			assert(false);	//this gets called, Run() fails when equivalent of spvTool.Validate is called
+			optShaderInfo.shaderStage = irr::asset::ISpecializedShader::E_SHADER_STAGE::ESS_FRAGMENT;
+			optShaderInfo.entryPoint = "main";
+			optShaderInfo.m_filePathHint = pathToShader.c_str();
+		}
+		auto specSpirvShader = core::make_smart_refctd_ptr< asset::ICPUSpecializedShader>(std::move(spvShader), std::move(optShaderInfo));
+		opt.RegisterPass(spvtools::CreateFreezeSpecConstantValuePass())
+			.RegisterPass(spvtools::CreateUnifyConstantPass())
+			.RegisterPass(spvtools::CreateStripDebugInfoPass());
+
+//temp test code
+std::string disassembly;
+if (spvTool.Disassemble(reinterpret_cast<const uint32_t*>(specSpirvShader->getUnspecialized()->getSPVorGLSL()->getPointer()),
+	specSpirvShader->getUnspecialized()->getSPVorGLSL()->getSize(), &disassembly))
+	std::cout << disassembly;	//doesnt work, spirvSpecShader cannot be disassembled, it is not treated as binary code
+//----------
+
+		std::vector<uint32_t> binary(specSpirvShader->getUnspecialized()->getSPVorGLSL()->getSize());
+		if (!opt.Run(reinterpret_cast<const uint32_t*>(specSpirvShader->getUnspecialized()->getSPVorGLSL()->getPointer()), specSpirvShader->getUnspecialized()->getSPVorGLSL()->getSize(), &binary))
+		{
+			assert(false);	//this gets called, Run() returns false right after Validate is unsuccessful
 		}
 
 
-		ISpecializedShader::SInfo info = cpuFragmentSpecializedShader->getSpecializationInfo();
+		ISpecializedShader::SInfo info = specSpirvShader->getSpecializationInfo();
 		info.m_backingBuffer = core::make_smart_refctd_ptr<ICPUBuffer>(sizeof(ShaderParameters));
-		memcpy(info.m_backingBuffer->getPointer(),&kShaderParameters,sizeof(ShaderParameters));
+		memcpy(info.m_backingBuffer->getPointer(), &kShaderParameters, sizeof(ShaderParameters));
 		info.m_entries = core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<ISpecializedShader::SInfo::SMapEntry>>(2u);
-		for (uint32_t i=0; i<2; i++)
-			info.m_entries->operator[](i) = {i,i*sizeof(uint32_t),sizeof(uint32_t)};
-		cpuFragmentSpecializedShader->setSpecializationInfo(std::move(info));
+		for (uint32_t i = 0; i < 2; i++)
+			info.m_entries->operator[](i) = { i,i * sizeof(uint32_t),sizeof(uint32_t) };
+		specSpirvShader->setSpecializationInfo(std::move(info));
 
-		auto gpuFragmentSpecialedShader = driver->getGPUObjectsFromAssets(&cpuFragmentSpecializedShader.get(), &cpuFragmentSpecializedShader.get() + 1)->front();
+		auto gpuFragmentSpecialedShader = driver->getGPUObjectsFromAssets(&specSpirvShader.get(), &specSpirvShader.get() + 1)->front();
 		IGPUSpecializedShader* shaders[2] = { std::get<0>(fullScreenTriangle).get(), gpuFragmentSpecialedShader.get() };
 
 		auto gpuPipelineLayout = driver->createGPUPipelineLayout(nullptr, nullptr, nullptr, core::smart_refctd_ptr(gpuDescriptorSetLayout1), nullptr, core::smart_refctd_ptr(gpuDescriptorSetLayout3));
