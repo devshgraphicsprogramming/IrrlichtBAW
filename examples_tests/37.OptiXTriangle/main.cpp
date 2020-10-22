@@ -2,7 +2,7 @@
 #include <irrlicht.h>
 
 
-#include "irr/ext/OptiX/OptiXManager.h"
+#include "irr/ext/OptiX/Manager.h"
 
 // cuda and optix stuff
 #include "vector_types.h"
@@ -32,9 +32,9 @@ int main()
 	params.Doublebuffer = true;
 	params.Stencilbuffer = false; //! This will not even be a choice soon
 	params.AuxGLContexts = 16;
-	IrrlichtDevice* device = createDeviceEx(params);
+	auto device = createDeviceEx(params);
 
-	if (device == 0)
+	if (device.get() == 0)
 		return 1; // could not create selected driver.
 
 	auto filesystem = device->getFileSystem();
@@ -133,7 +133,7 @@ int main()
 	// single pipeline
 	OptixPipelineCompileOptions pipeline_compile_options = {};
 	pipeline_compile_options.usesMotionBlur = false;
-	pipeline_compile_options.exceptionFlags = OPTIX_EXCEPTION_FLAG_NONE;  // TODO: should be OPTIX_EXCEPTION_FLAG_STACK_OVERFLOW;
+	pipeline_compile_options.exceptionFlags = OPTIX_EXCEPTION_CODE_STACK_OVERFLOW; 
 
 	// This option is important to ensure we compile code which is optimal
 	// for our scene hierarchy. We use a single GAS – no instancing or
@@ -213,7 +213,6 @@ int main()
 	OptixPipelineLinkOptions pipeline_link_options = {};
 	pipeline_link_options.maxTraceDepth = 5;
 	pipeline_link_options.debugLevel = OPTIX_COMPILE_DEBUG_LEVEL_FULL;
-	pipeline_link_options.overrideUsesMotionBlur = false;
     OptixPipeline pipeline = nullptr;
     {
         OptixProgramGroup program_groups[] = { raygen_prog_group };
@@ -244,14 +243,14 @@ int main()
 
 		auto createRecord = [&](cuda::CCUDAHandler::GraphicsAPIObjLink<video::IGPUBuffer>* outLink, const auto& recordData) -> CUdeviceptr
 		{
-			outLink->obj = core::smart_refctd_ptr<video::IGPUBuffer>(driver->createFilledDeviceLocalGPUBufferOnDedMem(sizeof(recordData),&recordData), core::dont_grab);
+			outLink->setObject( core::smart_refctd_ptr<video::IGPUBuffer>(driver->createFilledDeviceLocalGPUBufferOnDedMem(sizeof(recordData),&recordData)));
 			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::registerBuffer(outLink,CU_GRAPHICS_REGISTER_FLAGS_READ_ONLY)))
 				return {};
-			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::cuda.pcuGraphicsMapResources(1u, &outLink->cudaHandle, stream)))
+			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::cuda.pcuGraphicsMapResources(1u, (outLink->getCudaResourceHandle()), stream)))
 				return {};
 			size_t tmp = sizeof(recordData);
 			CUdeviceptr cuptr;
-			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::cuda.pcuGraphicsResourceGetMappedPointer_v2(&cuptr, &tmp, outLink->cudaHandle)))
+			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::cuda.pcuGraphicsResourceGetMappedPointer_v2(&cuptr, &tmp, outLink->getCudaResourceHandle())))
 				return {};
 			assert(cuptr%OPTIX_SBT_RECORD_ALIGNMENT==0ull);
 			return cuptr;
@@ -283,7 +282,7 @@ int main()
 	cuda::CCUDAHandler::GraphicsAPIObjLink<video::IGPUBuffer> buffers[2];
 	for (auto i=0; i<buffersToAcquireCount; i++)
 	{
-		buffers[i] = core::smart_refctd_ptr<video::IGPUBuffer>(driver->createDeviceLocalGPUBufferOnDedMem(bufferSizes[i]),core::dont_grab);
+		buffers[i] = core::smart_refctd_ptr<video::IGPUBuffer>(driver->createDeviceLocalGPUBufferOnDedMem(bufferSizes[i]));
 		if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::registerBuffer(buffers+i)))
 			return 8;
 	}
@@ -296,16 +295,16 @@ int main()
 		// raytrace part
 		{
 			CUdeviceptr cuptr[2] = {};
-			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::mapAndGetPointers(cuptr+1,buffers+1,buffers+buffersToAcquireCount,stream)))
+			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::acquireAndGetPointers(buffers, buffers + buffersToAcquireCount, stream)))
 				return 9;
 			
 			auto outputCUDAPtrRef = cuda::CCUDAHandler::cast_CUDA_ptr<uchar4>(cuptr[1]);
 			if (p.image!=outputCUDAPtrRef)
 			{
 				p.image = outputCUDAPtrRef;
-				driver->updateBufferRangeViaStagingBuffer(buffers[0].obj.get(),0u,sizeof(Params),&p);
+				driver->updateBufferRangeViaStagingBuffer(buffers[0].getObject(),0u,sizeof(Params),&p);
 			}
-			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::mapAndGetPointers(cuptr,buffers,buffers+1,stream)))
+			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::acquireAndGetPointers(buffers, buffers + buffersToAcquireCount, stream)))
 				return 10;
 
 			optixLaunch( pipeline, stream, cuptr[0], sizeof(Params), &sbt, p.image_width, params.WindowSize.Height, /*depth=*/1 );
@@ -314,7 +313,7 @@ int main()
 				return 11;
 		}
 
-		video::COpenGLExtensionHandler::extGlGetNamedBufferSubData(static_cast<video::COpenGLBuffer*>(buffers[1].obj.get())->getOpenGLName(),0u,sizeof(stackScratch),stackScratch);
+		video::COpenGLExtensionHandler::extGlGetNamedBufferSubData(static_cast<video::COpenGLBuffer*>(buffers[1].getObject())->getOpenGLName(),0u,sizeof(stackScratch),stackScratch);
 
 		driver->beginScene(false, false);
 

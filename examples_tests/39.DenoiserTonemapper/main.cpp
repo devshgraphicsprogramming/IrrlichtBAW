@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
 	constexpr auto forcedOptiXFormatPixelStride = 6u;
 	DenoiserToUse denoisers[EII_COUNT];
 	{
-		OptixDenoiserOptions opts = { OPTIX_DENOISER_INPUT_RGB,forcedOptiXFormat };
+		OptixDenoiserOptions opts = { OPTIX_DENOISER_INPUT_RGB };
 		denoisers[EII_COLOR].m_denoiser = m_optixContext->createDenoiser(&opts);
 		if (check_error(!denoisers[EII_COLOR].m_denoiser, "Could not create Optix Color Denoiser!"))
 			return error_code;
@@ -629,7 +629,7 @@ void main()
 
 			denoisers[i].stateOffset = denoiserStateBufferSize;
 			denoiserStateBufferSize += denoisers[i].stateSize = m_denoiserMemReqs.stateSizeInBytes;
-			scratchBufferSize = core::max(scratchBufferSize,denoisers[i].scratchSize = m_denoiserMemReqs.recommendedScratchSizeInBytes);
+			scratchBufferSize = core::max(scratchBufferSize,denoisers[i].scratchSize = m_denoiserMemReqs.withoutOverlapScratchSizeInBytes);
 			pixelBufferSize = core::max(pixelBufferSize,core::max(asset::getTexelOrBlockBytesize(EF_R32G32B32A32_SFLOAT),(i+1u)*forcedOptiXFormatPixelStride)*maxResolution[i][0]*maxResolution[i][1]);
 		}
 		std::string message = "Total VRAM consumption for Denoiser algorithm: ";

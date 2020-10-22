@@ -245,6 +245,14 @@ class CCUDAHandler
 
 				//
 				auto* getObject() const {return obj.get();}
+				void setObject(core::smart_refctd_ptr<ObjType>&& otherObj)
+				{
+					obj = std::move(otherObj);
+				}
+				auto* getCudaResourceHandle() const
+				{
+					return &cudaHandle;
+				}
 
 			private:
 				core::smart_refctd_ptr<ObjType> obj;
