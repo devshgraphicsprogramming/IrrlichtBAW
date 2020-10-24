@@ -14,6 +14,14 @@ namespace OptiX
 
 class IContext;
 
+struct Tile
+{
+	OptixImage2D input;
+	OptixImage2D output;
+	unsigned int inputOffsetX;
+	unsigned int inputOffsetY;
+};
+
 class IDenoiser final : public core::IReferenceCounted
 {
 	public:
@@ -66,6 +74,16 @@ class IDenoiser final : public core::IReferenceCounted
 										inputOffsetX,inputOffsetY,outputLayer,
 										scratchBuffer.asBuffer.pointer+scratchBufferOffset,scratchSizeInBytes);
 		}
+		void createTilesForDenoising(
+			void* inputBuffer,
+			void* outputBuffer,
+			size_t                inputWidth,
+			size_t                inputHeight,
+			OptixPixelFormat   pixelFormat,
+			size_t                overlap,
+			size_t                tileWidth,
+			size_t                tileHeight,
+			std::vector<Tile>& tiles);
 
 	protected:
 		friend class OptiX::IContext;

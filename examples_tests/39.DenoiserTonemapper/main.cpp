@@ -45,10 +45,12 @@ bool check_error(bool cond, const char* message)
 		os::Printer::log(message, ELL_ERROR);
 	return cond;
 }
-/*
-	if (check_error(,"!"))
-		return error_code;
-*/
+
+constexpr uint32_t overlap = 64;
+constexpr uint32_t tileWidth = 1920, tileHeight = 1080; //or 1920x1080
+constexpr uint32_t tileWidthWithOverlap = tileWidth + overlap * 2;
+constexpr uint32_t tileHeightWithOverlap = tileHeight + overlap * 2;
+
 
 int main(int argc, char* argv[])
 {
@@ -61,10 +63,10 @@ int main(int argc, char* argv[])
 	params.Vsync = true;
 	params.Doublebuffer = true;
 	params.Stencilbuffer = false;
-	params.StreamingDownloadBufferSize = 256*1024*1024; // change in Vulkan fo
+	params.StreamingDownloadBufferSize = 256 * 1024 * 1024; // change in Vulkan fo
 	auto device = createDeviceEx(params);
 
-	if (check_error(!device,"Could not create Irrlicht Device!"))
+	if (check_error(!device, "Could not create Irrlicht Device!"))
 		return error_code;
 
 	auto driver = device->getVideoDriver();
@@ -79,7 +81,7 @@ int main(int argc, char* argv[])
 		core::vector<std::string> arguments;
 		arguments.reserve(PROPER_CMD_ARGUMENTS_AMOUNT);
 		arguments.emplace_back(argv[0]);
-		if (argc>1)
+		if (argc > 1)
 			for (auto i = 1ul; i < argc; ++i)
 				arguments.emplace_back(argv[i]);
 		else
@@ -93,10 +95,10 @@ int main(int argc, char* argv[])
 
 	auto cmdHandler = CommandLineHandler(getArgvFetchedList(), am);
 
-	if (check_error(!cmdHandler.getStatus(),"Could not parse input commands!"))
+	if (check_error(!cmdHandler.getStatus(), "Could not parse input commands!"))
 		return error_code;
 
-	auto m_optixManager = ext::OptiX::Manager::create(driver,device->getFileSystem());
+	auto m_optixManager = ext::OptiX::Manager::create(driver, device->getFileSystem());
 	if (check_error(!m_optixManager, "Could not initialize CUDA or OptiX!"))
 		return error_code;
 	auto m_cudaStream = m_optixManager->getDeviceStream(0);
@@ -110,24 +112,24 @@ int main(int argc, char* argv[])
 	E_FORMAT irrFmtRequired = EF_UNKNOWN;
 	switch (forcedOptiXFormat)
 	{
-		case OPTIX_PIXEL_FORMAT_UCHAR3:
-			irrFmtRequired = EF_R8G8B8_SRGB;
-			break;
-		case OPTIX_PIXEL_FORMAT_UCHAR4:
-			irrFmtRequired = EF_R8G8B8A8_SRGB;
-			break;
-		case OPTIX_PIXEL_FORMAT_HALF3:
-			irrFmtRequired = EF_R16G16B16_SFLOAT;
-			break;
-		case OPTIX_PIXEL_FORMAT_HALF4:
-			irrFmtRequired = EF_R16G16B16A16_SFLOAT;
-			break;
-		case OPTIX_PIXEL_FORMAT_FLOAT3:
-			irrFmtRequired = EF_R32G32B32_SFLOAT;
-			break;
-		case OPTIX_PIXEL_FORMAT_FLOAT4:
-			irrFmtRequired = EF_R32G32B32A32_SFLOAT;
-			break;
+	case OPTIX_PIXEL_FORMAT_UCHAR3:
+		irrFmtRequired = EF_R8G8B8_SRGB;
+		break;
+	case OPTIX_PIXEL_FORMAT_UCHAR4:
+		irrFmtRequired = EF_R8G8B8A8_SRGB;
+		break;
+	case OPTIX_PIXEL_FORMAT_HALF3:
+		irrFmtRequired = EF_R16G16B16_SFLOAT;
+		break;
+	case OPTIX_PIXEL_FORMAT_HALF4:
+		irrFmtRequired = EF_R16G16B16A16_SFLOAT;
+		break;
+	case OPTIX_PIXEL_FORMAT_FLOAT3:
+		irrFmtRequired = EF_R32G32B32_SFLOAT;
+		break;
+	case OPTIX_PIXEL_FORMAT_FLOAT4:
+		irrFmtRequired = EF_R32G32B32A32_SFLOAT;
+		break;
 	}
 	constexpr auto forcedOptiXFormatPixelStride = 6u;
 	DenoiserToUse denoisers[EII_COUNT];
@@ -148,7 +150,7 @@ int main(int argc, char* argv[])
 
 
 	constexpr uint32_t kComputeWGSize = 256u;
-	
+
 
 	using LumaMeterClass = ext::LumaMeter::CLumaMeter;
 	using ToneMapperClass = ext::ToneMapper::CToneMapper;
@@ -160,12 +162,12 @@ int main(int argc, char* argv[])
 	constexpr auto TMO = ToneMapperClass::EO_ACES;
 	auto histogramBuffer = driver->createDeviceLocalGPUBufferOnDedMem(HistogramBufferSize);
 	// clear the histogram to 0s
-	driver->fillBuffer(histogramBuffer.get(),0u,HistogramBufferSize,0u);
+	driver->fillBuffer(histogramBuffer.get(), 0u, HistogramBufferSize, 0u);
 
 	constexpr auto SharedDescriptorSetDescCount = 4u;
 	core::smart_refctd_ptr<IGPUDescriptorSetLayout> sharedDescriptorSetLayout;
 	core::smart_refctd_ptr<IGPUPipelineLayout> sharedPipelineLayout;
-	core::smart_refctd_ptr<IGPUComputePipeline> deinterleavePipeline,intensityPipeline,secondLumaMeterAndDFFTXPipeline,interleavePipeline;
+	core::smart_refctd_ptr<IGPUComputePipeline> deinterleavePipeline, intensityPipeline, secondLumaMeterAndDFFTXPipeline, interleavePipeline;
 	{
 		auto deinterleaveShader = driver->createGPUShader(core::make_smart_refctd_ptr<ICPUShader>(R"===(
 #version 450 core
@@ -360,7 +362,7 @@ void main()
 			uint32_t enumEII_NORMAL = EII_NORMAL;
 		} specData;
 		auto specConstantBuffer = core::make_smart_refctd_ptr<CCustomAllocatorCPUBuffer<core::null_allocator<uint8_t> > >(sizeof(SpecializationConstants), &specData, core::adopt_memory);
-		IGPUSpecializedShader::SInfo specInfo = {	core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<IGPUSpecializedShader::SInfo::SMapEntry> >
+		IGPUSpecializedShader::SInfo specInfo = { core::make_refctd_dynamic_array<core::smart_refctd_dynamic_array<IGPUSpecializedShader::SInfo::SMapEntry> >
 													(
 														std::initializer_list<IGPUSpecializedShader::SInfo::SMapEntry>
 														{
@@ -371,26 +373,26 @@ void main()
 														}
 													),
 													core::smart_refctd_ptr(specConstantBuffer),"main",ISpecializedShader::ESS_COMPUTE
-												};
-		auto deinterleaveSpecializedShader = driver->createGPUSpecializedShader(deinterleaveShader.get(),specInfo);
-		auto intensitySpecializedShader = driver->createGPUSpecializedShader(intensityShader.get(),specInfo);
-		auto secondLumaMeterAndDFFTXSpecializedShader = driver->createGPUSpecializedShader(secondLumaMeterAndDFFTXShader.get(),specInfo);
-		auto interleaveSpecializedShader = driver->createGPUSpecializedShader(interleaveShader.get(),specInfo);
-		
+		};
+		auto deinterleaveSpecializedShader = driver->createGPUSpecializedShader(deinterleaveShader.get(), specInfo);
+		auto intensitySpecializedShader = driver->createGPUSpecializedShader(intensityShader.get(), specInfo);
+		auto secondLumaMeterAndDFFTXSpecializedShader = driver->createGPUSpecializedShader(secondLumaMeterAndDFFTXShader.get(), specInfo);
+		auto interleaveSpecializedShader = driver->createGPUSpecializedShader(interleaveShader.get(), specInfo);
+
 		IGPUDescriptorSetLayout::SBinding binding[SharedDescriptorSetDescCount] = {
 			{0u,EDT_STORAGE_BUFFER,1u,IGPUSpecializedShader::ESS_COMPUTE,nullptr},
 			{1u,EDT_STORAGE_BUFFER,1u,IGPUSpecializedShader::ESS_COMPUTE,nullptr},
 			{2u,EDT_STORAGE_BUFFER,1u,IGPUSpecializedShader::ESS_COMPUTE,nullptr},
 			{3u,EDT_STORAGE_BUFFER,1u,IGPUSpecializedShader::ESS_COMPUTE,nullptr}
 		};
-		sharedDescriptorSetLayout = driver->createGPUDescriptorSetLayout(binding,binding+SharedDescriptorSetDescCount);
-		SPushConstantRange pcRange[1] = {IGPUSpecializedShader::ESS_COMPUTE,0u,sizeof(CommonPushConstants)};
-		sharedPipelineLayout = driver->createGPUPipelineLayout(pcRange,pcRange+sizeof(pcRange)/sizeof(SPushConstantRange),core::smart_refctd_ptr(sharedDescriptorSetLayout));
+		sharedDescriptorSetLayout = driver->createGPUDescriptorSetLayout(binding, binding + SharedDescriptorSetDescCount);
+		SPushConstantRange pcRange[1] = { IGPUSpecializedShader::ESS_COMPUTE,0u,sizeof(CommonPushConstants) };
+		sharedPipelineLayout = driver->createGPUPipelineLayout(pcRange, pcRange + sizeof(pcRange) / sizeof(SPushConstantRange), core::smart_refctd_ptr(sharedDescriptorSetLayout));
 
-		deinterleavePipeline = driver->createGPUComputePipeline(nullptr,core::smart_refctd_ptr(sharedPipelineLayout),std::move(deinterleaveSpecializedShader));
-		intensityPipeline = driver->createGPUComputePipeline(nullptr,core::smart_refctd_ptr(sharedPipelineLayout),std::move(intensitySpecializedShader));
-		secondLumaMeterAndDFFTXPipeline = driver->createGPUComputePipeline(nullptr,core::smart_refctd_ptr(sharedPipelineLayout),std::move(secondLumaMeterAndDFFTXSpecializedShader));
-		interleavePipeline = driver->createGPUComputePipeline(nullptr,core::smart_refctd_ptr(sharedPipelineLayout),std::move(interleaveSpecializedShader));
+		deinterleavePipeline = driver->createGPUComputePipeline(nullptr, core::smart_refctd_ptr(sharedPipelineLayout), std::move(deinterleaveSpecializedShader));
+		intensityPipeline = driver->createGPUComputePipeline(nullptr, core::smart_refctd_ptr(sharedPipelineLayout), std::move(intensitySpecializedShader));
+		secondLumaMeterAndDFFTXPipeline = driver->createGPUComputePipeline(nullptr, core::smart_refctd_ptr(sharedPipelineLayout), std::move(secondLumaMeterAndDFFTXSpecializedShader));
+		interleavePipeline = driver->createGPUComputePipeline(nullptr, core::smart_refctd_ptr(sharedPipelineLayout), std::move(interleaveSpecializedShader));
 	}
 
 	const auto inputFilesAmount = cmdHandler.getInputFilesAmount();
@@ -421,14 +423,14 @@ void main()
 
 		return imageIDString;
 	};
-
+	bool* tileImageCheck = new bool[inputFilesAmount];
 	core::vector<ImageToDenoise> images(inputFilesAmount);
 	// load images
 	uint32_t maxResolution[EII_COUNT][2] = { 0 };
 	{
-		asset::IAssetLoader::SAssetLoadParams lp(0ull,nullptr);
+		asset::IAssetLoader::SAssetLoadParams lp(0ull, nullptr);
 
-		for (size_t i=0; i < inputFilesAmount; i++)
+		for (size_t i = 0; i < inputFilesAmount; i++)
 		{
 			const auto imageIDString = makeImageIDString(i, colorFileNameBundle);
 
@@ -454,31 +456,31 @@ void main()
 				uint32_t pickedChannel = 0u;
 				auto contents = assetBundle.getContents();
 				if (channelName.has_value())
-				for (auto& asset : contents)
-				{
-					assert(asset);
-
-					auto metadata = asset->getMetadata();
-					auto exrmeta = static_cast<COpenEXRImageMetadata*>(metadata);
-					if (strcmp(metadata->getLoaderName(),COpenEXRImageMetadata::LoaderName)!=0)
-						continue;
-					else
+					for (auto& asset : contents)
 					{
-						const auto& assetMetaChannelName = exrmeta->getName();
-						auto found = assetMetaChannelName.find(channelName.value());
-						if (found>=firstChannelNameOccurence)
+						assert(asset);
+
+						auto metadata = asset->getMetadata();
+						auto exrmeta = static_cast<COpenEXRImageMetadata*>(metadata);
+						if (strcmp(metadata->getLoaderName(), COpenEXRImageMetadata::LoaderName) != 0)
 							continue;
-						firstChannelNameOccurence = found;
-						pickedChannel = std::distance(contents.begin(), &asset);
+						else
+						{
+							const auto& assetMetaChannelName = exrmeta->getName();
+							auto found = assetMetaChannelName.find(channelName.value());
+							if (found >= firstChannelNameOccurence)
+								continue;
+							firstChannelNameOccurence = found;
+							pickedChannel = std::distance(contents.begin(), &asset);
+						}
 					}
-				}
 
 				return asset::IAsset::castDown<ICPUImage>(contents.begin()[pickedChannel]);
 			};
 
-			auto& color = getImageAssetGivenChannelName(color_image_bundle,colorChannelNameBundle[i]);
-			decltype(color)& albedo = getImageAssetGivenChannelName(albedo_image_bundle,albedoChannelNameBundle[i]);
-			decltype(color)& normal = getImageAssetGivenChannelName(normal_image_bundle,normalChannelNameBundle[i]);
+			auto& color = getImageAssetGivenChannelName(color_image_bundle, colorChannelNameBundle[i]);
+			decltype(color)& albedo = getImageAssetGivenChannelName(albedo_image_bundle, albedoChannelNameBundle[i]);
+			decltype(color)& normal = getImageAssetGivenChannelName(normal_image_bundle, normalChannelNameBundle[i]);
 
 			auto putImageIntoImageToDenoise = [&](core::smart_refctd_ptr<ICPUImage>&& queriedImage, E_IMAGE_INPUT defaultEII, const std::optional<std::string>& actualWantedChannel)
 			{
@@ -487,27 +489,27 @@ void main()
 				{
 					switch (defaultEII)
 					{
-						case EII_ALBEDO:
-						{
-							os::Printer::log("INFO (" + std::to_string(__LINE__) + " line): Running in mode without albedo channel!", ELL_INFORMATION);
-						} break;
-						case EII_NORMAL:
-						{
-							os::Printer::log("INFO (" + std::to_string(__LINE__) + " line): Running in mode without normal channel!", ELL_INFORMATION);
-						} break;
+					case EII_ALBEDO:
+					{
+						os::Printer::log("INFO (" + std::to_string(__LINE__) + " line): Running in mode without albedo channel!", ELL_INFORMATION);
+					} break;
+					case EII_NORMAL:
+					{
+						os::Printer::log("INFO (" + std::to_string(__LINE__) + " line): Running in mode without normal channel!", ELL_INFORMATION);
+					} break;
 					}
 					return;
 				}
 
 				auto metadata = queriedImage->getMetadata();
 				auto exrmeta = static_cast<const COpenEXRImageMetadata*>(metadata);
-				if (strcmp(metadata->getLoaderName(),COpenEXRImageMetadata::LoaderName)!=0)
-					os::Printer::log("WARNING (" + std::to_string(__LINE__) + "): "+ imageIDString+" is not an EXR file, so there are no multiple layers of channels.", ELL_WARNING);
+				if (strcmp(metadata->getLoaderName(), COpenEXRImageMetadata::LoaderName) != 0)
+					os::Printer::log("WARNING (" + std::to_string(__LINE__) + "): " + imageIDString + " is not an EXR file, so there are no multiple layers of channels.", ELL_WARNING);
 				else if (!actualWantedChannel.has_value())
-					os::Printer::log("WARNING (" + std::to_string(__LINE__) + "): User did not specify channel choice for "+ imageIDString+" using the default (first).", ELL_WARNING);
-				else if (exrmeta->getName()!=actualWantedChannel.value())
+					os::Printer::log("WARNING (" + std::to_string(__LINE__) + "): User did not specify channel choice for " + imageIDString + " using the default (first).", ELL_WARNING);
+				else if (exrmeta->getName() != actualWantedChannel.value())
 				{
-					os::Printer::log("WARNING (" + std::to_string(__LINE__) + "): Using best fit channel \""+exrmeta->getName()+"\" for requested \""+actualWantedChannel.value()+"\" out of "+ imageIDString+"!", ELL_WARNING);
+					os::Printer::log("WARNING (" + std::to_string(__LINE__) + "): Using best fit channel \"" + exrmeta->getName() + "\" for requested \"" + actualWantedChannel.value() + "\" out of " + imageIDString + "!", ELL_WARNING);
 				}
 				outParam.image[defaultEII] = std::move(queriedImage);
 			};
@@ -517,7 +519,7 @@ void main()
 			putImageIntoImageToDenoise(std::move(normal), EII_NORMAL, normalChannelNameBundle[i]);
 		}
 		// check inputs and set-up
-		for (size_t i=0; i<inputFilesAmount; i++)
+		for (size_t i = 0; i < inputFilesAmount; i++)
 		{
 			auto imageIDString = makeImageIDString(i);
 
@@ -526,7 +528,7 @@ void main()
 				auto* colorImage = outParam.image[EII_COLOR].get();
 				if (!colorImage)
 				{
-					os::Printer::log(imageIDString+"Could not find the Color Channel for denoising, image will be skipped!", ELL_ERROR);
+					os::Printer::log(imageIDString + "Could not find the Color Channel for denoising, image will be skipped!", ELL_ERROR);
 					outParam = {};
 					continue;
 				}
@@ -536,22 +538,18 @@ void main()
 				// compute storage size and check if we can successfully upload
 				{
 					auto regions = colorImage->getRegions();
-					assert(regions.begin()+1u==regions.end());
+					assert(regions.begin() + 1u == regions.end());
 
 					const auto& region = regions.begin()[0];
 					assert(region.bufferRowLength);
 					outParam.colorTexelSize = asset::getTexelOrBlockBytesize(colorCreationParams.format);
-					uint32_t bytesize = extent.height*region.bufferRowLength*outParam.colorTexelSize;
-					if (bytesize>params.StreamingDownloadBufferSize)
-					{
-						os::Printer::log(imageIDString + "Image too large to download from GPU in one piece!", ELL_ERROR);
-						outParam = {};
-						continue;
-					}
+					uint32_t bytesize = extent.height * region.bufferRowLength * outParam.colorTexelSize;
+					if (bytesize > params.StreamingDownloadBufferSize || extent.width > tileWidth || extent.height > tileHeight)	//instead of refusing to denoise image, tile it
+						tileImageCheck[i] = true;
+					else
+						tileImageCheck[i] = false;
 				}
-
 				outParam.denoiserType = EII_COLOR;
-
 				outParam.width = extent.width;
 				outParam.height = extent.height;
 			}
@@ -560,7 +558,7 @@ void main()
 			if (albedoImage)
 			{
 				auto extent = albedoImage->getCreationParameters().extent;
-				if (extent.width!=outParam.width || extent.height!=outParam.height)
+				if (extent.width != outParam.width || extent.height != outParam.height)
 				{
 					os::Printer::log(imageIDString + "Image extent of the Albedo Channel does not match the Color Channel, Albedo Channel will not be used!", ELL_ERROR);
 					albedoImage = nullptr;
@@ -586,15 +584,22 @@ void main()
 				else
 					outParam.denoiserType = EII_NORMAL;
 			}
+			maxResolution[outParam.denoiserType][0] = core::max(maxResolution[outParam.denoiserType][0], outParam.width);
+			maxResolution[outParam.denoiserType][1] = core::max(maxResolution[outParam.denoiserType][1], outParam.height);
 
-			maxResolution[outParam.denoiserType][0] = core::max(maxResolution[outParam.denoiserType][0],outParam.width);
-			maxResolution[outParam.denoiserType][1] = core::max(maxResolution[outParam.denoiserType][1],outParam.height);
 		}
 	}
+	for (size_t i = 0; i < inputFilesAmount; i++)
+	{
+		auto& outParam = images[i];
+		maxResolution[outParam.denoiserType][0] = core::min(maxResolution[outParam.denoiserType][0], tileWidthWithOverlap);
+		maxResolution[outParam.denoiserType][1] = core::min(maxResolution[outParam.denoiserType][1], tileHeightWithOverlap);
+	}
+
 
 #define DENOISER_BUFFER_COUNT 3u //had to change to a define cause lambda was complaining about it not being a constant expression when capturing
 	// keep all CUDA links in an array (less code to map/unmap
-	cuda::CCUDAHandler::GraphicsAPIObjLink<video::IGPUBuffer> bufferLinks[DENOISER_BUFFER_COUNT];
+	cuda::CCUDAHandler::GraphicsAPIObjLink<video::IGPUBuffer> bufferLinks[DENOISER_BUFFER_COUNT + 1];
 	// except for the scratch CUDA buffer which can and will be ENORMOUS
 	CUdeviceptr denoiserScratch = 0ull;
 	// set-up denoisers
@@ -602,89 +607,90 @@ void main()
 	auto& intensityBuffer = bufferLinks[0];
 	auto& denoiserState = bufferLinks[0];
 	auto& temporaryPixelBuffer = bufferLinks[1];
-	auto& imagePixelBuffer = bufferLinks[2];
+	auto& imagePixelBuffer = bufferLinks[2]; //buffer to store result of denoising of a tile/image
 	size_t denoiserStateBufferSize = 0ull;
 	{
 		size_t scratchBufferSize = 0ull;
 		size_t pixelBufferSize = 0ull;
-		for (uint32_t i=0u; i<EII_COUNT; i++)
+		for (uint32_t i = 0u; i < EII_COUNT; i++)
 		{
 			auto& denoiser = denoisers[i].m_denoiser;
-			if (maxResolution[i][0]==0u || maxResolution[i][1]==0u)
+			if (maxResolution[i][0] == 0u || maxResolution[i][1] == 0u)
 			{
 				denoiser = nullptr;
 				continue;
 			}
 
 			OptixDenoiserSizes m_denoiserMemReqs;
-			if (denoiser->computeMemoryResources(&m_denoiserMemReqs, maxResolution[i])!=OPTIX_SUCCESS)
+			if (denoiser->computeMemoryResources(&m_denoiserMemReqs, maxResolution[i]) != OPTIX_SUCCESS)
 			{
-				static const char* errorMsgs[EII_COUNT] = {	"Failed to compute Color-Denoiser Memory Requirements!",
+				static const char* errorMsgs[EII_COUNT] = { "Failed to compute Color-Denoiser Memory Requirements!",
 															"Failed to compute Color-Albedo-Denoiser Memory Requirements!",
-															"Failed to compute Color-Albedo-Normal-Denoiser Memory Requirements!"};
-				os::Printer::log(errorMsgs[i],ELL_ERROR);
+															"Failed to compute Color-Albedo-Normal-Denoiser Memory Requirements!" };
+				os::Printer::log(errorMsgs[i], ELL_ERROR);
 				denoiser = nullptr;
 				continue;
 			}
 
 			denoisers[i].stateOffset = denoiserStateBufferSize;
 			denoiserStateBufferSize += denoisers[i].stateSize = m_denoiserMemReqs.stateSizeInBytes;
-			scratchBufferSize = core::max(scratchBufferSize,denoisers[i].scratchSize = m_denoiserMemReqs.withoutOverlapScratchSizeInBytes);
-			pixelBufferSize = core::max(pixelBufferSize,core::max(asset::getTexelOrBlockBytesize(EF_R32G32B32A32_SFLOAT),(i+1u)*forcedOptiXFormatPixelStride)*maxResolution[i][0]*maxResolution[i][1]);
+			scratchBufferSize = core::max(scratchBufferSize, denoisers[i].scratchSize = m_denoiserMemReqs.withOverlapScratchSizeInBytes);
+			pixelBufferSize = core::max(pixelBufferSize, core::max(asset::getTexelOrBlockBytesize(EF_R32G32B32A32_SFLOAT), (i + 1u) * forcedOptiXFormatPixelStride) * maxResolution[i][0] * maxResolution[i][1]);
 		}
 		std::string message = "Total VRAM consumption for Denoiser algorithm: ";
-		os::Printer::log(message+std::to_string(denoiserStateBufferSize+scratchBufferSize+pixelBufferSize), ELL_INFORMATION);
+		os::Printer::log(message + std::to_string(denoiserStateBufferSize + scratchBufferSize + pixelBufferSize), ELL_INFORMATION);
 
-		if (check_error(pixelBufferSize==0ull,"No input files at all!"))
+		if (check_error(pixelBufferSize == 0ull, "No input files at all!"))
 			return error_code;
 
-		denoiserState = driver->createDeviceLocalGPUBufferOnDedMem(denoiserStateBufferSize+IntensityValuesSize);
-		if (check_error(!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::registerBuffer(&denoiserState)),"Could not register buffer for Denoiser states!"))
+		denoiserState = driver->createDeviceLocalGPUBufferOnDedMem(denoiserStateBufferSize + IntensityValuesSize);
+		if (check_error(!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::registerBuffer(&denoiserState)), "Could not register buffer for Denoiser states!"))
 			return error_code;
 		temporaryPixelBuffer = driver->createDeviceLocalGPUBufferOnDedMem(pixelBufferSize);
-		if (check_error(!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::registerBuffer(&temporaryPixelBuffer)),"Could not register buffer for Denoiser scratch memory!"))
+
+		if (check_error(!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::registerBuffer(&temporaryPixelBuffer)), "Could not register buffer for Denoiser scratch memory!"))
 			return error_code;
-		if (check_error(!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::cuda.pcuMemAlloc_v2(&denoiserScratch,scratchBufferSize)), "Could not register buffer for Denoiser temporary memory with CUDA natively!"))
+		if (check_error(!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::cuda.pcuMemAlloc_v2(&denoiserScratch, scratchBufferSize)), "Could not register buffer for Denoiser temporary memory with CUDA natively!"))
 			return error_code;
 	}
 	const auto intensityBufferOffset = denoiserStateBufferSize;
 
-	video::CAssetPreservingGPUObjectFromAssetConverter assetConverter(am,driver);
+	video::CAssetPreservingGPUObjectFromAssetConverter assetConverter(am, driver);
 	// do the processing
-	for (size_t i=0; i<inputFilesAmount; i++)
+	for (size_t i = 0; i < inputFilesAmount; i++)
 	{
 		auto& param = images[i];
-		if (param.denoiserType>=EII_COUNT)
+		if (param.denoiserType >= EII_COUNT)
 			continue;
-		const auto denoiserInputCount = param.denoiserType+1u;
+		const auto denoiserInputCount = param.denoiserType + 1u;
 
 		// set up the constants (partially)
 		CommonPushConstants shaderConstants;
 		{
-			for (uint32_t j=0u; j<denoiserInputCount; j++)
-				shaderConstants.outImageOffset[j] = j*param.width*param.height*forcedOptiXFormatPixelStride/sizeof(uint16_t); // float 16 actually
+			for (uint32_t j = 0u; j < denoiserInputCount; j++)
+				shaderConstants.outImageOffset[j] = j * param.width * param.height * forcedOptiXFormatPixelStride / sizeof(uint16_t); // float 16 actually
 			shaderConstants.imageWidth = param.width;
-			assert(intensityBufferOffset%IntensityValuesSize==0u);
+			assert(intensityBufferOffset % IntensityValuesSize == 0u);
 			shaderConstants.beforeDenoise = 1u;
 
-			shaderConstants.intensityBufferDWORDOffset = intensityBufferOffset/IntensityValuesSize;
+			shaderConstants.intensityBufferDWORDOffset = intensityBufferOffset / IntensityValuesSize;
 			shaderConstants.denoiserExposureBias = denoiserExposureBiasBundle[i].value();
 
 			shaderConstants.autoexposureOff = 0u;
 			switch (tonemapperBundle[i].first)
 			{
-				case DTEA_TONEMAPPER_REINHARD:
-					shaderConstants.tonemappingOperator = ToneMapperClass::EO_REINHARD;
-					break;
-				case DTEA_TONEMAPPER_ACES:
-					shaderConstants.tonemappingOperator = ToneMapperClass::EO_ACES;
-					break;
-				case DTEA_TONEMAPPER_NONE:
-					shaderConstants.tonemappingOperator = ToneMapperClass::EO_COUNT;
-					break;
-				default:
-					assert(false, "An unexcepted error ocured while trying to specify tonemapper!");
-					break;
+			case DTEA_TONEMAPPER_REINHARD:
+				shaderConstants.tonemappingOperator = ToneMapperClass::EO_REINHARD;
+				break;
+			case DTEA_TONEMAPPER_ACES:
+				shaderConstants.tonemappingOperator = ToneMapperClass::EO_ACES;
+				break;
+			case DTEA_TONEMAPPER_NONE:
+				shaderConstants.tonemappingOperator = ToneMapperClass::EO_COUNT;
+				break;
+			default:
+				assert(false, "An unexcepted error ocured while trying to specify tonemapper!");
+				break;
 			}
 
 			float key = tonemapperBundle[i].second[TA_KEY_VALUE];
@@ -692,46 +698,46 @@ void main()
 			float extraParam = tonemapperBundle[i].second[TA_EXTRA_PARAMETER];
 			switch (shaderConstants.tonemappingOperator)
 			{
-				case ToneMapperClass::EO_REINHARD:
-				{
-					auto tp = ToneMapperClass::Params_t<ToneMapperClass::EO_REINHARD>(optiXIntensityKeyCompensation,key,extraParam);
-					shaderConstants.tonemapperParams[0] = tp.keyAndLinearExposure;
-					shaderConstants.tonemapperParams[1] = tp.rcpWhite2;
-					break;
-				}
-				case ToneMapperClass::EO_ACES:
-				{
-					auto tp = ToneMapperClass::Params_t<ToneMapperClass::EO_ACES>(optiXIntensityKeyCompensation,key,extraParam);
-					shaderConstants.tonemapperParams[0] = tp.gamma;
-					shaderConstants.tonemapperParams[1] = (&tp.gamma)[1];
-					break;
-				}
-				default:
-				{
-					if (core::isnan(key))
-					{
-						shaderConstants.tonemapperParams[0] = 0.18;
-						shaderConstants.autoexposureOff = 1u;
-					}
-					else
-						shaderConstants.tonemapperParams[0] = key;
-					shaderConstants.tonemapperParams[0] *= exp2(optiXIntensityKeyCompensation);
-					shaderConstants.tonemapperParams[1] = core::nan<float>();
-					break;
-				}
+			case ToneMapperClass::EO_REINHARD:
+			{
+				auto tp = ToneMapperClass::Params_t<ToneMapperClass::EO_REINHARD>(optiXIntensityKeyCompensation, key, extraParam);
+				shaderConstants.tonemapperParams[0] = tp.keyAndLinearExposure;
+				shaderConstants.tonemapperParams[1] = tp.rcpWhite2;
+				break;
 			}
-			auto totalSampleCount = param.width*param.height;
-			shaderConstants.percentileRange[0] = lowerPercentile*float(totalSampleCount);
-			shaderConstants.percentileRange[1] = upperPercentile*float(totalSampleCount);
+			case ToneMapperClass::EO_ACES:
+			{
+				auto tp = ToneMapperClass::Params_t<ToneMapperClass::EO_ACES>(optiXIntensityKeyCompensation, key, extraParam);
+				shaderConstants.tonemapperParams[0] = tp.gamma;
+				shaderConstants.tonemapperParams[1] = (&tp.gamma)[1];
+				break;
+			}
+			default:
+			{
+				if (core::isnan(key))
+				{
+					shaderConstants.tonemapperParams[0] = 0.18;
+					shaderConstants.autoexposureOff = 1u;
+				}
+				else
+					shaderConstants.tonemapperParams[0] = key;
+				shaderConstants.tonemapperParams[0] *= exp2(optiXIntensityKeyCompensation);
+				shaderConstants.tonemapperParams[1] = core::nan<float>();
+				break;
+			}
+			}
+			auto totalSampleCount = param.width * param.height;
+			shaderConstants.percentileRange[0] = lowerPercentile * float(totalSampleCount);
+			shaderConstants.percentileRange[1] = upperPercentile * float(totalSampleCount);
 			shaderConstants.normalMatrix = cameraTransformBundle[i].value();
 		}
 
 		// upload image channels and register their buffer
 		{
 			asset::ICPUBuffer* buffersToUpload[EII_COUNT];
-			for (uint32_t j=0u; j<denoiserInputCount; j++)
+			for (uint32_t j = 0u; j < denoiserInputCount; j++)
 				buffersToUpload[j] = param.image[j]->getBuffer();
-			auto gpubuffers = driver->getGPUObjectsFromAssets(buffersToUpload,buffersToUpload+denoiserInputCount,&assetConverter);
+			auto gpubuffers = driver->getGPUObjectsFromAssets(buffersToUpload, buffersToUpload + denoiserInputCount, &assetConverter);
 
 			imagePixelBuffer = core::smart_refctd_ptr<IGPUBuffer>(gpubuffers->operator[](0)->getBuffer());
 			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::registerBuffer(&imagePixelBuffer)))
@@ -740,22 +746,22 @@ void main()
 				continue;
 			}
 
-			for (uint32_t j=0u; j<denoiserInputCount; j++)
+			for (uint32_t j = 0u; j < denoiserInputCount; j++)
 			{
 				auto offsetPair = gpubuffers->operator[](j);
 				// it needs to be packed into the same buffer to work
-				assert(offsetPair->getBuffer()==imagePixelBuffer.getObject());
+				assert(offsetPair->getBuffer() == imagePixelBuffer.getObject());
 
 				// make sure cache doesn't retain the GPU object paired to CPU object (could have used a custom IGPUObjectFromAssetConverter derived class with overrides to achieve this)
-				am->removeCachedGPUObject(buffersToUpload[j],offsetPair);
+				am->removeCachedGPUObject(buffersToUpload[j], offsetPair);
 
 				auto image = param.image[j];
 				const auto& creationParameters = image->getCreationParameters();
-				assert(asset::getTexelOrBlockBytesize(creationParameters.format)==param.colorTexelSize);
+				assert(asset::getTexelOrBlockBytesize(creationParameters.format) == param.colorTexelSize);
 				// set up some image pitch and offset info
 				shaderConstants.inImageTexelPitch[j] = image->getRegions().begin()[0].bufferRowLength;
 				shaderConstants.inImageTexelOffset[j] = offsetPair->getOffset();
-				assert(shaderConstants.inImageTexelOffset[j]%param.colorTexelSize==0u);
+				assert(shaderConstants.inImageTexelOffset[j] % param.colorTexelSize == 0u);
 				shaderConstants.inImageTexelOffset[j] /= param.colorTexelSize;
 			}
 			// upload the constants to the GPU
@@ -763,7 +769,7 @@ void main()
 		}
 
 		// process
-		uint32_t workgroupCounts[2] = {(param.width+kComputeWGSize-1u)/kComputeWGSize,param.height};
+		uint32_t workgroupCounts[2] = { (param.width + kComputeWGSize - 1u) / kComputeWGSize,param.height };
 		{
 			// bind shader resources
 			{
@@ -773,32 +779,32 @@ void main()
 				{
 					IGPUDescriptorSet::SDescriptorInfo infos[SharedDescriptorSetDescCount];
 					infos[0].desc = core::smart_refctd_ptr<IGPUBuffer>(imagePixelBuffer.getObject());
-					infos[0].buffer = {0u,imagePixelBuffer.getObject()->getMemoryReqs().vulkanReqs.size};
+					infos[0].buffer = { 0u,imagePixelBuffer.getObject()->getMemoryReqs().vulkanReqs.size };
 					infos[1].desc = core::smart_refctd_ptr<IGPUBuffer>(temporaryPixelBuffer.getObject());
-					infos[1].buffer = {0u,temporaryPixelBuffer.getObject()->getMemoryReqs().vulkanReqs.size};
+					infos[1].buffer = { 0u,temporaryPixelBuffer.getObject()->getMemoryReqs().vulkanReqs.size };
 					infos[2].desc = histogramBuffer;
-					infos[2].buffer = {0u,HistogramBufferSize};
+					infos[2].buffer = { 0u,HistogramBufferSize };
 					infos[3].desc = core::smart_refctd_ptr<IGPUBuffer>(intensityBuffer.getObject());
-					infos[3].buffer = {0u,intensityBuffer.getObject()->getMemoryReqs().vulkanReqs.size};
+					infos[3].buffer = { 0u,intensityBuffer.getObject()->getMemoryReqs().vulkanReqs.size };
 					IGPUDescriptorSet::SWriteDescriptorSet writes[SharedDescriptorSetDescCount];
-					for (uint32_t i=0u; i<SharedDescriptorSetDescCount; i++)
-						writes[i] = {descriptorSet.get(),i,0u,1u,EDT_STORAGE_BUFFER,infos+i};
-					driver->updateDescriptorSets(SharedDescriptorSetDescCount,writes,0u,nullptr);
+					for (uint32_t i = 0u; i < SharedDescriptorSetDescCount; i++)
+						writes[i] = { descriptorSet.get(),i,0u,1u,EDT_STORAGE_BUFFER,infos + i };
+					driver->updateDescriptorSets(SharedDescriptorSetDescCount, writes, 0u, nullptr);
 				}
 				// bind descriptor set (for all shaders)
-				driver->bindDescriptorSets(video::EPBP_COMPUTE,sharedPipelineLayout.get(),0u,1u,&descriptorSet.get(),nullptr);
+				driver->bindDescriptorSets(video::EPBP_COMPUTE, sharedPipelineLayout.get(), 0u, 1u, &descriptorSet.get(), nullptr);
 			}
 			// compute shader pre-preprocess (transform normals and compute luminosity)
 			{
 				// bind deinterleave pipeline
 				driver->bindComputePipeline(deinterleavePipeline.get());
 				// dispatch
-				driver->dispatch(workgroupCounts[0],workgroupCounts[1],denoiserInputCount);
+				driver->dispatch(workgroupCounts[0], workgroupCounts[1], denoiserInputCount);
 				COpenGLExtensionHandler::extGlMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 				// bind intensity pipeline
 				driver->bindComputePipeline(intensityPipeline.get());
 				// dispatch
-				driver->dispatch(1u,1u,1u);
+				driver->dispatch(1u, 1u, 1u);
 				// issue a full memory barrier (or at least all buffer read/write barrier)
 				COpenGLExtensionHandler::extGlMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT | GL_PIXEL_BUFFER_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
 			}
@@ -806,59 +812,108 @@ void main()
 			// optix processing
 			{
 				// map buffer
-				if (check_error(!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::acquireAndGetPointers(bufferLinks,bufferLinks+DENOISER_BUFFER_COUNT,m_cudaStream)),"Error when mapping OpenGL Buffers to CUdeviceptr!"))
+				if (check_error(!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::acquireAndGetPointers(bufferLinks, bufferLinks + DENOISER_BUFFER_COUNT, m_cudaStream)), "Error when mapping OpenGL Buffers to CUdeviceptr!"))
 					return error_code;
 
-				auto unmapBuffers = [&m_cudaStream,&bufferLinks]() -> void
+				auto unmapBuffers = [&m_cudaStream, &bufferLinks]() -> void
 				{
-					void* scratch[DENOISER_BUFFER_COUNT*sizeof(CUgraphicsResource)];
-					if (check_error(!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::releaseResourcesToGraphics(scratch,bufferLinks,bufferLinks+DENOISER_BUFFER_COUNT,m_cudaStream)), "Error when unmapping CUdeviceptr back to OpenGL!"))
+					void* scratch[DENOISER_BUFFER_COUNT * sizeof(CUgraphicsResource)];
+					if (check_error(!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::releaseResourcesToGraphics(scratch, bufferLinks, bufferLinks + DENOISER_BUFFER_COUNT, m_cudaStream)), "Error when unmapping CUdeviceptr back to OpenGL!"))
 						exit(error_code);
 				};
 #undef DENOISER_BUFFER_COUNT
 				core::SRAIIBasedExiter<decltype(unmapBuffers)> exitRoutine(unmapBuffers);
 
-				// set up optix image
-				OptixImage2D denoiserInputs[EII_COUNT];
-				for (uint32_t j=0u; j<denoiserInputCount; j++)
-				{				
-					denoiserInputs[j].data = temporaryPixelBuffer.asBuffer.pointer+shaderConstants.outImageOffset[j]*sizeof(uint16_t); // sizeof(float16_t)
-					denoiserInputs[j].width = param.width;
-					denoiserInputs[j].height = param.height;
-					denoiserInputs[j].rowStrideInBytes = param.width*forcedOptiXFormatPixelStride;
-					denoiserInputs[j].pixelStrideInBytes = 0u;
-					denoiserInputs[j].format = forcedOptiXFormat;
-				}
-				//
+				if (tileImageCheck[i])
 				{
 					cuda::CCUDAHandler::GraphicsAPIObjLink<video::IGPUBuffer> fakeScratchLink;
 					fakeScratchLink.asBuffer.pointer = denoiserScratch;
 
 					// set up denoiser
 					auto& denoiser = denoisers[param.denoiserType];
-					if (denoiser.m_denoiser->setup(m_cudaStream,&param.width,denoiserState,denoiser.stateSize,fakeScratchLink,denoiser.scratchSize,denoiser.stateOffset)!=OPTIX_SUCCESS)
+					if (denoiser.m_denoiser->setup(m_cudaStream, &param.width, denoiserState, denoiser.stateSize, fakeScratchLink, denoiser.scratchSize, denoiser.stateOffset) != OPTIX_SUCCESS)
 					{
 						os::Printer::log(makeImageIDString(i) + "Could not setup the denoiser for the image resolution and denoiser buffers, skipping image!", ELL_ERROR);
 						continue;
 					}
 
-					// invoke
+					//setup tiles to denoise
+					std::vector<ext::OptiX::Tile> tilesToDenoise[EII_COUNT];
+					for (size_t k = 0; k < EII_COUNT; k++)
+						denoiser.m_denoiser->createTilesForDenoising(
+							(void*)(temporaryPixelBuffer.asBuffer.pointer + shaderConstants.outImageOffset[k] * sizeof(uint16_t)),	//input buffer
+							(void*)(imagePixelBuffer.asBuffer.pointer + shaderConstants.inImageTexelOffset[EII_COLOR]),
+							param.width,
+							param.height,
+							forcedOptiXFormat,
+							overlap,
+							tileWidth,
+							tileHeight,
+							tilesToDenoise[k]);
+
+					//invocation params
+					OptixDenoiserParams denoiserParams = {};
+					denoiserParams.blendFactor = denoiserBlendFactorBundle[i].value();
+					denoiserParams.denoiseAlpha = 0u;
+					denoiserParams.hdrIntensity = intensityBuffer.asBuffer.pointer + intensityBufferOffset;
+
+					auto tileCount = tilesToDenoise[0].size();
+					for (size_t k = 0; k < tileCount; k++)	//Denoise each tile
 					{
-						OptixDenoiserParams denoiserParams = {};
-						denoiserParams.blendFactor = denoiserBlendFactorBundle[i].value();
-						denoiserParams.denoiseAlpha = 0u;
-						denoiserParams.hdrIntensity = intensityBuffer.asBuffer.pointer+intensityBufferOffset;
-						OptixImage2D denoiserOutput;
-						denoiserOutput.data = imagePixelBuffer.asBuffer.pointer+shaderConstants.inImageTexelOffset[EII_COLOR];
-						denoiserOutput.width = param.width;
-						denoiserOutput.height = param.height;
-						denoiserOutput.rowStrideInBytes = param.width*forcedOptiXFormatPixelStride;
-						denoiserOutput.pixelStrideInBytes = 0u;
-						denoiserOutput.format = forcedOptiXFormat;
-						if (denoiser.m_denoiser->invoke(m_cudaStream,&denoiserParams,denoiserInputs,denoiserInputs+denoiserInputCount,&denoiserOutput,fakeScratchLink,denoiser.scratchSize)!=OPTIX_SUCCESS)
+						//input with RGB, Albedo, Normals
+						OptixImage2D denoiserInputs[EII_COUNT] = { tilesToDenoise[0][k].input, tilesToDenoise[1][k].input, tilesToDenoise[2][k].input, };
+
+						//invoke
+						if (denoiser.m_denoiser->invoke(m_cudaStream, &denoiserParams, denoiserInputs, denoiserInputs + denoiserInputCount, &tilesToDenoise[0][k].output, fakeScratchLink, denoiser.scratchSize) != OPTIX_SUCCESS)
 						{
 							os::Printer::log(makeImageIDString(i) + "Could not invoke the denoiser sucessfully, skipping image!", ELL_ERROR);
 							continue;
+						}
+					}
+				}
+				else //no tiling
+				{
+					// set up optix image
+					OptixImage2D denoiserInputs[EII_COUNT];
+					for (uint32_t j = 0u; j < denoiserInputCount; j++)
+					{
+
+						denoiserInputs[j].data = temporaryPixelBuffer.asBuffer.pointer + shaderConstants.outImageOffset[j] * sizeof(uint16_t); // sizeof(float16_t)
+						denoiserInputs[j].width = param.width;
+						denoiserInputs[j].height = param.height;
+						denoiserInputs[j].rowStrideInBytes = param.width * forcedOptiXFormatPixelStride;
+						denoiserInputs[j].pixelStrideInBytes = 0u;
+						denoiserInputs[j].format = forcedOptiXFormat;
+					}
+					//
+					{
+						cuda::CCUDAHandler::GraphicsAPIObjLink<video::IGPUBuffer> fakeScratchLink;
+						fakeScratchLink.asBuffer.pointer = denoiserScratch;
+
+						// set up denoiser
+						auto& denoiser = denoisers[param.denoiserType];
+						if (denoiser.m_denoiser->setup(m_cudaStream, &param.width, denoiserState, denoiser.stateSize, fakeScratchLink, denoiser.scratchSize, denoiser.stateOffset) != OPTIX_SUCCESS)
+						{
+							os::Printer::log(makeImageIDString(i) + "Could not setup the denoiser for the image resolution and denoiser buffers, skipping image!", ELL_ERROR);
+							continue;
+						}
+						{
+							OptixDenoiserParams denoiserParams = {};
+							denoiserParams.blendFactor = denoiserBlendFactorBundle[i].value();
+							denoiserParams.denoiseAlpha = 0u;
+							denoiserParams.hdrIntensity = intensityBuffer.asBuffer.pointer + intensityBufferOffset;
+							OptixImage2D denoiserOutput;
+							denoiserOutput.data = imagePixelBuffer.asBuffer.pointer + shaderConstants.inImageTexelOffset[EII_COLOR];
+							denoiserOutput.width = param.width;
+							denoiserOutput.height = param.height;
+							denoiserOutput.rowStrideInBytes = param.width * forcedOptiXFormatPixelStride;
+							denoiserOutput.pixelStrideInBytes = 0u;
+							denoiserOutput.format = forcedOptiXFormat;
+							if (denoiser.m_denoiser->invoke(m_cudaStream, &denoiserParams, denoiserInputs, denoiserInputs + denoiserInputCount, &denoiserOutput, fakeScratchLink, denoiser.scratchSize) != OPTIX_SUCCESS)
+							{
+								os::Printer::log(makeImageIDString(i) + "Could not invoke the denoiser sucessfully, skipping image!", ELL_ERROR);
+								continue;
+							}
 						}
 					}
 				}
@@ -870,12 +925,12 @@ void main()
 			{
 				// let the shaders know we're in the second phase now
 				shaderConstants.beforeDenoise = 0u;
-				driver->pushConstants(sharedPipelineLayout.get(), video::IGPUSpecializedShader::ESS_COMPUTE, offsetof(CommonPushConstants,beforeDenoise), sizeof(uint32_t), &shaderConstants.beforeDenoise);
+				driver->pushConstants(sharedPipelineLayout.get(), video::IGPUSpecializedShader::ESS_COMPUTE, offsetof(CommonPushConstants, beforeDenoise), sizeof(uint32_t), &shaderConstants.beforeDenoise);
 				// Bloom (FoV vs. Constant)
 				{
 					driver->bindComputePipeline(secondLumaMeterAndDFFTXPipeline.get());
 					// dispatch
-					driver->dispatch(workgroupCounts[0],workgroupCounts[1],1u);
+					driver->dispatch(workgroupCounts[0], workgroupCounts[1], 1u);
 					COpenGLExtensionHandler::extGlMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 					// TODO: do Y-axis pass of the DFFT (merge the intensity pipeline into it)
@@ -889,13 +944,13 @@ void main()
 					// bind intensity pipeline
 					driver->bindComputePipeline(intensityPipeline.get());
 					// dispatch
-					driver->dispatch(1u,1u,1u);
+					driver->dispatch(1u, 1u, 1u);
 					COpenGLExtensionHandler::extGlMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 				}
 				// Tonemap and interleave the output
 				{
 					driver->bindComputePipeline(interleavePipeline.get());
-					driver->dispatch(workgroupCounts[0],workgroupCounts[1],1u);
+					driver->dispatch(workgroupCounts[0], workgroupCounts[1], 1u);
 					// issue a full memory barrier (or at least all buffer read/write barrier)
 					COpenGLExtensionHandler::extGlMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 				}
@@ -916,7 +971,7 @@ void main()
 				imgParams.flags = static_cast<ICPUImage::E_CREATE_FLAGS>(0u); // no flags
 				imgParams.type = ICPUImage::ET_2D;
 				imgParams.format = param.image[EII_COLOR]->getCreationParameters().format;
-				imgParams.extent = {param.width,param.height,1u};
+				imgParams.extent = { param.width,param.height,1u };
 				imgParams.mipLevels = 1u;
 				imgParams.arrayLayers = 1u;
 				imgParams.samples = ICPUImage::ESCF_1_BIT;
@@ -926,7 +981,7 @@ void main()
 				// get the data from the GPU
 				{
 					constexpr uint64_t timeoutInNanoSeconds = 300000000000u;
-					const auto waitPoint = std::chrono::high_resolution_clock::now()+std::chrono::nanoseconds(timeoutInNanoSeconds);
+					const auto waitPoint = std::chrono::high_resolution_clock::now() + std::chrono::nanoseconds(timeoutInNanoSeconds);
 
 					// download buffer
 					{
@@ -934,11 +989,11 @@ void main()
 						auto unallocatedSize = downloadStagingArea->multi_alloc(waitPoint, 1u, &address, &colorBufferBytesize, &alignment);
 						if (unallocatedSize)
 						{
-							os::Printer::log(makeImageIDString(i)+"Could not download the buffer from the GPU!",ELL_ERROR);
+							os::Printer::log(makeImageIDString(i) + "Could not download the buffer from the GPU!", ELL_ERROR);
 							continue;
 						}
 
-						driver->copyBuffer(temporaryPixelBuffer.getObject(),downloadStagingArea->getBuffer(),0u,address,colorBufferBytesize);
+						driver->copyBuffer(temporaryPixelBuffer.getObject(), downloadStagingArea->getBuffer(), 0u, address, colorBufferBytesize);
 					}
 					auto downloadFence = driver->placeFence(true);
 
@@ -957,21 +1012,21 @@ void main()
 						region.imageExtent = imgParams.extent;
 					}
 					// the cpu is not touching the data yet because the custom CPUBuffer is adopting the memory (no copy)
-					auto* data = reinterpret_cast<uint8_t*>(downloadStagingArea->getBufferPointer())+address;
+					auto* data = reinterpret_cast<uint8_t*>(downloadStagingArea->getBufferPointer()) + address;
 					auto cpubufferalias = core::make_smart_refctd_ptr<asset::CCustomAllocatorCPUBuffer<core::null_allocator<uint8_t> > >(colorBufferBytesize, data, core::adopt_memory);
-					image->setBufferAndRegions(std::move(cpubufferalias),regions);
+					image->setBufferAndRegions(std::move(cpubufferalias), regions);
 
 					// wait for download fence and then invalidate the CPU cache
 					{
-						auto result = downloadFence->waitCPU(timeoutInNanoSeconds,true);
-						if (result==E_DRIVER_FENCE_RETVAL::EDFR_TIMEOUT_EXPIRED||result==E_DRIVER_FENCE_RETVAL::EDFR_FAIL)
+						auto result = downloadFence->waitCPU(timeoutInNanoSeconds, true);
+						if (result == E_DRIVER_FENCE_RETVAL::EDFR_TIMEOUT_EXPIRED || result == E_DRIVER_FENCE_RETVAL::EDFR_FAIL)
 						{
-							os::Printer::log(makeImageIDString(i)+"Could not download the buffer from the GPU, fence not signalled!",ELL_ERROR);
+							os::Printer::log(makeImageIDString(i) + "Could not download the buffer from the GPU, fence not signalled!", ELL_ERROR);
 							downloadStagingArea->multi_free(1u, &address, &colorBufferBytesize, nullptr);
 							continue;
 						}
 						if (downloadStagingArea->needsManualFlushOrInvalidate())
-							driver->invalidateMappedMemoryRanges({{downloadStagingArea->getBuffer()->getBoundMemory(),address,colorBufferBytesize}});
+							driver->invalidateMappedMemoryRanges({ {downloadStagingArea->getBuffer()->getBoundMemory(),address,colorBufferBytesize} });
 					}
 				}
 
@@ -981,7 +1036,7 @@ void main()
 				imgViewParams.format = image->getCreationParameters().format;
 				imgViewParams.image = std::move(image);
 				imgViewParams.viewType = ICPUImageView::ET_2D;
-				imgViewParams.subresourceRange = {static_cast<IImage::E_ASPECT_FLAGS>(0u),0u,1u,0u,1u};
+				imgViewParams.subresourceRange = { static_cast<IImage::E_ASPECT_FLAGS>(0u),0u,1u,0u,1u };
 				imageView = ICPUImageView::create(std::move(imgViewParams));
 			}
 
@@ -1015,7 +1070,7 @@ void main()
 
 					CONVERSION_FILTER convertFilter;
 					CONVERSION_FILTER::state_type state;
-					
+
 					auto ditheringBundle = am->getAsset("../../media/blueNoiseDithering/LDR_RGBA.png", {});
 					const auto ditheringStatus = ditheringBundle.isEmpty();
 					if (ditheringStatus)
@@ -1089,7 +1144,7 @@ void main()
 			imageView->convertToDummyObject(~0u);
 
 			// free the staging area allocation (no fence, we've already waited on it)
-			downloadStagingArea->multi_free(1u,&address,&colorBufferBytesize,nullptr);
+			downloadStagingArea->multi_free(1u, &address, &colorBufferBytesize, nullptr);
 
 			// destroy image (implicit)
 
