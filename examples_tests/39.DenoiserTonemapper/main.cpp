@@ -47,10 +47,10 @@ bool check_error(bool cond, const char* message)
 }
 
 constexpr uint32_t overlap = 64;
-constexpr uint32_t tileWidth = 1920, tileHeight = 1080; //or 1920x1080
+constexpr uint32_t tileWidth = 1920, tileHeight = 1080; 
 constexpr uint32_t tileWidthWithOverlap = tileWidth + overlap * 2;
 constexpr uint32_t tileHeightWithOverlap = tileHeight + overlap * 2;
-
+constexpr uint32_t outputDimensions[] = { tileWidth ,tileHeight };
 
 int main(int argc, char* argv[])
 {
@@ -620,7 +620,7 @@ void main()
 				denoiser = nullptr;
 				continue;
 			}
-
+				
 			OptixDenoiserSizes m_denoiserMemReqs;
 			if (denoiser->computeMemoryResources(&m_denoiserMemReqs, maxResolution[i]) != OPTIX_SUCCESS)
 			{
@@ -631,7 +631,6 @@ void main()
 				denoiser = nullptr;
 				continue;
 			}
-
 			denoisers[i].stateOffset = denoiserStateBufferSize;
 			denoiserStateBufferSize += denoisers[i].stateSize = m_denoiserMemReqs.stateSizeInBytes;
 			scratchBufferSize = core::max(scratchBufferSize, denoisers[i].scratchSize = m_denoiserMemReqs.withOverlapScratchSizeInBytes);
@@ -831,7 +830,7 @@ void main()
 
 					// set up denoiser
 					auto& denoiser = denoisers[param.denoiserType];
-					if (denoiser.m_denoiser->setup(m_cudaStream, &param.width, denoiserState, denoiser.stateSize, fakeScratchLink, denoiser.scratchSize, denoiser.stateOffset) != OPTIX_SUCCESS)
+					if (denoiser.m_denoiser->setup(m_cudaStream, outputDimensions, denoiserState, denoiser.stateSize, fakeScratchLink, denoiser.scratchSize, denoiser.stateOffset) != OPTIX_SUCCESS)
 					{
 						os::Printer::log(makeImageIDString(i) + "Could not setup the denoiser for the image resolution and denoiser buffers, skipping image!", ELL_ERROR);
 						continue;
@@ -841,8 +840,8 @@ void main()
 					std::vector<ext::OptiX::Tile> tilesToDenoise[EII_COUNT];
 					for (size_t k = 0; k < EII_COUNT; k++)
 						denoiser.m_denoiser->createTilesForDenoising(
-							(void*)(temporaryPixelBuffer.asBuffer.pointer + shaderConstants.outImageOffset[k] * sizeof(uint16_t)),	//input buffer
-							(void*)(imagePixelBuffer.asBuffer.pointer + shaderConstants.inImageTexelOffset[EII_COLOR]),
+							temporaryPixelBuffer.asBuffer.pointer + shaderConstants.outImageOffset[k] * sizeof(uint16_t),
+							imagePixelBuffer.asBuffer.pointer,
 							param.width,
 							param.height,
 							forcedOptiXFormat,

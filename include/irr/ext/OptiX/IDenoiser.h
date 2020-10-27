@@ -75,8 +75,8 @@ class IDenoiser final : public core::IReferenceCounted
 										scratchBuffer.asBuffer.pointer+scratchBufferOffset,scratchSizeInBytes);
 		}
 		void createTilesForDenoising(
-			void* inputBuffer,
-			void* outputBuffer,
+			CUdeviceptr inputBuffer,
+			CUdeviceptr outputBuffer,
 			size_t                inputWidth,
 			size_t                inputHeight,
 			OptixPixelFormat   pixelFormat,

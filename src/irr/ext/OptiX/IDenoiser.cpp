@@ -20,8 +20,8 @@ unsigned int get_pixel_size(OptixPixelFormat pixelFormat)
     }
 }
 void IDenoiser::createTilesForDenoising(
-    void* inputBuffer,
-    void* outputBuffer,
+    CUdeviceptr inputBuffer,
+    CUdeviceptr outputBuffer,
     size_t                inputWidth,
     size_t                inputHeight,
     OptixPixelFormat   pixelFormat,
@@ -30,63 +30,56 @@ void IDenoiser::createTilesForDenoising(
     size_t                tileHeight,
     std::vector<Tile>& tiles)
 {
-    uint32_t pixelSize = get_pixel_size(pixelFormat);
-    uint32_t rowStride = inputWidth * pixelSize;
+    int pixelSize = get_pixel_size(pixelFormat);
+    int rowStride = inputWidth * pixelSize;
 
-    int input_width = std::min(tileWidth + 2 * overlap, inputWidth);
-    int input_height = std::min(tileHeight + 2 * overlap, inputHeight);
-
-    int input_y = 0, copied_y = 0;
+    int  pos_y= 0;
     do {
-        int inputOffsetY = 0;
-        int copy_y = tileHeight + overlap;
+        int inputOffsetY = pos_y==0? 0 : overlap;
+        auto avaible_height = inputHeight - pos_y;
+        int actualInputTileHeight = std::min(avaible_height, overlap + tileHeight) + inputOffsetY;
 
-        if (input_y != 0) {
-            inputOffsetY =
-                std::max(overlap,
-                    input_height - (inputHeight - input_y));
-            copy_y = std::min(tileHeight, inputHeight - copied_y);
-        }
-        int input_x = 0, copied_x = 0;
-        do {
-            int inputOffsetX = 0;
-            int copy_x = tileWidth + overlap;
-            if (input_x != 0) {
-                inputOffsetX =
-                    std::max(overlap,
-                        input_width - (inputWidth - input_x));
-                copy_x = std::min(tileWidth, inputWidth - copied_x);
-            }
+        int pos_x = 0;
+        do 
+        {
+            int inputOffsetX = pos_x == 0 ? 0 : overlap;
+            auto avaible_width = inputWidth - pos_x;
+            int actualInputTileWidth = std::min(avaible_width, overlap + tileWidth) + inputOffsetX;
 
             Tile tile{};
             {
+                auto in_posx = pos_x - inputOffsetX;
+                auto in_posy = pos_y - inputOffsetY;
+
                 tile.input.data =
                     (CUdeviceptr)(
-                        (char*)inputBuffer
-                        + (input_y - inputOffsetY) * rowStride
-                        + (input_x - inputOffsetX) * pixelSize);
-                tile.input.width = input_width;
-                tile.input.height = input_height;
+                        (uint8_t*)inputBuffer
+                        + in_posy * rowStride
+                        + in_posx * pixelSize);
+                tile.input.width = actualInputTileWidth;
+                tile.input.height = actualInputTileHeight;
                 tile.input.rowStrideInBytes = rowStride;
                 tile.input.format = pixelFormat;
                 tile.output.data =
                     (CUdeviceptr)(
-                        (char*)outputBuffer
-                        + input_y * rowStride
-                        + input_x * pixelSize);
-                tile.output.width = copy_x;
-                tile.output.height = copy_y;
+                        (uint8_t*)outputBuffer
+                        + pos_y * rowStride
+                        + pos_x * pixelSize);
+                tile.output.width = std::min(avaible_width, tileWidth);
+                tile.output.height = std::min(avaible_height, tileHeight);
                 tile.output.rowStrideInBytes = rowStride;
                 tile.output.format = pixelFormat;
-                tile.inputOffsetX = inputOffsetX;
-                tile.inputOffsetY = inputOffsetY;
+                tile.inputOffsetX = -inputOffsetX;
+                tile.inputOffsetY = -inputOffsetY;
                 tiles.push_back(tile);
             }
-            input_x += input_x == 0 ? tileWidth + overlap : tileWidth;
-            copied_x += copy_x;
-
-        } while (input_x < inputWidth);
-        input_y += input_y == 0 ? tileHeight + overlap : tileHeight;
-        copied_y += copy_y;
-    } while (input_y < inputHeight);    
+           /* input_x += input_x == 0 ? tileWidth + overlap : tileWidth;
+            copied_x += copy_x;*/
+            pos_x += tileWidth;
+        } while (pos_x < inputWidth);
+       /* input_y += input_y == 0 ? tileHeight + overlap : tileHeight;
+        copied_y += copy_y;*/
+        pos_y += tileHeight;
+        pos_x = 0;
+    } while (pos_y < inputHeight);    
 }
