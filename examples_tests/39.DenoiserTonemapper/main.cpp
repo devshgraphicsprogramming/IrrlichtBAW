@@ -592,8 +592,8 @@ void main()
 	for (size_t i = 0; i < inputFilesAmount; i++)
 	{
 		auto& outParam = images[i];
-		maxResolution[outParam.denoiserType][0] = core::min(maxResolution[outParam.denoiserType][0], tileWidthWithOverlap);
-		maxResolution[outParam.denoiserType][1] = core::min(maxResolution[outParam.denoiserType][1], tileHeightWithOverlap);
+		maxResolution[outParam.denoiserType][0] = core::min(maxResolution[outParam.denoiserType][0], tileWidthWithOverlap)*2;
+		maxResolution[outParam.denoiserType][1] = core::min(maxResolution[outParam.denoiserType][1], tileHeightWithOverlap)*2;
 	}
 
 
@@ -841,7 +841,7 @@ void main()
 					for (size_t k = 0; k < EII_COUNT; k++)
 						denoiser.m_denoiser->createTilesForDenoising(
 							temporaryPixelBuffer.asBuffer.pointer + shaderConstants.outImageOffset[k] * sizeof(uint16_t),
-							imagePixelBuffer.asBuffer.pointer,
+							imagePixelBuffer.asBuffer.pointer+ shaderConstants.inImageTexelOffset[EII_COLOR],
 							param.width,
 							param.height,
 							forcedOptiXFormat,
