@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
 	params.Vsync = true;
 	params.Doublebuffer = true;
 	params.Stencilbuffer = false;
-	params.StreamingDownloadBufferSize = 256 * 1024 * 1024; // change in Vulkan fo
+	params.StreamingDownloadBufferSize = 256 *4 * 1024 * 1024; // change in Vulkan fo
 	auto device = createDeviceEx(params);
 
 	if (check_error(!device, "Could not create Irrlicht Device!"))
@@ -861,9 +861,9 @@ void main()
 					{
 						//input with RGB, Albedo, Normals
 						OptixImage2D denoiserInputs[EII_COUNT] = { tilesToDenoise[0][k].input, tilesToDenoise[1][k].input, tilesToDenoise[2][k].input, };
-
 						//invoke
-						if (denoiser.m_denoiser->invoke(m_cudaStream, &denoiserParams, denoiserInputs, denoiserInputs + denoiserInputCount, &tilesToDenoise[0][k].output, fakeScratchLink, denoiser.scratchSize) != OPTIX_SUCCESS)
+						if (denoiser.m_denoiser->invoke(m_cudaStream, &denoiserParams, denoiserInputs, denoiserInputs + denoiserInputCount, &tilesToDenoise[0][k].output, fakeScratchLink, denoiser.scratchSize, tilesToDenoise[0][k].inputOffsetX,
+							tilesToDenoise[0][k].inputOffsetY) != OPTIX_SUCCESS)
 						{
 							os::Printer::log(makeImageIDString(i) + "Could not invoke the denoiser sucessfully, skipping image!", ELL_ERROR);
 							continue;

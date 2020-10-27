@@ -243,14 +243,14 @@ int main()
 
 		auto createRecord = [&](cuda::CCUDAHandler::GraphicsAPIObjLink<video::IGPUBuffer>* outLink, const auto& recordData) -> CUdeviceptr
 		{
-			outLink->setObject( core::smart_refctd_ptr<video::IGPUBuffer>(driver->createFilledDeviceLocalGPUBufferOnDedMem(sizeof(recordData),&recordData)));
+			outLink->obj = core::smart_refctd_ptr<video::IGPUBuffer>(driver->createFilledDeviceLocalGPUBufferOnDedMem(sizeof(recordData), &recordData), core::dont_grab);
 			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::registerBuffer(outLink,CU_GRAPHICS_REGISTER_FLAGS_READ_ONLY)))
 				return {};
-			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::cuda.pcuGraphicsMapResources(1u, (outLink->getCudaResourceHandle()), stream)))
+			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::cuda.pcuGraphicsMapResources(1u, &outLink->cudaHandle, stream)))
 				return {};
 			size_t tmp = sizeof(recordData);
 			CUdeviceptr cuptr;
-			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::cuda.pcuGraphicsResourceGetMappedPointer_v2(&cuptr, &tmp, outLink->getCudaResourceHandle())))
+			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::cuda.pcuGraphicsResourceGetMappedPointer_v2(&cuptr, &tmp, outLink->cudaHandle)))
 				return {};
 			assert(cuptr%OPTIX_SBT_RECORD_ALIGNMENT==0ull);
 			return cuptr;
@@ -282,7 +282,7 @@ int main()
 	cuda::CCUDAHandler::GraphicsAPIObjLink<video::IGPUBuffer> buffers[2];
 	for (auto i=0; i<buffersToAcquireCount; i++)
 	{
-		buffers[i] = core::smart_refctd_ptr<video::IGPUBuffer>(driver->createDeviceLocalGPUBufferOnDedMem(bufferSizes[i]));
+		buffers[i] = core::smart_refctd_ptr<video::IGPUBuffer>(driver->createDeviceLocalGPUBufferOnDedMem(bufferSizes[i]), core::dont_grab);
 		if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::registerBuffer(buffers+i)))
 			return 8;
 	}
@@ -295,7 +295,7 @@ int main()
 		// raytrace part
 		{
 			CUdeviceptr cuptr[2] = {};
-			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::acquireAndGetPointers(buffers, buffers + buffersToAcquireCount, stream)))
+			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::mapAndGetPointers(cuptr + 1, buffers + 1, buffers + buffersToAcquireCount, stream)))
 				return 9;
 			
 			auto outputCUDAPtrRef = cuda::CCUDAHandler::cast_CUDA_ptr<uchar4>(cuptr[1]);
@@ -304,7 +304,7 @@ int main()
 				p.image = outputCUDAPtrRef;
 				driver->updateBufferRangeViaStagingBuffer(buffers[0].getObject(),0u,sizeof(Params),&p);
 			}
-			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::acquireAndGetPointers(buffers, buffers + buffersToAcquireCount, stream)))
+			if (!cuda::CCUDAHandler::defaultHandleResult(cuda::CCUDAHandler::mapAndGetPointers(cuptr, buffers, buffers + 1, stream)))
 				return 10;
 
 			optixLaunch( pipeline, stream, cuptr[0], sizeof(Params), &sbt, p.image_width, params.WindowSize.Height, /*depth=*/1 );
@@ -313,7 +313,7 @@ int main()
 				return 11;
 		}
 
-		video::COpenGLExtensionHandler::extGlGetNamedBufferSubData(static_cast<video::COpenGLBuffer*>(buffers[1].getObject())->getOpenGLName(),0u,sizeof(stackScratch),stackScratch);
+		video::COpenGLExtensionHandler::extGlGetNamedBufferSubData(static_cast<video::COpenGLBuffer*>(buffers[1].obj.get())->getOpenGLName(), 0u, sizeof(stackScratch), stackScratch);
 
 		driver->beginScene(false, false);
 

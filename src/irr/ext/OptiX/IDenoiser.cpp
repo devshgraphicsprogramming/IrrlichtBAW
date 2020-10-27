@@ -51,26 +51,22 @@ void IDenoiser::createTilesForDenoising(
                 auto in_posx = pos_x - inputOffsetX;
                 auto in_posy = pos_y - inputOffsetY;
 
-                tile.input.data =
-                    (CUdeviceptr)(
-                        (uint8_t*)inputBuffer
+                tile.input.data = inputBuffer
                         + in_posy * rowStride
-                        + in_posx * pixelSize);
+                        + in_posx * pixelSize;
                 tile.input.width = actualInputTileWidth;
                 tile.input.height = actualInputTileHeight;
                 tile.input.rowStrideInBytes = rowStride;
                 tile.input.format = pixelFormat;
-                tile.output.data =
-                    (CUdeviceptr)(
-                        (uint8_t*)outputBuffer
+                tile.output.data = outputBuffer
                         + pos_y * rowStride
-                        + pos_x * pixelSize);
+                        + pos_x * pixelSize;
                 tile.output.width = std::min(avaible_width, tileWidth);
                 tile.output.height = std::min(avaible_height, tileHeight);
                 tile.output.rowStrideInBytes = rowStride;
                 tile.output.format = pixelFormat;
-                tile.inputOffsetX = -inputOffsetX;
-                tile.inputOffsetY = -inputOffsetY;
+                tile.inputOffsetX = inputOffsetX;
+                tile.inputOffsetY = inputOffsetY;
                 tiles.push_back(tile);
             }
            /* input_x += input_x == 0 ? tileWidth + overlap : tileWidth;
