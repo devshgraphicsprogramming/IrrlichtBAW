@@ -838,7 +838,7 @@ void main()
 				denoiserParams.hdrIntensity = intensityBuffer.asBuffer.pointer + intensityBufferOffset;
 
 				auto tileCount = tilesToDenoise[0].size();
-				for (size_t k = 5; k < 6; k++)	//Denoise each tile
+				for (size_t k = 0; k < tileCount; k++)	//Denoise each tile
 				{
 					//input with RGB, Albedo, Normals
 					OptixImage2D denoiserInputs[EII_COUNT] = { tilesToDenoise[0][k].input, tilesToDenoise[1][k].input, tilesToDenoise[2][k].input, };

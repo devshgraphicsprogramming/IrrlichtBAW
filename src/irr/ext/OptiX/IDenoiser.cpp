@@ -69,13 +69,8 @@ void IDenoiser::createTilesForDenoising(
                 tile.inputOffsetY = inputOffsetY;
                 tiles.push_back(tile);
             }
-           /* input_x += input_x == 0 ? tileWidth + overlap : tileWidth;
-            copied_x += copy_x;*/
             pos_x += tileWidth;
         } while (pos_x < inputWidth);
-       /* input_y += input_y == 0 ? tileHeight + overlap : tileHeight;
-        copied_y += copy_y;*/
         pos_y += tileHeight;
-        pos_x = 0;
     } while (pos_y < inputHeight);    
 }
