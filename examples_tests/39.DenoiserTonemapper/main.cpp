@@ -8,7 +8,6 @@
 
 #include "irr/ext/ToneMapper/CToneMapper.h"
 #include "irr/ext/OptiX/Manager.h"
-
 #include "CommonPushConstants.h"
 
 using namespace irr;
@@ -817,19 +816,6 @@ void main()
 					continue;
 				}
 
-				//setup tiles to denoise
-				std::vector<ext::OptiX::Tile> tilesToDenoise[EII_COUNT];
-				for (size_t k = 0; k < EII_COUNT; k++)
-					denoiser.m_denoiser->createTilesForDenoising(
-						temporaryPixelBuffer.asBuffer.pointer + shaderConstants.outImageOffset[k] * sizeof(uint16_t),
-						imagePixelBuffer.asBuffer.pointer + shaderConstants.inImageTexelOffset[EII_COLOR],
-						param.width,
-						param.height,
-						forcedOptiXFormat,
-						overlap,
-						tileWidth,
-						tileHeight,
-						tilesToDenoise[k]);
 
 				//invocation params
 				OptixDenoiserParams denoiserParams = {};
@@ -837,19 +823,47 @@ void main()
 				denoiserParams.denoiseAlpha = 0u;
 				denoiserParams.hdrIntensity = intensityBuffer.asBuffer.pointer + intensityBufferOffset;
 
-				auto tileCount = tilesToDenoise[0].size();
-				for (size_t k = 0; k < tileCount; k++)	//Denoise each tile
+
+				//input with RGB, Albedo, Normals
+				OptixImage2D denoiserInputs[EII_COUNT];
+				OptixImage2D denoiserOutput;
+
+				for (size_t k = 0; k < denoiserInputCount; k++)
 				{
-					//input with RGB, Albedo, Normals
-					OptixImage2D denoiserInputs[EII_COUNT] = { tilesToDenoise[0][k].input, tilesToDenoise[1][k].input, tilesToDenoise[2][k].input, };
-					//invoke
-					if (denoiser.m_denoiser->invoke(m_cudaStream, &denoiserParams, denoiserInputs, denoiserInputs + denoiserInputCount, &tilesToDenoise[0][k].output, fakeScratchLink, denoiser.scratchSize, tilesToDenoise[0][k].inputOffsetX,
-						tilesToDenoise[0][k].inputOffsetY) != OPTIX_SUCCESS)
-					{
-						os::Printer::log(makeImageIDString(i) + "Could not invoke the denoiser sucessfully, skipping image!", ELL_ERROR);
-						continue;
-					}
+					denoiserInputs[k].data = temporaryPixelBuffer.asBuffer.pointer + shaderConstants.outImageOffset[k] * sizeof(uint16_t);
+					denoiserInputs[k].width = param.width;
+					denoiserInputs[k].height = param.height;
+					denoiserInputs[k].rowStrideInBytes = param.width * forcedOptiXFormatPixelStride;
+					denoiserInputs[k].format = forcedOptiXFormat;
+					denoiserInputs[k].pixelStrideInBytes = forcedOptiXFormatPixelStride;
+
 				}
+
+				denoiserOutput.data = imagePixelBuffer.asBuffer.pointer + shaderConstants.inImageTexelOffset[EII_COLOR];
+				denoiserOutput.width = param.width;
+				denoiserOutput.height = param.height;
+				denoiserOutput.rowStrideInBytes = param.width * forcedOptiXFormatPixelStride;
+				denoiserOutput.format = forcedOptiXFormat;
+				denoiserOutput.pixelStrideInBytes = forcedOptiXFormatPixelStride;
+
+				//invoke
+				if (denoiser.m_denoiser->tileAndInvoke(
+					m_cudaStream,
+					&denoiserParams,
+					denoiserInputs,
+					denoiserInputCount,
+					&denoiserOutput,
+					fakeScratchLink,
+					denoiser.scratchSize,
+					overlap,
+					tileWidth,
+					tileHeight
+				) != OPTIX_SUCCESS)
+				{
+					os::Printer::log(makeImageIDString(i) + "Could not invoke the denoiser sucessfully, skipping image!", ELL_ERROR);
+					continue;
+				}
+
 			}
 
 			// compute post-processing

@@ -12,7 +12,6 @@ set(IRR_EXT_OPTIX_H
 set(IRR_EXT_OPTIX_SRC
 	Manager.cpp
 	IContext.cpp
-	IDenoiser.cpp
 )
 
 set(IRR_EXT_OPTIX_EXTERNAL_INCLUDE
