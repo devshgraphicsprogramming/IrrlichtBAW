@@ -87,10 +87,10 @@ set(irr_resources_to_embed
   "irr/builtin/glsl/sampling/cos_weighted.glsl"
   "irr/builtin/glsl/sampling/linear.glsl"
   "irr/builtin/glsl/sampling/projected_spherical_triangle.glsl"
-  #"irr/builtin/glsl/sampling/spherical_rectangle.glsl"
+  "irr/builtin/glsl/sampling/spherical_rectangle.glsl"
   "irr/builtin/glsl/sampling/spherical_triangle.glsl"
   # shapes
-  #"irr/builtin/glsl/shapes/rectangle.glsl"
+  "irr/builtin/glsl/shapes/rectangle.glsl"
   "irr/builtin/glsl/shapes/triangle.glsl"
   # subgroup emulation
   "irr/builtin/glsl/subgroup/shared_arithmetic_portability.glsl"

@@ -1,7 +1,7 @@
 #version 430 core
 #extension GL_GOOGLE_include_directive : require
 
-#define RECTANGLE_METHOD 0 // 0 area sampling, 1 solid angle sampling, 2 approximate projected solid angle sampling
+#define RECTANGLE_METHOD 1 // 0 area sampling, 1 solid angle sampling, 2 approximate projected solid angle sampling
 #include "common.glsl"
 
 #define SPHERE_COUNT 8
@@ -65,6 +65,7 @@ bool traceRay(in ImmutableRay_t _immutable)
 
 
 /// #include <irr/builtin/glsl/sampling/projected_spherical_rectangle.glsl>
+#include <irr/builtin/glsl/sampling/spherical_rectangle.glsl>
 
 
 // the interaction here is the interaction at the illuminator-end of the ray, not the receiver
@@ -86,18 +87,15 @@ vec3 irr_glsl_light_deferred_eval_and_prob(
     Rectangle rect = rectangles[Light_getObjectID(light)];
 #if RECTANGLE_METHOD==0
     pdf *= intersectionT*intersectionT/abs(dot(Rectangle_getNormalTimesArea(rect),L));
-#else
-    const mat3 sphericalVertices = irr_glsl_shapes_getSphericalTriangle(mat3(tri.vertex0,tri.vertex1,tri.vertex2),origin);
-    Triangle tmpTri = Triangle_Triangle(mat3(tri.vertex0,tri.vertex1,tri.vertex2),0u,0u);
-    #if RECTANGLE_METHOD==1
-        float rcpProb = irr_glsl_shapes_SolidAngleOfTriangle(sphericalVertices);
-        // if `rcpProb` is NAN then the triangle's solid angle was close to 0.0 
-        pdf = rcpProb>FLT_MIN ? (pdf/rcpProb):FLT_MAX;
-    #elif RECTANGLE_METHOD==2
-        pdf *= irr_glsl_sampling_probProjectedSphericalTriangleSample(sphericalVertices,normalAtOrigin,wasBSDFAtOrigin,L);
-        // if `pdf` is NAN then the triangle's projected solid angle was close to 0.0, if its close to INF then the triangle was very small
-        pdf = pdf<FLT_MAX ? pdf:0.0;
-    #endif
+#elif RECTANGLE_METHOD==1
+    float rcpProb = irr_glsl_shapes_SolidAngleOfRectangle(rect.offset,rect.edge0,rect.edge1,origin);
+    // if `rcpProb` is NAN then the rectangle's solid angle was close to 0.0 
+    pdf = rcpProb>FLT_MIN ? (pdf/rcpProb):FLT_MAX;
+#elif RECTANGLE_METHOD==2
+    //pdf *= irr_glsl_sampling_probProjectedSphericalRectangleSample(sphericalVertices,normalAtOrigin,wasBSDFAtOrigin,L);
+    #error "Not Implemented Yet!"
+    // if `pdf` is NAN then the triangle's projected solid angle was close to 0.0, if its close to INF then the triangle was very small
+    pdf = pdf<FLT_MAX ? pdf:0.0;
 #endif
     return Light_getRadiance(light);
 }
@@ -125,17 +123,17 @@ irr_glsl_LightSample irr_glsl_light_generate_and_remainder_and_pdf(out vec3 rema
 #else 
     float rcpPdf;
 
-    const mat3 sphericalVertices = irr_glsl_shapes_getSphericalTriangle(mat3(tri.vertex0,tri.vertex1,tri.vertex2),origin);
 #if RECTANGLE_METHOD==1
-    const vec3 L = irr_glsl_sampling_generateSphericalTriangleSample(rcpPdf,sphericalVertices,u.xy);
+    const vec3 L = irr_glsl_sampling_generateSphericalRectangleSample(rcpPdf,rect.offset,rect.edge0,rect.edge1,origin,u.xy);
 #elif RECTANGLE_METHOD==2
-    const vec3 L = irr_glsl_sampling_generateProjectedSphericalTriangleSample(rcpPdf,sphericalVertices,interaction.isotropic.N,isBSDF,u.xy);
+    //const vec3 L = irr_glsl_sampling_generateProjectedSphericalRectangleSample(rcpPdf,sphericalVertices,interaction.isotropic.N,isBSDF,u.xy);
+    #error "Not Implemented Yet!"
 #endif
-    // if `rcpProb` is NAN or negative then the triangle's solidAngle or projectedSolidAngle was close to 0.0 
+    // if `rcpProb` is NAN or negative then the rectangle's solidAngle or projectedSolidAngle was close to 0.0 
     rcpPdf = rcpPdf>FLT_MIN ? rcpPdf:0.0;
 
-    const vec3 N = Triangle_getNormalTimesArea(tri);
-    const float dist = dot(N,tri.vertex0-origin)/dot(N,L);
+    const vec3 N = cross(rect.edge0,rect.edge1);
+    const float dist = dot(N,rect.offset-origin)/dot(N,L);
 #endif
 
     remainder = Light_getRadiance(light)*rcpPdf;
