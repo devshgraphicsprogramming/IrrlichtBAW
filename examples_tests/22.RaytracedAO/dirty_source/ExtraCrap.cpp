@@ -233,7 +233,7 @@ vec3 orthogonalize(in vec3 a, in vec3 b) {
 
 //Function which does triangle sampling proportional to their solid angle.
 //You can find more information and pseudocode here:
-void sampleSphericalTriangle2(inout vec3 color, out vec3 incoming, in vec3 A, in vec3 B, in vec3 C, in vec2 solidSample)
+float sampleSphericalTriangle2(out vec3 incoming, in vec3 A, in vec3 B, in vec3 C, in vec2 solidSample)
 {
 	//calculate internal angles of spherical triangle: alpha, beta and gamma
 	vec3 BA = orthogonalize(A, B-A);
@@ -252,7 +252,7 @@ void sampleSphericalTriangle2(inout vec3 color, out vec3 incoming, in vec3 A, in
 	float c = acos(clamp(dot(A, B), -1.0, 1.0));
 
 	float area = alpha + beta + gamma - kPI;
-	color *= area;
+
 
 	//Use one random variable to select the new area.
 	float area_S = solidSample.x*area;
@@ -275,9 +275,11 @@ void sampleSphericalTriangle2(inout vec3 color, out vec3 incoming, in vec3 A, in
 	float tcos = 1.0 - solidSample.y * (1.0 - BC_s);
 	incoming = special_triangle_sampling_slerp(B, C_s, BC_s, tcos);
 	//incoming = mix(incoming,A,isnan(incoming));
+
+	return area;
 }
 
-void light_sample(out vec3 incoming, inout float maxT, inout vec3 throughput, in uint sampleIx, in uint scramble, in vec3 position)
+void light_sample(inout float maxT, out vec3 incoming, out vec3 throughput, in uint sampleIx, in uint scramble, in vec3 position)
 {
 	uint lightIDSample = ugen_uniform_sample1(0u,sampleIx,scramble);
 	vec2 lightSurfaceSample = gen_uniform_sample2(2u,sampleIx,scramble);
@@ -292,41 +294,71 @@ void light_sample(out vec3 incoming, inout float maxT, inout vec3 throughput, in
 	vec3 dirToV0 = light.vertices[0]-position;
 	vec3 negLightNormal = cross(shortEdge,longEdge);
 
-	bool alive = dot(negLightNormal,dirToV0)>FLT_MIN;
+	float denormalizedTriangleObserverAngleCos = dot(negLightNormal,dirToV0);
+	bool alive = denormalizedTriangleObserverAngleCos>FLT_MIN;
 	if (anyInvocationARB(alive))
 	{
 	#define SAMPLE_SPHERICAL_TRIANGLE 0
 	#define SAMPLE_SURFACE_TRIANGLE 1
 
-	#define SAMPLE_MODE SAMPLE_SURFACE_TRIANGLE
+	#define SAMPLE_MODE SAMPLE_SPHERICAL_TRIANGLE
 
 	#if SAMPLE_MODE==SAMPLE_SPHERICAL_TRIANGLE
-		vec3 dirToV0 = light.vertices[0]-position;
-		float dirToV0InvLen = inversesqrt(dot(dirToV0,dirToV0));
+		vec3 A = normalize(dirToV0);
+		vec3 B = normalize(dirToV0+shortEdge);
+		vec3 C = normalize(dirToV0+longEdge);
 
-		vec3 p[3];
-		p[0] = dirToV0*dirToV0InvLen;
-		p[1] = normalize(dirToV0+shortEdge);
-		p[2] = normalize(dirToV0+longEdge);
+		// IEEE754 clamp review
+		float AB = max(dot(A, B),-1.0);
+		float AC = max(dot(A, C),-1.0);
+		float BC = max(dot(B, C),-1.0);
+		// check that AB,AC,BC are never <-1.0
 
-		sampleSphericalTriangle2(light.factor,incoming,p[0],p[1],p[2],lightSurfaceSample);
-	#define SHADOW_RAY_LEN 0.9999
-		maxT = alive ? SHADOW_RAY_LEN*dot(p[0],negLightNormal)/(dot(incoming,negLightNormal)*dirToV0InvLen):0.0;
+	#define TRIANGLE_ANGLE_EPSILON 0.999
+		alive = all(lessThan(vec3(AB,AC,BC),vec3(TRIANGLE_ANGLE_EPSILON)));
 
-		throughput = light.factor;
+		float AB2 = AB * AB;
+		float AC2 = AC * AC;
+		float BC2 = BC * BC;
+
+
+
+	float calpha = (BC - AB * AC) * inversesqrt((1.0 - AB2) * (1.0 - AC2));
+	float cbeta = (AC - AB * BC) * inversesqrt((1.0 - AB2) * (1.0 - BC2));
+	float cgamma = (AB - AC * BC) * inversesqrt((1.0 - AC2) * (1.0 - BC2));
+
+	float salpha = sqrt(max(1.0 - calpha * calpha, 0.0));
+	float sbeta = sqrt(max(1.0 - cbeta * cbeta, 0.0));
+	float sgamma = sqrt(max(1.0 - cgamma * cgamma, 0.0));
+
+	float sampleW = 100.0;//acos(calpha)+acos(cbeta)+acos(cgamma)-kPI;
+		//float sampleW = sampleSphericalTriangle2(incoming,p[0],p[1],p[2],lightSurfaceSample);
+		incoming = A; // TODO
+
+		float rayLen = denormalizedTriangleObserverAngleCos/dot(incoming,negLightNormal);
 	#elif SAMPLE_MODE==SAMPLE_SURFACE_TRIANGLE
 		lightSurfaceSample.x = sqrt(lightSurfaceSample.x);
 		incoming = dirToV0+(shortEdge*(1.0-lightSurfaceSample.y)+longEdge*lightSurfaceSample.y)*lightSurfaceSample.x;
 
 		float incomingLen2 = dot(incoming,incoming);
 		float incomingInvLen = inversesqrt(incomingLen2);
-		incoming *= incomingInvLen;
-		maxT = 1.0/incomingInvLen;
 
-		throughput = light.factor*0.5*max(dot(negLightNormal,incoming),0.0)*incomingInvLen*incomingInvLen;
+		float rayLen = 1.0/incomingInvLen;
+
+		incoming *= incomingInvLen;
+		float sampleW = 0.5*max(dot(negLightNormal,incoming),0.0)*incomingInvLen*incomingInvLen;
 	#else
 		#error "Unsupported Light Domain Sampling Scheme!"
-	#endif
+	#endif		
+		light.factor *= sampleW;
+
+		// TODO: supply this from a builtin include
+		const vec3 rec709LumaCoeffs = vec3(0.2126,0.7152,0.0722);
+		// TODO: use a better discriminant for luminous flux
+		if (alive && dot(rec709LumaCoeffs,light.factor)>FLT_MIN)
+			maxT = rayLen;
+
+		throughput = light.factor;
 	}
 }
 
@@ -339,45 +371,67 @@ void main()
 		// TODO: accelerate texture fetching
 		ivec2 uv = ivec2(outputLocation);
 		float revdepth = texelFetch(depthbuf,uv,0).r;
+		// TODO: add a condition on the BSDF being able to support NEE (non zero BSDF, plus continuous - not just dirac deltas)
+		alive = revdepth>0.0;
 
-		uint outputID = outputLocation.x+uImageWidth_ImageArea_TotalImageSamples_Samples.x*outputLocation.y;
+		// output Index
+		uint outputID;
 
 		// unproject
 		vec3 viewDir;
 		vec3 position;
+
+		// scramble
+		uint scramble;
+
+		// compute if anyone needs
+		if (anyInvocationARB(alive))
 		{
+			outputID = outputLocation.x+uImageWidth_ImageArea_TotalImageSamples_Samples.x*outputLocation.y;			
+
 			vec2 NDC = vec2(outputLocation)*uImageSize2Rcp.xy+uImageSize2Rcp.zw;
 			viewDir = mix(uFrustumCorners[0]*NDC.x+uFrustumCorners[1],uFrustumCorners[2]*NDC.x+uFrustumCorners[3],NDC.yyyy).xyz;
 			position = viewDir*linearizeZBufferVal(revdepth)+uCameraPos;
+
+			scramble = texelFetch(scramblebuf,uv,0).r;
 		}
 
-		alive = revdepth>0.0;
-
-		uint scramble = texelFetch(scramblebuf,uv,0).r;
-
-		RadeonRays_ray newray;
-		newray.time = 0.0;
-		newray.mask = -1;
 		for (uint i=0u; i<uImageWidth_ImageArea_TotalImageSamples_Samples.w; i++)
 		{
-			vec4 throughput = vec4(0.0,0.0,0.0,-1.0);
-			float error = GET_MAGNITUDE(1.0-revdepth)*0.1;
+			uint localOutputID = outputID+i*uImageWidth_ImageArea_TotalImageSamples_Samples.y;
 
-			newray.maxT = 0.0;
+			float maxT = 0.0;
+			vec3 incoming;
+			vec3 throughput;
+
 			if (alive)
-				light_sample(newray.direction,newray.maxT,throughput.rgb,uSamplesComputed+i,scramble,position);
+				light_sample(maxT,incoming,throughput,uSamplesComputed+i,scramble,position);
 
-			error = error/maxAbs3(newray.direction);
-			newray.origin = position+newray.direction*error;
-			newray.maxT -= ULP_NEXT(error,2000u);
+			if (anyInvocationARB(alive))
+			{
+				// compute error and ray trimming (TODO: improve, vastly!)
+				float error = GET_MAGNITUDE(1.0-revdepth)*0.1;
+				error = error/maxAbs3(incoming);
+				maxT -= ULP_NEXT(error,100000u);
 
-			newray._active = newray.maxT>FLT_MIN ? 1:0;
+				// check if we still have a ray to cast
+				if (maxT>FLT_MIN)
+				{
+					rays[localOutputID].origin = position+incoming*error;
+					rays[localOutputID].maxT = maxT;
+					rays[localOutputID].direction = incoming;
+					rays[localOutputID].time = 0.0; // TODO: const fill this
+					rays[localOutputID].mask = -1; // TODO: const fill this
+					rays[localOutputID]._active = 1;
+					rays[localOutputID].backfaceCulling = int(packHalf2x16(vec2(-1.0,throughput.b)));
+					rays[localOutputID].useless_padding = int(packHalf2x16(throughput.gr));
+				}
+				else
+					rays[localOutputID]._active = 0;
+			}
+			else
+				rays[localOutputID]._active = 0;
 
-			newray.backfaceCulling = int(packHalf2x16(throughput.ab));
-			newray.useless_padding = int(packHalf2x16(throughput.gr));
-
-			// TODO: repack rays for coalescing
-			rays[outputID+i*uImageWidth_ImageArea_TotalImageSamples_Samples.y] = newray;
 		}
 	}
 }
@@ -1138,8 +1192,7 @@ void Renderer::init(const SAssetBundle& meshes,
 	assert(raygenBufferSize<=rayBufferSize);
 	auto shadowBufferSize = static_cast<size_t>(renderPixelCount)*sizeof(int32_t);
 	assert(shadowBufferSize<=rayBufferSize);
-	m_samplesPerDispatch = rayBufferSize/(raygenBufferSize+shadowBufferSize);
-	assert(m_samplesPerDispatch >= 1u);
+	m_samplesPerDispatch = core::max(rayBufferSize/(raygenBufferSize+shadowBufferSize),1ull);
 	printf("Using %d samples\n", m_samplesPerDispatch);
 
 	raygenBufferSize *= m_samplesPerDispatch;

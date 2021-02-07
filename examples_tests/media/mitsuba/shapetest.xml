@@ -71,6 +71,7 @@
 		</emitter>
 	</shape>
 
+<!--
 	<shape type="rectangle">
 		<transform name="toWorld">
 			<scale x="0.8" y="0.8" z="-1.0"/>
@@ -92,4 +93,6 @@
 			<rgb name="radiance" value="0,10,10"/>
 		</emitter>
 	</shape>
+ -->
+  
 </scene>

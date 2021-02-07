@@ -123,10 +123,8 @@ class Renderer : public irr::core::IReferenceCounted, public irr::core::Interfac
 			//! This is according to Rec.709 colorspace
 			inline float getFactorLuminosity() const
 			{
-				float rec709LumaCoeffs[] = {0.2126f, 0.7152, 0.0722};
-
 				//! TODO: More color spaces!
-				float* colorSpaceLumaCoeffs = rec709LumaCoeffs;
+				const float* colorSpaceLumaCoeffs = &rec709LumaCoeffs[0];
 
 				float luma = strengthFactor[0] * colorSpaceLumaCoeffs[0];
 				luma += strengthFactor[1] * colorSpaceLumaCoeffs[1];
@@ -183,7 +181,7 @@ class Renderer : public irr::core::IReferenceCounted, public irr::core::Interfac
 		_IRR_STATIC_INLINE_CONSTEXPR uint32_t MaxResolution[2] = {7680/2,4320/2};
 
 
-		Renderer(irr::video::IVideoDriver* _driver, irr::asset::IAssetManager* _assetManager, irr::scene::ISceneManager* _smgr, bool useDenoiser = true);
+		Renderer(irr::video::IVideoDriver* _driver, irr::asset::IAssetManager* _assetManager, irr::scene::ISceneManager* _smgr, bool useDenoiser = false);
 
 		void init(	const irr::asset::SAssetBundle& meshes,
 					bool isCameraRightHanded,
@@ -204,6 +202,9 @@ class Renderer : public irr::core::IReferenceCounted, public irr::core::Interfac
 
 
 		_IRR_STATIC_INLINE_CONSTEXPR uint32_t MaxDimensions = 4u;
+
+		//! TODO: More color spaces!
+		_IRR_STATIC_INLINE_CONSTEXPR float rec709LumaCoeffs[] = { 0.2126f, 0.7152, 0.0722 };
     protected:
         ~Renderer();
 

@@ -212,21 +212,21 @@ namespace video
                     const void* dataPtr = reinterpret_cast<const uint8_t*>(data)+uploadedSize;
                     uint32_t localOffset = video::StreamingTransientDataBufferMT<>::invalid_address;
                     uint32_t alignment = 64u; // smallest mapping alignment capability
-                    uint32_t subSize = core::min(core::alignDown(defaultUploadBuffer.get()->max_size(),alignment),size-uploadedSize);
+                    uint32_t subSize = core::min(core::alignDown(defaultUploadBuffer->max_size(),alignment),size-uploadedSize);
 
-                    defaultUploadBuffer.get()->multi_place(std::chrono::microseconds(500u),1u,(const void* const*)&dataPtr,&localOffset,&subSize,&alignment);
+                    defaultUploadBuffer->multi_place(std::chrono::microseconds(500u),1u,(const void* const*)&dataPtr,&localOffset,&subSize,&alignment);
                     // keep trying again
                     if (localOffset==video::StreamingTransientDataBufferMT<>::invalid_address)
                         continue;
 
                     // some platforms expose non-coherent host-visible GPU memory, so writes need to be flushed explicitly
-                    if (defaultUploadBuffer.get()->needsManualFlushOrInvalidate())
-                        this->flushMappedMemoryRanges({{defaultUploadBuffer.get()->getBuffer()->getBoundMemory(),localOffset,subSize}});
+                    if (defaultUploadBuffer->needsManualFlushOrInvalidate())
+                        this->flushMappedMemoryRanges({{defaultUploadBuffer->getBuffer()->getBoundMemory(),localOffset,subSize}});
                     // after we make sure writes are in GPU memory (visible to GPU) and not still in a cache, we can copy using the GPU to device-only memory
-                    this->copyBuffer(defaultUploadBuffer.get()->getBuffer(),buffer,localOffset,offset+uploadedSize,subSize);
+                    this->copyBuffer(defaultUploadBuffer->getBuffer(),buffer,localOffset,offset+uploadedSize,subSize);
                     // this doesn't actually free the memory, the memory is queued up to be freed only after the GPU fence/event is signalled
                     // no glFlush needed because waitCPU is not done to block execution until GPU is done on the allocations
-                    defaultUploadBuffer.get()->multi_free(1u,&localOffset,&subSize,this->placeFence());
+                    defaultUploadBuffer->multi_free(1u,&localOffset,&subSize,this->placeFence());
                     uploadedSize += subSize;
                 }
             }
